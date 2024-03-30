@@ -1,4 +1,4 @@
-SimSel: A Simple Python Library for Simulations of Natural Selection
+SimEvo: A Simple Python Library for Simulations of Natural Selection
 ---
 
 ## Basic Information
@@ -7,7 +7,7 @@ SimSel: A Simple Python Library for Simulations of Natural Selection
 
 SimSel leverages the computational efficiency of C++ for the core simulation engine and offers an intuitive Python interface for ease of use and accessibility. It models ecosystems composed of organisms with genetically determined traits, interacting within an environment that includes resources like food. The simulation observes the principles of natural selection, with organism survival and reproduction influenced by their traits and environmental factors.
 
-- 📂 **GitHub Repository**: [https://github.com/YJack0000/SimSel](https://github.com/YJack0000/SimSel)
+- 📂 **GitHub Repository**: [https://github.com/YJack0000/SimEvo](https://github.com/YJack0000/SimEvo)
 - 💻 **Implemented In**:
   - **Core Library**: C++
   - **Bindings & Interface**: Python
