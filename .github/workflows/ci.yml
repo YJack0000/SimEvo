@@ -29,7 +29,7 @@ jobs:
     - name: Run tests
       run: |
         cd build
-        ctest
+        ctest -V
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
