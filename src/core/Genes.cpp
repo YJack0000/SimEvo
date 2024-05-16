@@ -1,4 +1,6 @@
 #include <core/Genes.hpp>
+#include <cstring>
+#include <ctime>
 #include <cstdlib>
 
 Genes::Genes(const char *dnaStr, MutationFunction customMutationLogic = nullptr)
