@@ -1,6 +1,7 @@
 #ifndef ISPATIALINDEX_HPP
 #define ISPATIALINDEX_HPP
 
+#include <memory>
 #include <vector>
 
 #include "ISpatialObject.hpp"
