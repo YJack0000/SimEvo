@@ -63,7 +63,7 @@ jobs:
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
-        git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         git add setup.py
         git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
         git tag "v${{ steps.bump_version.outputs.new_version }}"
