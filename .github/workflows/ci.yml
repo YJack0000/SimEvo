@@ -56,19 +56,7 @@ jobs:
 
     - name: Bump version
       id: bump_version
-      run: |
-        VERSION=$(python setup.py --version)
-        NEW_VERSION=$(echo $VERSION | awk -F. -v OFS=. '{$NF++; print}')
-        sed -i "s/version='$VERSION'/version='$NEW_VERSION'/" setup.py
-        echo "New version: $NEW_VERSION"
-        echo "::set-output name=version::$NEW_VERSION"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
-        git add setup.py
-        git commit -m "Bump version to $NEW_VERSION"
-        git tag "v$NEW_VERSION"
-        git push origin main --tags
+      run: ./bump_version.sh
 
     - name: Build Python package
       run: python3 setup.py sdist bdist_wheel
