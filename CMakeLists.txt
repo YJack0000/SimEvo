@@ -18,9 +18,14 @@ include_directories(include)
 
 # add the subdirectories
 add_subdirectory(src)
-add_subdirectory(bindings)
 
-## using BUILD_TESTS to enable/disable the tests
+# using BUILD_BINDINGS to enable/disable the python bindings
+option(BUILD_BINDINGS "Build Python bindings" ON)
+if(BUILD_BINDINGS)
+  add_subdirectory(bindings)
+endif()
+
+# using BUILD_TESTS to enable/disable the tests
 option(BUILD_TESTS "Build the test programs" ON)
 if(BUILD_TESTS)
   enable_testing()
