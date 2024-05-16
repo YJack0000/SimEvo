@@ -56,7 +56,15 @@ jobs:
 
     - name: Bump version
       id: bump_version
-      run: ./bump_version.sh
+      run: |
+        ./bump_version.sh
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+        git add setup.py
+        git commit -m "Bump version to $NEW_VERSION"
+        git tag "v$NEW_VERSION"
+        git push origin main --tags
 
     - name: Build Python package
       run: python3 setup.py sdist
