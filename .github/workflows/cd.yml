@@ -1,9 +1,11 @@
 name: CD
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
     branches: [main]
-  workflow_dispatch:
+    types:
+      - completed
 
 jobs:
   release:
@@ -11,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: build
         path: build
