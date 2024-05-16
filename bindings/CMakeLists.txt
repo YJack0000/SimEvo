@@ -4,7 +4,7 @@ project(simevo_bindings)
 include(pybind11.cmake)
 
 find_package(Python3 COMPONENTS Development REQUIRED)
-find_package(pybind11 REQUIRED)
+# find_package(pybind11 REQUIRED)
 
 pybind11_add_module(simevo
     python_bindings.cpp
