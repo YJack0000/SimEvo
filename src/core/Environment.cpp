@@ -4,11 +4,13 @@
 #include <index/SpatialIndex.hpp>
 #include <index/SpatialObjectWrapper.hpp>
 #include <string>
+#include <algorithm>
 
 Environment::Environment(int width, int height, const std::string &type)
     : width(width), height(height) {
     if (type == std::string("optimize")) {
-        spatialIndex = std::make_unique<OptimizedSpatialIndex>();
+        int size = std::max(width, height);
+        spatialIndex = std::make_unique<OptimizedSpatialIndex>(size);
     } else {
         spatialIndex = std::make_unique<DefaultSpatialIndex>();
     }
