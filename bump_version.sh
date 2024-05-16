@@ -28,5 +28,5 @@ else
 fi
 
 # Output the new version
-echo "::set-output name=new-version::$NEW_VERSION"
+echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
