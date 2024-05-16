@@ -1,6 +1,22 @@
 #include <memory>
 #include <test/SpatialIndexTest.hpp>
 
+template <typename T>
+void SpatialIndexTest<T>::SetUp() {
+    index = std::make_unique<T>();
+}
+
+template <>
+void SpatialIndexTest<OptimizedSpatialIndex>::SetUp() {
+    index = std::make_unique<OptimizedSpatialIndex>(1000);  // Set size to 100
+}
+
+template <typename T>
+std::shared_ptr<ISpatialObject> SpatialIndexTest<T>::makeDummyObject(int x, int y) {
+    auto dummy = std::make_shared<Dummy>();
+    return std::make_shared<SpatialObjectWrapper<Dummy>>(dummy, x, y);
+}
+
 TYPED_TEST_SUITE_P(SpatialIndexTest);
 
 TYPED_TEST_P(SpatialIndexTest, InsertsObjectCorrectly) {
@@ -22,5 +38,5 @@ REGISTER_TYPED_TEST_SUITE_P(SpatialIndexTest, InsertsObjectCorrectly,
 
 INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexTest,
                                DefaultSpatialIndex);
-// INSTANTIATE_TYPED_TEST_SUITE_P(OptimizedIndexTests, SpatialIndexTest,
-                               // OptimizedSpatialIndex);
+INSTANTIATE_TYPED_TEST_SUITE_P(OptimizedIndexTests, SpatialIndexTest,
+                               OptimizedSpatialIndex);

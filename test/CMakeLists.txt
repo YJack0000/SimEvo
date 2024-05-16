@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(googletest)
 
 set(SPATIAL_INDEX_SOURCES
   ${PROJECT_SOURCE_DIR}/../src/index/DefaultSpatialIndex.cpp
-  # ${PROJECT_SOURCE_DIR}/../src/index/OptimizedSpatialIndex.cpp
+  ${PROJECT_SOURCE_DIR}/../src/index/OptimizedSpatialIndex.cpp
 )
 
 add_executable(test_spatial_index SpatialIndexTest.cpp ${SPATIAL_INDEX_SOURCES})

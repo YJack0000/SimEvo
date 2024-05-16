@@ -15,14 +15,9 @@ class SpatialIndexTest : public ::testing::Test {
 protected:
     std::unique_ptr<ISpatialIndex> index;
 
-    void SetUp() override {
-        index = std::make_unique<T>();
-    }
+    void SetUp() override;
 
-    std::shared_ptr<ISpatialObject> makeDummyObject(int x, int y) {
-        auto dummy = std::make_shared<Dummy>();
-        return std::make_shared<SpatialObjectWrapper<Dummy>>(dummy, x, y);
-    }
+    std::shared_ptr<ISpatialObject> makeDummyObject(int x, int y);
 };
 
 // Typedefs for ease of use

@@ -1,5 +1,4 @@
 #include <index/SpatialIndex.hpp>
-#include <index/ISpatialObject.hpp>
 #include <cmath>
 
 DefaultSpatialIndex::DefaultSpatialIndex() {}
