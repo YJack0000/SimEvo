@@ -10,7 +10,13 @@ echo "New version: $NEW_VERSION"
 
 # Update setup.py with the new version
 echo "Updating setup.py from version='$VERSION' to version='$NEW_VERSION'"
-sed -i '' "s/version='$VERSION'/version='$NEW_VERSION'/" setup.py
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS
+  sed -i '' "s/version='$VERSION'/version='$NEW_VERSION'/" setup.py
+else
+  # Linux
+  sed -i "s/version='$VERSION'/version='$NEW_VERSION'/" setup.py
+fi
 
 # Ensure the version was updated
 grep "version='$NEW_VERSION'" setup.py
