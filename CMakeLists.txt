@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
 project(SimEvo)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # check if the compiler supports C++20
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
