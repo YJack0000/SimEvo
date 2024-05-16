@@ -59,7 +59,7 @@ jobs:
       run: ./bump_version.sh
 
     - name: Build Python package
-      run: python3 setup.py sdist bdist_wheel
+      run: python3 setup.py sdist
 
     - name: Create GitHub release
       uses: ncipollo/release-action@v1
@@ -104,3 +104,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+          package: dist/*.tar.gz
