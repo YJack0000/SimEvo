@@ -2,9 +2,10 @@
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
-#include "ISpatialIndex.hpp"
-#include "Organism.hpp"
 #include <memory>
+
+#include "index/ISpatialIndex.hpp"
+#include "Organism.hpp"
 
 class Environment {
 public:
@@ -25,4 +26,3 @@ private:
 };
 
 #endif
-

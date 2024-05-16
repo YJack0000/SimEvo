@@ -1,12 +1,11 @@
-#ifndef _ISPATIALOBJECT_HPP
-#define _ISPATIALOBJECT_HPP
+#ifndef ISPATIALOBJECT_HPP
+#define ISPATIALOBJECT_HPP
 
-#include <string>
+#include <utility> 
 
 class ISpatialObject {
 public:
     virtual std::pair<int, int> getPosition() const = 0;
-    virtual std::string getType() const = 0;
     virtual ~ISpatialObject() {}
 };
 
