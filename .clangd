@@ -3,5 +3,7 @@ CompileFlags:
     "-std=c++20",
     "-Wall",
     "-I/Users/yjack/Github/SimEvo/include",
-    "-I/Users/yjack/Github/SimEvo/build/_deps/googletest-src/googletest/include"
+    "-I/opt/homebrew/Caskroom/miniforge/base/include/python3.9",
+    "-I/Users/yjack/Github/SimEvo/build/_deps/googletest-src/googletest/include",
+    "-I/Users/yjack/Github/SimEvo/build/_deps/pybind11-src/include"
   ]
