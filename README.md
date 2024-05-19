@@ -84,7 +84,7 @@ The SimSel library offers a Python API designed for simplicity and ease of use, 
 The script sets up a SimSel simulation in a 500x500 space, initializing 10 "ABCD" gene organisms and distributing food to model resource scarcity. Operating in an "optimize" mode for efficiency, it cycles through 100 generations, each time scattering food and advancing the simulation to observe natural selection as organisms interact, feed, and reproduce based on genetic traits.
 
 ```python
-from SimSel import Environment, Organism, Genes
+from SimEvo.core import Environment, Organism, Genes
 import random
 
 def setup_base_organism(env, count=10):
