@@ -1,6 +1,10 @@
 SimEvo: A Simple Python Library for Simulations of Natural Selection
 ---
 
+[![CodeFactor](https://www.codefactor.io/repository/github/yjack0000/simevo/badge)](https://www.codefactor.io/repository/github/yjack0000/simevo)
+![GitHub](https://img.shields.io/github/license/YJack0000/SimEvo)
+![GitHub repo size](https://img.shields.io/github/repo-size/YJack0000/SimEvo)
+
 ## Basic Information
 
 > **Project Overview:** Simulating Natural Selection in Ecosystems using C++ and Python
