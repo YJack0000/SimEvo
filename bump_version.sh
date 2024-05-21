@@ -19,8 +19,7 @@ else
 fi
 
 # Ensure the version was updated
-grep "version='$NEW_VERSION'" setup.py
-if [ $? -eq 0 ]; then
+if grep "version='$NEW_VERSION'" setup.py; then
     echo "Version updated successfully"
 else
     echo "Failed to update version"
