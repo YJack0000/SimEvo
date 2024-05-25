@@ -2,10 +2,16 @@
 
 namespace py = pybind11;
 
-void define_genes(py::module &);
-void define_organism(py::module &);
+void init_BaseEnvironmentObject(py::module &);
+void init_Environment(py::module &);
+void init_Food(py::module &);
+void init_Genes(py::module &);
+void init_Organism(py::module &);
 
-PYBIND11_MODULE(simevo, m) {
-    define_genes(m);
-    define_organism(m);
+PYBIND11_MODULE(simevopy, m) {
+    init_BaseEnvironmentObject(m);
+    init_Environment(m);
+    init_Food(m);
+    init_Genes(m);
+    init_Organism(m);
 }

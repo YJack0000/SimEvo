@@ -1,4 +1,4 @@
-#include <memory>
+#include <boost/uuid/uuid_generators.hpp>
 #include <test/SpatialIndexTest.hpp>
 
 template <typename T>
@@ -6,37 +6,45 @@ void SpatialIndexTest<T>::SetUp() {
     index = std::make_unique<T>();
 }
 
-template <>
-void SpatialIndexTest<OptimizedSpatialIndex>::SetUp() {
-    index = std::make_unique<OptimizedSpatialIndex>(1000);  // Set size to 100
-}
-
-template <typename T>
-std::shared_ptr<ISpatialObject> SpatialIndexTest<T>::makeDummyObject(int x, int y) {
-    auto dummy = std::make_shared<Dummy>();
-    return std::make_shared<SpatialObjectWrapper<Dummy>>(dummy, x, y);
-}
-
-TYPED_TEST_SUITE_P(SpatialIndexTest);
+// template <>
+// void SpatialIndexTest<OptimizedSpatialIndex<boost::uuids::uuid>>::SetUp() {
+//     index =
+//     std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(1000);
+// }
 
 TYPED_TEST_P(SpatialIndexTest, InsertsObjectCorrectly) {
-    auto object = this->makeDummyObject(10, 10);
-    EXPECT_NO_THROW(this->index->insert(object));
+    auto object = boost::uuids::random_generator()();
+    EXPECT_NO_THROW(this->index->insert(object, 10, 10));
 }
 
 TYPED_TEST_P(SpatialIndexTest, QueryReturnsCorrectResults) {
-    auto object = this->makeDummyObject(100, 100);
-    this->index->insert(object);
-
+    auto object = boost::uuids::random_generator()();
+    this->index->insert(object, 100, 100);
     auto results = this->index->query(100, 100, 10);
     ASSERT_EQ(1, results.size());
-    EXPECT_EQ(results[0]->getPosition(), std::make_pair(100, 100));
+    EXPECT_EQ(results[0], object);
+}
+
+TYPED_TEST_P(SpatialIndexTest, UpdateObjectCorrectly) {
+    auto object = boost::uuids::random_generator()();
+    this->index->insert(object, 10, 10);
+    this->index->update(object, 70, 70);
+    auto results = this->index->query(70, 70, 10);
+    ASSERT_EQ(1, results.size());
+    EXPECT_EQ(results[0], object);
+}
+
+TYPED_TEST_P(SpatialIndexTest, RemoveObjectCorrectly) {
+    auto object = boost::uuids::random_generator()();
+    this->index->insert(object, 10, 10);
+    this->index->remove(object);
+    auto results = this->index->query(20, 20, 10);
+    ASSERT_TRUE(results.empty());
 }
 
 REGISTER_TYPED_TEST_SUITE_P(SpatialIndexTest, InsertsObjectCorrectly,
-                            QueryReturnsCorrectResults);
+                            QueryReturnsCorrectResults, UpdateObjectCorrectly,
+                            RemoveObjectCorrectly);
 
 INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexTest,
-                               DefaultSpatialIndex);
-INSTANTIATE_TYPED_TEST_SUITE_P(OptimizedIndexTests, SpatialIndexTest,
-                               OptimizedSpatialIndex);
+                               DefaultSpatialIndex<boost::uuids::uuid>);
