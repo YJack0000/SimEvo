@@ -3,6 +3,9 @@
 #include <ctime>
 #include <cstdlib>
 
+Genes::Genes(const char *dnaStr)
+    : Genes(dnaStr, nullptr) {}
+
 Genes::Genes(const char *dnaStr, MutationFunction customMutationLogic = nullptr)
     : mutationLogic(customMutationLogic ? customMutationLogic
                                         : defaultMutationLogic) {
