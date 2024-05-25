@@ -1,10 +1,14 @@
 #include <cmath>
 #include <index/SpatialIndex.hpp>
 
-const int OptimizedSpatialIndex::MAX_OBJECTS = 10;
-const int OptimizedSpatialIndex::MIN_SIZE = 10;
+template <typename T>
+const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 10;
 
-OptimizedSpatialIndex::OptimizedSpatialIndex(int size)
+template <typename T>
+const int OptimizedSpatialIndex<T>::MIN_SIZE = 10;
+
+template <typename T>
+OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size)
     : size(size), isSubdivided(false) {}
 
 void OptimizedSpatialIndex::insert(
@@ -12,9 +16,7 @@ void OptimizedSpatialIndex::insert(
     if (!inBounds(object->getPosition())) {
         return;
     }
-
     objects.push_back(object);
-
     if (objects.size() > MAX_OBJECTS && size > MIN_SIZE) {
         subdivide();
     }
@@ -27,18 +29,16 @@ std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(
     if (!inBounds({x, y})) {
         return result;
     }
-
     for (const auto &obj : objects) {
-        auto pos = obj->getPosition();
-        int dx = pos.first - x;
-        int dy = pos.second - y;
+        auto pos = obj.getPosition();
+        float dx = pos.first - x;
+        float dy = pos.second - y;
         double distance = std::sqrt(dx * dx + dy * dy);
 
         if (static_cast<float>(distance) <= range) {
             result.push_back(obj);
         }
     }
-
     if (isSubdivided) {
         for (const auto &child : children) {
             std::vector<std::shared_ptr<ISpatialObject>> childResult =
@@ -46,7 +46,6 @@ std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(
             result.insert(result.end(), childResult.begin(), childResult.end());
         }
     }
-
     return result;
 }
 
@@ -55,11 +54,11 @@ bool OptimizedSpatialIndex::inBounds(const std::pair<float, float> &pos) {
            pos.second < size;
 }
 
-void OptimizedSpatialIndex::subdivide() {
+template <typename T>
+void OptimizedSpatialIndex<T>::subdivide() {
     int childSize = size / 2;
     int childX = 0;
     int childY = 0;
-
     for (int i = 0; i < 4; ++i) {
         if (i == 1 || i == 3) {
             childX = childSize;
@@ -67,16 +66,14 @@ void OptimizedSpatialIndex::subdivide() {
         if (i == 2 || i == 3) {
             childY = childSize;
         }
-        children[i] = std::make_unique<OptimizedSpatialIndex>(childSize);
+        children[i] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
         children[i]->setOffset(childX, childY);
     }
-
     for (const auto &obj : objects) {
         for (const auto &child : children) {
             child->insert(obj);
         }
     }
-
     objects.clear();
     isSubdivided = true;
 }

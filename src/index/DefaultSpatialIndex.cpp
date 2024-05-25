@@ -2,7 +2,8 @@
 #include <cmath>
 #include <index/SpatialIndex.hpp>
 
-DefaultSpatialIndex::DefaultSpatialIndex() {}
+template <typename T>
+DefaultSpatialIndex<T>::DefaultSpatialIndex() {}
 
 void DefaultSpatialIndex::insert(
     const std::shared_ptr<ISpatialObject>& object) {

@@ -4,7 +4,8 @@
 #include <boost/uuid/uuid.hpp>
 #include "ISpatialIndex.hpp"
 
-class DefaultSpatialIndex : public ISpatialIndex {
+template <typename T>
+class DefaultSpatialIndex : public ISpatialIndex<T> {
 public:
     DefaultSpatialIndex();
     void insert(const std::shared_ptr<ISpatialObject> &object) override;
@@ -12,10 +13,11 @@ public:
                                                        float range) override;
 
 private:
-    std::vector<std::shared_ptr<ISpatialObject>> objects;
+    std::vector<T> objects;
 };
 
-class OptimizedSpatialIndex : public ISpatialIndex {
+template <typename T>
+class OptimizedSpatialIndex : public ISpatialIndex<T> {
 public:
     OptimizedSpatialIndex(int size);
     void insert(const std::shared_ptr<ISpatialObject> &object) override;

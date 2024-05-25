@@ -5,8 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "ISpatialObject.hpp"
-
+template <typename T>
 class ISpatialIndex {
 public:
     virtual void insert(const std::shared_ptr<ISpatialObject>& objecit) = 0;
