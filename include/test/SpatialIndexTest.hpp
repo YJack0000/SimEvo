@@ -3,25 +3,24 @@
 
 #include <gtest/gtest.h>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include <index/ISpatialIndex.hpp>
-#include <index/ISpatialObject.hpp>
 #include <index/SpatialIndex.hpp>
-#include <index/SpatialObjectWrapper.hpp>
 #include <memory>
-#include <test/Dummy.hpp>
 
 template <typename T>
 class SpatialIndexTest : public ::testing::Test {
 protected:
-    std::unique_ptr<ISpatialIndex> index;
+    std::unique_ptr<ISpatialIndex<boost::uuids::uuid>> index;
 
     void SetUp() override;
-
-    std::shared_ptr<ISpatialObject> makeDummyObject(int x, int y);
 };
 
-// Typedefs for ease of use
-using DefaultSpatialIndexTest = SpatialIndexTest<DefaultSpatialIndex>;
-using OptimizedSpatialIndexTest = SpatialIndexTest<OptimizedSpatialIndex>;
+// using IndexTypes = ::testing::Types<DefaultSpatialIndex<boost::uuids::uuid>,
+// OptimizedSpatialIndex<boost::uuids::uuid>>;
+using IndexTypes = ::testing::Types<DefaultSpatialIndex<boost::uuids::uuid>>;
+
+TYPED_TEST_SUITE_P(SpatialIndexTest);
 
 #endif

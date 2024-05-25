@@ -7,6 +7,7 @@ class Genes {
 public:
     using MutationFunction = std::function<void(char[4])>;
 
+    Genes(const char *dnaStr);
     Genes(const char *dnaStr, MutationFunction customMutationLogic);
 
     void mutate() { mutationLogic(dna); }
