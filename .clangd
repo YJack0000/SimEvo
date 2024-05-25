@@ -5,5 +5,6 @@ CompileFlags:
     "-I/Users/yjack/Github/SimEvo/include",
     "-I/opt/homebrew/Caskroom/miniforge/base/include/python3.9",
     "-I/Users/yjack/Github/SimEvo/build/_deps/googletest-src/googletest/include",
-    "-I/Users/yjack/Github/SimEvo/build/_deps/pybind11-src/include"
+    "-I/Users/yjack/Github/SimEvo/build/_deps/pybind11-src/include",
+    "-I/opt/homebrew/include"
   ]
