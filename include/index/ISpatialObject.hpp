@@ -1,11 +1,15 @@
 #ifndef ISPATIALOBJECT_HPP
 #define ISPATIALOBJECT_HPP
 
-#include <utility> 
+#include <boost/uuid/uuid.hpp>
+#include <memory>
+#include <utility>
 
 class ISpatialObject {
 public:
-    virtual std::pair<int, int> getPosition() const = 0;
+    virtual boost::uuids::uuid getId() const = 0;
+    virtual std::pair<float, float> getPosition() const = 0;
+    virtual std::shared_ptr<void> getObject() const = 0;
     virtual ~ISpatialObject() {}
 };
 

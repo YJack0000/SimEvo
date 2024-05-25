@@ -1,25 +1,23 @@
-#include <index/SpatialIndex.hpp>
+#include <boost/uuid/uuid.hpp>
 #include <cmath>
+#include <index/SpatialIndex.hpp>
 
 DefaultSpatialIndex::DefaultSpatialIndex() {}
 
-void DefaultSpatialIndex::insert(const std::shared_ptr<ISpatialObject> &object) {
+void DefaultSpatialIndex::insert(
+    const std::shared_ptr<ISpatialObject>& object) {
     objects.push_back(object);
 }
 
-std::vector<std::shared_ptr<ISpatialObject>> DefaultSpatialIndex::query(int x, int y, int range) {
+std::vector<std::shared_ptr<ISpatialObject>> DefaultSpatialIndex::query(float x, float y,
+                                                           float range) {
     std::vector<std::shared_ptr<ISpatialObject>> result;
-
-    for (const auto &obj : this->objects) {
+    for (const auto& obj : objects) {
         auto pos = obj->getPosition();
-        int dx = pos.first - x;
-        int dy = pos.second - y;
-        double distance = std::sqrt(dx * dx + dy * dy);
-
-        if (distance <= range) {
+        if (std::abs(pos.first - x) <= range &&
+            std::abs(pos.second - y) <= range) {
             result.push_back(obj);
         }
     }
-
     return result;
 }

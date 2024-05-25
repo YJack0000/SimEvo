@@ -22,3 +22,21 @@ uint32_t Organism::getLifeConsumption() const {
 
     return getSpeed() * getSize() * getAwareness();
 }
+
+bool Organism::isAlive() const { return life < getLifeConsumption(); }
+
+bool Organism::canReproduce() const { return life >= getLifeConsumption() * 2; }
+
+void Organism::extendLife(int amount) { life += amount; }
+
+void Organism::interact(Organism &other) {
+    if (!isAlive() || !other.isAlive()) // one of the organisms is dead
+        return;
+}
+
+void Organism::interact(Food &food) {
+    if (!isAlive()) // the organism is dead
+        return;
+
+    extendLife(10);
+}

@@ -1,4 +1,4 @@
-from SimSel import Environment, Organism, Genes
+from simevopy.core import Environment, Organism, Genes
 import random
 
 def setup_base_organism(env, count=10):

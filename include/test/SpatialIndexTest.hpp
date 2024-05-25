@@ -16,12 +16,10 @@ protected:
     std::unique_ptr<ISpatialIndex> index;
 
     void SetUp() override;
-
-    std::shared_ptr<ISpatialObject> makeDummyObject(int x, int y);
+    std::shared_ptr<ISpatialObject> makeDummyObject(float x, float y);
 };
 
-// Typedefs for ease of use
-using DefaultSpatialIndexTest = SpatialIndexTest<DefaultSpatialIndex>;
-using OptimizedSpatialIndexTest = SpatialIndexTest<OptimizedSpatialIndex>;
+using IndexTypes = ::testing::Types<DefaultSpatialIndex, OptimizedSpatialIndex>;
+TYPED_TEST_SUITE(SpatialIndexTest, IndexTypes);
 
 #endif

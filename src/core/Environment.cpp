@@ -1,10 +1,10 @@
+#include <algorithm>
 #include <core/Environment.hpp>
 #include <core/Food.hpp>
 #include <core/Organism.hpp>
 #include <index/SpatialIndex.hpp>
 #include <index/SpatialObjectWrapper.hpp>
 #include <string>
-#include <algorithm>
 
 Environment::Environment(int width, int height, const std::string &type)
     : width(width), height(height) {
@@ -27,4 +27,33 @@ void Environment::addFood(int x, int y) {
     auto food = std::make_shared<Food>();
     auto wrappedFood = std::make_shared<SpatialObjectWrapper<Food>>(food, x, y);
     spatialIndex->insert(wrappedFood);
+}
+
+void Environment::simulateIteration(int iterations) {
+    for (int i = 0; i < iterations; i++) {
+        handleInteractions();
+        removeDeadOrganisms();
+        spawnOrganisms();
+    }
+}
+
+void Environment::handleInteractions() {
+    for (const auto &object : *spatialIndex) {
+        if (auto organism =
+                std::dynamic_pointer_cast<Organism>(object->getObject())) {
+            auto neighbors = spatialIndex->query(object->getPosition().first,
+                                                 object->getPosition().second,
+                                                 organism->getAwareness());
+
+            for (const auto &neighbor : neighbors) {
+                if (auto other_organism = std::dynamic_pointer_cast<Organism>(
+                        neighbor->getObject())) {
+                    organism->interact(other_organism);
+                }
+            }
+        } else if (auto food =
+                       std::dynamic_pointer_cast<Food>(object->getObject())) {
+            // do nothing
+        }
+    }
 }

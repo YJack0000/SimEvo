@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.24)
-project(SimEvoTests)
-
 include(gtest.cmake)
 
 # add the test executable

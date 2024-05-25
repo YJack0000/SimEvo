@@ -3,7 +3,9 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 
+#include "Food.hpp"
 #include "Genes.hpp"
 
 class Organism {
@@ -19,12 +21,15 @@ public:
 
     bool isAlive() const;
     bool canReproduce() const;
-    void eat();
+    void extendLife(int amount);
+
+    void interact(std::shared_ptr<Organism> &other);
+    void interact(std::shared_ptr<Food> &food);
 
 private:
     Genes genes;
     LifeConsumptionCalculator lifeConsumptionCalculator;
-    uint8_t foodCount = 0;
+    uint8_t life = 0;
 };
 
 #endif

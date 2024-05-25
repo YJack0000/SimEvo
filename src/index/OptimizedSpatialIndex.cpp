@@ -1,5 +1,5 @@
-#include <index/SpatialIndex.hpp>
 #include <cmath>
+#include <index/SpatialIndex.hpp>
 
 const int OptimizedSpatialIndex::MAX_OBJECTS = 10;
 const int OptimizedSpatialIndex::MIN_SIZE = 10;
@@ -7,7 +7,8 @@ const int OptimizedSpatialIndex::MIN_SIZE = 10;
 OptimizedSpatialIndex::OptimizedSpatialIndex(int size)
     : size(size), isSubdivided(false) {}
 
-void OptimizedSpatialIndex::insert(const std::shared_ptr<ISpatialObject> &object) {
+void OptimizedSpatialIndex::insert(
+    const std::shared_ptr<ISpatialObject> &object) {
     if (!inBounds(object->getPosition())) {
         return;
     }
@@ -19,7 +20,8 @@ void OptimizedSpatialIndex::insert(const std::shared_ptr<ISpatialObject> &object
     }
 }
 
-std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(int x, int y, int range) {
+std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(
+    float x, float y, float range) {
     std::vector<std::shared_ptr<ISpatialObject>> result;
 
     if (!inBounds({x, y})) {
@@ -32,14 +34,15 @@ std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(int x,
         int dy = pos.second - y;
         double distance = std::sqrt(dx * dx + dy * dy);
 
-        if (static_cast<int>(distance) <= range) {
+        if (static_cast<float>(distance) <= range) {
             result.push_back(obj);
         }
     }
 
     if (isSubdivided) {
         for (const auto &child : children) {
-            auto childResult = child->query(x, y, range);
+            std::vector<std::shared_ptr<ISpatialObject>> childResult =
+                child->query(x, y, range);
             result.insert(result.end(), childResult.begin(), childResult.end());
         }
     }
@@ -47,8 +50,9 @@ std::vector<std::shared_ptr<ISpatialObject>> OptimizedSpatialIndex::query(int x,
     return result;
 }
 
-bool OptimizedSpatialIndex::inBounds(const std::pair<int, int> &pos) {
-    return pos.first >= 0 && pos.first < size && pos.second >= 0 && pos.second < size;
+bool OptimizedSpatialIndex::inBounds(const std::pair<float, float> &pos) {
+    return pos.first >= 0 && pos.first < size && pos.second >= 0 &&
+           pos.second < size;
 }
 
 void OptimizedSpatialIndex::subdivide() {
@@ -77,6 +81,6 @@ void OptimizedSpatialIndex::subdivide() {
     isSubdivided = true;
 }
 
-void OptimizedSpatialIndex::setOffset(int offsetX, int offsetY) {
+void OptimizedSpatialIndex::setOffset(float offsetX, float offsetY) {
     offset = {offsetX, offsetY};
 }
