@@ -17,9 +17,8 @@ protected:
     void SetUp() override;
 };
 
-// using IndexTypes = ::testing::Types<DefaultSpatialIndex<boost::uuids::uuid>,
-// OptimizedSpatialIndex<boost::uuids::uuid>>;
-using IndexTypes = ::testing::Types<DefaultSpatialIndex<int>>;
+using IndexTypes = ::testing::Types<DefaultSpatialIndex<int>,
+                                    OptimizedSpatialIndex<int>>;
 
 TYPED_TEST_SUITE_P(SpatialIndexTest);
 

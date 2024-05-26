@@ -1,3 +1,4 @@
+#include <boost/uuid/uuid.hpp>
 #include <cmath>
 #include <index/SpatialIndex.hpp>
 
@@ -13,31 +14,30 @@ OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size)
 
 template <typename T>
 void OptimizedSpatialIndex<T>::insert(const T &object, float x, float y) {
-    if (!inBounds(object.getPosition())) {
+    if (!inBounds(std::make_pair(x, y))) {
         return;
     }
 
-    objects.push_back(object);
-    if (objects.size() > MAX_OBJECTS && size > MIN_SIZE) {
+    spatialObjects.push_back(SpatialObject<T>(object, x, y));
+    if (spatialObjects.size() > MAX_OBJECTS && size > MIN_SIZE) {
         subdivide();
     }
 
-    addObjectPositionPair(object, x, y);
+    this->addObjectPositionPair(object, x, y);
 }
 
 template <typename T>
 std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
     std::vector<T> result;
-    if (!inBounds({static_cast<int>(x), static_cast<int>(y)})) {
+    if (!inBounds(std::make_pair(x, y))) {
         return result;
     }
-    for (const auto &obj : objects) {
-        auto pos = obj.getPosition();
+    for (const auto &spaObj : spatialObjects) {
+        auto pos = spaObj.getPosition();
         float dx = pos.first - x;
         float dy = pos.second - y;
-        double distance = std::sqrt(dx * dx + dy * dy);
-        if (distance <= range) {
-            result.push_back(obj);
+        if (std::sqrt(dx * dx + dy * dy) <= range) {
+            result.push_back(spaObj.getObject());
         }
     }
     if (isSubdivided) {
@@ -52,19 +52,21 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
 template <typename T>
 void OptimizedSpatialIndex<T>::update(const T &object, float newX, float newY) {
     remove(object);
-    T updatedObject = object;
-    updatedObject.setPosition(newX, newY);
-    insert(updatedObject);
+    insert(object, newX, newY);
 
-    deleteObjectPositionPair(object);
-    addObjectPositionPair(updatedObject, newX, newY);
+    this->deleteObjectPositionPair(object);
+    this->addObjectPositionPair(object, newX, newY);
 }
 
 template <typename T>
 void OptimizedSpatialIndex<T>::remove(const T &object) {
-    auto it = std::find(objects.begin(), objects.end(), object);
-    if (it != objects.end()) {
-        objects.erase(it);
+    auto it = std::find_if(spatialObjects.begin(), spatialObjects.end(),
+                           [&object](const SpatialObject<T> &o) {
+                               return o.getObject() == object;
+                           });
+
+    if (it != spatialObjects.end()) {
+        spatialObjects.erase(it);
     }
     if (isSubdivided) {
         for (const auto &child : children) {
@@ -75,7 +77,7 @@ void OptimizedSpatialIndex<T>::remove(const T &object) {
         }
     }
 
-    deleteObjectPositionPair(object);
+    this->deleteObjectPositionPair(object);
 }
 
 template <typename T>
@@ -99,12 +101,15 @@ void OptimizedSpatialIndex<T>::subdivide() {
         children[i] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
         children[i]->setOffset(childX, childY);
     }
-    for (const auto &obj : objects) {
-        for (const auto &child : children) {
-            child->insert(obj);
+
+    for (const auto &spaObj : spatialObjects) {
+        for (auto &child : children) {
+            child->insert(spaObj.getObject(), spaObj.getPosition().first,
+                          spaObj.getPosition().second);
         }
     }
-    objects.clear();
+
+    spatialObjects.clear();
     isSubdivided = true;
 }
 
@@ -136,5 +141,22 @@ void OptimizedSpatialIndex<T>::merge() {
 
 template <typename T>
 bool OptimizedSpatialIndex<T>::isEmpty() const {
-    return objects.empty() && !isSubdivided;
+    return spatialObjects.empty() && !isSubdivided;
 }
+
+// make sure to instantiate the template class
+template class OptimizedSpatialIndex<int>;
+template class OptimizedSpatialIndex<float>;
+template class OptimizedSpatialIndex<double>;
+template class OptimizedSpatialIndex<std::string>;
+
+namespace std {
+template <>
+struct hash<boost::uuids::uuid> {
+    size_t operator()(const boost::uuids::uuid &uuid) const {
+        return boost::uuids::hash_value(uuid);
+    }
+};
+}  // namespace std
+
+template class OptimizedSpatialIndex<boost::uuids::uuid>;
