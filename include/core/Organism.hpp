@@ -34,8 +34,8 @@ public:
 
     // [TODO] change this - very bad implementation in order to make organism
     // move
-    std::pair<float, float> getPosition() const override;
-    void setPosition(float x, float y) override;
+    // std::pair<float, float> getPosition() const override;
+    // void setPosition(float x, float y) override;
 
 private:
     Genes genes;
