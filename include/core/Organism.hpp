@@ -12,6 +12,7 @@ class Organism : public BaseEnvironmentObject {
 public:
     using LifeConsumptionCalculator = std::function<uint32_t(const Organism &)>;
 
+    Organism(const Genes &genes);
     Organism(const Genes &genes,
              LifeConsumptionCalculator lifeConsumptionCalculator);
 
