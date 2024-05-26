@@ -1,7 +1,6 @@
 #ifndef ISPATIALINDEX_HPP
 #define ISPATIALINDEX_HPP
 
-#include <boost/functional/hash.hpp>
 #include <list>
 #include <vector>
 

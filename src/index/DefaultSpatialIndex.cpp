@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_hash.hpp>
 #include <cmath>
 
 #include "index/SpatialIndex.hpp"
@@ -66,13 +67,4 @@ template class DefaultSpatialIndex<float>;
 template class DefaultSpatialIndex<double>;
 template class DefaultSpatialIndex<std::string>;
 
-// override hash function for boost::uuids::uuid
-namespace std {
-    template <>
-    struct hash<boost::uuids::uuid> {
-        size_t operator()(const boost::uuids::uuid &uuid) const {
-            return boost::hash<boost::uuids::uuid>()(uuid);
-        }
-    };
-}
 template class DefaultSpatialIndex<boost::uuids::uuid>;
