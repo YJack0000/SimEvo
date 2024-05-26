@@ -28,7 +28,7 @@ if(BUILD_BINDINGS)
 endif()
 
 # using BUILD_TESTS to enable/disable the tests
-option(BUILD_TESTS "Build the test programs" ON)
+option(BUILD_TESTS "Build the test programs" OFF)
 if(BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests/cpp)
