@@ -9,6 +9,10 @@ void init_Genes(py::module &);
 void init_Organism(py::module &);
 
 PYBIND11_MODULE(simevopy, m) {
+    m.doc() = "Simulation Evolution Python bindings";
+    m.def(
+        "hello_world", []() { return "Hello, World!"; },
+        "A function that returns a hello world to test the bindings. ");
     init_BaseEnvironmentObject(m);
     init_Environment(m);
     init_Food(m);
