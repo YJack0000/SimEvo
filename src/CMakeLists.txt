@@ -1,4 +1,4 @@
-find_package(Boost 1.85.0 REQUIRED)
+find_package(Boost 1.74.0 REQUIRED)
 
 if(Boost_FOUND)
   message(STATUS "Boost found.")
