@@ -1,8 +1,8 @@
 #ifndef SPATIALINDEX_HPP
 #define SPATIALINDEX_HPP
 
-#include "SpatialObject.hpp"
 #include "ISpatialIndex.hpp"
+#include "SpatialObject.hpp"
 
 template <typename T>
 class DefaultSpatialIndex : public ISpatialIndex<T> {
@@ -14,7 +14,7 @@ public:
     void remove(const T& object) override;
 
 private:
-    std::vector<SpatialObject<T>> objects;
+    std::vector<SpatialObject<T>> spatialObjects;
 };
 
 template <typename T>
@@ -30,7 +30,7 @@ public:
 private:
     int size;
     bool isSubdivided;
-    std::vector<T> objects; // objects in this node
+    std::vector<SpatialObject<T>> spatialObjects;  // objects in this node
     std::unique_ptr<OptimizedSpatialIndex<T>> children[4];
     std::pair<float, float> offset;
 
@@ -44,10 +44,5 @@ private:
     void merge();
     bool isEmpty() const;
 };
-
-template class SpatialObject<boost::uuids::uuid>;
-template class ISpatialIndex<boost::uuids::uuid>;
-template class DefaultSpatialIndex<boost::uuids::uuid>;
-template class OptimizedSpatialIndex<boost::uuids::uuid>;
 
 #endif
