@@ -6,7 +6,7 @@ namespace py = pybind11;
 
 void init_Environment(py::module &m) {
     py::class_<Environment>(m, "Environment")
-        .def(py::init<int, int>())
+        .def(py::init<int, int, std::string>())
         .def("add_organism", &Environment::addOrganism)
         .def("add_food", &Environment::addFood)
         .def("simulate_iteration", &Environment::simulateIteration)

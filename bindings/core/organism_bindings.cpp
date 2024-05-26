@@ -13,7 +13,6 @@ void init_Organism(py::module &m) {
         .def("get_life_consumption", &Organism::getLifeConsumption)
         .def("killed", &Organism::killed)
         .def("is_alive", &Organism::isAlive)
-        .def("can_reproduce", &Organism::canReproduce)
         .def("get_reaction_radius", &Organism::getReactionRadius)
         .def("interact", &Organism::interact)
         .def("post_iteration", &Organism::postIteration);
