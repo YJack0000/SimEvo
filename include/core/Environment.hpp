@@ -6,19 +6,21 @@
 #include <boost/uuid/uuid_hash.hpp>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "Organism.hpp"
 #include "index/ISpatialIndex.hpp"
 
 class Environment {
 public:
-    Environment(int width, int height, std::string type);
+    Environment(int width, int height, std::string type = "default");
 
     void addOrganism(const std::shared_ptr<Organism>& organism, float x,
                      float y);
     void addFood(int x, int y);
     void simulateIteration(int);
     void postIteration();
+    std::vector<std::shared_ptr<BaseEnvironmentObject>> getAllObjects() const;
 
 private:
     int width, height;
