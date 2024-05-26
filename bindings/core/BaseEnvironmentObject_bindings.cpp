@@ -5,7 +5,7 @@
 namespace py = pybind11;
 
 void init_BaseEnvironmentObject(py::module &m) {
-    py::class_<BaseEnvironmentObject>(m, "BaseEnvironmentObject")
+    py::class_<BaseEnvironmentObject, std::shared_ptr<BaseEnvironmentObject>>(m, "BaseEnvironmentObject")
         .def(py::init<float, float>())
         .def("get_position", &BaseEnvironmentObject::getPosition)
         .def("get_id", &BaseEnvironmentObject::getId)
