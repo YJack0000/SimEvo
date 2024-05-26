@@ -1,4 +1,5 @@
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_hash.hpp>
 #include <cmath>
 #include <index/SpatialIndex.hpp>
 
@@ -149,14 +150,5 @@ template class OptimizedSpatialIndex<int>;
 template class OptimizedSpatialIndex<float>;
 template class OptimizedSpatialIndex<double>;
 template class OptimizedSpatialIndex<std::string>;
-
-namespace std {
-template <>
-struct hash<boost::uuids::uuid> {
-    size_t operator()(const boost::uuids::uuid &uuid) const {
-        return boost::uuids::hash_value(uuid);
-    }
-};
-}  // namespace std
 
 template class OptimizedSpatialIndex<boost::uuids::uuid>;
