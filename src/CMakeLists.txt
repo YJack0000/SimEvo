@@ -13,7 +13,7 @@ endif()
 
 add_library(
   core
-  # core/Environment.cpp
+  core/Environment.cpp
   core/Genes.cpp core/Organism.cpp)
 
 add_library(

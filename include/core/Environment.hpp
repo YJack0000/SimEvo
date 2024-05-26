@@ -3,6 +3,7 @@
 #define ENVIRONMENT_HPP
 
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_hash.hpp>
 #include <memory>
 #include <unordered_map>
 

@@ -1,21 +1,21 @@
-#include <test/SpatialIndexTest.hpp>
+#include <test/SpatialIndexIntTest.hpp>
 
 template <typename T>
-void SpatialIndexTest<T>::SetUp() {
+void SpatialIndexIntTest<T>::SetUp() {
     index = std::make_unique<T>();
 }
 
 template <>
-void SpatialIndexTest<OptimizedSpatialIndex<int>>::SetUp() {
+void SpatialIndexIntTest<OptimizedSpatialIndex<int>>::SetUp() {
     index = std::make_unique<OptimizedSpatialIndex<int>>(1000);
 }
 
-TYPED_TEST_P(SpatialIndexTest, InsertsObjectCorrectly) {
+TYPED_TEST_P(SpatialIndexIntTest, InsertsObjectCorrectly) {
     int object = 1;
     EXPECT_NO_THROW(this->index->insert(object, 10, 10));
 }
 
-TYPED_TEST_P(SpatialIndexTest, QueryReturnsCorrectResults) {
+TYPED_TEST_P(SpatialIndexIntTest, QueryReturnsCorrectResults) {
     auto object = 1;
     this->index->insert(object, 100, 100);
     auto results = this->index->query(100, 100, 1);
@@ -23,7 +23,7 @@ TYPED_TEST_P(SpatialIndexTest, QueryReturnsCorrectResults) {
     EXPECT_EQ(results[0], object);
 }
 
-TYPED_TEST_P(SpatialIndexTest, UpdateObjectCorrectly) {
+TYPED_TEST_P(SpatialIndexIntTest, UpdateObjectCorrectly) {
     auto object = 1;
     this->index->insert(object, 10, 10);
     this->index->update(object, 70, 70);
@@ -32,7 +32,7 @@ TYPED_TEST_P(SpatialIndexTest, UpdateObjectCorrectly) {
     EXPECT_EQ(results[0], object);
 }
 
-TYPED_TEST_P(SpatialIndexTest, RemoveObjectCorrectly) {
+TYPED_TEST_P(SpatialIndexIntTest, RemoveObjectCorrectly) {
     auto object = 1;
     this->index->insert(object, 10, 10);
     this->index->remove(object);
@@ -40,8 +40,8 @@ TYPED_TEST_P(SpatialIndexTest, RemoveObjectCorrectly) {
     ASSERT_TRUE(results.empty());
 }
 
-REGISTER_TYPED_TEST_SUITE_P(SpatialIndexTest, InsertsObjectCorrectly,
+REGISTER_TYPED_TEST_SUITE_P(SpatialIndexIntTest, InsertsObjectCorrectly,
                             QueryReturnsCorrectResults, UpdateObjectCorrectly,
                             RemoveObjectCorrectly);
 
-INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexTest, IndexTypes);
+INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexIntTest, IndexTypes);

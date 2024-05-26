@@ -3,11 +3,6 @@
 #include <index/SpatialIndex.hpp>
 #include <memory>
 
-template class SpatialObject<boost::uuids::uuid>;
-template class ISpatialIndex<boost::uuids::uuid>;
-template class DefaultSpatialIndex<boost::uuids::uuid>;
-template class OptimizedSpatialIndex<boost::uuids::uuid>;
-
 Environment::Environment(int width, int height, std::string type)
     : width(width), height(height) {
     if (type == "default") {

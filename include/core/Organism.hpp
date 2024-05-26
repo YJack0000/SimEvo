@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 
 #include "BaseEnvironmentObject.hpp"
 #include "Genes.hpp"
