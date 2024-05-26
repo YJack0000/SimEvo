@@ -26,4 +26,4 @@ pybind11_add_module(
 target_include_directories(simevopy PUBLIC ../include)
 target_link_libraries(simevopy PUBLIC core index)
 
-install(TARGETS simevopy LIBRARY DESTINATION simevopy)
+install(TARGETS simevopy LIBRARY DESTINATION .)
