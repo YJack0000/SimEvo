@@ -14,11 +14,13 @@
 class Environment {
 public:
     Environment(int width, int height, std::string type = "default");
+    int getWidth() const { return width; }
+    int getHeight() const { return height; }
 
     void addOrganism(const std::shared_ptr<Organism>& organism, float x,
                      float y);
     void addFood(int x, int y);
-    void simulateIteration(int);
+    void simulateIteration(int, std::function<void(const Environment&)> on_each_iteration = nullptr);
     void postIteration();
     std::vector<std::shared_ptr<BaseEnvironmentObject>> getAllObjects() const;
 
