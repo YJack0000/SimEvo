@@ -3,14 +3,12 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
 #include <index/ISpatialIndex.hpp>
 #include <index/SpatialIndex.hpp>
 #include <memory>
 
 template <typename T>
-class SpatialIndexTest : public ::testing::Test {
+class SpatialIndexIntTest : public ::testing::Test {
 protected:
     std::unique_ptr<ISpatialIndex<int>> index;
 
@@ -20,6 +18,6 @@ protected:
 using IndexTypes = ::testing::Types<DefaultSpatialIndex<int>,
                                     OptimizedSpatialIndex<int>>;
 
-TYPED_TEST_SUITE_P(SpatialIndexTest);
+TYPED_TEST_SUITE_P(SpatialIndexIntTest);
 
 #endif
