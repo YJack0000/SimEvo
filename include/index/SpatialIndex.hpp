@@ -45,4 +45,9 @@ private:
     bool isEmpty() const;
 };
 
+template class SpatialObject<boost::uuids::uuid>;
+template class ISpatialIndex<boost::uuids::uuid>;
+template class DefaultSpatialIndex<boost::uuids::uuid>;
+template class OptimizedSpatialIndex<boost::uuids::uuid>;
+
 #endif

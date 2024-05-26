@@ -7,7 +7,7 @@ DefaultSpatialIndex<T>::DefaultSpatialIndex() {}
 template <typename T>
 void DefaultSpatialIndex<T>::insert(const T& object, float x, float y) {
     objects.push_back(SpatialObject<T>(object, x, y));
-    // this->addObjectPositionPair(object, x, y);
+    this->addObjectPositionPair(object, x, y);
 }
 
 template <typename T>
