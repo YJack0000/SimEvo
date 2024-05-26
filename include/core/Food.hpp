@@ -3,14 +3,11 @@
 
 #include "BaseEnvironmentObject.hpp"
 
-enum class FoodState {
-    FRESH,
-    EATEN
-};
+enum class FoodState { FRESH, EATEN };
 
 class Food : public BaseEnvironmentObject {
 public:
-    Food(float x, float y) : BaseEnvironmentObject(x, y) {}
+    Food() : BaseEnvironmentObject(0, 0) {}
     bool canBeEaten() { return state == FoodState::FRESH; }
     void eaten() { state = FoodState::EATEN; }
 

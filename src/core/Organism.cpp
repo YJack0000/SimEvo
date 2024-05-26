@@ -26,6 +26,10 @@ uint32_t Organism::getLifeConsumption() const {
     return getSpeed() * getSize() * getAwareness();
 }
 
+int Organism::getReactionRadius() const { return getAwareness(); }
+
+bool Organism::isAlive() const { return lifeSpan > 0; }
+
 void Organism::react(std::shared_ptr<BaseEnvironmentObject> object) {
     if (auto other_organism = std::dynamic_pointer_cast<Organism>(object)) {
         if (getSize() < other_organism->getSize()) {
@@ -52,6 +56,20 @@ void Organism::react(std::shared_ptr<BaseEnvironmentObject> object) {
                                food->getPosition().first,
                            culmulativelyMovement.second + getPosition().second -
                                food->getPosition().second);
+    }
+}
+
+void Organism::interact(std::shared_ptr<BaseEnvironmentObject> object) {
+    if (auto food = std::dynamic_pointer_cast<Food>(object)) {
+        lifeSpan += 100;
+        food->eaten();
+    }
+
+    if (auto organism = std::dynamic_pointer_cast<Organism>(object)) {
+        if (getSize() > organism->getSize()) {
+            lifeSpan += 100;
+            organism->killed();
+        }
     }
 }
 
