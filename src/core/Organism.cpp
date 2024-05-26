@@ -1,6 +1,9 @@
 #include <core/Food.hpp>
 #include <core/Organism.hpp>
 
+Organism::Organism(const Genes &genes)
+    : BaseEnvironmentObject(0, 0), genes(genes) {}
+
 Organism::Organism(const Genes &genes, LifeConsumptionCalculator calculator)
     : BaseEnvironmentObject(0, 0),
       genes(genes),

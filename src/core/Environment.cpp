@@ -2,6 +2,7 @@
 #include <core/Food.hpp>
 #include <index/SpatialIndex.hpp>
 #include <memory>
+#include <vector>
 
 Environment::Environment(int width, int height, std::string type)
     : width(width), height(height) {
@@ -104,3 +105,11 @@ void Environment::handleInteractions() {
         }
     }
 }
+
+std::vector<std::shared_ptr<BaseEnvironmentObject>> Environment::getAllObjects() const {
+        std::vector<std::shared_ptr<BaseEnvironmentObject>> objects;
+        for (const auto& object : objectsMapper) {
+            objects.push_back(object.second);
+        }
+        return objects;
+    }
