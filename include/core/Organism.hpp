@@ -16,10 +16,10 @@ public:
     Organism(const Genes &genes,
              LifeConsumptionCalculator lifeConsumptionCalculator);
 
-    uint8_t getSpeed() const;
-    uint8_t getSize() const;
-    uint8_t getAwareness() const;
-    uint32_t getLifeConsumption() const;
+    float getSpeed() const;
+    float getSize() const;
+    float getAwareness() const;
+    float getLifeConsumption() const;
 
     void killed();
 
@@ -28,7 +28,7 @@ public:
 
     // virtual
     ~Organism(){};
-    int getReactionRadius() const;
+    float getReactionRadius() const;
     void interact(std::shared_ptr<BaseEnvironmentObject> object);
     void react(std::shared_ptr<BaseEnvironmentObject> object);
     void postIteration() override;
@@ -41,12 +41,14 @@ public:
 private:
     Genes genes;
     LifeConsumptionCalculator lifeConsumptionCalculator;
-    int lifeSpan = 0;
+    int lifeSpan = 300;
 
     // [TODO] change this - very bad implementation in order to make organism
     // move
-    std::pair<float, float> culmulativelyMovement;
-    int movementCounter = 0;
+    // std::pair<float, float> culmulativelyMovement;
+    // int movementCounter = 0;
+    std::pair<float, float> movement;
+    int reactionCounter = 0;
     void makeMove();
 };
 

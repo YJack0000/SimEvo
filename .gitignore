@@ -1,5 +1,6 @@
 .DS_STORE
 .cache
+__pycache__
 build
 dist
 _skbuild
