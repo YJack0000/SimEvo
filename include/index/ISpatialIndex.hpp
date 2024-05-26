@@ -1,10 +1,12 @@
 #ifndef ISPATIALINDEX_HPP
 #define ISPATIALINDEX_HPP
 
-#include <list>
-#include <vector>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid.hpp>
+#include <list>
+#include <vector>
+
+#include "SpatialObject.hpp"
 
 namespace std {
 template <>
@@ -13,7 +15,7 @@ struct hash<boost::uuids::uuid> {
         return boost::hash<boost::uuids::uuid>()(uuid);
     }
 };
-}
+}  // namespace std
 
 template <typename T>
 class ISpatialIndex {
@@ -42,7 +44,8 @@ protected:
     }
 
 private:
-    std::unordered_map<T, std::pair<float, float>> objectPositions;
+    std::unordered_map<SpatialObject<T>, std::pair<float, float>>
+        objectPositions;
 };
 
 #endif
