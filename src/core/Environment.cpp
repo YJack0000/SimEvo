@@ -25,7 +25,7 @@ void Environment::addOrganism(const std::shared_ptr<Organism>& organism,
 }
 
 void Environment::addFood(int x, int y) {
-    auto food = std::make_shared<Food>(x, y);
+    auto food = std::make_shared<Food>();
     food->setPosition(x, y);
     auto id = food->getId();
     spatialIndex->insert(id, x, y);
