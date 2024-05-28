@@ -2,6 +2,7 @@
 #include <core/Food.hpp>
 #include <core/Organism.hpp>
 #include <iostream>
+#include <random>
 
 Organism::Organism(const Genes &genes)
     : BaseEnvironmentObject(0, 0), genes(genes) {}
@@ -106,35 +107,35 @@ void Organism::postIteration() {
 // make move have to calculate the movement of the organism
 // the movement length is determined by the organism's speed
 void Organism::makeMove() {
+    // Initialize local random engine and distributions
+    static std::random_device rd;  // Non-deterministic seed
+    static std::mt19937 gen(rd()); // Standard mersenne_twister_engine
+    std::uniform_int_distribution<int> dis(0, 1);  // Distribution for movement decision
+    std::uniform_int_distribution<int> move(-1, 1); // Distribution for movement direction
+
     auto speed = getSpeed();
 
     if (reactionCounter == 0) {
-        // if movementCounter is 0, then keep the previous movement
-        // or generate a new movement by randomize
-
-        // do a dice roll to determine to keep movement or generate a new one
-        bool keepMovement = rand() % 2;
+        // Determine to keep the movement or generate a new one
+        bool keepMovement = dis(gen);
         if (movement.first == 0 && movement.second == 0) {
             keepMovement = false;
         }
 
         if (!keepMovement) {
-            movement = std::make_pair((rand() % 3 - 1) * speed,
-                                      (rand() % 3 - 1) * speed);
+            movement = std::make_pair(move(gen) * speed, move(gen) * speed);
         }
     }
 
-    // make movement length equal to organism's speed if it is more than speed
-    // otherwise, keep the movement length
-    auto movementLength = std::sqrt(movement.first * movement.first +
-                                    movement.second * movement.second);
+    // Adjust the movement length to not exceed the speed of the organism
+    auto movementLength = std::sqrt(movement.first * movement.first + movement.second * movement.second);
     if (movementLength > speed) {
-        movement = std::make_pair(movement.first * speed / movementLength,
-                                  movement.second * speed / movementLength);
+        double scalingFactor = speed / movementLength;
+        movement.first *= scalingFactor;
+        movement.second *= scalingFactor;
     }
 
-    setPosition(getPosition().first + movement.first,
-                getPosition().second + movement.second);
+    setPosition(getPosition().first + movement.first, getPosition().second + movement.second);
 
-    reactionCounter = 0;
+    reactionCounter = 0;  // Reset reaction counter after making a move
 }
