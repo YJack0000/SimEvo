@@ -18,4 +18,6 @@ PYBIND11_MODULE(simevopy, m) {
     init_Food(m);
     init_Genes(m);
     init_Organism(m);
+
+    py::register_exception<std::out_of_range>(m, "OutOfRangeException");
 }

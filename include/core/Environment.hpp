@@ -19,7 +19,7 @@ public:
 
     void addOrganism(const std::shared_ptr<Organism>& organism, float x,
                      float y);
-    void addFood(int x, int y);
+    void addFood(float x, float y);
     void simulateIteration(int, std::function<void(const Environment&)> on_each_iteration = nullptr);
     void postIteration();
     std::vector<std::shared_ptr<BaseEnvironmentObject>> getAllObjects() const;
@@ -31,6 +31,7 @@ private:
                        std::shared_ptr<BaseEnvironmentObject>>
         objectsMapper;
 
+    void checkBounds(float x, float y) const;
     void handleInteractions();
     void removeDeadOrganisms();
     void spawnOrganisms();
