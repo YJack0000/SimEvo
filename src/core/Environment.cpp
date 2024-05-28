@@ -21,15 +21,23 @@ Environment::Environment(int width, int height, std::string type)
     }
 }
 
+void Environment::checkBounds(float x, float y) const {
+    if (x < 0.0f || x > static_cast<float>(width) || y < 0.0f || y > static_cast<float>(height)) {
+        throw std::out_of_range("Coordinates are out of the allowed range.");
+    }
+}
+
 void Environment::addOrganism(const std::shared_ptr<Organism>& organism,
                               float x, float y) {
+    checkBounds(x, y);
     auto id = organism->getId();
     organism->setPosition(x, y);
     spatialIndex->insert(id, x, y);
     objectsMapper[id] = organism;
 }
 
-void Environment::addFood(int x, int y) {
+void Environment::addFood(float x, float y) {
+    checkBounds(x, y);
     auto food = std::make_shared<Food>();
     food->setPosition(x, y);
     auto id = food->getId();

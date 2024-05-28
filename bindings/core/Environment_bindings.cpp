@@ -28,4 +28,6 @@ void init_Environment(py::module& m) {
             },
             py::arg("iterations"), py::arg("on_each_iteration") = py::none())
         .def("post_iteration", &Environment::postIteration);
+
+        py::register_exception<std::out_of_range>(m, "OutOfRangeException");
 }
