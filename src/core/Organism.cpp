@@ -110,14 +110,15 @@ void Organism::makeMove() {
     // Initialize local random engine and distributions
     static std::random_device rd;  // Non-deterministic seed
     static std::mt19937 gen(rd()); // Standard mersenne_twister_engine
-    std::uniform_int_distribution<int> dis(0, 1);  // Distribution for movement decision
+    std::uniform_int_distribution<int> dis(0, 4);  // Distribution for movement decision
     std::uniform_int_distribution<int> move(-1, 1); // Distribution for movement direction
 
     auto speed = getSpeed();
 
     if (reactionCounter == 0) {
         // Determine to keep the movement or generate a new one
-        bool keepMovement = dis(gen);
+        // 80% chance to keep the movement
+        bool keepMovement = dis(gen) > 0;
         if (movement.first == 0 && movement.second == 0) {
             keepMovement = false;
         }
