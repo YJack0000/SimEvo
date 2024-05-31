@@ -6,8 +6,9 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <index/DefaultSpatialIndex.hpp>
 #include <index/ISpatialIndex.hpp>
-#include <index/SpatialIndex.hpp>
+#include <index/OptimizedSpatialIndex.hpp>
 #include <memory>
 
 using namespace boost;
@@ -19,8 +20,8 @@ protected:
     void SetUp() override;
 };
 
-using IndexTypes = ::testing::Types<DefaultSpatialIndex<uuids::uuid>,
-                                    OptimizedSpatialIndex<uuids::uuid>>;
+using IndexTypes =
+    ::testing::Types<DefaultSpatialIndex<uuids::uuid>, OptimizedSpatialIndex<uuids::uuid>>;
 TYPED_TEST_SUITE_P(SpatialIndexUUIDTest);
 
 #endif

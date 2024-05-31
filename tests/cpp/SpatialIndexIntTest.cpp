@@ -40,8 +40,7 @@ TYPED_TEST_P(SpatialIndexIntTest, RemoveObjectCorrectly) {
     ASSERT_TRUE(results.empty());
 }
 
-REGISTER_TYPED_TEST_SUITE_P(SpatialIndexIntTest, InsertsObjectCorrectly,
-                            QueryReturnsCorrectResults, UpdateObjectCorrectly,
-                            RemoveObjectCorrectly);
+REGISTER_TYPED_TEST_SUITE_P(SpatialIndexIntTest, InsertsObjectCorrectly, QueryReturnsCorrectResults,
+                            UpdateObjectCorrectly, RemoveObjectCorrectly);
 
 INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexIntTest, IndexTypes);

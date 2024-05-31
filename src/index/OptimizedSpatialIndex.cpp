@@ -1,7 +1,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_hash.hpp>
 #include <cmath>
-#include <index/SpatialIndex.hpp>
+#include <index/OptimizedSpatialIndex.hpp>
 
 template <typename T>
 const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 10;
@@ -10,8 +10,7 @@ template <typename T>
 const int OptimizedSpatialIndex<T>::MIN_SIZE = 10;
 
 template <typename T>
-OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size)
-    : size(size), isSubdivided(false) {}
+OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size) : size(size), isSubdivided(false) {}
 
 template <typename T>
 void OptimizedSpatialIndex<T>::insert(const T &object, float x, float y) {
@@ -61,10 +60,9 @@ void OptimizedSpatialIndex<T>::update(const T &object, float newX, float newY) {
 
 template <typename T>
 void OptimizedSpatialIndex<T>::remove(const T &object) {
-    auto it = std::find_if(spatialObjects.begin(), spatialObjects.end(),
-                           [&object](const SpatialObject<T> &o) {
-                               return o.getObject() == object;
-                           });
+    auto it =
+        std::find_if(spatialObjects.begin(), spatialObjects.end(),
+                     [&object](const SpatialObject<T> &o) { return o.getObject() == object; });
 
     if (it != spatialObjects.end()) {
         spatialObjects.erase(it);
@@ -81,10 +79,21 @@ void OptimizedSpatialIndex<T>::remove(const T &object) {
     this->deleteObjectPositionPair(object);
 }
 
+/**
+ * @brief Clears the spatial index.
+ */
+template <typename T>
+void OptimizedSpatialIndex<T>::clear() {
+    spatialObjects.clear();
+    for (auto &child : children) {
+        child.reset();
+    }
+    this->clearObjectPositionPairs();
+}
+
 template <typename T>
 bool OptimizedSpatialIndex<T>::inBounds(const std::pair<float, float> &pos) {
-    return pos.first >= 0 && pos.first < size && pos.second >= 0 &&
-           pos.second < size;
+    return pos.first >= 0 && pos.first < size && pos.second >= 0 && pos.second < size;
 }
 
 template <typename T>

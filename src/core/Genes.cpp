@@ -1,24 +1,29 @@
 #include <core/Genes.hpp>
 #include <cstring>
-#include <ctime>
-#include <cstdlib>
+#include <functional>
+#include <random>
 
-Genes::Genes(const char *dnaStr)
-    : Genes(dnaStr, nullptr) {}
+Genes::Genes(const char *dnaStr) : Genes(dnaStr, nullptr) {
+    std::memcpy(dna, dnaStr, 4);
+    printf("Genes %s is being created with %u %u %u %u\n", dnaStr, dna[0], dna[1], dna[2], dna[3]);
+}
 
 Genes::Genes(const char *dnaStr, MutationFunction customMutationLogic = nullptr)
-    : mutationLogic(customMutationLogic ? customMutationLogic
-                                        : defaultMutationLogic) {
+    : mutationLogic(customMutationLogic ? customMutationLogic : defaultMutationLogic) {
     std::memcpy(dna, dnaStr, 4);
+    printf("Genes %s is being created with %u %u %u %u\n", dnaStr, dna[0], dna[1], dna[2], dna[3]);
 }
 
 void Genes::defaultMutationLogic(char dna[4]) {
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    static std::mt19937 rng(std::random_device{}());         // Seed with random_device
+    std::uniform_int_distribution<int> distribution(-1, 1);  // Range from -1 to 1
 
     for (int i = 0; i < 4; ++i) {
-        int mutation = (std::rand() % 3) - 1;
-        int mutatedChar = static_cast<int>(dna[i]) + mutation;
-
-        dna[i] = static_cast<char>(mutatedChar);
+        int mutation = distribution(rng);  // Generate a random mutation from -1 to 1
+        dna[i] += mutation;
     }
 }
+
+void Genes::mutate() { mutationLogic(dna); }
+
+char Genes::getDNA(int index) const { return dna[index]; }

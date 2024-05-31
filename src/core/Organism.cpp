@@ -4,24 +4,26 @@
 #include <iostream>
 #include <random>
 
-Organism::Organism(const Genes &genes)
-    : BaseEnvironmentObject(0, 0), genes(genes) {}
+Organism::Organism() : EnvironmentObject(0, 0), genes("\x14\x14\x14\x14") {}
 
-Organism::Organism(const Genes &genes, LifeConsumptionCalculator calculator)
-    : BaseEnvironmentObject(0, 0),
-      genes(genes),
-      lifeConsumptionCalculator(calculator) {}
+Organism::Organism(const Genes& genes) : EnvironmentObject(0, 0), genes(genes) {}
+
+Organism::Organism(const Genes& genes, LifeConsumptionCalculator calculator)
+    : EnvironmentObject(0, 0), genes(genes), lifeConsumptionCalculator(calculator) {}
 
 float Organism::getSpeed() const {
-    return (float)genes.getGene(0) / 10;  // 0~12.8
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(0))) /
+           20.0f;  // 256 / 20 = 12.8= 12.8
 }
 
 float Organism::getSize() const {
-    return (float)genes.getGene(1) / 10;  // 0~12.8
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(1))) /
+           40.0f;  // 256 / 40 = 6.4
 }
 
 float Organism::getAwareness() const {
-    return (float)genes.getGene(2) / 10;  // 0~12.8
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(2))) /
+           20.0f;  // 256 / 20 = 12.8
 }
 
 float Organism::getLifeConsumption() const {
@@ -29,77 +31,132 @@ float Organism::getLifeConsumption() const {
         return lifeConsumptionCalculator(*this);
     }
 
+    printf("Organism %s is getting speed %f, size %f, awareness %f\n",
+           boost::uuids::to_string(getId()).c_str(), getSpeed(), getSize(), getAwareness());
     return getSpeed() * getSize() * getAwareness() / 10;
 }
+
+float Organism::getLifeSpan() const { return lifeSpan; }
 
 float Organism::getReactionRadius() const { return getAwareness(); }
 
 bool Organism::isAlive() const { return lifeSpan > 0; }
 
-void Organism::react(std::shared_ptr<BaseEnvironmentObject> object) {
-    if (auto other_organism = std::dynamic_pointer_cast<Organism>(object)) {
+bool Organism::canReproduce() const { return lifeSpan > 300; }
+
+double Organism::calculateDistance(std::shared_ptr<EnvironmentObject> object) {
+    auto dx = getPosition().first - object->getPosition().first;
+    auto dy = getPosition().second - object->getPosition().second;
+    return std::sqrt(dx * dx + dy * dy);
+}
+
+void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableObjects) {
+    if (reactableObjects.empty()) {
+        printf("Organism %s is not reacting to any objects\n",
+               boost::uuids::to_string(getId()).c_str());
+        return;
+    }
+    printf("Organism %s is reacting to the other objects\n",
+           boost::uuids::to_string(getId()).c_str());
+
+    std::shared_ptr<EnvironmentObject> nearestObject = reactableObjects[0];
+    double minDistance = calculateDistance(nearestObject);
+
+    printf("Organism %s is calculating the nearest object\n",
+           boost::uuids::to_string(getId()).c_str());
+
+    for (size_t i = 1; i < reactableObjects.size(); ++i) {
+        double distance = calculateDistance(reactableObjects[i]);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestObject = reactableObjects[i];
+        }
+    }
+
+    if (auto otherOrganism = std::dynamic_pointer_cast<Organism>(nearestObject)) {
         if (reactionCounter != 0) {  // already decided to move
             return;
         }
         reactionCounter++;
-        // react only once to one organism, however the food reaction can be
-        // overriden by organism reaction
 
-        if (getSize() < other_organism->getSize()) {
+        if (getSize() * 1.5 < otherOrganism->getSize()) {
+            printf("Organism %s is running away from organism %s\n",
+                   boost::uuids::to_string(getId()).c_str(),
+                   boost::uuids::to_string(otherOrganism->getId()).c_str());
             // run away from the other organism
-            movement = std::make_pair(
-                getPosition().first - other_organism->getPosition().first,
-                getPosition().second - other_organism->getPosition().second);
-        } else if (getSize() > other_organism->getSize()) {
+            movement = std::make_pair(getPosition().first - otherOrganism->getPosition().first,
+                                      getPosition().second - otherOrganism->getPosition().second);
+        } else if (getSize() > 1.5 * otherOrganism->getSize()) {
+            printf("Organism %s is chasing organism %s\n", boost::uuids::to_string(getId()).c_str(),
+                   boost::uuids::to_string(otherOrganism->getId()).c_str());
             // trace the other organism
-            movement = std::make_pair(
-                other_organism->getPosition().first - getPosition().first,
-                other_organism->getPosition().second - getPosition().second);
+            movement = std::make_pair(otherOrganism->getPosition().first - getPosition().first,
+                                      otherOrganism->getPosition().second - getPosition().second);
         }
-    } else if (auto food =
-                   std::dynamic_pointer_cast<Food>(object)) {  // close to food
+    } else if (auto food = std::dynamic_pointer_cast<Food>(nearestObject)) {
         if (!food->canBeEaten()) return;
+        printf("Organism %s is moving to the food \n", boost::uuids::to_string(getId()).c_str());
         reactionCounter++;
 
-        movement =
-            std::make_pair(food->getPosition().first - getPosition().first,
-                           food->getPosition().second - getPosition().second);
+        movement = std::make_pair(food->getPosition().first - getPosition().first,
+                                  food->getPosition().second - getPosition().second);
     }
 }
 
-void Organism::interact(std::shared_ptr<BaseEnvironmentObject> object) {
-    if (auto food = std::dynamic_pointer_cast<Food>(object)) {
-        if (!food->canBeEaten()) return;
+// In Organism::interact
+void Organism::interact(std::vector<std::shared_ptr<EnvironmentObject>>& interactableObjects) {
+    printf("Organism %s is interacting with the other objects\n",
+           boost::uuids::to_string(getId()).c_str());
+    for (auto& object : interactableObjects) {
+        if (auto food = std::dynamic_pointer_cast<Food>(object)) {
+            if (!food->canBeEaten()) continue;
 
-        std::cout << "Organism " << this->getId()
-                  << " is eating food. Life span: " << lifeSpan << "+ 300!"
-                  << std::endl;
-        lifeSpan += 300;
-        food->eaten();
-    }
+            std::cout << "Organism " << this->getId() << " is eating food. Life span: " << lifeSpan
+                      << " + " << food->getEnergy() << std::endl;
+            lifeSpan += food->getEnergy();
+            food->eaten();
+        }
 
-    if (auto organism = std::dynamic_pointer_cast<Organism>(object)) {
-        std::cout << "Organism (" << this->getId() << ", " << getSize()
-                  << ")  interact with (" << object->getId() << ", "
-                  << organism->getSize() << ")" << std::endl;
-        if (getSize() > organism->getSize()) {
-            lifeSpan += 300;
-            organism->killed();
+        if (auto organism = std::dynamic_pointer_cast<Organism>(object)) {
+            printf(
+                "Organism %s is interacting with organism %s, it will be %s after interaction. \n",
+                boost::uuids::to_string(getId()).c_str(),
+                boost::uuids::to_string(organism->getId()).c_str(),
+                getSize() * 1.5 > organism->getSize() ? "killed" : "alive");
+
+            if (getSize() * 1.5 > organism->getSize()) {
+                lifeSpan += 300;
+                organism->killed();
+            }
         }
     }
+}
+
+std::shared_ptr<Organism> Organism::reproduce() {
+    // copy the gene than mutate and create a new organism
+    Genes newGenes = genes;
+    newGenes.mutate();
+    return std::make_shared<Organism>(newGenes, lifeConsumptionCalculator);
 }
 
 void Organism::killed() { lifeSpan = 0; }
 
 void Organism::postIteration() {
-    std::cout << "Organism " << this->getId()
-              << " is post iteration. Life span: " << lifeSpan << " - "
-              << getLifeConsumption() << std::endl;
+    printf("Organism %s is at (%f, %f) %f %f (%f, %f, %f)\n",
+           boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
+           lifeSpan, getLifeConsumption(), getSpeed(), getSize(), getAwareness());
+
     lifeSpan -= getLifeConsumption();
+
+    // printf("Organism %s life span: %f\n", boost::uuids::to_string(getId()).c_str(), lifeSpan);
     if (lifeSpan <= 0) {
         killed();
         return;
     }
+
+    printf("Organism %s is at (%f, %f), movement: (%f, %f), reaction counter: %d\n",
+           boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
+           movement.first, movement.second, reactionCounter);
 
     makeMove();
 }
@@ -108,10 +165,10 @@ void Organism::postIteration() {
 // the movement length is determined by the organism's speed
 void Organism::makeMove() {
     // Initialize local random engine and distributions
-    static std::random_device rd;  // Non-deterministic seed
-    static std::mt19937 gen(rd()); // Standard mersenne_twister_engine
-    std::uniform_int_distribution<int> dis(0, 4);  // Distribution for movement decision
-    std::uniform_int_distribution<int> move(-1, 1); // Distribution for movement direction
+    static std::random_device rd;                    // Non-deterministic seed
+    static std::mt19937 gen(rd());                   // Standard mersenne_twister_engine
+    std::uniform_int_distribution<int> dis(0, 4);    // Distribution for movement decision
+    std::uniform_int_distribution<int> move(-1, 1);  // Distribution for movement direction
 
     auto speed = getSpeed();
 
@@ -129,7 +186,8 @@ void Organism::makeMove() {
     }
 
     // Adjust the movement length to not exceed the speed of the organism
-    auto movementLength = std::sqrt(movement.first * movement.first + movement.second * movement.second);
+    auto movementLength =
+        std::sqrt(movement.first * movement.first + movement.second * movement.second);
     if (movementLength > speed) {
         double scalingFactor = speed / movementLength;
         movement.first *= scalingFactor;
