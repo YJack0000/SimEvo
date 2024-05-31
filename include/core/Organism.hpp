@@ -4,49 +4,49 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <vector>
 
-#include "BaseEnvironmentObject.hpp"
+#include "EnvironmentObject.hpp"
 #include "Genes.hpp"
 
-class Organism : public BaseEnvironmentObject {
+class Organism : public EnvironmentObject {
 public:
     using LifeConsumptionCalculator = std::function<uint32_t(const Organism &)>;
 
+    Organism();
     Organism(const Genes &genes);
-    Organism(const Genes &genes,
-             LifeConsumptionCalculator lifeConsumptionCalculator);
+    Organism(const Genes &genes, LifeConsumptionCalculator lifeConsumptionCalculator);
 
+    // attributes
     float getSpeed() const;
     float getSize() const;
     float getAwareness() const;
     float getLifeConsumption() const;
+    float getLifeSpan() const;
+    float getReactionRadius() const;
 
+    // status
     void killed();
-
     bool isAlive() const;
     bool canReproduce() const;
 
-    // virtual
-    ~Organism(){};
-    float getReactionRadius() const;
-    void interact(std::shared_ptr<BaseEnvironmentObject> object);
-    void react(std::shared_ptr<BaseEnvironmentObject> object);
-    void postIteration() override;
+    ~Organism() {};
 
-    // [TODO] change this - very bad implementation in order to make organism
-    // move
-    // std::pair<float, float> getPosition() const override;
-    // void setPosition(float x, float y) override;
+    // actions
+    void react(std::vector<std::shared_ptr<EnvironmentObject>> &reactableObjects);
+    void interact(std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects);
+    std::shared_ptr<Organism> reproduce();
+
+
+    void postIteration() override;
 
 private:
     Genes genes;
     LifeConsumptionCalculator lifeConsumptionCalculator;
-    int lifeSpan = 300;
+    float lifeSpan = 300;
 
-    // [TODO] change this - very bad implementation in order to make organism
-    // move
-    // std::pair<float, float> culmulativelyMovement;
-    // int movementCounter = 0;
+    double calculateDistance(std::shared_ptr<EnvironmentObject> object);
+
     std::pair<float, float> movement;
     int reactionCounter = 0;
     void makeMove();

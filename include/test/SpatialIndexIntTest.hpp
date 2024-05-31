@@ -4,7 +4,8 @@
 #include <gtest/gtest.h>
 
 #include <index/ISpatialIndex.hpp>
-#include <index/SpatialIndex.hpp>
+#include <index/DefaultSpatialIndex.hpp>
+#include <index/OptimizedSpatialIndex.hpp>
 #include <memory>
 
 template <typename T>
@@ -15,8 +16,7 @@ protected:
     void SetUp() override;
 };
 
-using IndexTypes = ::testing::Types<DefaultSpatialIndex<int>,
-                                    OptimizedSpatialIndex<int>>;
+using IndexTypes = ::testing::Types<DefaultSpatialIndex<int>, OptimizedSpatialIndex<int>>;
 
 TYPED_TEST_SUITE_P(SpatialIndexIntTest);
 

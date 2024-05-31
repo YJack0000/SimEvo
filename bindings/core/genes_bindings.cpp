@@ -9,5 +9,5 @@ void init_Genes(py::module &m) {
         .def(py::init<const char *>())
         .def(py::init<const char *, Genes::MutationFunction>())
         .def("mutate", &Genes::mutate)
-        .def("get_gene", &Genes::getGene);
+        .def("get_dna", &Genes::getDNA);
 }

@@ -10,8 +10,9 @@ public:
     Genes(const char *dnaStr);
     Genes(const char *dnaStr, MutationFunction customMutationLogic);
 
-    void mutate() { mutationLogic(dna); }
-    char getGene(int index) const { return dna[index]; }
+    void mutate();
+    char getDNA(int index) const;
+
 private:
     char dna[4];
     MutationFunction mutationLogic;

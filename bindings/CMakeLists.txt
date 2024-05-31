@@ -17,7 +17,7 @@ find_package(
 pybind11_add_module(
   simevopy
   python_bindings.cpp
-  core/BaseEnvironmentObject_bindings.cpp
+  core/EnvironmentObject_bindings.cpp
   core/Environment_bindings.cpp
   core/Food_bindings.cpp
   core/Genes_bindings.cpp

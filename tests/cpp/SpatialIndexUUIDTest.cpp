@@ -1,6 +1,6 @@
+#include <boost/uuid/uuid_hash.hpp>
 #include <memory>
 #include <test/SpatialIndexUUIDTest.hpp>
-#include <boost/uuid/uuid_hash.hpp>
 
 template <typename T>
 void SpatialIndexUUIDTest<T>::SetUp() {

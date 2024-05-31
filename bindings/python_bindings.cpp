@@ -2,7 +2,7 @@
 
 namespace py = pybind11;
 
-void init_BaseEnvironmentObject(py::module &);
+void init_EnvironmentObject(py::module &);
 void init_Environment(py::module &);
 void init_Food(py::module &);
 void init_Genes(py::module &);
@@ -13,7 +13,7 @@ PYBIND11_MODULE(simevopy, m) {
     m.def(
         "hello_world", []() { return "Hello, World!"; },
         "A function that returns a hello world to test the bindings. ");
-    init_BaseEnvironmentObject(m);
+    init_EnvironmentObject(m);
     init_Environment(m);
     init_Food(m);
     init_Genes(m);
