@@ -59,18 +59,35 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
     printf("Organism %s is reacting to the other objects\n",
            boost::uuids::to_string(getId()).c_str());
 
-    std::shared_ptr<EnvironmentObject> nearestObject = reactableObjects[0];
-    double minDistance = calculateDistance(nearestObject);
+    std::shared_ptr<EnvironmentObject> nearestObject = nullptr;
+    double minDistance = std::numeric_limits<double>::max();
 
     printf("Organism %s is calculating the nearest object\n",
            boost::uuids::to_string(getId()).c_str());
 
-    for (size_t i = 1; i < reactableObjects.size(); ++i) {
-        double distance = calculateDistance(reactableObjects[i]);
+    // Find the nearest valid object
+    for (const auto& obj : reactableObjects) {
+        if (auto food = std::dynamic_pointer_cast<Food>(obj)) {
+            if (!food->canBeEaten()) {
+                continue;
+            }
+        } else if (auto organism = std::dynamic_pointer_cast<Organism>(obj)) {
+            if (!organism->isAlive()) {
+                continue;
+            }
+        }
+
+        double distance = calculateDistance(obj);
         if (distance < minDistance) {
             minDistance = distance;
-            nearestObject = reactableObjects[i];
+            nearestObject = obj;
         }
+    }
+
+    if (!nearestObject) {
+        printf("Organism %s found no valid objects to react to\n",
+               boost::uuids::to_string(getId()).c_str());
+        return;
     }
 
     if (auto otherOrganism = std::dynamic_pointer_cast<Organism>(nearestObject)) {
