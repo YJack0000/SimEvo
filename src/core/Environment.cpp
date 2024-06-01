@@ -22,7 +22,9 @@ Environment::Environment(int width, int height, std::string type) : width(width)
     if (type == "default") {
         spatialIndex = std::make_unique<DefaultSpatialIndex<boost::uuids::uuid>>();
     } else if (type == "optimized") {
-        spatialIndex = std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(1000);
+        // setting the size of the spatial index to the longest side of the environment
+        unsigned long size = static_cast<unsigned long>(std::max(width, height));
+        spatialIndex = std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(size);
     } else {
         throw std::invalid_argument("Invalid type");
     }
@@ -40,7 +42,7 @@ Environment::Environment(int width, int height, std::string type) : width(width)
  */
 void Environment::checkBounds(float x, float y) const {
     if (x < 0.0f || x > static_cast<float>(width) || y < 0.0f || y > static_cast<float>(height)) {
-        //printf("Coordinates are out of the allowed range: (%f, %f)\n", x, y);
+        // printf("Coordinates are out of the allowed range: (%f, %f)\n", x, y);
         throw std::out_of_range("Coordinates are out of the allowed range.");
     }
 }
@@ -132,21 +134,46 @@ void Environment::reset() {
  */
 void Environment::simulateIteration(int iterations,
                                     std::function<void(const Environment&)> on_each_iteration) {
+    std::chrono::duration<double, std::milli> total_interactions_duration(0);
+    std::chrono::duration<double, std::milli> total_post_iteration_duration(0);
+
     for (int i = 0; i < iterations; i++) {
-        if(getAllOrganisms().size() == 0) {
-            break;
-        }
-        if(getAllFoods().size() == 0) {
+        if (getAllOrganisms().size() == 0 || getAllFoods().size() == 0) {
             break;
         }
 
+        auto interactions_start = std::chrono::high_resolution_clock::now();
         handleInteractions();
+        auto interactions_end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> interactions_duration =
+            interactions_end - interactions_start;
+        total_interactions_duration += interactions_duration;
+
+        auto post_iteration_start = std::chrono::high_resolution_clock::now();
         postIteration();
+        auto post_iteration_end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> post_iteration_duration =
+            post_iteration_end - post_iteration_start;
+        total_post_iteration_duration += post_iteration_duration;
 
         if (on_each_iteration) {
             on_each_iteration(*this);
         }
     }
+
+    if (iterations > 0) {
+        double average_interactions_duration = total_interactions_duration.count() / iterations;
+        double average_post_iteration_duration = total_post_iteration_duration.count() / iterations;
+
+        printf("Average handleInteractions duration: %f ms\n", average_interactions_duration);
+        printf("Average postIteration duration: %f ms\n", average_post_iteration_duration);
+    }
+    printf("Total time: %f ms\n",
+           total_interactions_duration.count() + total_post_iteration_duration.count());
+    printf("Total food consumption: %lu\n", foodConsumption);
+    printf("Total dead organisms: %lu\n", deadOrganisms.size());
+    printf("Total organisms: %lu\n", getAllOrganisms().size());
+    printf("_______________________________________________________\n");
 }
 
 std::vector<std::shared_ptr<Organism>> Environment::getDeadOrganisms() const {
@@ -185,13 +212,13 @@ void Environment::postIteration() {
     }
 
     for (const auto& id : toRemove) {
-        //printf("Removing object %s spatial index\n", boost::uuids::to_string(id).c_str());
+        // printf("Removing object %s spatial index\n", boost::uuids::to_string(id).c_str());
         spatialIndex->remove(id);
-        //printf("Removing object %s from object mapper\n", boost::uuids::to_string(id).c_str());
+        // printf("Removing object %s from object mapper\n", boost::uuids::to_string(id).c_str());
         objectsMapper.erase(id);
     }
 
-    //printf("Updating positions in spatial index\n");
+    // printf("Updating positions in spatial index\n");
     updatePositionsInSpatialIndex();
 }
 
@@ -233,7 +260,7 @@ void Environment::handleInteractions() {
 
             std::pair<float, float> position = organism->getPosition();
 
-            //printf("------------Handling interactions----------------\n");
+            // printf("------------Handling interactions----------------\n");
             // get all objects that are within the interaction radius, which is
             std::vector<boost::uuids::uuid> interactables =
                 spatialIndex->query(position.first, position.second, organism->getSize());
@@ -244,10 +271,10 @@ void Environment::handleInteractions() {
                 }
                 interactableObjects.push_back(objectsMapper[interactable]);
             }
-            // std::cout << "Interactables: " << interactableObjects.size() << std::endl;
+            // printf("Interactables: %ld\n", interactableObjects.size());
             organism->interact(interactableObjects);
 
-            //printf("------------Handling reactions----------------\n");
+            // printf("------------Handling reactions----------------\n");
             // get objects that are within the react radius, which is defned by genes
             std::vector<boost::uuids::uuid> reactables =
                 spatialIndex->query(position.first, position.second, organism->getReactionRadius());
@@ -258,7 +285,7 @@ void Environment::handleInteractions() {
                 }
                 reactableObjects.push_back(objectsMapper[reactable]);
             }
-            // std::cout << "Reactables: " << reactableObjects.size() << std::endl;
+            // printf("Reactables: %ld\n", reactableObjects.size());
             organism->react(reactableObjects);
         }
     }

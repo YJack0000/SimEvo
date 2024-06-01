@@ -28,23 +28,6 @@ public:
     virtual void remove(const T& object) = 0;
     virtual void clear() = 0;
     virtual ~ISpatialIndex() = default;
-
-    using iterator = typename std::list<T>::const_iterator;
-    iterator begin() const { return objectPositions.begin(); }
-    iterator end() const { return objectPositions.end(); }
-
-    std::pair<float, float> getPosition(const T& object) { return objectPositions[object]; }
-
-protected:
-    void addObjectPositionPair(const T& object, float x, float y) {
-        objectPositions[object] = std::make_pair(x, y);
-    }
-
-    void deleteObjectPositionPair(const T& object) { objectPositions.erase(object); }
-    void clearObjectPositionPairs() { objectPositions.clear(); }
-
-private:
-    std::unordered_map<T, std::pair<float, float>> objectPositions;
 };
 
 #endif

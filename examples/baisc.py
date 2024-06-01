@@ -1,7 +1,7 @@
 from simevopy import Environment
 from utils.common import (
     distribute_food_randomly,
-    remove_all_food,
+    remove_all_foods,
     reproduce_organisms,
     setup_base_organism,
 )
@@ -26,6 +26,6 @@ for i in range(100):
     print("After iteration, organism count: ", len(env.get_all_organisms()))
 
     reproduce_organisms(env)
-    remove_all_food(env)
+    remove_all_foods(env)
 
     # input("Press Enter to continue...")

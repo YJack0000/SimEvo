@@ -1,7 +1,9 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_hash.hpp>
 #include <cmath>
+#include <cstdio>
 #include <index/OptimizedSpatialIndex.hpp>
+#include <sstream>
 
 template <typename T>
 const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 10;
@@ -14,7 +16,12 @@ const int OptimizedSpatialIndex<T>::MIN_SIZE = 10;
  * @param size The size of the index area.
  */
 template <typename T>
-OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size) : size(size), isSubdivided(false) {}
+OptimizedSpatialIndex<T>::OptimizedSpatialIndex(float size)
+    : size(size), isSubdivided(false), offset(0, 0) {
+    for (auto& child : children) {
+        child = nullptr;
+    }
+}
 
 /**
  * @brief Inserts a new object into the spatial index.
@@ -24,21 +31,37 @@ OptimizedSpatialIndex<T>::OptimizedSpatialIndex(int size) : size(size), isSubdiv
  * @param y The y-coordinate of the object.
  */
 template <typename T>
-void OptimizedSpatialIndex<T>::insert(const T &object, float x, float y) {
-    if (!inBounds(std::make_pair(x, y))) {
+void OptimizedSpatialIndex<T>::insert(const T& object, float x, float y) {
+    if (!inBounds({x, y})) {
+        std::stringstream ss;
+        ss << "Insert coordinates (" << x << ", " << y << ") out of bounds. ";
+        ss << "Size: " << size << " Offset: (" << offset.first << ", " << offset.second << ")";
+        throw std::out_of_range(ss.str());
         return;
     }
 
-    spatialObjects.push_back(SpatialObject<T>(object, x, y));
-    if (spatialObjects.size() > MAX_OBJECTS && size > MIN_SIZE) {
-        subdivide();
+    if (isSubdivided) {
+        int childIndex = getChildIndex(x, y);
+        if (childIndex != -1) {
+            children[childIndex]->insert(object, x, y);
+            return;
+        }
     }
 
-    this->addObjectPositionPair(object, x, y);
+    spatialObjects.emplace_back(object, x, y);
+    if (spatialObjects.size() > MAX_OBJECTS && size > MIN_SIZE) {
+        subdivide();
+        for (const auto& obj : spatialObjects) {
+            insert(obj.getObject(), obj.getPosition().first, obj.getPosition().second);
+        }
+        spatialObjects.clear();
+    }
 }
 
 /**
  * @brief Queries the spatial index for objects within a specified range.
+ *
+ * Cause it is a range query, we need to check all children if they intersect the query range.
  *
  * @param x The x-coordinate of the query center.
  * @param y The y-coordinate of the query center.
@@ -48,23 +71,34 @@ void OptimizedSpatialIndex<T>::insert(const T &object, float x, float y) {
 template <typename T>
 std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
     std::vector<T> result;
-    if (!inBounds(std::make_pair(x, y))) {
+    if(!inBounds({x, y})) {
         return result;
     }
-    for (const auto &spaObj : spatialObjects) {
-        auto pos = spaObj.getPosition();
-        float dx = pos.first - x;
-        float dy = pos.second - y;
-        if (std::sqrt(dx * dx + dy * dy) <= range) {
-            result.push_back(spaObj.getObject());
+
+    // printf("====================================\n");
+    // printf("Current node size: %ld\n", spatialObjects.size());
+    for (const auto& obj : spatialObjects) {
+        // printf("====================================\n");
+        // printf("x: %f %f\n", x, y);
+        // printf("obj: %f %f\n", obj.getPosition().first, obj.getPosition().second);
+        // printf("range: %f, distance: %f\n", range,
+        //        getDistance(x, y, obj.getPosition().first, obj.getPosition().second));
+        if (getDistance(x, y, obj.getPosition().first, obj.getPosition().second) <= range) {
+            result.push_back(obj.getObject());
         }
     }
-    if (isSubdivided) {
-        for (const auto &child : children) {
+
+    // printf("====================================\n");
+    // printf("Have children: %d\n", isSubdivided);
+    if (isSubdivided) {  // need to check children
+        // printf("------------------------------------\n");
+        // printf("x: %f %f\n", x, y);
+        for (const auto& child : children) {
             auto childResult = child->query(x, y, range);
             result.insert(result.end(), childResult.begin(), childResult.end());
         }
     }
+
     return result;
 }
 
@@ -76,12 +110,18 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
  * @param newY The new y-coordinate of the object.
  */
 template <typename T>
-void OptimizedSpatialIndex<T>::update(const T &object, float newX, float newY) {
+void OptimizedSpatialIndex<T>::update(const T& object, float newX, float newY) {
+    if (!inBounds(std::make_pair(newX, newY))) {
+        std::stringstream ss;
+        ss << "Update coordinates (" << newX << ", " << newY << ") out of bounds. ";
+        ss << "Size: " << size;
+        throw std::out_of_range(ss.str());
+
+        return;
+    }
+
     remove(object);
     insert(object, newX, newY);
-
-    this->deleteObjectPositionPair(object);
-    this->addObjectPositionPair(object, newX, newY);
 }
 
 /**
@@ -90,24 +130,33 @@ void OptimizedSpatialIndex<T>::update(const T &object, float newX, float newY) {
  * @param object The object to remove.
  */
 template <typename T>
-void OptimizedSpatialIndex<T>::remove(const T &object) {
-    auto it =
-        std::find_if(spatialObjects.begin(), spatialObjects.end(),
-                     [&object](const SpatialObject<T> &o) { return o.getObject() == object; });
+void OptimizedSpatialIndex<T>::remove(const T& object) {
+    auto it = std::find_if(spatialObjects.begin(), spatialObjects.end(),
+                           [&](const auto& obj) { return obj.getObject() == object; });
 
     if (it != spatialObjects.end()) {
+        // auto rand = std::rand() % 100;
+        // printf("Before erase: %d %ld\n", rand, spatialObjects.size());
         spatialObjects.erase(it);
-    }
-    if (isSubdivided) {
-        for (const auto &child : children) {
-            child->remove(object);
-        }
-        if (canMerge()) {
+        // printf("After erase: %d %ld\n", rand, spatialObjects.size());
+        if (isSubdivided && canMerge()) {
             merge();
         }
+        return;
     }
 
-    this->deleteObjectPositionPair(object);
+    if (isSubdivided) {
+        for (auto& child : children) {
+            // auto rand = std::rand() % 100;
+            // printf("Before remove: %d %ld\n", rand, child->spatialObjects.size());
+            child->remove(object);
+            // printf("After remove: %d %ld\n", rand, child->spatialObjects.size());
+            if (canMerge()) {
+                merge();
+                break;
+            }
+        }
+    }
 }
 
 /**
@@ -116,16 +165,13 @@ void OptimizedSpatialIndex<T>::remove(const T &object) {
 template <typename T>
 void OptimizedSpatialIndex<T>::clear() {
     spatialObjects.clear();
-    
-    // Clear each child and then reset the unique_ptr
-    for (auto &child : children) {
-        if (child) {
-            child->clear();  // Ensure child clears its own resources
-            child.reset();   // Release the object and set pointer to nullptr
+    if (isSubdivided) {
+        for (auto& child : children) {
+            printf("Clearing child\n");
+            child->clear();
         }
     }
-
-    this->clearObjectPositionPairs();
+    isSubdivided = false;
 }
 
 /**
@@ -135,8 +181,12 @@ void OptimizedSpatialIndex<T>::clear() {
  * @return true If the position is within bounds.
  */
 template <typename T>
-bool OptimizedSpatialIndex<T>::inBounds(const std::pair<float, float> &pos) {
-    return pos.first >= 0 && pos.first < size && pos.second >= 0 && pos.second < size;
+bool OptimizedSpatialIndex<T>::inBounds(const std::pair<float, float>& pos) const {
+    float x = pos.first;
+    float y = pos.second;
+    const float epsilon = 0.0001f;
+    return x >= offset.first && x < offset.first + size + epsilon && y >= offset.second &&
+           y < offset.second + size + epsilon;
 }
 
 /**
@@ -144,29 +194,13 @@ bool OptimizedSpatialIndex<T>::inBounds(const std::pair<float, float> &pos) {
  */
 template <typename T>
 void OptimizedSpatialIndex<T>::subdivide() {
-    int childSize = size / 2;
-    int childX = 0;
-    int childY = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (i == 1 || i == 3) {
-            childX = childSize;
-        }
-        if (i == 2 || i == 3) {
-            childY = childSize;
-        }
-        children[i] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
-        children[i]->setOffset(childX, childY);
-    }
-
-    for (const auto &spaObj : spatialObjects) {
-        for (auto &child : children) {
-            child->insert(spaObj.getObject(), spaObj.getPosition().first,
-                          spaObj.getPosition().second);
-        }
-    }
-
-    spatialObjects.clear();
+    float childSize = size / 2.0f;
+    children[0] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
+    children[1] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
+    children[2] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
+    children[3] = std::make_unique<OptimizedSpatialIndex<T>>(childSize);
     isSubdivided = true;
+    setOffset(offset.first, offset.second);
 }
 
 /**
@@ -178,6 +212,13 @@ void OptimizedSpatialIndex<T>::subdivide() {
 template <typename T>
 void OptimizedSpatialIndex<T>::setOffset(float offsetX, float offsetY) {
     offset = std::make_pair(offsetX, offsetY);
+    if (isSubdivided) {
+        float childSize = size / 2;
+        children[0]->setOffset(offsetX, offsetY);
+        children[1]->setOffset(offsetX + childSize, offsetY);
+        children[2]->setOffset(offsetX, offsetY + childSize);
+        children[3]->setOffset(offsetX + childSize, offsetY + childSize);
+    }
 }
 
 /**
@@ -190,12 +231,25 @@ bool OptimizedSpatialIndex<T>::canMerge() const {
     if (!isSubdivided) {
         return false;
     }
-    for (const auto &child : children) {
-        if (child && !child->isEmpty()) {
+
+    // printf("------------------------------------\n");
+    // printf("Checking merge\n");
+    // printf("Current node size: %ld\n", spatialObjects.size());
+
+    int totalObjects = spatialObjects.size();
+    for (const auto& child : children) {
+        // printf("Child node size: %ld\n", child->spatialObjects.size());
+        // printf("Does child have objects: %d\n", !child->isEmpty());
+
+        // if child has its own children, it can't be merged
+        if (child->spatialObjects.size() == 0 && !child->isEmpty()) {
             return false;
         }
+
+        totalObjects += child->spatialObjects.size();
     }
-    return true;
+
+    return totalObjects <= MAX_OBJECTS;
 }
 
 /**
@@ -203,32 +257,46 @@ bool OptimizedSpatialIndex<T>::canMerge() const {
  */
 template <typename T>
 void OptimizedSpatialIndex<T>::merge() {
-    if (canMerge()) {
-        for (auto &child : children) {
+    isSubdivided = false;
+    for (auto& child : children) {
+        if (child) {
+            spatialObjects.insert(spatialObjects.end(),
+                                  std::make_move_iterator(child->spatialObjects.begin()),
+                                  std::make_move_iterator(child->spatialObjects.end()));
+            // printf("Before clear: %ld\n", child->spatialObjects.size());
             child.reset();
         }
-        isSubdivided = false;
     }
+    // printf("After clear: %ld\n", spatialObjects.size());
 }
 
 /**
- * @brief Checks if this spatial index is empty, meaning it has no objects and no active subdivisions.
+ * @brief Checks if this spatial index is empty, meaning it has no objects and no active
+ * subdivisions.
  *
  * @return true If there are no spatial objects and it is not subdivided.
  */
 template <typename T>
 bool OptimizedSpatialIndex<T>::isEmpty() const {
-    if (!spatialObjects.empty()) {
-        return false;
+    return spatialObjects.empty() && !isSubdivided;
+}
+
+template <typename T>
+int OptimizedSpatialIndex<T>::getChildIndex(float x, float y) const {
+    if (!inBounds({x, y})) {
+        return -1;
     }
-    if (isSubdivided) {
-        for (const auto &child : children) {
-            if (child && !child->isEmpty()) {
-                return false;
-            }
-        }
-    }
-    return true;
+    float childSize = size / 2;
+    int childX = (x - offset.first) < childSize ? 0 : 1;
+    int childY = (y - offset.second) < childSize ? 0 : 1;
+    return childX + childY * 2;
+}
+
+template <typename T>
+float OptimizedSpatialIndex<T>::getDistance(float x1, float y1, float x2, float y2) const {
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    return std::sqrt(dx * dx + dy * dy);
 }
 
 // make sure to instantiate the template class

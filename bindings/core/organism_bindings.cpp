@@ -16,6 +16,7 @@ void init_Organism(py::module &m) {
         .def("killed", &Organism::killed)
         .def("is_alive", &Organism::isAlive)
         .def("can_reproduce", &Organism::canReproduce)
+        // .def("is_full", &Organism::isFull)
         .def("reproduce", &Organism::reproduce)
         .def("get_reaction_radius", &Organism::getReactionRadius)
         .def("interact", &Organism::interact)
