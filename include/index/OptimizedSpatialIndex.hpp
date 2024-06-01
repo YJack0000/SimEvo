@@ -1,6 +1,8 @@
 #ifndef OPTIMIZED_SPATIAL_INDEX_HPP
 #define OPTIMIZED_SPATIAL_INDEX_HPP
 
+#include <memory>
+
 #include "ISpatialIndex.hpp"
 
 template <typename T>
@@ -14,7 +16,7 @@ public:
     void clear() override;
     ~OptimizedSpatialIndex() override = default;
 
-    std::vector<SpatialObject<T>> spatialObjects;  // objects in this node
+    std::vector<std::shared_ptr<SpatialObject<T>>> spatialObjects;  // objects in this node
 private:
     float size;
     bool isSubdivided;
@@ -23,6 +25,8 @@ private:
 
     static const int MAX_OBJECTS;
     static const int MIN_SIZE;
+
+    void _query(float x, float y, float range, std::vector<T>& result);
 
     bool inBounds(const std::pair<float, float>& pos) const;
     void setOffset(float offsetX, float offsetY);
