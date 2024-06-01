@@ -37,13 +37,12 @@ public:
     void interact(std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects);
     std::shared_ptr<Organism> reproduce();
 
-
     void postIteration() override;
 
 private:
     Genes genes;
     LifeConsumptionCalculator lifeConsumptionCalculator;
-    float lifeSpan = 300;
+    float lifeSpan;
 
     double calculateDistance(std::shared_ptr<EnvironmentObject> object);
 

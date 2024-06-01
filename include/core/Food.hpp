@@ -10,7 +10,7 @@ public:
     Food() : EnvironmentObject(0, 0) {}
     bool canBeEaten() { return state == FoodState::FRESH; }
     void eaten() { state = FoodState::EATEN; }
-    int getEnergy() const { return 150; }
+    int getEnergy() const { return 500; }
 
 private:
     FoodState state = FoodState::FRESH;
