@@ -47,4 +47,5 @@ def visualize_objects(env, title="Objects Distribution"):
     plt.title(title)
     plt.draw()
     plt.pause(0.005)
+    # input("Press Enter to continue...")
 

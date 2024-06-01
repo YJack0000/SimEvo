@@ -29,6 +29,8 @@ public:
     void killed();
     bool isAlive() const;
     bool canReproduce() const;
+    // [TODO] from GPT don't know if it is a good idea to make this virtual for python to override
+    // virtual bool isFull() const;
 
     ~Organism() {};
 

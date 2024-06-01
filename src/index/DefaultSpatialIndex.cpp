@@ -22,7 +22,6 @@ DefaultSpatialIndex<T>::DefaultSpatialIndex() {}
 template <typename T>
 void DefaultSpatialIndex<T>::insert(const T &object, float x, float y) {
     spatialObjects.push_back(SpatialObject<T>(object, x, y));
-    this->addObjectPositionPair(object, x, y);
 }
 
 /**
@@ -64,8 +63,6 @@ void DefaultSpatialIndex<T>::update(const T &object, float newX, float newY) {
     }
 
     it->setPosition(newX, newY);
-    this->deleteObjectPositionPair(object);
-    this->addObjectPositionPair(object, newX, newY);
 }
 
 /**
@@ -82,7 +79,6 @@ void DefaultSpatialIndex<T>::remove(const T &object) {
     }
 
     spatialObjects.erase(it);
-    this->deleteObjectPositionPair(object);
 }
 
 /**
@@ -91,7 +87,6 @@ void DefaultSpatialIndex<T>::remove(const T &object) {
 template <typename T>
 void DefaultSpatialIndex<T>::clear() {
     this->spatialObjects.clear();
-    this->clearObjectPositionPairs();
 }
 
 /**

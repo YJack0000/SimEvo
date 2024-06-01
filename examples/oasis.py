@@ -32,9 +32,6 @@ for i in range(100):
     )
     print("After iteration, organism count: ", len(env.get_all_organisms()))
 
-    if len(env.get_all_foods()) < 0:
-        print("No food left. Stopping the simulation.")
-        break
 
     reproduce_organisms(env)
     remove_foods(env)

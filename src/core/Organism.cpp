@@ -1,6 +1,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <core/Food.hpp>
 #include <core/Organism.hpp>
+#include <cstdio>
 #include <iostream>
 #include <random>
 
@@ -40,11 +41,16 @@ float Organism::getLifeConsumption() const {
 
 float Organism::getLifeSpan() const { return lifeSpan; }
 
-float Organism::getReactionRadius() const { return getAwareness(); }
+float Organism::getReactionRadius() const { return getSize() + getAwareness(); }
 
 bool Organism::isAlive() const { return lifeSpan > 0; }
 
-bool Organism::canReproduce() const { return lifeSpan > 1000; }
+bool Organism::canReproduce() const { return lifeSpan > getSize() * 50; }  // *50 nom to lifespan
+
+// bool Organism::isFull() const {
+//     printf("Organism thinking whether it is full\n");
+//     return lifeSpan > getSize() * 50 * 2;
+// }  // *50 nom to lifespan and *2 to at least reproduce
 
 double Organism::calculateDistance(std::shared_ptr<EnvironmentObject> object) {
     auto dx = getPosition().first - object->getPosition().first;
@@ -65,7 +71,7 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
     double minDistance = std::numeric_limits<double>::max();
 
     // printf("Organism %s is calculating the nearest object\n",
-    //  boost::uuids::to_string(getId()).c_str());
+           // boost::uuids::to_string(getId()).c_str());
 
     // Find the nearest valid object
     for (const auto& obj : reactableObjects) {
@@ -88,7 +94,7 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
 
     if (!nearestObject) {
         // printf("Organism %s found no valid objects to react to\n",
-        //  boost::uuids::to_string(getId()).c_str());
+               // boost::uuids::to_string(getId()).c_str());
         return;
     }
 
@@ -115,17 +121,23 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
             reactionCounter++;
         }
     } else if (auto food = std::dynamic_pointer_cast<Food>(nearestObject)) {
-        if (!food->canBeEaten()) return;
-        if (getSize() * 40 * 2 < lifeSpan) {
-            // This constraint is added to prevent the organism from eating food when it is full
+        if (!food->canBeEaten()) {
             return;
         }
+
+        // if (isFull()) {
+        //     printf("Organism of size %f is full\n", getSize());
+        //     // This constraint is added to prevent the organism from eating food when it is full
+        //     return;
+        // }
 
         // printf("Organism %s is moving to the food \n", boost::uuids::to_string(getId()).c_str());
         reactionCounter++;
 
         movement = std::make_pair(food->getPosition().first - getPosition().first,
                                   food->getPosition().second - getPosition().second);
+    } else {
+        throw std::runtime_error("Unknown object type detected");
     }
 }
 

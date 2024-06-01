@@ -6,7 +6,7 @@
 template <typename T>
 class OptimizedSpatialIndex : public ISpatialIndex<T> {
 public:
-    OptimizedSpatialIndex(int size);
+    OptimizedSpatialIndex(float size);
     void insert(const T& object, float x, float y) override;
     std::vector<T> query(float x, float y, float range) override;
     void update(const T& object, float newX, float newY) override;
@@ -14,22 +14,25 @@ public:
     void clear() override;
     ~OptimizedSpatialIndex() override = default;
 
-private:
-    int size;
-    bool isSubdivided;
     std::vector<SpatialObject<T>> spatialObjects;  // objects in this node
+private:
+    float size;
+    bool isSubdivided;
     std::unique_ptr<OptimizedSpatialIndex<T>> children[4];
     std::pair<float, float> offset;
 
     static const int MAX_OBJECTS;
     static const int MIN_SIZE;
 
-    bool inBounds(const std::pair<float, float>& pos);
+    bool inBounds(const std::pair<float, float>& pos) const;
     void setOffset(float offsetX, float offsetY);
     void subdivide();
     bool canMerge() const;
     void merge();
     bool isEmpty() const;
+    bool intersectsRange(float min_x, float max_x, float min_y, float max_y) const;
+    int getChildIndex(float x, float y) const;
+    float getDistance(float x1, float y1, float x2, float y2) const;
 };
 
 #endif
