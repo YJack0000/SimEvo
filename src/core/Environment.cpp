@@ -3,7 +3,6 @@
 #include <core/Food.hpp>
 #include <index/DefaultSpatialIndex.hpp>
 #include <index/OptimizedSpatialIndex.hpp>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -18,7 +17,8 @@
  * @param type The type of spatial index to use ("default" or "optimized").
  * @throws std::invalid_argument If an unrecognized type is provided.
  */
-Environment::Environment(int width, int height, std::string type) : width(width), height(height) {
+Environment::Environment(int width, int height, std::string type)
+    : width(width), height(height), type(type) {
     if (type == "default") {
         spatialIndex = std::make_unique<DefaultSpatialIndex<boost::uuids::uuid>>();
     } else if (type == "optimized") {
@@ -138,7 +138,7 @@ void Environment::simulateIteration(int iterations,
     std::chrono::duration<double, std::milli> total_post_iteration_duration(0);
 
     for (int i = 0; i < iterations; i++) {
-        if (getAllOrganisms().size() == 0 || getAllFoods().size() == 0) {
+        if (getAllOrganisms().size() == 0 && getAllFoods().size() == 0) {
             break;
         }
 
@@ -161,19 +161,45 @@ void Environment::simulateIteration(int iterations,
         }
     }
 
+    // clean up dead organisms and consumed food
+    cleanUp();
+
     if (iterations > 0) {
         double average_interactions_duration = total_interactions_duration.count() / iterations;
         double average_post_iteration_duration = total_post_iteration_duration.count() / iterations;
 
+        printf("By %s spatial index\n", type.c_str());
         printf("Average handleInteractions duration: %f ms\n", average_interactions_duration);
         printf("Average postIteration duration: %f ms\n", average_post_iteration_duration);
+        printf("Total time: %f ms, average time per iteration: %f ms\n",
+               total_interactions_duration.count() + total_post_iteration_duration.count(),
+               (total_interactions_duration.count() + total_post_iteration_duration.count()) /
+                   iterations);
     }
-    printf("Total time: %f ms\n",
-           total_interactions_duration.count() + total_post_iteration_duration.count());
     printf("Total food consumption: %lu\n", foodConsumption);
     printf("Total dead organisms: %lu\n", deadOrganisms.size());
     printf("Total organisms: %lu\n", getAllOrganisms().size());
     printf("_______________________________________________________\n");
+}
+
+void Environment::cleanUp() {
+    std::vector<boost::uuids::uuid> toRemove;
+    for (const auto& object : objectsMapper) {
+        auto organism = std::dynamic_pointer_cast<Organism>(object.second);
+        auto food = std::dynamic_pointer_cast<Food>(object.second);
+        if (organism && !organism->isAlive()) {
+            deadOrganisms.push_back(organism);
+            toRemove.push_back(object.first);
+        }
+        if (food && !food->canBeEaten()) {
+            foodConsumption += 1;
+            toRemove.push_back(object.first);
+        }
+    }
+    for (const auto& id : toRemove) {
+        spatialIndex->remove(id);
+        objectsMapper.erase(id);
+    }
 }
 
 std::vector<std::shared_ptr<Organism>> Environment::getDeadOrganisms() const {
@@ -192,30 +218,6 @@ void Environment::postIteration() {
     // do the post iteration for all objects
     for (auto& object : objectsMapper) {
         object.second->postIteration();
-    }
-
-    std::vector<boost::uuids::uuid> toRemove;
-
-    for (const auto& object : objectsMapper) {
-        auto organism = std::dynamic_pointer_cast<Organism>(object.second);
-        auto food = std::dynamic_pointer_cast<Food>(object.second);
-
-        if (organism && !organism->isAlive()) {
-            deadOrganisms.push_back(organism);
-            toRemove.push_back(object.first);
-        }
-
-        if (food && !food->canBeEaten()) {
-            foodConsumption += 1;
-            toRemove.push_back(object.first);
-        }
-    }
-
-    for (const auto& id : toRemove) {
-        // printf("Removing object %s spatial index\n", boost::uuids::to_string(id).c_str());
-        spatialIndex->remove(id);
-        // printf("Removing object %s from object mapper\n", boost::uuids::to_string(id).c_str());
-        objectsMapper.erase(id);
     }
 
     // printf("Updating positions in spatial index\n");

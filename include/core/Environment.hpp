@@ -29,7 +29,6 @@ public:
 
     void simulateIteration(int,
                            std::function<void(const Environment&)> on_each_iteration = nullptr);
-    void postIteration();
 
     std::vector<std::shared_ptr<Organism>> getAllOrganisms() const;
     std::vector<std::shared_ptr<Food>> getAllFoods() const;
@@ -39,6 +38,7 @@ public:
 
 private:
     int width, height;
+    std::string type;
     std::unique_ptr<ISpatialIndex<boost::uuids::uuid>> spatialIndex;
     std::unordered_map<boost::uuids::uuid, std::shared_ptr<EnvironmentObject>> objectsMapper;
 
@@ -48,6 +48,8 @@ private:
     void checkBounds(float x, float y) const;
     void updatePositionsInSpatialIndex();
     void handleInteractions();
+    void postIteration();
+    void cleanUp();
     void removeDeadOrganisms();
 };
 

@@ -2,10 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def visualize_objects(env, title="Objects Distribution"):
-    organisms_positions = np.array(
-        [org.get_position() for org in env.get_all_organisms()]
-    )
-    food_positions = np.array([food.get_position() for food in env.get_all_foods()])
+    # Get all eatable foods
+    foods = env.get_all_foods()
+    food_positions = np.array([food.get_position() for food in foods if food.can_be_eaten()])
+    # Get all alive organisms
+    organisms = env.get_all_organisms()
+    organisms_positions = np.array([org.get_position() for org in organisms if org.is_alive()])
+
     awareness_radii = np.array(
         [org.get_reaction_radius() for org in env.get_all_organisms()]
     )
