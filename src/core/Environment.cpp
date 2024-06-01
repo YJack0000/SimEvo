@@ -40,7 +40,7 @@ Environment::Environment(int width, int height, std::string type) : width(width)
  */
 void Environment::checkBounds(float x, float y) const {
     if (x < 0.0f || x > static_cast<float>(width) || y < 0.0f || y > static_cast<float>(height)) {
-        printf("Coordinates are out of the allowed range: (%f, %f)\n", x, y);
+        //printf("Coordinates are out of the allowed range: (%f, %f)\n", x, y);
         throw std::out_of_range("Coordinates are out of the allowed range.");
     }
 }
@@ -133,6 +133,13 @@ void Environment::reset() {
 void Environment::simulateIteration(int iterations,
                                     std::function<void(const Environment&)> on_each_iteration) {
     for (int i = 0; i < iterations; i++) {
+        if(getAllOrganisms().size() == 0) {
+            break;
+        }
+        if(getAllFoods().size() == 0) {
+            break;
+        }
+
         handleInteractions();
         postIteration();
 
@@ -178,13 +185,13 @@ void Environment::postIteration() {
     }
 
     for (const auto& id : toRemove) {
-        printf("Removing object %s spatial index\n", boost::uuids::to_string(id).c_str());
+        //printf("Removing object %s spatial index\n", boost::uuids::to_string(id).c_str());
         spatialIndex->remove(id);
-        printf("Removing object %s from object mapper\n", boost::uuids::to_string(id).c_str());
+        //printf("Removing object %s from object mapper\n", boost::uuids::to_string(id).c_str());
         objectsMapper.erase(id);
     }
 
-    printf("Updating positions in spatial index\n");
+    //printf("Updating positions in spatial index\n");
     updatePositionsInSpatialIndex();
 }
 
@@ -226,7 +233,7 @@ void Environment::handleInteractions() {
 
             std::pair<float, float> position = organism->getPosition();
 
-            printf("------------Handling interactions----------------\n");
+            //printf("------------Handling interactions----------------\n");
             // get all objects that are within the interaction radius, which is
             std::vector<boost::uuids::uuid> interactables =
                 spatialIndex->query(position.first, position.second, organism->getSize());
@@ -237,10 +244,10 @@ void Environment::handleInteractions() {
                 }
                 interactableObjects.push_back(objectsMapper[interactable]);
             }
-            std::cout << "Interactables: " << interactableObjects.size() << std::endl;
+            // std::cout << "Interactables: " << interactableObjects.size() << std::endl;
             organism->interact(interactableObjects);
 
-            printf("------------Handling reactions----------------\n");
+            //printf("------------Handling reactions----------------\n");
             // get objects that are within the react radius, which is defned by genes
             std::vector<boost::uuids::uuid> reactables =
                 spatialIndex->query(position.first, position.second, organism->getReactionRadius());
@@ -251,7 +258,7 @@ void Environment::handleInteractions() {
                 }
                 reactableObjects.push_back(objectsMapper[reactable]);
             }
-            std::cout << "Reactables: " << reactableObjects.size() << std::endl;
+            // std::cout << "Reactables: " << reactableObjects.size() << std::endl;
             organism->react(reactableObjects);
         }
     }
