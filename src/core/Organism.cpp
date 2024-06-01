@@ -4,26 +4,23 @@
 #include <iostream>
 #include <random>
 
-Organism::Organism() : EnvironmentObject(0, 0), genes("\x14\x14\x14\x14") {}
+Organism::Organism() : EnvironmentObject(0, 0), genes("\x14\x14\x14\x14"), lifeSpan(500) {}
 
-Organism::Organism(const Genes& genes) : EnvironmentObject(0, 0), genes(genes) {}
+Organism::Organism(const Genes& genes) : EnvironmentObject(0, 0), genes(genes), lifeSpan(500) {}
 
 Organism::Organism(const Genes& genes, LifeConsumptionCalculator calculator)
-    : EnvironmentObject(0, 0), genes(genes), lifeConsumptionCalculator(calculator) {}
+    : EnvironmentObject(0, 0), genes(genes), lifeConsumptionCalculator(calculator), lifeSpan(500) {}
 
 float Organism::getSpeed() const {
-    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(0))) /
-           20.0f;  // 256 / 20 = 12.8= 12.8
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(0))) / 4.0f;  // 256 / 4 = 64
 }
 
 float Organism::getSize() const {
-    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(1))) /
-           40.0f;  // 256 / 40 = 6.4
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(1))) / 4.0f;  // 256 / 4 = 64
 }
 
 float Organism::getAwareness() const {
-    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(2))) /
-           20.0f;  // 256 / 20 = 12.8
+    return static_cast<float>(static_cast<unsigned char>(genes.getDNA(2))) / 2.0f;  // 256 / 2 = 128
 }
 
 float Organism::getLifeConsumption() const {
@@ -31,9 +28,14 @@ float Organism::getLifeConsumption() const {
         return lifeConsumptionCalculator(*this);
     }
 
-    printf("Organism %s is getting speed %f, size %f, awareness %f\n",
-           boost::uuids::to_string(getId()).c_str(), getSpeed(), getSize(), getAwareness());
-    return getSpeed() * getSize() * getAwareness() / 10;
+    // printf("Organism %s is getting speed %f, size %f, awareness %f\n",
+    //  boost::uuids::to_string(getId()).c_str(), getSpeed(), getSize(), getAwareness());
+    float consumption =
+        getSpeed() / 10 * getSpeed() / 10 * getSize() / 10 * getSize() / 10 * getSize() / 10 +
+        getAwareness() / 10;
+    // printf("Organism %s is getting life consumption %f\n",
+    //        boost::uuids::to_string(getId()).c_str(), consumption);
+    return consumption;
 }
 
 float Organism::getLifeSpan() const { return lifeSpan; }
@@ -42,7 +44,7 @@ float Organism::getReactionRadius() const { return getAwareness(); }
 
 bool Organism::isAlive() const { return lifeSpan > 0; }
 
-bool Organism::canReproduce() const { return lifeSpan > 300; }
+bool Organism::canReproduce() const { return lifeSpan > 1000; }
 
 double Organism::calculateDistance(std::shared_ptr<EnvironmentObject> object) {
     auto dx = getPosition().first - object->getPosition().first;
@@ -52,18 +54,18 @@ double Organism::calculateDistance(std::shared_ptr<EnvironmentObject> object) {
 
 void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableObjects) {
     if (reactableObjects.empty()) {
-        printf("Organism %s is not reacting to any objects\n",
-               boost::uuids::to_string(getId()).c_str());
+        // printf("Organism %s is not reacting to any objects\n",
+        //  boost::uuids::to_string(getId()).c_str());
         return;
     }
-    printf("Organism %s is reacting to the other objects\n",
-           boost::uuids::to_string(getId()).c_str());
+    // printf("Organism %s is reacting to the other objects\n",
+    //  boost::uuids::to_string(getId()).c_str());
 
     std::shared_ptr<EnvironmentObject> nearestObject = nullptr;
     double minDistance = std::numeric_limits<double>::max();
 
-    printf("Organism %s is calculating the nearest object\n",
-           boost::uuids::to_string(getId()).c_str());
+    // printf("Organism %s is calculating the nearest object\n",
+    //  boost::uuids::to_string(getId()).c_str());
 
     // Find the nearest valid object
     for (const auto& obj : reactableObjects) {
@@ -85,8 +87,8 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
     }
 
     if (!nearestObject) {
-        printf("Organism %s found no valid objects to react to\n",
-               boost::uuids::to_string(getId()).c_str());
+        // printf("Organism %s found no valid objects to react to\n",
+        //  boost::uuids::to_string(getId()).c_str());
         return;
     }
 
@@ -94,25 +96,32 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
         if (reactionCounter != 0) {  // already decided to move
             return;
         }
-        reactionCounter++;
 
-        if (getSize() * 1.5 < otherOrganism->getSize()) {
-            printf("Organism %s is running away from organism %s\n",
-                   boost::uuids::to_string(getId()).c_str(),
-                   boost::uuids::to_string(otherOrganism->getId()).c_str());
+        if (getSize() * 1.2 < otherOrganism->getSize()) {
+            // printf("Organism %s is running away from organism %s\n",
+            //        boost::uuids::to_string(getId()).c_str(),
+            //        boost::uuids::to_string(otherOrganism->getId()).c_str());
             // run away from the other organism
             movement = std::make_pair(getPosition().first - otherOrganism->getPosition().first,
                                       getPosition().second - otherOrganism->getPosition().second);
-        } else if (getSize() > 1.5 * otherOrganism->getSize()) {
-            printf("Organism %s is chasing organism %s\n", boost::uuids::to_string(getId()).c_str(),
-                   boost::uuids::to_string(otherOrganism->getId()).c_str());
+            reactionCounter++;
+        } else if (getSize() > 1.2 * otherOrganism->getSize()) {
+            // printf("Organism %s is chasing organism %s\n",
+            // boost::uuids::to_string(getId()).c_str(),
+            //        boost::uuids::to_string(otherOrganism->getId()).c_str());
             // trace the other organism
             movement = std::make_pair(otherOrganism->getPosition().first - getPosition().first,
                                       otherOrganism->getPosition().second - getPosition().second);
+            reactionCounter++;
         }
     } else if (auto food = std::dynamic_pointer_cast<Food>(nearestObject)) {
         if (!food->canBeEaten()) return;
-        printf("Organism %s is moving to the food \n", boost::uuids::to_string(getId()).c_str());
+        if (getSize() * 40 * 2 < lifeSpan) {
+            // This constraint is added to prevent the organism from eating food when it is full
+            return;
+        }
+
+        // printf("Organism %s is moving to the food \n", boost::uuids::to_string(getId()).c_str());
         reactionCounter++;
 
         movement = std::make_pair(food->getPosition().first - getPosition().first,
@@ -122,27 +131,32 @@ void Organism::react(std::vector<std::shared_ptr<EnvironmentObject>>& reactableO
 
 // In Organism::interact
 void Organism::interact(std::vector<std::shared_ptr<EnvironmentObject>>& interactableObjects) {
-    printf("Organism %s is interacting with the other objects\n",
-           boost::uuids::to_string(getId()).c_str());
+    // printf("Organism %s is interacting with the other objects\n",
+    //  boost::uuids::to_string(getId()).c_str());
     for (auto& object : interactableObjects) {
         if (auto food = std::dynamic_pointer_cast<Food>(object)) {
             if (!food->canBeEaten()) continue;
 
-            std::cout << "Organism " << this->getId() << " is eating food. Life span: " << lifeSpan
-                      << " + " << food->getEnergy() << std::endl;
+            // std::cout << "Organism " << this->getId() << " is eating food. Life span: " <<
+            // lifeSpan
+            //           << " + " << food->getEnergy() << std::endl;
             lifeSpan += food->getEnergy();
             food->eaten();
         }
 
         if (auto organism = std::dynamic_pointer_cast<Organism>(object)) {
-            printf(
-                "Organism %s is interacting with organism %s, it will be %s after interaction. \n",
-                boost::uuids::to_string(getId()).c_str(),
-                boost::uuids::to_string(organism->getId()).c_str(),
-                getSize() * 1.5 > organism->getSize() ? "killed" : "alive");
+            // printf(
+            //  "Organism %s is interacting with organism %s, it will be %s after interaction. \n",
+            //  boost::uuids::to_string(getId()).c_str(),
+            //  boost::uuids::to_string(organism->getId()).c_str(),
+            //  getSize() > 1.2 * organism->getSize() ? "killed" : "alive");
+            // printf("Organism %s is %f, %f, %f, organism %s is %f, %f, %f\n",
+            //  boost::uuids::to_string(getId()).c_str(), getSpeed(), getSize(), getAwareness(),
+            //  boost::uuids::to_string(organism->getId()).c_str(), organism->getSpeed(),
+            //  organism->getSize(), organism->getAwareness());
 
-            if (getSize() * 1.5 > organism->getSize()) {
-                lifeSpan += 300;
+            if (getSize() > 1.2 * organism->getSize()) {
+                lifeSpan += organism->getLifeSpan();
                 organism->killed();
             }
         }
@@ -151,17 +165,25 @@ void Organism::interact(std::vector<std::shared_ptr<EnvironmentObject>>& interac
 
 std::shared_ptr<Organism> Organism::reproduce() {
     // copy the gene than mutate and create a new organism
+    // printf("Organism %s is reproducing, it attr is (%f, %f, %f) \n",
+    //        boost::uuids::to_string(getId()).c_str(), getSpeed(), getSize(), getAwareness());
     Genes newGenes = genes;
     newGenes.mutate();
-    return std::make_shared<Organism>(newGenes, lifeConsumptionCalculator);
+    auto newOrganism = std::make_shared<Organism>(newGenes, lifeConsumptionCalculator);
+    // printf("New organism %s is created, it attr is (%f, %f, %f) \n",
+    //  boost::uuids::to_string(newOrganism->getId()).c_str(), newOrganism->getSpeed(),
+    //  newOrganism->getSize(), newOrganism->getAwareness());
+    newOrganism->setPosition(getPosition().first + 2, getPosition().second + 2);
+    lifeSpan /= 2;
+    return newOrganism;
 }
 
 void Organism::killed() { lifeSpan = 0; }
 
 void Organism::postIteration() {
-    printf("Organism %s is at (%f, %f) %f %f (%f, %f, %f)\n",
-           boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
-           lifeSpan, getLifeConsumption(), getSpeed(), getSize(), getAwareness());
+    // printf("Organism %s is at (%f, %f) %f %f (%f, %f, %f)\n",
+    //  boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
+    //  lifeSpan, getLifeConsumption(), getSpeed(), getSize(), getAwareness());
 
     lifeSpan -= getLifeConsumption();
 
@@ -171,9 +193,9 @@ void Organism::postIteration() {
         return;
     }
 
-    printf("Organism %s is at (%f, %f), movement: (%f, %f), reaction counter: %d\n",
-           boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
-           movement.first, movement.second, reactionCounter);
+    // printf("Organism %s is at (%f, %f), movement: (%f, %f), reaction counter: %d\n",
+    //  boost::uuids::to_string(getId()).c_str(), getPosition().first, getPosition().second,
+    //  movement.first, movement.second, reactionCounter);
 
     makeMove();
 }
