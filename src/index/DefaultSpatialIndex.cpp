@@ -39,6 +39,8 @@ std::vector<T> DefaultSpatialIndex<T>::query(float x, float y, float range) {
         auto pos = obj.getPosition();
         float dx = pos.first - x;
         float dy = pos.second - y;
+        // static unsigned int call = 0;
+        // printf("Call %d\n", call++);
         if (std::sqrt(dx * dx + dy * dy) <= range) {
             result.push_back(obj.getObject());
         }

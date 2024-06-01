@@ -6,7 +6,7 @@
 #include <sstream>
 
 template <typename T>
-const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 5;
+const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 10;
 
 template <typename T>
 const int OptimizedSpatialIndex<T>::MIN_SIZE = 10;
@@ -77,7 +77,7 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
 
 template <typename T>
 void OptimizedSpatialIndex<T>::_query(float x, float y, float range, std::vector<T>& result) {
-    if (!inBounds({x, y})) {
+    if(!inBounds({x, y})) {
         return;
     }
 
@@ -146,11 +146,14 @@ void OptimizedSpatialIndex<T>::remove(const T& object) {
     }
 
     if (isSubdivided) {
-        auto childIndex = getChildIndex((*it)->getPosition().first, (*it)->getPosition().second);
-        if (childIndex != -1) {
-            children[childIndex]->remove(object);
+        for (auto& child : children) {
+            // auto rand = std::rand() % 100;
+            // printf("Before remove: %d %ld\n", rand, child->spatialObjects.size());
+            child->remove(object);
+            // printf("After remove: %d %ld\n", rand, child->spatialObjects.size());
             if (canMerge()) {
                 merge();
+                break;
             }
         }
     }
@@ -164,6 +167,7 @@ void OptimizedSpatialIndex<T>::clear() {
     spatialObjects.clear();
     if (isSubdivided) {
         for (auto& child : children) {
+            printf("Clearing child\n");
             child->clear();
         }
     }
@@ -245,7 +249,7 @@ bool OptimizedSpatialIndex<T>::canMerge() const {
         totalObjects += child->spatialObjects.size();
     }
 
-    return totalObjects <= MAX_OBJECTS;
+    return totalObjects < MAX_OBJECTS;
 }
 
 /**
@@ -290,6 +294,8 @@ int OptimizedSpatialIndex<T>::getChildIndex(float x, float y) const {
 
 template <typename T>
 float OptimizedSpatialIndex<T>::getDistance(float x1, float y1, float x2, float y2) const {
+    // static unsigned long called = 0;
+    // printf("Called: %ld\n", called++);
     float dx = x2 - x1;
     float dy = y2 - y1;
     return std::sqrt(dx * dx + dy * dy);

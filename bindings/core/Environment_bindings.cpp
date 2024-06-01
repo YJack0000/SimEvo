@@ -39,9 +39,7 @@ void init_Environment(py::module& m) {
         .def("simulate_iteration", &Environment::simulateIteration, py::arg("iterations"),
              py::arg("on_each_iteration") = nullptr)
         .def("get_dead_organisms", &Environment::getDeadOrganisms)
-        .def("get_food_consumption_in_iteration", &Environment::getFoodConsumptionInIteration)
-        .def("post_iteration", &Environment::postIteration,
-             "Perform any cleanup after an iteration.");
+        .def("get_food_consumption_in_iteration", &Environment::getFoodConsumptionInIteration);
 
     py::register_exception<std::out_of_range>(m, "OutOfRangeException", PyExc_RuntimeError);
     py::register_exception<std::runtime_error>(m, "RuntimeException", PyExc_RuntimeError);
