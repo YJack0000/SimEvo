@@ -5,6 +5,7 @@
 #include <index/OptimizedSpatialIndex.hpp>
 #include <memory>
 #include <vector>
+#include <chrono>
 
 /**
  * @brief Constructor for Environment class.
