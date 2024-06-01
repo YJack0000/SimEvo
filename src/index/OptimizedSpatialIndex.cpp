@@ -6,7 +6,7 @@
 #include <sstream>
 
 template <typename T>
-const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 10;
+const int OptimizedSpatialIndex<T>::MAX_OBJECTS = 5;
 
 template <typename T>
 const int OptimizedSpatialIndex<T>::MIN_SIZE = 10;
@@ -48,11 +48,11 @@ void OptimizedSpatialIndex<T>::insert(const T& object, float x, float y) {
         }
     }
 
-    spatialObjects.emplace_back(object, x, y);
+    spatialObjects.push_back(std::make_shared<SpatialObject<T>>(object, x, y));
     if (spatialObjects.size() > MAX_OBJECTS && size > MIN_SIZE) {
         subdivide();
         for (const auto& obj : spatialObjects) {
-            insert(obj.getObject(), obj.getPosition().first, obj.getPosition().second);
+            insert(obj->getObject(), obj->getPosition().first, obj->getPosition().second);
         }
         spatialObjects.clear();
     }
@@ -71,8 +71,14 @@ void OptimizedSpatialIndex<T>::insert(const T& object, float x, float y) {
 template <typename T>
 std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
     std::vector<T> result;
-    if(!inBounds({x, y})) {
-        return result;
+    _query(x, y, range, result);
+    return result;
+}
+
+template <typename T>
+void OptimizedSpatialIndex<T>::_query(float x, float y, float range, std::vector<T>& result) {
+    if (!inBounds({x, y})) {
+        return;
     }
 
     // printf("====================================\n");
@@ -83,8 +89,8 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
         // printf("obj: %f %f\n", obj.getPosition().first, obj.getPosition().second);
         // printf("range: %f, distance: %f\n", range,
         //        getDistance(x, y, obj.getPosition().first, obj.getPosition().second));
-        if (getDistance(x, y, obj.getPosition().first, obj.getPosition().second) <= range) {
-            result.push_back(obj.getObject());
+        if (getDistance(x, y, obj->getPosition().first, obj->getPosition().second) <= range) {
+            result.push_back(obj->getObject());
         }
     }
 
@@ -94,12 +100,9 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
         // printf("------------------------------------\n");
         // printf("x: %f %f\n", x, y);
         for (const auto& child : children) {
-            auto childResult = child->query(x, y, range);
-            result.insert(result.end(), childResult.begin(), childResult.end());
+            child->_query(x, y, range, result);
         }
     }
-
-    return result;
 }
 
 /**
@@ -132,28 +135,22 @@ void OptimizedSpatialIndex<T>::update(const T& object, float newX, float newY) {
 template <typename T>
 void OptimizedSpatialIndex<T>::remove(const T& object) {
     auto it = std::find_if(spatialObjects.begin(), spatialObjects.end(),
-                           [&](const auto& obj) { return obj.getObject() == object; });
+                           [&](const auto& obj) { return obj->getObject() == object; });
 
     if (it != spatialObjects.end()) {
         // auto rand = std::rand() % 100;
         // printf("Before erase: %d %ld\n", rand, spatialObjects.size());
         spatialObjects.erase(it);
         // printf("After erase: %d %ld\n", rand, spatialObjects.size());
-        if (isSubdivided && canMerge()) {
-            merge();
-        }
         return;
     }
 
     if (isSubdivided) {
-        for (auto& child : children) {
-            // auto rand = std::rand() % 100;
-            // printf("Before remove: %d %ld\n", rand, child->spatialObjects.size());
-            child->remove(object);
-            // printf("After remove: %d %ld\n", rand, child->spatialObjects.size());
+        auto childIndex = getChildIndex((*it)->getPosition().first, (*it)->getPosition().second);
+        if (childIndex != -1) {
+            children[childIndex]->remove(object);
             if (canMerge()) {
                 merge();
-                break;
             }
         }
     }
@@ -167,7 +164,6 @@ void OptimizedSpatialIndex<T>::clear() {
     spatialObjects.clear();
     if (isSubdivided) {
         for (auto& child : children) {
-            printf("Clearing child\n");
             child->clear();
         }
     }
