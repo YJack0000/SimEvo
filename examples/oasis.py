@@ -9,15 +9,15 @@ from utils.visualize import visualize_objects
 
 
 def distribute_food_like_oasis(env, food_count):
-    distribute_food_randomly(env, food_count / 2, (800, 800), (1200, 1200))
-    distribute_food_randomly(env, food_count / 2, (600, 600), (1500, 1500))
+    distribute_food_randomly(env, int(food_count / 2), (800, 800), (1200, 1200))
+    distribute_food_randomly(env, int(food_count / 2), (600, 600), (1500, 1500))
 
 
 env = Environment(2000, 2000)
 
-setup_base_organism(env, 20)
+setup_base_organism(env, 50)
 
-for i in range(100):
+for i in range(200):
     print("=========================================")
     print(f"Gen {i} th")
 
