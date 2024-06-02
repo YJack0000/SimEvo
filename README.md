@@ -35,21 +35,18 @@ SimSel comprises a high-performance simulation engine written in C++ for handlin
 
 ### Components:
 
-* **Genetic Traits and Organism Definition (C++)**: Models organisms with specific genetic traits that affect their survival and reproduction.
-* **Environmental Model (C++)**: A dynamic model of the environment, including resources like food, which organisms interact with.
-* **Simulation Engine (C++)**: The core component that runs the simulation, applying rules of natural selection and tracking the evolution of populations over time.
-* **Python API (C++ and Python via pybind11)**: Provides a user-friendly interface for defining simulations, including organisms, their genes, and environmental settings.
+SimEvo integrates a high-performance C++ simulation engine with Python bindings for ease of use. Key architectural components include:
+
+* **Core Simulation Engine (C++)**: Manages the dynamics of natural selection and organism interactions.
+* **Python API (C++/Python via pybind11)**: Allows users to define and manipulate the simulation parameters easily.
+* **Spatial Indexing (Quadtree)**: Optimizes computational tasks related to spatial relationships and interactions among entities.
 
 ### Spatial Indexing Data Structure
 
-Spatial indexing is critical in simulations of natural environments, where the efficient querying of organism positions and interactions can drastically reduce computational overhead. By indexing the spatial data, SimSel can quickly perform operations such as locating nearby food sources for organisms or detecting potential mates within a specified radius.
+Spatial indexing is crucial for efficiently managing the interactions within the simulation. SimEvo uses a Quadtree for spatial indexing to enhance performance significantly:
 
-#### Abstraction Layer
-SimSel introduces an abstraction layer for spatial indexing, encapsulated by the interfaces `ISpatialIndex` and `ISpatialObject`. This design allows for future expansions or modifications to the underlying spatial data structures without necessitating changes in the core simulation logic.
-
-**ISpatialIndex Interface**: Defines the methods for adding, removing, and querying spatial objects. This interface is pivotal for integrating different spatial data structures according to the simulation's needs.
-
-**ISpatialObject Interface**: Represents any entity within the simulation environment that occupies space, such as organisms and food items. This interface ensures that the spatial index can manage a variety of object types, making the simulation more versatile.
+* **Default Implementation (Brute-force)**: Suitable for simulations with fewer entities.
+* **Optimized Implementation (Quadtree)**: Ideal for dense simulations, significantly reducing computational overhead and improving interaction efficiency.
 
 ### Default and Optimized Implementations
 
@@ -85,31 +82,35 @@ The SimSel library offers a Python API designed for simplicity and ease of use, 
 - **Initialization**:
   - `Genes(sequence)`: Constructs a `Genes` object with a genetic sequence represented as a string (e.g., "ABCD").
 
-
 ### Python Script Examples
 
-The script sets up a SimSel simulation in a 500x500 space, initializing 10 "ABCD" gene organisms and distributing food to model resource scarcity. Operating in an "optimize" mode for efficiency, it cycles through 100 generations, each time scattering food and advancing the simulation to observe natural selection as organisms interact, feed, and reproduce based on genetic traits.
+The script sets up a SimSel simulation in a 500x500 space, initializing 10 "ABCD" gene organisms and distributing food to model resource scarcity. Operating in an "optimize" mode for efficiency, it cycles through 100 generations, each time scattering food and advancing the simulation to observe natural selection as organisms interact, feed, and reproduce based on genetic traits. You can find more examples in [examples](/examples). 
 
 ```python
-from SimEvo.core import Environment, Organism, Genes
+from simevopy import Environment, Organism, Genes
 import random
 
+# Setup base organisms in the environment
 def setup_base_organism(env, count=10):
     for _ in range(count):
         x = random.randint(0, env.width - 1)
         y = random.randint(0, env.height - 1)
         env.add_organism(Organism(Genes("ABCD")), x, y)
 
+# Distribute food randomly within the environment
 def distribute_food_randomly(env, food_count=50):
     for _ in range(food_count):
         x = random.randint(0, env.width - 1)
         y = random.randint(0, env.height - 1)
         env.add_food(x, y)
 
+# Create an optimized environment
 env = Environment(500, 500, type="optimize")
 
+# Initialize organisms
 setup_base_organism(env)
 
+# Run the simulation over 100 generations
 for i in range(100):
     print(f"Gen {i} th")
     distribute_food_randomly(env, 100)
