@@ -1,0 +1,25 @@
+\doxysection{Food.\+hpp}
+\hypertarget{_food_8hpp_source}{}\label{_food_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/core/Food.hpp@{/Users/yjack/GitHub/SimEvo/include/core/Food.hpp}}
+\mbox{\hyperlink{_food_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ FOOD\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ FOOD\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_environment_object_8hpp}{EnvironmentObject.hpp}}"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{enum\ class}\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2ef}{FoodState}}\ \{\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efaa56278fcd527ad6b4619050916ca2ca8}{FRESH}},\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efad72e4ac8034a4a44f915cdd4deacc329}{EATEN}}\ \};}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_food}{Food}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_environment_object}{EnvironmentObject}}\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_food_a75d4d7f76fd495cc8133302ca9fdc485}{Food}}()\ :\ \mbox{\hyperlink{class_environment_object}{EnvironmentObject}}(0,\ 0)\ \{\}}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_food_a523a7bb919e87201ad6fb18071cfa3a2}{canBeEaten}}()\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_food_af1d6a93780a1933e98732070efc493c0}{state}}\ ==\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efaa56278fcd527ad6b4619050916ca2ca8}{FoodState::FRESH}};\ \}}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_food_a304f6aeb0717d0e4e2a8b469c5b47e9f}{eaten}}()\ \{\ \mbox{\hyperlink{class_food_af1d6a93780a1933e98732070efc493c0}{state}}\ =\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efad72e4ac8034a4a44f915cdd4deacc329}{FoodState::EATEN}};\ \}}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_food_a12950531ea0a24fe3daf4e7f6afa45e2}{getEnergy}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ 500;\ \}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2ef}{FoodState}}\ \mbox{\hyperlink{class_food_af1d6a93780a1933e98732070efc493c0}{state}}\ =\ \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efaa56278fcd527ad6b4619050916ca2ca8}{FoodState::FRESH}};}
+\DoxyCodeLine{00017\ \};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

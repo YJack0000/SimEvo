@@ -1,0 +1,33 @@
+\doxysection{Environment\+Object.\+hpp}
+\hypertarget{_environment_object_8hpp_source}{}\label{_environment_object_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/core/EnvironmentObject.hpp@{/Users/yjack/GitHub/SimEvo/include/core/EnvironmentObject.hpp}}
+\mbox{\hyperlink{_environment_object_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ BASE\_ENVIRONMENT\_OBJECT\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ BASE\_ENVIRONMENT\_OBJECT\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid.hpp>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid\_generators.hpp>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_environment_object}{EnvironmentObject}}\ \{}
+\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581}{EnvironmentObject}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{class_environment_object_a35b329b95c29586d24a0229bb00c9af2}{id}}(boost::uuids::random\_generator()()),\ \mbox{\hyperlink{class_environment_object_aaca3b93523607c73296af9af57d9c26e}{position}}(std::make\_pair(x,\ y))\ \{\}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ boost::uuids::uuid\ \mbox{\hyperlink{class_environment_object_a28d2899142edf5a7dff2bdf95de36679}{getId}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_environment_object_a35b329b95c29586d24a0229bb00c9af2}{id}};\ \}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_environment_object_a0af91b33a81974497da617c5761ed5f9}{\string~EnvironmentObject}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_object_aea6d70846263243ca3a33a626aea722d}{postIteration}}()\ \{\};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{comment}{//\ [TODO]\ change\ this\ -\/\ very\ bad\ implementation\ in\ order\ to\ make\ organism}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//\ move}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{virtual}\ std::pair<float,\ float>\ \mbox{\hyperlink{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a}{getPosition}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_environment_object_aaca3b93523607c73296af9af57d9c26e}{position}};\ \}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942}{setPosition}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ \{\ \mbox{\hyperlink{class_environment_object_aaca3b93523607c73296af9af57d9c26e}{position}}\ =\ std::make\_pair(x,\ y);\ \}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00023\ \ \ \ \ boost::uuids::uuid\ \mbox{\hyperlink{class_environment_object_a35b329b95c29586d24a0229bb00c9af2}{id}};}
+\DoxyCodeLine{00024\ \ \ \ \ std::pair<float,\ float>\ \mbox{\hyperlink{class_environment_object_aaca3b93523607c73296af9af57d9c26e}{position}};}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

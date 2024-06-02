@@ -1,0 +1,962 @@
+\doxysection{gtest-\/matchers.h}
+\hypertarget{gtest-matchers_8h_source}{}\label{gtest-matchers_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/matchers.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/matchers.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework\ (Google\ Test)}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ implements\ just\ enough\ of\ the\ matcher\ interface\ to\ allow}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ EXPECT\_DEATH\ and\ friends\ to\ accept\ a\ matcher\ argument.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_MATCHERS\_H\_}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_MATCHERS\_H\_}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <ostream>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/printers.h"{}}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/internal.h"{}}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ MSVC\ warning\ C5046\ is\ new\ as\ of\ VS2017\ version\ 15.8.}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#if\ defined(\_MSC\_VER)\ \&\&\ \_MSC\_VER\ >=\ 1915}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ GTEST\_MAYBE\_5046\_\ 5046}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#define\ GTEST\_MAYBE\_5046\_}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(}
+\DoxyCodeLine{00060\ \ \ \ \ 4251\ GTEST\_MAYBE\_5046\_\ \textcolor{comment}{/*\ class\ A\ needs\ to\ have\ dll-\/interface\ to\ be\ used\ by}}
+\DoxyCodeLine{00061\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ clients\ of\ class\ B\ */}}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{/*\ Symbol\ involving\ type\ with\ internal\ linkage\ not\ defined\ */})}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ To\ implement\ a\ matcher\ Foo\ for\ type\ T,\ define:}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//\ \ \ 1.\ a\ class\ FooMatcherMatcher\ that\ implements\ the\ matcher\ interface:}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ \ \ \ \ using\ is\_gtest\_matcher\ =\ void;}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ \ \ \ \ bool\ MatchAndExplain(const\ T\&,\ std::ostream*);}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ \ \ \ \ \ \ (MatchResultListener*\ can\ also\ be\ used\ instead\ of\ std::ostream*)}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ \ \ \ \ void\ DescribeTo(std::ostream*);}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ \ \ \ \ void\ DescribeNegationTo(std::ostream*);}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ \ \ 2.\ a\ factory\ function\ that\ creates\ a\ Matcher<T>\ object\ from\ a}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ \ \ \ \ \ FooMatcherMatcher.}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{class\ }MatchResultListener\ \{}
+\DoxyCodeLine{00078\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00079\ \ \ \textcolor{comment}{//\ Creates\ a\ listener\ object\ with\ the\ given\ underlying\ ostream.\ \ The}}
+\DoxyCodeLine{00080\ \ \ \textcolor{comment}{//\ listener\ does\ not\ own\ the\ ostream,\ and\ does\ not\ dereference\ it}}
+\DoxyCodeLine{00081\ \ \ \textcolor{comment}{//\ in\ the\ constructor\ or\ destructor.}}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{explicit}\ MatchResultListener(::std::ostream*\ os)\ :\ stream\_(os)\ \{\}}
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{virtual}\ \string~MatchResultListener()\ =\ 0;\ \ \textcolor{comment}{//\ Makes\ this\ class\ abstract.}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{comment}{//\ Streams\ x\ to\ the\ underlying\ ostream;\ does\ nothing\ if\ the\ ostream}}
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ is\ NULL.}}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00088\ \ \ MatchResultListener\&\ operator<<(\textcolor{keyword}{const}\ T\&\ x)\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordflow}{if}\ (stream\_\ !=\ \textcolor{keyword}{nullptr})\ *stream\_\ <<\ x;}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00091\ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//\ Returns\ the\ underlying\ ostream.}}
+\DoxyCodeLine{00094\ \ \ ::std::ostream*\ stream()\ \{\ \textcolor{keywordflow}{return}\ stream\_;\ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ listener\ is\ interested\ in\ an\ explanation}}
+\DoxyCodeLine{00097\ \ \ \textcolor{comment}{//\ of\ the\ match\ result.\ \ A\ matcher's\ MatchAndExplain()\ method\ can\ use}}
+\DoxyCodeLine{00098\ \ \ \textcolor{comment}{//\ this\ information\ to\ avoid\ generating\ the\ explanation\ when\ no\ one}}
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//\ intends\ to\ hear\ it.}}
+\DoxyCodeLine{00100\ \ \ \textcolor{keywordtype}{bool}\ IsInterested()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ stream\_\ !=\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00103\ \ \ ::std::ostream*\ \textcolor{keyword}{const}\ stream\_;}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ MatchResultListener(\textcolor{keyword}{const}\ MatchResultListener\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00106\ \ \ MatchResultListener\&\ operator=(\textcolor{keyword}{const}\ MatchResultListener\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00107\ \};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{keyword}{inline}\ MatchResultListener::\string~MatchResultListener()\ \{\}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ An\ instance\ of\ a\ subclass\ of\ this\ knows\ how\ to\ describe\ itself\ as\ a}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//\ matcher.}}
+\DoxyCodeLine{00113\ \textcolor{keyword}{class\ }GTEST\_API\_\ MatcherDescriberInterface\ \{}
+\DoxyCodeLine{00114\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{virtual}\ \string~MatcherDescriberInterface()\ \{\}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \textcolor{comment}{//\ Describes\ this\ matcher\ to\ an\ ostream.\ \ The\ function\ should\ print}}
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//\ a\ verb\ phrase\ that\ describes\ the\ property\ a\ value\ matching\ this}}
+\DoxyCodeLine{00119\ \ \ \textcolor{comment}{//\ matcher\ should\ have.\ \ The\ subject\ of\ the\ verb\ phrase\ is\ the\ value}}
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ being\ matched.\ \ For\ example,\ the\ DescribeTo()\ method\ of\ the\ Gt(7)}}
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ matcher\ prints\ "{}is\ greater\ than\ 7"{}.}}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\ \textcolor{keyword}{const}\ =\ 0;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ Describes\ the\ negation\ of\ this\ matcher\ to\ an\ ostream.\ \ For}}
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//\ example,\ if\ the\ description\ of\ this\ matcher\ is\ "{}is\ greater\ than}}
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//\ 7"{},\ the\ negated\ description\ could\ be\ "{}is\ not\ greater\ than\ 7"{}.}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ You\ are\ not\ required\ to\ override\ this\ when\ implementing}}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ MatcherInterface,\ but\ it\ is\ highly\ advised\ so\ that\ your\ matcher}}
+\DoxyCodeLine{00129\ \ \ \textcolor{comment}{//\ can\ produce\ good\ error\ messages.}}
+\DoxyCodeLine{00130\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ DescribeNegationTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00131\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}not\ ("{}};}
+\DoxyCodeLine{00132\ \ \ \ \ DescribeTo(os);}
+\DoxyCodeLine{00133\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00134\ \ \ \}}
+\DoxyCodeLine{00135\ \};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ The\ implementation\ of\ a\ matcher.}}
+\DoxyCodeLine{00138\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00139\ \textcolor{keyword}{class\ }MatcherInterface\ :\ \textcolor{keyword}{public}\ MatcherDescriberInterface\ \{}
+\DoxyCodeLine{00140\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00141\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ matcher\ matches\ x;\ also\ explains\ the}}
+\DoxyCodeLine{00142\ \ \ \textcolor{comment}{//\ match\ result\ to\ 'listener'\ if\ necessary\ (see\ the\ next\ paragraph),\ in}}
+\DoxyCodeLine{00143\ \ \ \textcolor{comment}{//\ the\ form\ of\ a\ non-\/restrictive\ relative\ clause\ ("{}which\ ..."{},}}
+\DoxyCodeLine{00144\ \ \ \textcolor{comment}{//\ "{}whose\ ..."{},\ etc)\ that\ describes\ x.\ \ For\ example,\ the}}
+\DoxyCodeLine{00145\ \ \ \textcolor{comment}{//\ MatchAndExplain()\ method\ of\ the\ Pointee(...)\ matcher\ should}}
+\DoxyCodeLine{00146\ \ \ \textcolor{comment}{//\ generate\ an\ explanation\ like\ "{}which\ points\ to\ ..."{}.}}
+\DoxyCodeLine{00147\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00148\ \ \ \textcolor{comment}{//\ Implementations\ of\ MatchAndExplain()\ should\ add\ an\ explanation\ of}}
+\DoxyCodeLine{00149\ \ \ \textcolor{comment}{//\ the\ match\ result\ *if\ and\ only\ if*\ they\ can\ provide\ additional}}
+\DoxyCodeLine{00150\ \ \ \textcolor{comment}{//\ information\ that's\ not\ already\ present\ (or\ not\ obvious)\ in\ the}}
+\DoxyCodeLine{00151\ \ \ \textcolor{comment}{//\ print-\/out\ of\ x\ and\ the\ matcher's\ description.\ \ Whether\ the\ match}}
+\DoxyCodeLine{00152\ \ \ \textcolor{comment}{//\ succeeds\ is\ not\ a\ factor\ in\ deciding\ whether\ an\ explanation\ is}}
+\DoxyCodeLine{00153\ \ \ \textcolor{comment}{//\ needed,\ as\ sometimes\ the\ caller\ needs\ to\ print\ a\ failure\ message}}
+\DoxyCodeLine{00154\ \ \ \textcolor{comment}{//\ when\ the\ match\ succeeds\ (e.g.\ when\ the\ matcher\ is\ used\ inside}}
+\DoxyCodeLine{00155\ \ \ \textcolor{comment}{//\ Not()).}}
+\DoxyCodeLine{00156\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00157\ \ \ \textcolor{comment}{//\ For\ example,\ a\ "{}has\ at\ least\ 10\ elements"{}\ matcher\ should\ explain}}
+\DoxyCodeLine{00158\ \ \ \textcolor{comment}{//\ what\ the\ actual\ element\ count\ is,\ regardless\ of\ the\ match\ result,}}
+\DoxyCodeLine{00159\ \ \ \textcolor{comment}{//\ as\ it\ is\ useful\ information\ to\ the\ reader;\ on\ the\ other\ hand,\ an}}
+\DoxyCodeLine{00160\ \ \ \textcolor{comment}{//\ "{}is\ empty"{}\ matcher\ probably\ only\ needs\ to\ explain\ what\ the\ actual}}
+\DoxyCodeLine{00161\ \ \ \textcolor{comment}{//\ size\ is\ when\ the\ match\ fails,\ as\ it's\ redundant\ to\ say\ that\ the}}
+\DoxyCodeLine{00162\ \ \ \textcolor{comment}{//\ size\ is\ 0\ when\ the\ value\ is\ already\ known\ to\ be\ empty.}}
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00164\ \ \ \textcolor{comment}{//\ You\ should\ override\ this\ method\ when\ defining\ a\ new\ matcher.}}
+\DoxyCodeLine{00165\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00166\ \ \ \textcolor{comment}{//\ It's\ the\ responsibility\ of\ the\ caller\ (Google\ Test)\ to\ guarantee}}
+\DoxyCodeLine{00167\ \ \ \textcolor{comment}{//\ that\ 'listener'\ is\ not\ NULL.\ \ This\ helps\ to\ simplify\ a\ matcher's}}
+\DoxyCodeLine{00168\ \ \ \textcolor{comment}{//\ implementation\ when\ it\ doesn't\ care\ about\ the\ performance,\ as\ it}}
+\DoxyCodeLine{00169\ \ \ \textcolor{comment}{//\ can\ talk\ to\ 'listener'\ without\ checking\ its\ validity\ first.}}
+\DoxyCodeLine{00170\ \ \ \textcolor{comment}{//\ However,\ in\ order\ to\ implement\ dummy\ listeners\ efficiently,}}
+\DoxyCodeLine{00171\ \ \ \textcolor{comment}{//\ listener-\/>stream()\ may\ be\ NULL.}}
+\DoxyCodeLine{00172\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ MatchAndExplain(T\ x,\ MatchResultListener*\ listener)\ \textcolor{keyword}{const}\ =\ 0;}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \textcolor{comment}{//\ Inherits\ these\ methods\ from\ MatcherDescriberInterface:}}
+\DoxyCodeLine{00175\ \ \ \textcolor{comment}{//\ \ \ virtual\ void\ DescribeTo(::std::ostream*\ os)\ const\ =\ 0;}}
+\DoxyCodeLine{00176\ \ \ \textcolor{comment}{//\ \ \ virtual\ void\ DescribeNegationTo(::std::ostream*\ os)\ const;}}
+\DoxyCodeLine{00177\ \};}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \textcolor{keyword}{struct\ }AnyEq\ \{}
+\DoxyCodeLine{00182\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00183\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ ==\ b;}
+\DoxyCodeLine{00185\ \ \ \}}
+\DoxyCodeLine{00186\ \};}
+\DoxyCodeLine{00187\ \textcolor{keyword}{struct\ }AnyNe\ \{}
+\DoxyCodeLine{00188\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00189\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ !=\ b;}
+\DoxyCodeLine{00191\ \ \ \}}
+\DoxyCodeLine{00192\ \};}
+\DoxyCodeLine{00193\ \textcolor{keyword}{struct\ }AnyLt\ \{}
+\DoxyCodeLine{00194\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00195\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ <\ b;}
+\DoxyCodeLine{00197\ \ \ \}}
+\DoxyCodeLine{00198\ \};}
+\DoxyCodeLine{00199\ \textcolor{keyword}{struct\ }AnyGt\ \{}
+\DoxyCodeLine{00200\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00201\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ >\ b;}
+\DoxyCodeLine{00203\ \ \ \}}
+\DoxyCodeLine{00204\ \};}
+\DoxyCodeLine{00205\ \textcolor{keyword}{struct\ }AnyLe\ \{}
+\DoxyCodeLine{00206\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00207\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ <=\ b;}
+\DoxyCodeLine{00209\ \ \ \}}
+\DoxyCodeLine{00210\ \};}
+\DoxyCodeLine{00211\ \textcolor{keyword}{struct\ }AnyGe\ \{}
+\DoxyCodeLine{00212\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ B>}
+\DoxyCodeLine{00213\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ A\&\ a,\ \textcolor{keyword}{const}\ B\&\ b)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keywordflow}{return}\ a\ >=\ b;}
+\DoxyCodeLine{00215\ \ \ \}}
+\DoxyCodeLine{00216\ \};}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{comment}{//\ A\ match\ result\ listener\ that\ ignores\ the\ explanation.}}
+\DoxyCodeLine{00219\ \textcolor{keyword}{class\ }DummyMatchResultListener\ :\ \textcolor{keyword}{public}\ MatchResultListener\ \{}
+\DoxyCodeLine{00220\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00221\ \ \ DummyMatchResultListener()\ :\ MatchResultListener(nullptr)\ \{\}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00224\ \ \ DummyMatchResultListener(\textcolor{keyword}{const}\ DummyMatchResultListener\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00225\ \ \ DummyMatchResultListener\&\ operator=(\textcolor{keyword}{const}\ DummyMatchResultListener\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00226\ \};}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \textcolor{comment}{//\ A\ match\ result\ listener\ that\ forwards\ the\ explanation\ to\ a\ given}}
+\DoxyCodeLine{00229\ \textcolor{comment}{//\ ostream.\ \ The\ difference\ between\ this\ and\ MatchResultListener\ is}}
+\DoxyCodeLine{00230\ \textcolor{comment}{//\ that\ the\ former\ is\ concrete.}}
+\DoxyCodeLine{00231\ \textcolor{keyword}{class\ }StreamMatchResultListener\ :\ \textcolor{keyword}{public}\ MatchResultListener\ \{}
+\DoxyCodeLine{00232\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00233\ \ \ \textcolor{keyword}{explicit}\ StreamMatchResultListener(::std::ostream*\ os)}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ :\ MatchResultListener(os)\ \{\}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00237\ \ \ StreamMatchResultListener(\textcolor{keyword}{const}\ StreamMatchResultListener\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00238\ \ \ StreamMatchResultListener\&\ operator=(\textcolor{keyword}{const}\ StreamMatchResultListener\&)\ =}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00240\ \};}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{keyword}{struct\ }SharedPayloadBase\ \{}
+\DoxyCodeLine{00243\ \ \ std::atomic<int>\ ref\{1\};}
+\DoxyCodeLine{00244\ \ \ \textcolor{keywordtype}{void}\ Ref()\ \{\ ref.fetch\_add(1,\ std::memory\_order\_relaxed);\ \}}
+\DoxyCodeLine{00245\ \ \ \textcolor{keywordtype}{bool}\ Unref()\ \{\ \textcolor{keywordflow}{return}\ ref.fetch\_sub(1,\ std::memory\_order\_acq\_rel)\ ==\ 1;\ \}}
+\DoxyCodeLine{00246\ \};}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00249\ \textcolor{keyword}{struct\ }SharedPayload\ :\ SharedPayloadBase\ \{}
+\DoxyCodeLine{00250\ \ \ \textcolor{keyword}{explicit}\ SharedPayload(\textcolor{keyword}{const}\ T\&\ v)\ :\ value(v)\ \{\}}
+\DoxyCodeLine{00251\ \ \ \textcolor{keyword}{explicit}\ SharedPayload(T\&\&\ v)\ :\ value(std::move(v))\ \{\}}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Destroy(SharedPayloadBase*\ shared)\ \{}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keyword}{delete}\ \textcolor{keyword}{static\_cast<}SharedPayload*\textcolor{keyword}{>}(shared);}
+\DoxyCodeLine{00255\ \ \ \}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ T\ value;}
+\DoxyCodeLine{00258\ \};}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \textcolor{comment}{//\ An\ internal\ class\ for\ implementing\ Matcher<T>,\ which\ will\ derive}}
+\DoxyCodeLine{00261\ \textcolor{comment}{//\ from\ it.\ \ We\ put\ functionalities\ common\ to\ all\ Matcher<T>}}
+\DoxyCodeLine{00262\ \textcolor{comment}{//\ specializations\ here\ to\ avoid\ code\ duplication.}}
+\DoxyCodeLine{00263\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00264\ \textcolor{keyword}{class\ }MatcherBase\ :\ \textcolor{keyword}{private}\ MatcherDescriberInterface\ \{}
+\DoxyCodeLine{00265\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00266\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ matcher\ matches\ x;\ also\ explains\ the}}
+\DoxyCodeLine{00267\ \ \ \textcolor{comment}{//\ match\ result\ to\ 'listener'.}}
+\DoxyCodeLine{00268\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(\textcolor{keyword}{const}\ T\&\ x,\ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00269\ \ \ \ \ GTEST\_CHECK\_(vtable\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_-\/>match\_and\_explain(*\textcolor{keyword}{this},\ x,\ listener);}
+\DoxyCodeLine{00271\ \ \ \}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ this\ matcher\ matches\ x.}}
+\DoxyCodeLine{00274\ \ \ \textcolor{keywordtype}{bool}\ Matches(\textcolor{keyword}{const}\ T\&\ x)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00275\ \ \ \ \ DummyMatchResultListener\ dummy;}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keywordflow}{return}\ MatchAndExplain(x,\ \&dummy);}
+\DoxyCodeLine{00277\ \ \ \}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \textcolor{comment}{//\ Describes\ this\ matcher\ to\ an\ ostream.}}
+\DoxyCodeLine{00280\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\ \textcolor{keyword}{const}\ \textcolor{keyword}{final}\ \{}
+\DoxyCodeLine{00281\ \ \ \ \ GTEST\_CHECK\_(vtable\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00282\ \ \ \ \ vtable\_-\/>describe(*\textcolor{keyword}{this},\ os,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00283\ \ \ \}}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \textcolor{comment}{//\ Describes\ the\ negation\ of\ this\ matcher\ to\ an\ ostream.}}
+\DoxyCodeLine{00286\ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(::std::ostream*\ os)\ \textcolor{keyword}{const}\ \textcolor{keyword}{final}\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ GTEST\_CHECK\_(vtable\_\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00288\ \ \ \ \ vtable\_-\/>describe(*\textcolor{keyword}{this},\ os,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00289\ \ \ \}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \textcolor{comment}{//\ Explains\ why\ x\ matches,\ or\ doesn't\ match,\ the\ matcher.}}
+\DoxyCodeLine{00292\ \ \ \textcolor{keywordtype}{void}\ ExplainMatchResultTo(\textcolor{keyword}{const}\ T\&\ x,\ ::std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00293\ \ \ \ \ StreamMatchResultListener\ listener(os);}
+\DoxyCodeLine{00294\ \ \ \ \ MatchAndExplain(x,\ \&listener);}
+\DoxyCodeLine{00295\ \ \ \}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \textcolor{comment}{//\ Returns\ the\ describer\ for\ this\ matcher\ object;\ retains\ ownership}}
+\DoxyCodeLine{00298\ \ \ \textcolor{comment}{//\ of\ the\ describer,\ which\ is\ only\ guaranteed\ to\ be\ alive\ when}}
+\DoxyCodeLine{00299\ \ \ \textcolor{comment}{//\ this\ matcher\ object\ is\ alive.}}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{const}\ MatcherDescriberInterface*\ GetDescriber()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keywordflow}{if}\ (vtable\_\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_-\/>get\_describer(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00303\ \ \ \}}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00306\ \ \ MatcherBase()\ :\ vtable\_(nullptr),\ buffer\_()\ \{\}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \textcolor{comment}{//\ Constructs\ a\ matcher\ from\ its\ implementation.}}
+\DoxyCodeLine{00309\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00310\ \ \ \textcolor{keyword}{explicit}\ MatcherBase(\textcolor{keyword}{const}\ MatcherInterface<U>*\ impl)}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ :\ vtable\_(nullptr),\ buffer\_()\ \{}
+\DoxyCodeLine{00312\ \ \ \ \ Init(impl);}
+\DoxyCodeLine{00313\ \ \ \}}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00317\ \ \ MatcherBase(M\&\&\ m)\ :\ vtable\_(nullptr),\ buffer\_()\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00318\ \ \ \ \ Init(std::forward<M>(m));}
+\DoxyCodeLine{00319\ \ \ \}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \ \ MatcherBase(\textcolor{keyword}{const}\ MatcherBase\&\ other)}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ :\ vtable\_(other.vtable\_),\ buffer\_(other.buffer\_)\ \{}
+\DoxyCodeLine{00323\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsShared())\ buffer\_.shared-\/>Ref();}
+\DoxyCodeLine{00324\ \ \ \}}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \ \ MatcherBase\&\ operator=(\textcolor{keyword}{const}\ MatcherBase\&\ other)\ \{}
+\DoxyCodeLine{00327\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{this}\ ==\ \&other)\ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00328\ \ \ \ \ Destroy();}
+\DoxyCodeLine{00329\ \ \ \ \ vtable\_\ =\ other.vtable\_;}
+\DoxyCodeLine{00330\ \ \ \ \ buffer\_\ =\ other.buffer\_;}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsShared())\ buffer\_.shared-\/>Ref();}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00333\ \ \ \}}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ \ \ MatcherBase(MatcherBase\&\&\ other)}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ :\ vtable\_(other.vtable\_),\ buffer\_(other.buffer\_)\ \{}
+\DoxyCodeLine{00337\ \ \ \ \ other.vtable\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00338\ \ \ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \ \ MatcherBase\&\ operator=(MatcherBase\&\&\ other)\ \{}
+\DoxyCodeLine{00341\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{this}\ ==\ \&other)\ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00342\ \ \ \ \ Destroy();}
+\DoxyCodeLine{00343\ \ \ \ \ vtable\_\ =\ other.vtable\_;}
+\DoxyCodeLine{00344\ \ \ \ \ buffer\_\ =\ other.buffer\_;}
+\DoxyCodeLine{00345\ \ \ \ \ other.vtable\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00347\ \ \ \}}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ \ \ \string~MatcherBase()\textcolor{keyword}{\ override\ }\{\ Destroy();\ \}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00352\ \ \ \textcolor{keyword}{struct\ }VTable\ \{}
+\DoxyCodeLine{00353\ \ \ \ \ bool\ (*match\_and\_explain)(\textcolor{keyword}{const}\ MatcherBase\&,\ \textcolor{keyword}{const}\ T\&,}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*);}
+\DoxyCodeLine{00355\ \ \ \ \ void\ (*describe)(\textcolor{keyword}{const}\ MatcherBase\&,\ std::ostream*,\ \textcolor{keywordtype}{bool}\ negation);}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{comment}{//\ Returns\ the\ captured\ object\ if\ it\ implements\ the\ interface,\ otherwise}}
+\DoxyCodeLine{00357\ \ \ \ \ \textcolor{comment}{//\ returns\ the\ MatcherBase\ itself.}}
+\DoxyCodeLine{00358\ \ \ \ \ \textcolor{keyword}{const}\ MatcherDescriberInterface*\ (*get\_describer)(\textcolor{keyword}{const}\ MatcherBase\&);}
+\DoxyCodeLine{00359\ \ \ \ \ \textcolor{comment}{//\ Called\ on\ shared\ instances\ when\ the\ reference\ count\ reaches\ 0.}}
+\DoxyCodeLine{00360\ \ \ \ \ void\ (*shared\_destroy)(SharedPayloadBase*);}
+\DoxyCodeLine{00361\ \ \ \};}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \ \ \textcolor{keywordtype}{bool}\ IsShared()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00364\ \ \ \ \ \textcolor{keywordflow}{return}\ vtable\_\ !=\ \textcolor{keyword}{nullptr}\ \&\&\ vtable\_-\/>shared\_destroy\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00365\ \ \ \}}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00367\ \ \ \textcolor{comment}{//\ If\ the\ implementation\ uses\ a\ listener,\ call\ that.}}
+\DoxyCodeLine{00368\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P>}
+\DoxyCodeLine{00369\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ MatchAndExplainImpl(\textcolor{keyword}{const}\ MatcherBase\&\ m,\ \textcolor{keyword}{const}\ T\&\ value,}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ listener)}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(P::Get(m).MatchAndExplain(value,\ listener-\/>stream()))\ \{}
+\DoxyCodeLine{00372\ \ \ \ \ \textcolor{keywordflow}{return}\ P::Get(m).MatchAndExplain(value,\ listener-\/>stream());}
+\DoxyCodeLine{00373\ \ \ \}}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P>}
+\DoxyCodeLine{00376\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ MatchAndExplainImpl(\textcolor{keyword}{const}\ MatcherBase\&\ m,\ \textcolor{keyword}{const}\ T\&\ value,}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ listener)}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(P::Get(m).MatchAndExplain(value,\ listener))\ \{}
+\DoxyCodeLine{00379\ \ \ \ \ \textcolor{keywordflow}{return}\ P::Get(m).MatchAndExplain(value,\ listener);}
+\DoxyCodeLine{00380\ \ \ \}}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P>}
+\DoxyCodeLine{00383\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ DescribeImpl(\textcolor{keyword}{const}\ MatcherBase\&\ m,\ std::ostream*\ os,}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ negation)\ \{}
+\DoxyCodeLine{00385\ \ \ \ \ \textcolor{keywordflow}{if}\ (negation)\ \{}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ P::Get(m).DescribeNegationTo(os);}
+\DoxyCodeLine{00387\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ P::Get(m).DescribeTo(os);}
+\DoxyCodeLine{00389\ \ \ \ \ \}}
+\DoxyCodeLine{00390\ \ \ \}}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P>}
+\DoxyCodeLine{00393\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ MatcherDescriberInterface*\ GetDescriberImpl(}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \textcolor{keyword}{const}\ MatcherBase\&\ m)\ \{}
+\DoxyCodeLine{00395\ \ \ \ \ \textcolor{comment}{//\ If\ the\ impl\ is\ a\ MatcherDescriberInterface,\ then\ return\ it.}}
+\DoxyCodeLine{00396\ \ \ \ \ \textcolor{comment}{//\ Otherwise\ use\ MatcherBase\ itself.}}
+\DoxyCodeLine{00397\ \ \ \ \ \textcolor{comment}{//\ This\ allows\ us\ to\ implement\ the\ GetDescriber()\ function\ without\ support}}
+\DoxyCodeLine{00398\ \ \ \ \ \textcolor{comment}{//\ from\ the\ impl,\ but\ some\ users\ really\ want\ to\ get\ their\ impl\ back\ when}}
+\DoxyCodeLine{00399\ \ \ \ \ \textcolor{comment}{//\ they\ call\ GetDescriber().}}
+\DoxyCodeLine{00400\ \ \ \ \ \textcolor{comment}{//\ We\ use\ std::get\ on\ a\ tuple\ as\ a\ workaround\ of\ not\ having\ \`{}if\ constexpr`.}}
+\DoxyCodeLine{00401\ \ \ \ \ \textcolor{keywordflow}{return}\ std::get<(}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ std::is\_convertible<\textcolor{keyword}{decltype}(\&P::Get(m)),}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ MatcherDescriberInterface*>::value}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \ \ \ \ ?\ 1}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \ \ \ \ :\ 0)>(std::make\_tuple(\&m,\ \&P::Get(m)));}
+\DoxyCodeLine{00406\ \ \ \}}
+\DoxyCodeLine{00407\ }
+\DoxyCodeLine{00408\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P>}
+\DoxyCodeLine{00409\ \ \ \textcolor{keyword}{const}\ VTable*\ GetVTable()\ \{}
+\DoxyCodeLine{00410\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ VTable\ kVTable\ =\ \{\&MatchAndExplainImpl<P>,}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&DescribeImpl<P>,\ \&GetDescriberImpl<P>,}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ P::shared\_destroy\};}
+\DoxyCodeLine{00413\ \ \ \ \ \textcolor{keywordflow}{return}\ \&kVTable;}
+\DoxyCodeLine{00414\ \ \ \}}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \ \ \textcolor{keyword}{union\ }Buffer\ \{}
+\DoxyCodeLine{00417\ \ \ \ \ \textcolor{comment}{//\ Add\ some\ types\ to\ give\ Buffer\ some\ common\ alignment/size\ use\ cases.}}
+\DoxyCodeLine{00418\ \ \ \ \ \textcolor{keywordtype}{void}*\ ptr;}
+\DoxyCodeLine{00419\ \ \ \ \ \textcolor{keywordtype}{double}\ d;}
+\DoxyCodeLine{00420\ \ \ \ \ int64\_t\ i;}
+\DoxyCodeLine{00421\ \ \ \ \ \textcolor{comment}{//\ And\ add\ one\ for\ the\ out-\/of-\/line\ cases.}}
+\DoxyCodeLine{00422\ \ \ \ \ SharedPayloadBase*\ shared;}
+\DoxyCodeLine{00423\ \ \ \};}
+\DoxyCodeLine{00424\ }
+\DoxyCodeLine{00425\ \ \ \textcolor{keywordtype}{void}\ Destroy()\ \{}
+\DoxyCodeLine{00426\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsShared()\ \&\&\ buffer\_.shared-\/>Unref())\ \{}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ vtable\_-\/>shared\_destroy(buffer\_.shared);}
+\DoxyCodeLine{00428\ \ \ \ \ \}}
+\DoxyCodeLine{00429\ \ \ \}}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00431\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M>}
+\DoxyCodeLine{00432\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ IsInlined()\ \{}
+\DoxyCodeLine{00433\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{sizeof}(M)\ <=\ \textcolor{keyword}{sizeof}(Buffer)\ \&\&\ \textcolor{keyword}{alignof}(M)\ <=\ \textcolor{keyword}{alignof}(Buffer)\ \&\&}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ std::is\_trivially\_copy\_constructible<M>::value\ \&\&}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ std::is\_trivially\_destructible<M>::value;}
+\DoxyCodeLine{00436\ \ \ \}}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00438\ \ \ template\ <typename\ M,\ bool\ =\ MatcherBase::IsInlined<M>()>}
+\DoxyCodeLine{00439\ \ \ \textcolor{keyword}{struct\ }ValuePolicy\ \{}
+\DoxyCodeLine{00440\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ M\&\ Get(\textcolor{keyword}{const}\ MatcherBase\&\ m)\ \{}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \textcolor{comment}{//\ When\ inlined\ along\ with\ Init,\ need\ to\ be\ explicit\ to\ avoid\ violating}}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \textcolor{comment}{//\ strict\ aliasing\ rules.}}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \textcolor{keyword}{const}\ M*\ ptr\ =}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }M*\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&m.buffer\_));}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *ptr;}
+\DoxyCodeLine{00446\ \ \ \ \ \}}
+\DoxyCodeLine{00447\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Init(MatcherBase\&\ m,\ M\ impl)\ \{}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ ::new\ (\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}*\textcolor{keyword}{>}(\&m.buffer\_))\ M(impl);}
+\DoxyCodeLine{00449\ \ \ \ \ \}}
+\DoxyCodeLine{00450\ \ \ \ \ static\ constexpr\ auto\ shared\_destroy\ =\ \textcolor{keywordtype}{nullptr};}
+\DoxyCodeLine{00451\ \ \ \};}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00453\ \ \ template\ <typename\ M>}
+\DoxyCodeLine{00454\ \ \ struct\ ValuePolicy<M,\ false>\ \{}
+\DoxyCodeLine{00455\ \ \ \ \ \textcolor{keyword}{using\ }Shared\ =\ SharedPayload<M>;}
+\DoxyCodeLine{00456\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ M\&\ Get(\textcolor{keyword}{const}\ MatcherBase\&\ m)\ \{}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}Shared*\textcolor{keyword}{>}(m.buffer\_.shared)-\/>value;}
+\DoxyCodeLine{00458\ \ \ \ \ \}}
+\DoxyCodeLine{00459\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg>}
+\DoxyCodeLine{00460\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Init(MatcherBase\&\ m,\ Arg\&\&\ arg)\ \{}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ m.buffer\_.shared\ =\ \textcolor{keyword}{new}\ Shared(std::forward<Arg>(arg));}
+\DoxyCodeLine{00462\ \ \ \ \ \}}
+\DoxyCodeLine{00463\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ shared\_destroy\ =\ \&Shared::Destroy;}
+\DoxyCodeLine{00464\ \ \ \};}
+\DoxyCodeLine{00465\ }
+\DoxyCodeLine{00466\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U,\ \textcolor{keywordtype}{bool}\ B>}
+\DoxyCodeLine{00467\ \ \ \textcolor{keyword}{struct\ }ValuePolicy<const\ MatcherInterface<U>*,\ B>\ \{}
+\DoxyCodeLine{00468\ \ \ \ \ \textcolor{keyword}{using\ }M\ =\ \textcolor{keyword}{const}\ MatcherInterface<U>;}
+\DoxyCodeLine{00469\ \ \ \ \ \textcolor{keyword}{using\ }Shared\ =\ SharedPayload<std::unique\_ptr<M>>;}
+\DoxyCodeLine{00470\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ M\&\ Get(\textcolor{keyword}{const}\ MatcherBase\&\ m)\ \{}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}Shared*\textcolor{keyword}{>}(m.buffer\_.shared)-\/>value;}
+\DoxyCodeLine{00472\ \ \ \ \ \}}
+\DoxyCodeLine{00473\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Init(MatcherBase\&\ m,\ M*\ impl)\ \{}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ m.buffer\_.shared\ =\ \textcolor{keyword}{new}\ Shared(std::unique\_ptr<M>(impl));}
+\DoxyCodeLine{00475\ \ \ \ \ \}}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ shared\_destroy\ =\ \&Shared::Destroy;}
+\DoxyCodeLine{00478\ \ \ \};}
+\DoxyCodeLine{00479\ }
+\DoxyCodeLine{00480\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M>}
+\DoxyCodeLine{00481\ \ \ \textcolor{keywordtype}{void}\ Init(M\&\&\ m)\ \{}
+\DoxyCodeLine{00482\ \ \ \ \ \textcolor{keyword}{using\ }MM\ =\ \textcolor{keyword}{typename}\ std::decay<M>::type;}
+\DoxyCodeLine{00483\ \ \ \ \ \textcolor{keyword}{using\ }Policy\ =\ ValuePolicy<MM>;}
+\DoxyCodeLine{00484\ \ \ \ \ vtable\_\ =\ GetVTable<Policy>();}
+\DoxyCodeLine{00485\ \ \ \ \ Policy::Init(*\textcolor{keyword}{this},\ std::forward<M>(m));}
+\DoxyCodeLine{00486\ \ \ \}}
+\DoxyCodeLine{00487\ }
+\DoxyCodeLine{00488\ \ \ \textcolor{keyword}{const}\ VTable*\ vtable\_;}
+\DoxyCodeLine{00489\ \ \ Buffer\ buffer\_;}
+\DoxyCodeLine{00490\ \};}
+\DoxyCodeLine{00491\ }
+\DoxyCodeLine{00492\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00493\ }
+\DoxyCodeLine{00494\ \textcolor{comment}{//\ A\ Matcher<T>\ is\ a\ copyable\ and\ IMMUTABLE\ (except\ by\ assignment)}}
+\DoxyCodeLine{00495\ \textcolor{comment}{//\ object\ that\ can\ check\ whether\ a\ value\ of\ type\ T\ matches.\ \ The}}
+\DoxyCodeLine{00496\ \textcolor{comment}{//\ implementation\ of\ Matcher<T>\ is\ just\ a\ std::shared\_ptr\ to\ const}}
+\DoxyCodeLine{00497\ \textcolor{comment}{//\ MatcherInterface<T>.\ \ Don't\ inherit\ from\ Matcher!}}
+\DoxyCodeLine{00498\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00499\ \textcolor{keyword}{class\ }Matcher\ :\ \textcolor{keyword}{public}\ internal::MatcherBase<T>\ \{}
+\DoxyCodeLine{00500\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00501\ \ \ \textcolor{comment}{//\ Constructs\ a\ null\ matcher.\ \ Needed\ for\ storing\ Matcher\ objects\ in\ STL}}
+\DoxyCodeLine{00502\ \ \ \textcolor{comment}{//\ containers.\ \ A\ default-\/constructed\ matcher\ is\ not\ yet\ initialized.\ \ You}}
+\DoxyCodeLine{00503\ \ \ \textcolor{comment}{//\ cannot\ use\ it\ until\ a\ valid\ value\ has\ been\ assigned\ to\ it.}}
+\DoxyCodeLine{00504\ \ \ \textcolor{keyword}{explicit}\ Matcher()\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00506\ \ \ \textcolor{comment}{//\ Constructs\ a\ matcher\ from\ its\ implementation.}}
+\DoxyCodeLine{00507\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<const\ T\&>*\ impl)}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ :\ internal::MatcherBase<T>(impl)\ \{\}}
+\DoxyCodeLine{00509\ }
+\DoxyCodeLine{00510\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00511\ \ \ \textcolor{keyword}{explicit}\ Matcher(}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \textcolor{keyword}{const}\ MatcherInterface<U>*\ impl,}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<!std::is\_same<U,\ const\ U\&>::value>::type*\ =}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ :\ internal::MatcherBase<T>(impl)\ \{\}}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00519\ \ \ Matcher(M\&\&\ m)\ :\ internal::MatcherBase<T>(std::forward<M>(m))\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00520\ }
+\DoxyCodeLine{00521\ \ \ \textcolor{comment}{//\ Implicit\ constructor\ here\ allows\ people\ to\ write}}
+\DoxyCodeLine{00522\ \ \ \textcolor{comment}{//\ EXPECT\_CALL(foo,\ Bar(5))\ instead\ of\ EXPECT\_CALL(foo,\ Bar(Eq(5)))\ sometimes}}
+\DoxyCodeLine{00523\ \ \ Matcher(T\ value);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00524\ \};}
+\DoxyCodeLine{00525\ }
+\DoxyCodeLine{00526\ \textcolor{comment}{//\ The\ following\ two\ specializations\ allow\ the\ user\ to\ write\ str}}
+\DoxyCodeLine{00527\ \textcolor{comment}{//\ instead\ of\ Eq(str)\ and\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ when\ a\ std::string}}
+\DoxyCodeLine{00528\ \textcolor{comment}{//\ matcher\ is\ expected.}}
+\DoxyCodeLine{00529\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00530\ \textcolor{keyword}{class\ }GTEST\_API\_\ Matcher<const\ std::string\&>}
+\DoxyCodeLine{00531\ \ \ \ \ :\ \textcolor{keyword}{public}\ internal::MatcherBase<const\ std::string\&>\ \{}
+\DoxyCodeLine{00532\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00533\ \ \ Matcher()\ \{\}}
+\DoxyCodeLine{00534\ }
+\DoxyCodeLine{00535\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<const\ std::string\&>*\ impl)}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ :\ internal::MatcherBase<const\ std::string\&>(impl)\ \{\}}
+\DoxyCodeLine{00537\ }
+\DoxyCodeLine{00538\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00540\ \ \ Matcher(M\&\&\ m)\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ :\ internal::MatcherBase<const\ std::string\&>(std::forward<M>(m))\ \{\}}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ str\ instead\ of\ Eq(str)\ sometimes,\ where}}
+\DoxyCodeLine{00544\ \ \ \textcolor{comment}{//\ str\ is\ a\ std::string\ object.}}
+\DoxyCodeLine{00545\ \ \ Matcher(\textcolor{keyword}{const}\ std::string\&\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00546\ }
+\DoxyCodeLine{00547\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ sometimes.}}
+\DoxyCodeLine{00548\ \ \ Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00549\ \};}
+\DoxyCodeLine{00550\ }
+\DoxyCodeLine{00551\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00552\ \textcolor{keyword}{class\ }GTEST\_API\_\ Matcher<std::string>}
+\DoxyCodeLine{00553\ \ \ \ \ :\ \textcolor{keyword}{public}\ internal::MatcherBase<std::string>\ \{}
+\DoxyCodeLine{00554\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00555\ \ \ Matcher()\ \{\}}
+\DoxyCodeLine{00556\ }
+\DoxyCodeLine{00557\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<const\ std::string\&>*\ impl)}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ :\ internal::MatcherBase<std::string>(impl)\ \{\}}
+\DoxyCodeLine{00559\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<std::string>*\ impl)}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ :\ internal::MatcherBase<std::string>(impl)\ \{\}}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00562\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00564\ \ \ Matcher(M\&\&\ m)\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ :\ internal::MatcherBase<std::string>(std::forward<M>(m))\ \{\}}
+\DoxyCodeLine{00566\ }
+\DoxyCodeLine{00567\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ str\ instead\ of\ Eq(str)\ sometimes,\ where}}
+\DoxyCodeLine{00568\ \ \ \textcolor{comment}{//\ str\ is\ a\ string\ object.}}
+\DoxyCodeLine{00569\ \ \ Matcher(\textcolor{keyword}{const}\ std::string\&\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00570\ }
+\DoxyCodeLine{00571\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ sometimes.}}
+\DoxyCodeLine{00572\ \ \ Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00573\ \};}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \textcolor{preprocessor}{\#if\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00576\ \textcolor{comment}{//\ The\ following\ two\ specializations\ allow\ the\ user\ to\ write\ str}}
+\DoxyCodeLine{00577\ \textcolor{comment}{//\ instead\ of\ Eq(str)\ and\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ when\ a\ absl::string\_view}}
+\DoxyCodeLine{00578\ \textcolor{comment}{//\ matcher\ is\ expected.}}
+\DoxyCodeLine{00579\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00580\ \textcolor{keyword}{class\ }GTEST\_API\_\ Matcher<const\ internal::StringView\&>}
+\DoxyCodeLine{00581\ \ \ \ \ :\ \textcolor{keyword}{public}\ internal::MatcherBase<const\ internal::StringView\&>\ \{}
+\DoxyCodeLine{00582\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00583\ \ \ Matcher()\ \{\}}
+\DoxyCodeLine{00584\ }
+\DoxyCodeLine{00585\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<const\ internal::StringView\&>*\ impl)}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ :\ internal::MatcherBase<const\ internal::StringView\&>(impl)\ \{\}}
+\DoxyCodeLine{00587\ }
+\DoxyCodeLine{00588\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00590\ \ \ Matcher(M\&\&\ m)\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ :\ internal::MatcherBase<const\ internal::StringView\&>(std::forward<M>(m))\ \{}
+\DoxyCodeLine{00592\ \ \ \}}
+\DoxyCodeLine{00593\ }
+\DoxyCodeLine{00594\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ str\ instead\ of\ Eq(str)\ sometimes,\ where}}
+\DoxyCodeLine{00595\ \ \ \textcolor{comment}{//\ str\ is\ a\ std::string\ object.}}
+\DoxyCodeLine{00596\ \ \ Matcher(\textcolor{keyword}{const}\ std::string\&\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00597\ }
+\DoxyCodeLine{00598\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ sometimes.}}
+\DoxyCodeLine{00599\ \ \ Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00600\ }
+\DoxyCodeLine{00601\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ pass\ absl::string\_views\ or\ std::string\_views\ directly.}}
+\DoxyCodeLine{00602\ \ \ Matcher(internal::StringView\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00603\ \};}
+\DoxyCodeLine{00604\ }
+\DoxyCodeLine{00605\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00606\ \textcolor{keyword}{class\ }GTEST\_API\_\ Matcher<internal::StringView>}
+\DoxyCodeLine{00607\ \ \ \ \ :\ \textcolor{keyword}{public}\ internal::MatcherBase<internal::StringView>\ \{}
+\DoxyCodeLine{00608\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00609\ \ \ Matcher()\ \{\}}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00611\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<const\ internal::StringView\&>*\ impl)}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ :\ internal::MatcherBase<internal::StringView>(impl)\ \{\}}
+\DoxyCodeLine{00613\ \ \ \textcolor{keyword}{explicit}\ Matcher(\textcolor{keyword}{const}\ MatcherInterface<internal::StringView>*\ impl)}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ :\ internal::MatcherBase<internal::StringView>(impl)\ \{\}}
+\DoxyCodeLine{00615\ }
+\DoxyCodeLine{00616\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ M,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::remove\_reference<}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ M>::type::is\_gtest\_matcher>}
+\DoxyCodeLine{00618\ \ \ Matcher(M\&\&\ m)\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00619\ \ \ \ \ \ \ :\ internal::MatcherBase<internal::StringView>(std::forward<M>(m))\ \{\}}
+\DoxyCodeLine{00620\ }
+\DoxyCodeLine{00621\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ str\ instead\ of\ Eq(str)\ sometimes,\ where}}
+\DoxyCodeLine{00622\ \ \ \textcolor{comment}{//\ str\ is\ a\ std::string\ object.}}
+\DoxyCodeLine{00623\ \ \ Matcher(\textcolor{keyword}{const}\ std::string\&\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00624\ }
+\DoxyCodeLine{00625\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ write\ "{}foo"{}\ instead\ of\ Eq("{}foo"{})\ sometimes.}}
+\DoxyCodeLine{00626\ \ \ Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00628\ \ \ \textcolor{comment}{//\ Allows\ the\ user\ to\ pass\ absl::string\_views\ or\ std::string\_views\ directly.}}
+\DoxyCodeLine{00629\ \ \ Matcher(internal::StringView\ s);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00630\ \};}
+\DoxyCodeLine{00631\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00632\ }
+\DoxyCodeLine{00633\ \textcolor{comment}{//\ Prints\ a\ matcher\ in\ a\ human-\/readable\ format.}}
+\DoxyCodeLine{00634\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00635\ std::ostream\&\ operator<<(std::ostream\&\ os,\ \textcolor{keyword}{const}\ Matcher<T>\&\ matcher)\ \{}
+\DoxyCodeLine{00636\ \ \ matcher.DescribeTo(\&os);}
+\DoxyCodeLine{00637\ \ \ \textcolor{keywordflow}{return}\ os;}
+\DoxyCodeLine{00638\ \}}
+\DoxyCodeLine{00639\ }
+\DoxyCodeLine{00640\ \textcolor{comment}{//\ The\ PolymorphicMatcher\ class\ template\ makes\ it\ easy\ to\ implement\ a}}
+\DoxyCodeLine{00641\ \textcolor{comment}{//\ polymorphic\ matcher\ (i.e.\ a\ matcher\ that\ can\ match\ values\ of\ more}}
+\DoxyCodeLine{00642\ \textcolor{comment}{//\ than\ one\ type,\ e.g.\ Eq(n)\ and\ NotNull()).}}
+\DoxyCodeLine{00643\ \textcolor{comment}{//}}
+\DoxyCodeLine{00644\ \textcolor{comment}{//\ To\ define\ a\ polymorphic\ matcher,\ a\ user\ should\ provide\ an\ Impl}}
+\DoxyCodeLine{00645\ \textcolor{comment}{//\ class\ that\ has\ a\ DescribeTo()\ method\ and\ a\ DescribeNegationTo()}}
+\DoxyCodeLine{00646\ \textcolor{comment}{//\ method,\ and\ define\ a\ member\ function\ (or\ member\ function\ template)}}
+\DoxyCodeLine{00647\ \textcolor{comment}{//}}
+\DoxyCodeLine{00648\ \textcolor{comment}{//\ \ \ bool\ MatchAndExplain(const\ Value\&\ value,}}
+\DoxyCodeLine{00649\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ listener)\ const;}}
+\DoxyCodeLine{00650\ \textcolor{comment}{//}}
+\DoxyCodeLine{00651\ \textcolor{comment}{//\ See\ the\ definition\ of\ NotNull()\ for\ a\ complete\ example.}}
+\DoxyCodeLine{00652\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Impl>}
+\DoxyCodeLine{00653\ \textcolor{keyword}{class\ }PolymorphicMatcher\ \{}
+\DoxyCodeLine{00654\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00655\ \ \ \textcolor{keyword}{explicit}\ PolymorphicMatcher(\textcolor{keyword}{const}\ Impl\&\ an\_impl)\ :\ impl\_(an\_impl)\ \{\}}
+\DoxyCodeLine{00656\ }
+\DoxyCodeLine{00657\ \ \ \textcolor{comment}{//\ Returns\ a\ mutable\ reference\ to\ the\ underlying\ matcher}}
+\DoxyCodeLine{00658\ \ \ \textcolor{comment}{//\ implementation\ object.}}
+\DoxyCodeLine{00659\ \ \ Impl\&\ mutable\_impl()\ \{\ \textcolor{keywordflow}{return}\ impl\_;\ \}}
+\DoxyCodeLine{00660\ }
+\DoxyCodeLine{00661\ \ \ \textcolor{comment}{//\ Returns\ an\ immutable\ reference\ to\ the\ underlying\ matcher}}
+\DoxyCodeLine{00662\ \ \ \textcolor{comment}{//\ implementation\ object.}}
+\DoxyCodeLine{00663\ \ \ \textcolor{keyword}{const}\ Impl\&\ impl()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ impl\_;\ \}}
+\DoxyCodeLine{00664\ }
+\DoxyCodeLine{00665\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00666\ \ \ \textcolor{keyword}{operator}\ Matcher<T>()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00667\ \ \ \ \ \textcolor{keywordflow}{return}\ Matcher<T>(\textcolor{keyword}{new}\ MonomorphicImpl<const\ T\&>(impl\_));}
+\DoxyCodeLine{00668\ \ \ \}}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00670\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00671\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00672\ \ \ \textcolor{keyword}{class\ }MonomorphicImpl\ :\ \textcolor{keyword}{public}\ MatcherInterface<T>\ \{}
+\DoxyCodeLine{00673\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00674\ \ \ \ \ \textcolor{keyword}{explicit}\ MonomorphicImpl(\textcolor{keyword}{const}\ Impl\&\ impl)\ :\ impl\_(impl)\ \{\}}
+\DoxyCodeLine{00675\ }
+\DoxyCodeLine{00676\ \ \ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ override\ }\{\ impl\_.DescribeTo(os);\ \}}
+\DoxyCodeLine{00677\ }
+\DoxyCodeLine{00678\ \ \ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ impl\_.DescribeNegationTo(os);}
+\DoxyCodeLine{00680\ \ \ \ \ \}}
+\DoxyCodeLine{00681\ }
+\DoxyCodeLine{00682\ \ \ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(T\ x,\ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ impl\_.MatchAndExplain(x,\ listener);}
+\DoxyCodeLine{00684\ \ \ \ \ \}}
+\DoxyCodeLine{00685\ }
+\DoxyCodeLine{00686\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00687\ \ \ \ \ \textcolor{keyword}{const}\ Impl\ impl\_;}
+\DoxyCodeLine{00688\ \ \ \};}
+\DoxyCodeLine{00689\ }
+\DoxyCodeLine{00690\ \ \ Impl\ impl\_;}
+\DoxyCodeLine{00691\ \};}
+\DoxyCodeLine{00692\ }
+\DoxyCodeLine{00693\ \textcolor{comment}{//\ Creates\ a\ matcher\ from\ its\ implementation.}}
+\DoxyCodeLine{00694\ \textcolor{comment}{//\ DEPRECATED:\ Especially\ in\ the\ generic\ code,\ prefer:}}
+\DoxyCodeLine{00695\ \textcolor{comment}{//\ \ \ Matcher<T>(new\ MyMatcherImpl<const\ T\&>(...));}}
+\DoxyCodeLine{00696\ \textcolor{comment}{//}}
+\DoxyCodeLine{00697\ \textcolor{comment}{//\ MakeMatcher\ may\ create\ a\ Matcher\ that\ accepts\ its\ argument\ by\ value,\ which}}
+\DoxyCodeLine{00698\ \textcolor{comment}{//\ leads\ to\ unnecessary\ copies\ \&\ lack\ of\ support\ for\ non-\/copyable\ types.}}
+\DoxyCodeLine{00699\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00700\ \textcolor{keyword}{inline}\ Matcher<T>\ MakeMatcher(\textcolor{keyword}{const}\ MatcherInterface<T>*\ impl)\ \{}
+\DoxyCodeLine{00701\ \ \ \textcolor{keywordflow}{return}\ Matcher<T>(impl);}
+\DoxyCodeLine{00702\ \}}
+\DoxyCodeLine{00703\ }
+\DoxyCodeLine{00704\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ from\ its\ implementation.\ \ This\ is}}
+\DoxyCodeLine{00705\ \textcolor{comment}{//\ easier\ to\ use\ than\ the\ PolymorphicMatcher<Impl>\ constructor\ as\ it}}
+\DoxyCodeLine{00706\ \textcolor{comment}{//\ doesn't\ require\ you\ to\ explicitly\ write\ the\ template\ argument,\ e.g.}}
+\DoxyCodeLine{00707\ \textcolor{comment}{//}}
+\DoxyCodeLine{00708\ \textcolor{comment}{//\ \ \ MakePolymorphicMatcher(foo);}}
+\DoxyCodeLine{00709\ \textcolor{comment}{//\ vs}}
+\DoxyCodeLine{00710\ \textcolor{comment}{//\ \ \ PolymorphicMatcher<TypeOfFoo>(foo);}}
+\DoxyCodeLine{00711\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Impl>}
+\DoxyCodeLine{00712\ \textcolor{keyword}{inline}\ PolymorphicMatcher<Impl>\ MakePolymorphicMatcher(\textcolor{keyword}{const}\ Impl\&\ impl)\ \{}
+\DoxyCodeLine{00713\ \ \ \textcolor{keywordflow}{return}\ PolymorphicMatcher<Impl>(impl);}
+\DoxyCodeLine{00714\ \}}
+\DoxyCodeLine{00715\ }
+\DoxyCodeLine{00716\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00717\ \textcolor{comment}{//\ Implements\ a\ matcher\ that\ compares\ a\ given\ value\ with\ a}}
+\DoxyCodeLine{00718\ \textcolor{comment}{//\ pre-\/supplied\ value\ using\ one\ of\ the\ ==,\ <=,\ <,\ etc,\ operators.\ \ The}}
+\DoxyCodeLine{00719\ \textcolor{comment}{//\ two\ values\ being\ compared\ don't\ have\ to\ have\ the\ same\ type.}}
+\DoxyCodeLine{00720\ \textcolor{comment}{//}}
+\DoxyCodeLine{00721\ \textcolor{comment}{//\ The\ matcher\ defined\ here\ is\ polymorphic\ (for\ example,\ Eq(5)\ can\ be}}
+\DoxyCodeLine{00722\ \textcolor{comment}{//\ used\ to\ match\ an\ int,\ a\ short,\ a\ double,\ etc).\ \ Therefore\ we\ use}}
+\DoxyCodeLine{00723\ \textcolor{comment}{//\ a\ template\ type\ conversion\ operator\ in\ the\ implementation.}}
+\DoxyCodeLine{00724\ \textcolor{comment}{//}}
+\DoxyCodeLine{00725\ \textcolor{comment}{//\ The\ following\ template\ definition\ assumes\ that\ the\ Rhs\ parameter\ is}}
+\DoxyCodeLine{00726\ \textcolor{comment}{//\ a\ "{}bare"{}\ type\ (i.e.\ neither\ 'const\ T'\ nor\ 'T\&').}}
+\DoxyCodeLine{00727\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ D,\ \textcolor{keyword}{typename}\ Rhs,\ \textcolor{keyword}{typename}\ Op>}
+\DoxyCodeLine{00728\ \textcolor{keyword}{class\ }ComparisonBase\ \{}
+\DoxyCodeLine{00729\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00730\ \ \ \textcolor{keyword}{explicit}\ ComparisonBase(\textcolor{keyword}{const}\ Rhs\&\ rhs)\ :\ rhs\_(rhs)\ \{\}}
+\DoxyCodeLine{00731\ }
+\DoxyCodeLine{00732\ \ \ \textcolor{keyword}{using\ }is\_gtest\_matcher\ =\ void;}
+\DoxyCodeLine{00733\ }
+\DoxyCodeLine{00734\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Lhs>}
+\DoxyCodeLine{00735\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(\textcolor{keyword}{const}\ Lhs\&\ lhs,\ std::ostream*)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00736\ \ \ \ \ \textcolor{keywordflow}{return}\ Op()(lhs,\ Unwrap(rhs\_));}
+\DoxyCodeLine{00737\ \ \ \}}
+\DoxyCodeLine{00738\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00739\ \ \ \ \ *os\ <<\ D::Desc()\ <<\ \textcolor{stringliteral}{"{}\ "{}};}
+\DoxyCodeLine{00740\ \ \ \ \ UniversalPrint(Unwrap(rhs\_),\ os);}
+\DoxyCodeLine{00741\ \ \ \}}
+\DoxyCodeLine{00742\ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00743\ \ \ \ \ *os\ <<\ D::NegatedDesc()\ <<\ \textcolor{stringliteral}{"{}\ "{}};}
+\DoxyCodeLine{00744\ \ \ \ \ UniversalPrint(Unwrap(rhs\_),\ os);}
+\DoxyCodeLine{00745\ \ \ \}}
+\DoxyCodeLine{00746\ }
+\DoxyCodeLine{00747\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00748\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00749\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ T\&\ Unwrap(\textcolor{keyword}{const}\ T\&\ v)\ \{}
+\DoxyCodeLine{00750\ \ \ \ \ \textcolor{keywordflow}{return}\ v;}
+\DoxyCodeLine{00751\ \ \ \}}
+\DoxyCodeLine{00752\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00753\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ T\&\ Unwrap(std::reference\_wrapper<T>\ v)\ \{}
+\DoxyCodeLine{00754\ \ \ \ \ \textcolor{keywordflow}{return}\ v;}
+\DoxyCodeLine{00755\ \ \ \}}
+\DoxyCodeLine{00756\ }
+\DoxyCodeLine{00757\ \ \ Rhs\ rhs\_;}
+\DoxyCodeLine{00758\ \};}
+\DoxyCodeLine{00759\ }
+\DoxyCodeLine{00760\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00761\ \textcolor{keyword}{class\ }EqMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<EqMatcher<Rhs>,\ Rhs,\ AnyEq>\ \{}
+\DoxyCodeLine{00762\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00763\ \ \ \textcolor{keyword}{explicit}\ EqMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ :\ ComparisonBase<EqMatcher<Rhs>,\ Rhs,\ AnyEq>(rhs)\ \{\}}
+\DoxyCodeLine{00765\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ equal\ to"{}};\ \}}
+\DoxyCodeLine{00766\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ equal\ to"{}};\ \}}
+\DoxyCodeLine{00767\ \};}
+\DoxyCodeLine{00768\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00769\ \textcolor{keyword}{class\ }NeMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<NeMatcher<Rhs>,\ Rhs,\ AnyNe>\ \{}
+\DoxyCodeLine{00770\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00771\ \ \ \textcolor{keyword}{explicit}\ NeMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ :\ ComparisonBase<NeMatcher<Rhs>,\ Rhs,\ AnyNe>(rhs)\ \{\}}
+\DoxyCodeLine{00773\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ equal\ to"{}};\ \}}
+\DoxyCodeLine{00774\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ equal\ to"{}};\ \}}
+\DoxyCodeLine{00775\ \};}
+\DoxyCodeLine{00776\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00777\ \textcolor{keyword}{class\ }LtMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<LtMatcher<Rhs>,\ Rhs,\ AnyLt>\ \{}
+\DoxyCodeLine{00778\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00779\ \ \ \textcolor{keyword}{explicit}\ LtMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ :\ ComparisonBase<LtMatcher<Rhs>,\ Rhs,\ AnyLt>(rhs)\ \{\}}
+\DoxyCodeLine{00781\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ <"{}};\ \}}
+\DoxyCodeLine{00782\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ <"{}};\ \}}
+\DoxyCodeLine{00783\ \};}
+\DoxyCodeLine{00784\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00785\ \textcolor{keyword}{class\ }GtMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<GtMatcher<Rhs>,\ Rhs,\ AnyGt>\ \{}
+\DoxyCodeLine{00786\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00787\ \ \ \textcolor{keyword}{explicit}\ GtMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ :\ ComparisonBase<GtMatcher<Rhs>,\ Rhs,\ AnyGt>(rhs)\ \{\}}
+\DoxyCodeLine{00789\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ >"{}};\ \}}
+\DoxyCodeLine{00790\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ >"{}};\ \}}
+\DoxyCodeLine{00791\ \};}
+\DoxyCodeLine{00792\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00793\ \textcolor{keyword}{class\ }LeMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<LeMatcher<Rhs>,\ Rhs,\ AnyLe>\ \{}
+\DoxyCodeLine{00794\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00795\ \ \ \textcolor{keyword}{explicit}\ LeMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ :\ ComparisonBase<LeMatcher<Rhs>,\ Rhs,\ AnyLe>(rhs)\ \{\}}
+\DoxyCodeLine{00797\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ <="{}};\ \}}
+\DoxyCodeLine{00798\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ <="{}};\ \}}
+\DoxyCodeLine{00799\ \};}
+\DoxyCodeLine{00800\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00801\ \textcolor{keyword}{class\ }GeMatcher\ :\ \textcolor{keyword}{public}\ ComparisonBase<GeMatcher<Rhs>,\ Rhs,\ AnyGe>\ \{}
+\DoxyCodeLine{00802\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00803\ \ \ \textcolor{keyword}{explicit}\ GeMatcher(\textcolor{keyword}{const}\ Rhs\&\ rhs)}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ :\ ComparisonBase<GeMatcher<Rhs>,\ Rhs,\ AnyGe>(rhs)\ \{\}}
+\DoxyCodeLine{00805\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Desc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}is\ >="{}};\ \}}
+\DoxyCodeLine{00806\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ NegatedDesc()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}isn't\ >="{}};\ \}}
+\DoxyCodeLine{00807\ \};}
+\DoxyCodeLine{00808\ }
+\DoxyCodeLine{00809\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::enable\_if<}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_constructible<std::string,\ T>::value>::type>}
+\DoxyCodeLine{00811\ \textcolor{keyword}{using\ }StringLike\ =\ T;}
+\DoxyCodeLine{00812\ }
+\DoxyCodeLine{00813\ \textcolor{comment}{//\ Implements\ polymorphic\ matchers\ MatchesRegex(regex)\ and}}
+\DoxyCodeLine{00814\ \textcolor{comment}{//\ ContainsRegex(regex),\ which\ can\ be\ used\ as\ a\ Matcher<T>\ as\ long\ as}}
+\DoxyCodeLine{00815\ \textcolor{comment}{//\ T\ can\ be\ converted\ to\ a\ string.}}
+\DoxyCodeLine{00816\ \textcolor{keyword}{class\ }MatchesRegexMatcher\ \{}
+\DoxyCodeLine{00817\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00818\ \ \ MatchesRegexMatcher(\textcolor{keyword}{const}\ RE*\ regex,\ \textcolor{keywordtype}{bool}\ full\_match)}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ :\ regex\_(regex),\ full\_match\_(full\_match)\ \{\}}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \textcolor{preprocessor}{\#if\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00822\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(\textcolor{keyword}{const}\ internal::StringView\&\ s,}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00824\ \ \ \ \ \textcolor{keywordflow}{return}\ MatchAndExplain(std::string(s),\ listener);}
+\DoxyCodeLine{00825\ \ \ \}}
+\DoxyCodeLine{00826\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00827\ }
+\DoxyCodeLine{00828\ \ \ \textcolor{comment}{//\ Accepts\ pointer\ types,\ particularly:}}
+\DoxyCodeLine{00829\ \ \ \textcolor{comment}{//\ \ \ const\ char*}}
+\DoxyCodeLine{00830\ \ \ \textcolor{comment}{//\ \ \ char*}}
+\DoxyCodeLine{00831\ \ \ \textcolor{comment}{//\ \ \ const\ wchar\_t*}}
+\DoxyCodeLine{00832\ \ \ \textcolor{comment}{//\ \ \ wchar\_t*}}
+\DoxyCodeLine{00833\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CharType>}
+\DoxyCodeLine{00834\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(CharType*\ s,\ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00835\ \ \ \ \ \textcolor{keywordflow}{return}\ s\ !=\ \textcolor{keyword}{nullptr}\ \&\&\ MatchAndExplain(std::string(s),\ listener);}
+\DoxyCodeLine{00836\ \ \ \}}
+\DoxyCodeLine{00837\ }
+\DoxyCodeLine{00838\ \ \ \textcolor{comment}{//\ Matches\ anything\ that\ can\ convert\ to\ std::string.}}
+\DoxyCodeLine{00839\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00840\ \ \ \textcolor{comment}{//\ This\ is\ a\ template,\ not\ just\ a\ plain\ function\ with\ const\ std::string\&,}}
+\DoxyCodeLine{00841\ \ \ \textcolor{comment}{//\ because\ absl::string\_view\ has\ some\ interfering\ non-\/explicit\ constructors.}}
+\DoxyCodeLine{00842\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MatcheeStringType>}
+\DoxyCodeLine{00843\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(\textcolor{keyword}{const}\ MatcheeStringType\&\ s,}
+\DoxyCodeLine{00844\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ \textcolor{comment}{/*\ listener\ */})\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00845\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ s2(s);}
+\DoxyCodeLine{00846\ \ \ \ \ \textcolor{keywordflow}{return}\ full\_match\_\ ?\ RE::FullMatch(s2,\ *regex\_)}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ RE::PartialMatch(s2,\ *regex\_);}
+\DoxyCodeLine{00848\ \ \ \}}
+\DoxyCodeLine{00849\ }
+\DoxyCodeLine{00850\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00851\ \ \ \ \ *os\ <<\ (full\_match\_\ ?\ \textcolor{stringliteral}{"{}matches"{}}\ :\ \textcolor{stringliteral}{"{}contains"{}})\ <<\ \textcolor{stringliteral}{"{}\ regular\ expression\ "{}};}
+\DoxyCodeLine{00852\ \ \ \ \ UniversalPrinter<std::string>::Print(regex\_-\/>pattern(),\ os);}
+\DoxyCodeLine{00853\ \ \ \}}
+\DoxyCodeLine{00854\ }
+\DoxyCodeLine{00855\ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00856\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}doesn't\ "{}}\ <<\ (full\_match\_\ ?\ \textcolor{stringliteral}{"{}match"{}}\ :\ \textcolor{stringliteral}{"{}contain"{}})}
+\DoxyCodeLine{00857\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ regular\ expression\ "{}};}
+\DoxyCodeLine{00858\ \ \ \ \ UniversalPrinter<std::string>::Print(regex\_-\/>pattern(),\ os);}
+\DoxyCodeLine{00859\ \ \ \}}
+\DoxyCodeLine{00860\ }
+\DoxyCodeLine{00861\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00862\ \ \ \textcolor{keyword}{const}\ std::shared\_ptr<const\ RE>\ regex\_;}
+\DoxyCodeLine{00863\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ full\_match\_;}
+\DoxyCodeLine{00864\ \};}
+\DoxyCodeLine{00865\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00866\ }
+\DoxyCodeLine{00867\ \textcolor{comment}{//\ Matches\ a\ string\ that\ fully\ matches\ regular\ expression\ 'regex'.}}
+\DoxyCodeLine{00868\ \textcolor{comment}{//\ The\ matcher\ takes\ ownership\ of\ 'regex'.}}
+\DoxyCodeLine{00869\ \textcolor{keyword}{inline}\ PolymorphicMatcher<internal::MatchesRegexMatcher>\ MatchesRegex(}
+\DoxyCodeLine{00870\ \ \ \ \ \textcolor{keyword}{const}\ internal::RE*\ regex)\ \{}
+\DoxyCodeLine{00871\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicMatcher(internal::MatchesRegexMatcher(regex,\ \textcolor{keyword}{true}));}
+\DoxyCodeLine{00872\ \}}
+\DoxyCodeLine{00873\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T\ =\ std::\textcolor{keywordtype}{string}>}
+\DoxyCodeLine{00874\ PolymorphicMatcher<internal::MatchesRegexMatcher>\ MatchesRegex(}
+\DoxyCodeLine{00875\ \ \ \ \ \textcolor{keyword}{const}\ internal::StringLike<T>\&\ regex)\ \{}
+\DoxyCodeLine{00876\ \ \ \textcolor{keywordflow}{return}\ MatchesRegex(\textcolor{keyword}{new}\ internal::RE(std::string(regex)));}
+\DoxyCodeLine{00877\ \}}
+\DoxyCodeLine{00878\ }
+\DoxyCodeLine{00879\ \textcolor{comment}{//\ Matches\ a\ string\ that\ contains\ regular\ expression\ 'regex'.}}
+\DoxyCodeLine{00880\ \textcolor{comment}{//\ The\ matcher\ takes\ ownership\ of\ 'regex'.}}
+\DoxyCodeLine{00881\ \textcolor{keyword}{inline}\ PolymorphicMatcher<internal::MatchesRegexMatcher>\ ContainsRegex(}
+\DoxyCodeLine{00882\ \ \ \ \ \textcolor{keyword}{const}\ internal::RE*\ regex)\ \{}
+\DoxyCodeLine{00883\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicMatcher(internal::MatchesRegexMatcher(regex,\ \textcolor{keyword}{false}));}
+\DoxyCodeLine{00884\ \}}
+\DoxyCodeLine{00885\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T\ =\ std::\textcolor{keywordtype}{string}>}
+\DoxyCodeLine{00886\ PolymorphicMatcher<internal::MatchesRegexMatcher>\ ContainsRegex(}
+\DoxyCodeLine{00887\ \ \ \ \ \textcolor{keyword}{const}\ internal::StringLike<T>\&\ regex)\ \{}
+\DoxyCodeLine{00888\ \ \ \textcolor{keywordflow}{return}\ ContainsRegex(\textcolor{keyword}{new}\ internal::RE(std::string(regex)));}
+\DoxyCodeLine{00889\ \}}
+\DoxyCodeLine{00890\ }
+\DoxyCodeLine{00891\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ equal\ to\ x.}}
+\DoxyCodeLine{00892\ \textcolor{comment}{//\ Note:\ if\ the\ parameter\ of\ Eq()\ were\ declared\ as\ const\ T\&,\ Eq("{}foo"{})}}
+\DoxyCodeLine{00893\ \textcolor{comment}{//\ wouldn't\ compile.}}
+\DoxyCodeLine{00894\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00895\ \textcolor{keyword}{inline}\ internal::EqMatcher<T>\ Eq(T\ x)\ \{}
+\DoxyCodeLine{00896\ \ \ \textcolor{keywordflow}{return}\ internal::EqMatcher<T>(x);}
+\DoxyCodeLine{00897\ \}}
+\DoxyCodeLine{00898\ }
+\DoxyCodeLine{00899\ \textcolor{comment}{//\ Constructs\ a\ Matcher<T>\ from\ a\ 'value'\ of\ type\ T.\ \ The\ constructed}}
+\DoxyCodeLine{00900\ \textcolor{comment}{//\ matcher\ matches\ any\ value\ that's\ equal\ to\ 'value'.}}
+\DoxyCodeLine{00901\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00902\ Matcher<T>::Matcher(T\ value)\ \{}
+\DoxyCodeLine{00903\ \ \ *\textcolor{keyword}{this}\ =\ Eq(value);}
+\DoxyCodeLine{00904\ \}}
+\DoxyCodeLine{00905\ }
+\DoxyCodeLine{00906\ \textcolor{comment}{//\ Creates\ a\ monomorphic\ matcher\ that\ matches\ anything\ with\ type\ Lhs}}
+\DoxyCodeLine{00907\ \textcolor{comment}{//\ and\ equal\ to\ rhs.\ \ A\ user\ may\ need\ to\ use\ this\ instead\ of\ Eq(...)}}
+\DoxyCodeLine{00908\ \textcolor{comment}{//\ in\ order\ to\ resolve\ an\ overloading\ ambiguity.}}
+\DoxyCodeLine{00909\ \textcolor{comment}{//}}
+\DoxyCodeLine{00910\ \textcolor{comment}{//\ TypedEq<T>(x)\ is\ just\ a\ convenient\ short-\/hand\ for\ Matcher<T>(Eq(x))}}
+\DoxyCodeLine{00911\ \textcolor{comment}{//\ or\ Matcher<T>(x),\ but\ more\ readable\ than\ the\ latter.}}
+\DoxyCodeLine{00912\ \textcolor{comment}{//}}
+\DoxyCodeLine{00913\ \textcolor{comment}{//\ We\ could\ define\ similar\ monomorphic\ matchers\ for\ other\ comparison}}
+\DoxyCodeLine{00914\ \textcolor{comment}{//\ operations\ (e.g.\ TypedLt,\ TypedGe,\ and\ etc),\ but\ decided\ not\ to\ do}}
+\DoxyCodeLine{00915\ \textcolor{comment}{//\ it\ yet\ as\ those\ are\ used\ much\ less\ than\ Eq()\ in\ practice.\ \ A\ user}}
+\DoxyCodeLine{00916\ \textcolor{comment}{//\ can\ always\ write\ Matcher<T>(Lt(5))\ to\ be\ explicit\ about\ the\ type,}}
+\DoxyCodeLine{00917\ \textcolor{comment}{//\ for\ example.}}
+\DoxyCodeLine{00918\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Lhs,\ \textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00919\ \textcolor{keyword}{inline}\ Matcher<Lhs>\ TypedEq(\textcolor{keyword}{const}\ Rhs\&\ rhs)\ \{}
+\DoxyCodeLine{00920\ \ \ \textcolor{keywordflow}{return}\ Eq(rhs);}
+\DoxyCodeLine{00921\ \}}
+\DoxyCodeLine{00922\ }
+\DoxyCodeLine{00923\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ >=\ x.}}
+\DoxyCodeLine{00924\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00925\ \textcolor{keyword}{inline}\ internal::GeMatcher<Rhs>\ Ge(Rhs\ x)\ \{}
+\DoxyCodeLine{00926\ \ \ \textcolor{keywordflow}{return}\ internal::GeMatcher<Rhs>(x);}
+\DoxyCodeLine{00927\ \}}
+\DoxyCodeLine{00928\ }
+\DoxyCodeLine{00929\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ >\ x.}}
+\DoxyCodeLine{00930\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00931\ \textcolor{keyword}{inline}\ internal::GtMatcher<Rhs>\ Gt(Rhs\ x)\ \{}
+\DoxyCodeLine{00932\ \ \ \textcolor{keywordflow}{return}\ internal::GtMatcher<Rhs>(x);}
+\DoxyCodeLine{00933\ \}}
+\DoxyCodeLine{00934\ }
+\DoxyCodeLine{00935\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ <=\ x.}}
+\DoxyCodeLine{00936\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00937\ \textcolor{keyword}{inline}\ internal::LeMatcher<Rhs>\ Le(Rhs\ x)\ \{}
+\DoxyCodeLine{00938\ \ \ \textcolor{keywordflow}{return}\ internal::LeMatcher<Rhs>(x);}
+\DoxyCodeLine{00939\ \}}
+\DoxyCodeLine{00940\ }
+\DoxyCodeLine{00941\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ <\ x.}}
+\DoxyCodeLine{00942\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00943\ \textcolor{keyword}{inline}\ internal::LtMatcher<Rhs>\ Lt(Rhs\ x)\ \{}
+\DoxyCodeLine{00944\ \ \ \textcolor{keywordflow}{return}\ internal::LtMatcher<Rhs>(x);}
+\DoxyCodeLine{00945\ \}}
+\DoxyCodeLine{00946\ }
+\DoxyCodeLine{00947\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ matcher\ that\ matches\ anything\ !=\ x.}}
+\DoxyCodeLine{00948\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Rhs>}
+\DoxyCodeLine{00949\ \textcolor{keyword}{inline}\ internal::NeMatcher<Rhs>\ Ne(Rhs\ x)\ \{}
+\DoxyCodeLine{00950\ \ \ \textcolor{keywordflow}{return}\ internal::NeMatcher<Rhs>(x);}
+\DoxyCodeLine{00951\ \}}
+\DoxyCodeLine{00952\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00954\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4251\ 5046}}
+\DoxyCodeLine{00955\ }
+\DoxyCodeLine{00956\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_MATCHERS\_H\_}}
+
+\end{DoxyCode}

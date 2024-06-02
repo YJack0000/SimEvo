@@ -1,0 +1,1576 @@
+\doxysection{gtest-\/internal.h}
+\hypertarget{gtest-internal_8h_source}{}\label{gtest-internal_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/internal.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/internal.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2005,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework\ (Google\ Test)}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ header\ file\ declares\ functions\ and\ macros\ used\ internally\ by}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Google\ Test.\ \ They\ are\ subject\ to\ change\ without\ notice.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_INTERNAL\_H\_}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_INTERNAL\_H\_}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <sys/types.h>}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <sys/wait.h>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ <float.h>}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ <iomanip>}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ <limits>}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/message.h"{}}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/filepath.h"{}}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/string.h"{}}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/type-\/util.h"{}}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ Due\ to\ C++\ preprocessor\ weirdness,\ we\ need\ double\ indirection\ to}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ concatenate\ two\ tokens\ when\ one\ of\ them\ is\ \_\_LINE\_\_.\ \ Writing}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ \ \ foo\ \#\#\ \_\_LINE\_\_}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ will\ result\ in\ the\ token\ foo\_\_LINE\_\_,\ instead\ of\ foo\ followed\ by}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ the\ current\ line\ number.\ \ For\ more\ details,\ see}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ http://www.parashift.com/c++-\/faq-\/lite/misc-\/technical-\/issues.html\#faq-\/39.6}}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#define\ GTEST\_CONCAT\_TOKEN\_(foo,\ bar)\ GTEST\_CONCAT\_TOKEN\_IMPL\_(foo,\ bar)}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#define\ GTEST\_CONCAT\_TOKEN\_IMPL\_(foo,\ bar)\ foo\#\#bar}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ Stringifies\ its\ argument.}}
+\DoxyCodeLine{00086\ \textcolor{comment}{//\ Work\ around\ a\ bug\ in\ visual\ studio\ which\ doesn't\ accept\ code\ like\ this:}}
+\DoxyCodeLine{00087\ \textcolor{comment}{//}}
+\DoxyCodeLine{00088\ \textcolor{comment}{//\ \ \ \#define\ GTEST\_STRINGIFY\_(name)\ \#name}}
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ \ \ \#define\ MACRO(a,\ b,\ c)\ ...\ GTEST\_STRINGIFY\_(a)\ ...}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ \ \ MACRO(,\ x,\ y)}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ Complaining\ about\ the\ argument\ to\ GTEST\_STRINGIFY\_\ being\ empty.}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//\ This\ is\ allowed\ by\ the\ spec.}}
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#define\ GTEST\_STRINGIFY\_HELPER\_(name,\ ...)\ \#name}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#define\ GTEST\_STRINGIFY\_(...)\ GTEST\_STRINGIFY\_HELPER\_(\_\_VA\_ARGS\_\_,\ )}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keyword}{namespace\ }proto2\ \{}
+\DoxyCodeLine{00098\ \textcolor{keyword}{class\ }MessageLite;}
+\DoxyCodeLine{00099\ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ Forward\ declarations.}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \textcolor{keyword}{class\ }AssertionResult;\ \ \textcolor{comment}{//\ Result\ of\ an\ assertion.}}
+\DoxyCodeLine{00106\ \textcolor{keyword}{class\ }Message;\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Represents\ a\ failure\ message.}}
+\DoxyCodeLine{00107\ \textcolor{keyword}{class\ }Test;\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Represents\ a\ test.}}
+\DoxyCodeLine{00108\ \textcolor{keyword}{class\ }TestInfo;\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Information\ about\ a\ test.}}
+\DoxyCodeLine{00109\ \textcolor{keyword}{class\ }TestPartResult;\ \ \ \textcolor{comment}{//\ Result\ of\ a\ test\ part.}}
+\DoxyCodeLine{00110\ \textcolor{keyword}{class\ }UnitTest;\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ A\ collection\ of\ test\ suites.}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00113\ ::std::string\ PrintToString(\textcolor{keyword}{const}\ T\&\ value);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{keyword}{struct\ }TraceInfo;\ \ \ \ \textcolor{comment}{//\ Information\ about\ a\ trace\ point.}}
+\DoxyCodeLine{00118\ \textcolor{keyword}{class\ }TestInfoImpl;\ \ \textcolor{comment}{//\ Opaque\ implementation\ of\ TestInfo}}
+\DoxyCodeLine{00119\ \textcolor{keyword}{class\ }UnitTestImpl;\ \ \textcolor{comment}{//\ Opaque\ implementation\ of\ UnitTest}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{comment}{//\ The\ text\ used\ in\ failure\ messages\ to\ indicate\ the\ start\ of\ the}}
+\DoxyCodeLine{00122\ \textcolor{comment}{//\ stack\ trace.}}
+\DoxyCodeLine{00123\ GTEST\_API\_\ \textcolor{keyword}{extern}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kStackTraceMarker[];}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ An\ IgnoredValue\ object\ can\ be\ implicitly\ constructed\ from\ ANY\ value.}}
+\DoxyCodeLine{00126\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_ignored_value}{IgnoredValue}}\ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{struct\ }Sink\ \{\};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00130\ \ \ \textcolor{comment}{//\ This\ constructor\ template\ allows\ any\ value\ to\ be\ implicitly}}
+\DoxyCodeLine{00131\ \ \ \textcolor{comment}{//\ converted\ to\ IgnoredValue.\ \ The\ object\ has\ no\ data\ member\ and}}
+\DoxyCodeLine{00132\ \ \ \textcolor{comment}{//\ doesn't\ try\ to\ remember\ anything\ about\ the\ argument.\ \ We}}
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ deliberately\ omit\ the\ 'explicit'\ keyword\ in\ order\ to\ allow\ the}}
+\DoxyCodeLine{00134\ \ \ \textcolor{comment}{//\ conversion\ to\ be\ implicit.}}
+\DoxyCodeLine{00135\ \ \ \textcolor{comment}{//\ Disable\ the\ conversion\ if\ T\ already\ has\ a\ magical\ conversion\ operator.}}
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ Otherwise\ we\ get\ ambiguity.}}
+\DoxyCodeLine{00137\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<!std::is\_convertible<T,\ Sink>::value,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ =\ 0>}
+\DoxyCodeLine{00140\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_ignored_value}{IgnoredValue}}(\textcolor{keyword}{const}\ T\&\ \textcolor{comment}{/*\ ignored\ */})\ \{\}\ \ \textcolor{comment}{//\ NOLINT(runtime/explicit)}}
+\DoxyCodeLine{00141\ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{comment}{//\ Appends\ the\ user-\/supplied\ message\ to\ the\ Google-\/Test-\/generated\ message.}}
+\DoxyCodeLine{00144\ GTEST\_API\_\ std::string\ AppendUserMessage(\textcolor{keyword}{const}\ std::string\&\ gtest\_msg,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_message}{Message}}\&\ user\_msg);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(}
+\DoxyCodeLine{00150\ \ \ \ \ 4275\ \textcolor{comment}{/*\ an\ exported\ class\ was\ derived\ from\ a\ class\ that\ was\ not\ exported\ */})}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ This\ exception\ is\ thrown\ by\ (and\ only\ by)\ a\ failed\ Google\ Test}}
+\DoxyCodeLine{00153\ \textcolor{comment}{//\ assertion\ when\ GTEST\_FLAG(throw\_on\_failure)\ is\ true\ (if\ exceptions}}
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ are\ enabled).\ \ We\ derive\ it\ from\ std::runtime\_error,\ which\ is\ for}}
+\DoxyCodeLine{00155\ \textcolor{comment}{//\ errors\ presumably\ detectable\ only\ at\ run\ time.\ \ Since}}
+\DoxyCodeLine{00156\ \textcolor{comment}{//\ std::runtime\_error\ inherits\ from\ std::exception,\ many\ testing}}
+\DoxyCodeLine{00157\ \textcolor{comment}{//\ frameworks\ know\ how\ to\ extract\ and\ print\ the\ message\ inside\ it.}}
+\DoxyCodeLine{00158\ class\ GTEST\_API\_\ GoogleTestFailureException\ :\ public\ ::std::runtime\_error\ \{}
+\DoxyCodeLine{00159\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00160\ \ \ \textcolor{keyword}{explicit}\ GoogleTestFailureException(\textcolor{keyword}{const}\ TestPartResult\&\ failure);}
+\DoxyCodeLine{00161\ \};}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4275}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{keyword}{namespace\ }edit\_distance\ \{}
+\DoxyCodeLine{00168\ \textcolor{comment}{//\ Returns\ the\ optimal\ edits\ to\ go\ from\ 'left'\ to\ 'right'.}}
+\DoxyCodeLine{00169\ \textcolor{comment}{//\ All\ edits\ cost\ the\ same,\ with\ replace\ having\ lower\ priority\ than}}
+\DoxyCodeLine{00170\ \textcolor{comment}{//\ add/remove.}}
+\DoxyCodeLine{00171\ \textcolor{comment}{//\ Simple\ implementation\ of\ the\ Wagner-\/Fischer\ algorithm.}}
+\DoxyCodeLine{00172\ \textcolor{comment}{//\ See\ http://en.wikipedia.org/wiki/Wagner-\/Fischer\_algorithm}}
+\DoxyCodeLine{00173\ \textcolor{keyword}{enum}\ EditType\ \{\ kMatch,\ kAdd,\ kRemove,\ kReplace\ \};}
+\DoxyCodeLine{00174\ GTEST\_API\_\ std::vector<EditType>\ CalculateOptimalEdits(}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<size\_t>\&\ left,\ \textcolor{keyword}{const}\ std::vector<size\_t>\&\ right);}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \textcolor{comment}{//\ Same\ as\ above,\ but\ the\ input\ is\ represented\ as\ strings.}}
+\DoxyCodeLine{00178\ GTEST\_API\_\ std::vector<EditType>\ CalculateOptimalEdits(}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ left,}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ right);}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \textcolor{comment}{//\ Create\ a\ diff\ of\ the\ input\ strings\ in\ Unified\ diff\ format.}}
+\DoxyCodeLine{00183\ GTEST\_API\_\ std::string\ CreateUnifiedDiff(\textcolor{keyword}{const}\ std::vector<std::string>\&\ left,}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ right,}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ context\ =\ 2);}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \}\ \ \textcolor{comment}{//\ namespace\ edit\_distance}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ Constructs\ and\ returns\ the\ message\ for\ an\ equality\ assertion}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ (e.g.\ ASSERT\_EQ,\ EXPECT\_STREQ,\ etc)\ failure.}}
+\DoxyCodeLine{00191\ \textcolor{comment}{//}}
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ The\ first\ four\ parameters\ are\ the\ expressions\ used\ in\ the\ assertion}}
+\DoxyCodeLine{00193\ \textcolor{comment}{//\ and\ their\ values,\ as\ strings.\ \ For\ example,\ for\ ASSERT\_EQ(foo,\ bar)}}
+\DoxyCodeLine{00194\ \textcolor{comment}{//\ where\ foo\ is\ 5\ and\ bar\ is\ 6,\ we\ have:}}
+\DoxyCodeLine{00195\ \textcolor{comment}{//}}
+\DoxyCodeLine{00196\ \textcolor{comment}{//\ \ \ expected\_expression:\ "{}foo"{}}}
+\DoxyCodeLine{00197\ \textcolor{comment}{//\ \ \ actual\_expression:\ \ \ "{}bar"{}}}
+\DoxyCodeLine{00198\ \textcolor{comment}{//\ \ \ expected\_value:\ \ \ \ \ \ "{}5"{}}}
+\DoxyCodeLine{00199\ \textcolor{comment}{//\ \ \ actual\_value:\ \ \ \ \ \ \ \ "{}6"{}}}
+\DoxyCodeLine{00200\ \textcolor{comment}{//}}
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ The\ ignoring\_case\ parameter\ is\ true\ if\ and\ only\ if\ the\ assertion\ is\ a}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ *\_STRCASEEQ*.\ \ When\ it's\ true,\ the\ string\ "{}\ (ignoring\ case)"{}\ will}}
+\DoxyCodeLine{00203\ \textcolor{comment}{//\ be\ inserted\ into\ the\ message.}}
+\DoxyCodeLine{00204\ GTEST\_API\_\ AssertionResult\ EqFailure(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expected\_expression,}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ actual\_expression,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ expected\_value,}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ actual\_value,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ignoring\_case);}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{comment}{//\ Constructs\ a\ failure\ message\ for\ Boolean\ assertions\ such\ as\ EXPECT\_TRUE.}}
+\DoxyCodeLine{00211\ GTEST\_API\_\ std::string\ GetBoolAssertionFailureMessage(}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{const}\ AssertionResult\&\ assertion\_result,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expression\_text,}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ actual\_predicate\_value,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expected\_predicate\_value);}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \textcolor{comment}{//\ This\ template\ class\ represents\ an\ IEEE\ floating-\/point\ number}}
+\DoxyCodeLine{00216\ \textcolor{comment}{//\ (either\ single-\/precision\ or\ double-\/precision,\ depending\ on\ the}}
+\DoxyCodeLine{00217\ \textcolor{comment}{//\ template\ parameters).}}
+\DoxyCodeLine{00218\ \textcolor{comment}{//}}
+\DoxyCodeLine{00219\ \textcolor{comment}{//\ The\ purpose\ of\ this\ class\ is\ to\ do\ more\ sophisticated\ number}}
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ comparison.\ \ (Due\ to\ round-\/off\ error,\ etc,\ it's\ very\ unlikely\ that}}
+\DoxyCodeLine{00221\ \textcolor{comment}{//\ two\ floating-\/points\ will\ be\ equal\ exactly.\ \ Hence\ a\ naive}}
+\DoxyCodeLine{00222\ \textcolor{comment}{//\ comparison\ by\ the\ ==\ operation\ often\ doesn't\ work.)}}
+\DoxyCodeLine{00223\ \textcolor{comment}{//}}
+\DoxyCodeLine{00224\ \textcolor{comment}{//\ Format\ of\ IEEE\ floating-\/point:}}
+\DoxyCodeLine{00225\ \textcolor{comment}{//}}
+\DoxyCodeLine{00226\ \textcolor{comment}{//\ \ \ The\ most-\/significant\ bit\ being\ the\ leftmost,\ an\ IEEE}}
+\DoxyCodeLine{00227\ \textcolor{comment}{//\ \ \ floating-\/point\ looks\ like}}
+\DoxyCodeLine{00228\ \textcolor{comment}{//}}
+\DoxyCodeLine{00229\ \textcolor{comment}{//\ \ \ \ \ sign\_bit\ exponent\_bits\ fraction\_bits}}
+\DoxyCodeLine{00230\ \textcolor{comment}{//}}
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ \ \ Here,\ sign\_bit\ is\ a\ single\ bit\ that\ designates\ the\ sign\ of\ the}}
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ \ \ number.}}
+\DoxyCodeLine{00233\ \textcolor{comment}{//}}
+\DoxyCodeLine{00234\ \textcolor{comment}{//\ \ \ For\ float,\ there\ are\ 8\ exponent\ bits\ and\ 23\ fraction\ bits.}}
+\DoxyCodeLine{00235\ \textcolor{comment}{//}}
+\DoxyCodeLine{00236\ \textcolor{comment}{//\ \ \ For\ double,\ there\ are\ 11\ exponent\ bits\ and\ 52\ fraction\ bits.}}
+\DoxyCodeLine{00237\ \textcolor{comment}{//}}
+\DoxyCodeLine{00238\ \textcolor{comment}{//\ \ \ More\ details\ can\ be\ found\ at}}
+\DoxyCodeLine{00239\ \textcolor{comment}{//\ \ \ http://en.wikipedia.org/wiki/IEEE\_floating-\/point\_standard.}}
+\DoxyCodeLine{00240\ \textcolor{comment}{//}}
+\DoxyCodeLine{00241\ \textcolor{comment}{//\ Template\ parameter:}}
+\DoxyCodeLine{00242\ \textcolor{comment}{//}}
+\DoxyCodeLine{00243\ \textcolor{comment}{//\ \ \ RawType:\ the\ raw\ floating-\/point\ type\ (either\ float\ or\ double)}}
+\DoxyCodeLine{00244\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ RawType>}
+\DoxyCodeLine{00245\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_floating_point}{FloatingPoint}}\ \{}
+\DoxyCodeLine{00246\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00247\ \ \ \textcolor{comment}{//\ Defines\ the\ unsigned\ integer\ type\ that\ has\ the\ same\ size\ as\ the}}
+\DoxyCodeLine{00248\ \ \ \textcolor{comment}{//\ floating\ point\ number.}}
+\DoxyCodeLine{00249\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_type_with_size}{TypeWithSize}}<\textcolor{keyword}{sizeof}(RawType)>::UInt\ Bits;}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \ \ \textcolor{comment}{//\ Constants.}}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \textcolor{comment}{//\ \#\ of\ bits\ in\ a\ number.}}
+\DoxyCodeLine{00254\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kBitCount\ =\ 8\ *\ \textcolor{keyword}{sizeof}(RawType);}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \textcolor{comment}{//\ \#\ of\ fraction\ bits\ in\ a\ number.}}
+\DoxyCodeLine{00257\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kFractionBitCount\ =}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ std::numeric\_limits<RawType>::digits\ -\/\ 1;}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{comment}{//\ \#\ of\ exponent\ bits\ in\ a\ number.}}
+\DoxyCodeLine{00261\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kExponentBitCount\ =\ kBitCount\ -\/\ 1\ -\/\ kFractionBitCount;}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \ \ \textcolor{comment}{//\ The\ mask\ for\ the\ sign\ bit.}}
+\DoxyCodeLine{00264\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Bits\ kSignBitMask\ =\ \textcolor{keyword}{static\_cast<}Bits\textcolor{keyword}{>}(1)\ <<\ (kBitCount\ -\/\ 1);}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \textcolor{comment}{//\ The\ mask\ for\ the\ fraction\ bits.}}
+\DoxyCodeLine{00267\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Bits\ kFractionBitMask\ =\ \string~static\_cast<Bits>(0)\ >>}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (kExponentBitCount\ +\ 1);}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ \textcolor{comment}{//\ The\ mask\ for\ the\ exponent\ bits.}}
+\DoxyCodeLine{00271\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Bits\ kExponentBitMask\ =\ \string~(kSignBitMask\ |\ kFractionBitMask);}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \textcolor{comment}{//\ How\ many\ ULP's\ (Units\ in\ the\ Last\ Place)\ we\ want\ to\ tolerate\ when}}
+\DoxyCodeLine{00274\ \ \ \textcolor{comment}{//\ comparing\ two\ numbers.\ \ The\ larger\ the\ value,\ the\ more\ error\ we}}
+\DoxyCodeLine{00275\ \ \ \textcolor{comment}{//\ allow.\ \ A\ 0\ value\ means\ that\ two\ numbers\ must\ be\ exactly\ the\ same}}
+\DoxyCodeLine{00276\ \ \ \textcolor{comment}{//\ to\ be\ considered\ equal.}}
+\DoxyCodeLine{00277\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00278\ \ \ \textcolor{comment}{//\ The\ maximum\ error\ of\ a\ single\ floating-\/point\ operation\ is\ 0.5}}
+\DoxyCodeLine{00279\ \ \ \textcolor{comment}{//\ units\ in\ the\ last\ place.\ \ On\ Intel\ CPU's,\ all\ floating-\/point}}
+\DoxyCodeLine{00280\ \ \ \textcolor{comment}{//\ calculations\ are\ done\ with\ 80-\/bit\ precision,\ while\ double\ has\ 64}}
+\DoxyCodeLine{00281\ \ \ \textcolor{comment}{//\ bits.\ \ Therefore,\ 4\ should\ be\ enough\ for\ ordinary\ use.}}
+\DoxyCodeLine{00282\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00283\ \ \ \textcolor{comment}{//\ See\ the\ following\ article\ for\ more\ details\ on\ ULP:}}
+\DoxyCodeLine{00284\ \ \ \textcolor{comment}{//\ http://randomascii.wordpress.com/2012/02/25/comparing-\/floating-\/point-\/numbers-\/2012-\/edition/}}
+\DoxyCodeLine{00285\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ kMaxUlps\ =\ 4;}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \textcolor{comment}{//\ Constructs\ a\ FloatingPoint\ from\ a\ raw\ floating-\/point\ number.}}
+\DoxyCodeLine{00288\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00289\ \ \ \textcolor{comment}{//\ On\ an\ Intel\ CPU,\ passing\ a\ non-\/normalized\ NAN\ (Not\ a\ Number)}}
+\DoxyCodeLine{00290\ \ \ \textcolor{comment}{//\ around\ may\ change\ its\ bits,\ although\ the\ new\ value\ is\ guaranteed}}
+\DoxyCodeLine{00291\ \ \ \textcolor{comment}{//\ to\ be\ also\ a\ NAN.\ \ Therefore,\ don't\ expect\ this\ constructor\ to}}
+\DoxyCodeLine{00292\ \ \ \textcolor{comment}{//\ preserve\ the\ bits\ in\ x\ when\ x\ is\ a\ NAN.}}
+\DoxyCodeLine{00293\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_floating_point}{FloatingPoint}}(\textcolor{keyword}{const}\ RawType\&\ x)\ \{\ u\_.value\_\ =\ x;\ \}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ \textcolor{comment}{//\ Static\ methods}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \textcolor{comment}{//\ Reinterprets\ a\ bit\ pattern\ as\ a\ floating-\/point\ number.}}
+\DoxyCodeLine{00298\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00299\ \ \ \textcolor{comment}{//\ This\ function\ is\ needed\ to\ test\ the\ AlmostEquals()\ method.}}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{static}\ RawType\ ReinterpretBits(\textcolor{keyword}{const}\ Bits\ bits)\ \{}
+\DoxyCodeLine{00301\ \ \ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_floating_point}{FloatingPoint}}\ fp(0);}
+\DoxyCodeLine{00302\ \ \ \ \ fp.u\_.bits\_\ =\ bits;}
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{keywordflow}{return}\ fp.u\_.value\_;}
+\DoxyCodeLine{00304\ \ \ \}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \ \ \textcolor{comment}{//\ Returns\ the\ floating-\/point\ number\ that\ represent\ positive\ infinity.}}
+\DoxyCodeLine{00307\ \ \ \textcolor{keyword}{static}\ RawType\ Infinity()\ \{\ \textcolor{keywordflow}{return}\ ReinterpretBits(kExponentBitMask);\ \}}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00309\ \ \ \textcolor{comment}{//\ Returns\ the\ maximum\ representable\ finite\ floating-\/point\ number.}}
+\DoxyCodeLine{00310\ \ \ \textcolor{keyword}{static}\ RawType\ Max();}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00312\ \ \ \textcolor{comment}{//\ Non-\/static\ methods}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \textcolor{comment}{//\ Returns\ the\ bits\ that\ represents\ this\ number.}}
+\DoxyCodeLine{00315\ \ \ \textcolor{keyword}{const}\ Bits\&\ bits()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ u\_.bits\_;\ \}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \textcolor{comment}{//\ Returns\ the\ exponent\ bits\ of\ this\ number.}}
+\DoxyCodeLine{00318\ \ \ Bits\ exponent\_bits()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ kExponentBitMask\ \&\ u\_.bits\_;\ \}}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ \textcolor{comment}{//\ Returns\ the\ fraction\ bits\ of\ this\ number.}}
+\DoxyCodeLine{00321\ \ \ Bits\ fraction\_bits()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ kFractionBitMask\ \&\ u\_.bits\_;\ \}}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \textcolor{comment}{//\ Returns\ the\ sign\ bit\ of\ this\ number.}}
+\DoxyCodeLine{00324\ \ \ Bits\ sign\_bit()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ kSignBitMask\ \&\ u\_.bits\_;\ \}}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ this\ is\ NAN\ (not\ a\ number).}}
+\DoxyCodeLine{00327\ \ \ \textcolor{keywordtype}{bool}\ is\_nan()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00328\ \ \ \ \ \textcolor{comment}{//\ It's\ a\ NAN\ if\ the\ exponent\ bits\ are\ all\ ones\ and\ the\ fraction}}
+\DoxyCodeLine{00329\ \ \ \ \ \textcolor{comment}{//\ bits\ are\ not\ entirely\ zeros.}}
+\DoxyCodeLine{00330\ \ \ \ \ \textcolor{keywordflow}{return}\ (exponent\_bits()\ ==\ kExponentBitMask)\ \&\&\ (fraction\_bits()\ !=\ 0);}
+\DoxyCodeLine{00331\ \ \ \}}
+\DoxyCodeLine{00332\ }
+\DoxyCodeLine{00333\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ this\ number\ is\ at\ most\ kMaxUlps\ ULP's\ away}}
+\DoxyCodeLine{00334\ \ \ \textcolor{comment}{//\ from\ rhs.\ \ In\ particular,\ this\ function:}}
+\DoxyCodeLine{00335\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00336\ \ \ \textcolor{comment}{//\ \ \ -\/\ returns\ false\ if\ either\ number\ is\ (or\ both\ are)\ NAN.}}
+\DoxyCodeLine{00337\ \ \ \textcolor{comment}{//\ \ \ -\/\ treats\ really\ large\ numbers\ as\ almost\ equal\ to\ infinity.}}
+\DoxyCodeLine{00338\ \ \ \textcolor{comment}{//\ \ \ -\/\ thinks\ +0.0\ and\ -\/0.0\ are\ 0\ DLP's\ apart.}}
+\DoxyCodeLine{00339\ \ \ \textcolor{keywordtype}{bool}\ AlmostEquals(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_floating_point}{FloatingPoint}}\&\ rhs)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00340\ \ \ \ \ \textcolor{comment}{//\ The\ IEEE\ standard\ says\ that\ any\ comparison\ operation\ involving}}
+\DoxyCodeLine{00341\ \ \ \ \ \textcolor{comment}{//\ a\ NAN\ must\ return\ false.}}
+\DoxyCodeLine{00342\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_nan()\ ||\ rhs.is\_nan())\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00343\ }
+\DoxyCodeLine{00344\ \ \ \ \ \textcolor{keywordflow}{return}\ DistanceBetweenSignAndMagnitudeNumbers(u\_.bits\_,\ rhs.u\_.bits\_)\ <=}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ kMaxUlps;}
+\DoxyCodeLine{00346\ \ \ \}}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00348\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00349\ \ \ \textcolor{comment}{//\ The\ data\ type\ used\ to\ store\ the\ actual\ floating-\/point\ number.}}
+\DoxyCodeLine{00350\ \ \ \textcolor{keyword}{union\ }FloatingPointUnion\ \{}
+\DoxyCodeLine{00351\ \ \ \ \ RawType\ value\_;\ \ \textcolor{comment}{//\ The\ raw\ floating-\/point\ number.}}
+\DoxyCodeLine{00352\ \ \ \ \ Bits\ bits\_;\ \ \ \ \ \ \textcolor{comment}{//\ The\ bits\ that\ represent\ the\ number.}}
+\DoxyCodeLine{00353\ \ \ \};}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \textcolor{comment}{//\ Converts\ an\ integer\ from\ the\ sign-\/and-\/magnitude\ representation\ to}}
+\DoxyCodeLine{00356\ \ \ \textcolor{comment}{//\ the\ biased\ representation.\ \ More\ precisely,\ let\ N\ be\ 2\ to\ the}}
+\DoxyCodeLine{00357\ \ \ \textcolor{comment}{//\ power\ of\ (kBitCount\ -\/\ 1),\ an\ integer\ x\ is\ represented\ by\ the}}
+\DoxyCodeLine{00358\ \ \ \textcolor{comment}{//\ unsigned\ number\ x\ +\ N.}}
+\DoxyCodeLine{00359\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00360\ \ \ \textcolor{comment}{//\ For\ instance,}}
+\DoxyCodeLine{00361\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00362\ \ \ \textcolor{comment}{//\ \ \ -\/N\ +\ 1\ (the\ most\ negative\ number\ representable\ using}}
+\DoxyCodeLine{00363\ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ sign-\/and-\/magnitude)\ is\ represented\ by\ 1;}}
+\DoxyCodeLine{00364\ \ \ \textcolor{comment}{//\ \ \ 0\ \ \ \ \ \ is\ represented\ by\ N;\ and}}
+\DoxyCodeLine{00365\ \ \ \textcolor{comment}{//\ \ \ N\ -\/\ 1\ \ (the\ biggest\ number\ representable\ using}}
+\DoxyCodeLine{00366\ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ sign-\/and-\/magnitude)\ is\ represented\ by\ 2N\ -\/\ 1.}}
+\DoxyCodeLine{00367\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00368\ \ \ \textcolor{comment}{//\ Read\ http://en.wikipedia.org/wiki/Signed\_number\_representations}}
+\DoxyCodeLine{00369\ \ \ \textcolor{comment}{//\ for\ more\ details\ on\ signed\ number\ representations.}}
+\DoxyCodeLine{00370\ \ \ \textcolor{keyword}{static}\ Bits\ SignAndMagnitudeToBiased(\textcolor{keyword}{const}\ Bits\&\ sam)\ \{}
+\DoxyCodeLine{00371\ \ \ \ \ \textcolor{keywordflow}{if}\ (kSignBitMask\ \&\ sam)\ \{}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \textcolor{comment}{//\ sam\ represents\ a\ negative\ number.}}
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \string~sam\ +\ 1;}
+\DoxyCodeLine{00374\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \textcolor{comment}{//\ sam\ represents\ a\ positive\ number.}}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ kSignBitMask\ |\ sam;}
+\DoxyCodeLine{00377\ \ \ \ \ \}}
+\DoxyCodeLine{00378\ \ \ \}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00380\ \ \ \textcolor{comment}{//\ Given\ two\ numbers\ in\ the\ sign-\/and-\/magnitude\ representation,}}
+\DoxyCodeLine{00381\ \ \ \textcolor{comment}{//\ returns\ the\ distance\ between\ them\ as\ an\ unsigned\ number.}}
+\DoxyCodeLine{00382\ \ \ \textcolor{keyword}{static}\ Bits\ DistanceBetweenSignAndMagnitudeNumbers(\textcolor{keyword}{const}\ Bits\&\ sam1,}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Bits\&\ sam2)\ \{}
+\DoxyCodeLine{00384\ \ \ \ \ \textcolor{keyword}{const}\ Bits\ biased1\ =\ SignAndMagnitudeToBiased(sam1);}
+\DoxyCodeLine{00385\ \ \ \ \ \textcolor{keyword}{const}\ Bits\ biased2\ =\ SignAndMagnitudeToBiased(sam2);}
+\DoxyCodeLine{00386\ \ \ \ \ \textcolor{keywordflow}{return}\ (biased1\ >=\ biased2)\ ?\ (biased1\ -\/\ biased2)\ :\ (biased2\ -\/\ biased1);}
+\DoxyCodeLine{00387\ \ \ \}}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00389\ \ \ FloatingPointUnion\ u\_;}
+\DoxyCodeLine{00390\ \};}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \textcolor{comment}{//\ We\ cannot\ use\ std::numeric\_limits<T>::max()\ as\ it\ clashes\ with\ the\ max()}}
+\DoxyCodeLine{00393\ \textcolor{comment}{//\ macro\ defined\ by\ <windows.h>.}}
+\DoxyCodeLine{00394\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00395\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_floating_point}{FloatingPoint<float>::Max}}()\ \{}
+\DoxyCodeLine{00396\ \ \ \textcolor{keywordflow}{return}\ FLT\_MAX;}
+\DoxyCodeLine{00397\ \}}
+\DoxyCodeLine{00398\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00399\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{double}\ FloatingPoint<double>::Max()\ \{}
+\DoxyCodeLine{00400\ \ \ \textcolor{keywordflow}{return}\ DBL\_MAX;}
+\DoxyCodeLine{00401\ \}}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \textcolor{comment}{//\ Typedefs\ the\ instances\ of\ the\ FloatingPoint\ template\ class\ that\ we}}
+\DoxyCodeLine{00404\ \textcolor{comment}{//\ care\ to\ use.}}
+\DoxyCodeLine{00405\ \textcolor{keyword}{typedef}\ FloatingPoint<float>\ Float;}
+\DoxyCodeLine{00406\ \textcolor{keyword}{typedef}\ FloatingPoint<double>\ Double;}
+\DoxyCodeLine{00407\ }
+\DoxyCodeLine{00408\ \textcolor{comment}{//\ In\ order\ to\ catch\ the\ mistake\ of\ putting\ tests\ that\ use\ different}}
+\DoxyCodeLine{00409\ \textcolor{comment}{//\ test\ fixture\ classes\ in\ the\ same\ test\ suite,\ we\ need\ to\ assign}}
+\DoxyCodeLine{00410\ \textcolor{comment}{//\ unique\ IDs\ to\ fixture\ classes\ and\ compare\ them.\ \ The\ TypeId\ type\ is}}
+\DoxyCodeLine{00411\ \textcolor{comment}{//\ used\ to\ hold\ such\ IDs.\ \ The\ user\ should\ treat\ TypeId\ as\ an\ opaque}}
+\DoxyCodeLine{00412\ \textcolor{comment}{//\ type:\ the\ only\ operation\ allowed\ on\ TypeId\ values\ is\ to\ compare}}
+\DoxyCodeLine{00413\ \textcolor{comment}{//\ them\ for\ equality\ using\ the\ ==\ operator.}}
+\DoxyCodeLine{00414\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ TypeId;}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00417\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_type_id_helper}{TypeIdHelper}}\ \{}
+\DoxyCodeLine{00418\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00419\ \ \ \textcolor{comment}{//\ dummy\_\ must\ not\ have\ a\ const\ type.\ \ Otherwise\ an\ overly\ eager}}
+\DoxyCodeLine{00420\ \ \ \textcolor{comment}{//\ compiler\ (e.g.\ MSVC\ 7.1\ \&\ 8.0)\ may\ try\ to\ merge}}
+\DoxyCodeLine{00421\ \ \ \textcolor{comment}{//\ TypeIdHelper<T>::dummy\_\ for\ different\ Ts\ as\ an\ "{}optimization"{}.}}
+\DoxyCodeLine{00422\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ dummy\_;}
+\DoxyCodeLine{00423\ \};}
+\DoxyCodeLine{00424\ }
+\DoxyCodeLine{00425\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00426\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_type_id_helper}{TypeIdHelper<T>::dummy\_}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00427\ }
+\DoxyCodeLine{00428\ \textcolor{comment}{//\ GetTypeId<T>()\ returns\ the\ ID\ of\ type\ T.\ \ Different\ values\ will\ be}}
+\DoxyCodeLine{00429\ \textcolor{comment}{//\ returned\ for\ different\ types.\ \ Calling\ the\ function\ twice\ with\ the}}
+\DoxyCodeLine{00430\ \textcolor{comment}{//\ same\ type\ argument\ is\ guaranteed\ to\ return\ the\ same\ ID.}}
+\DoxyCodeLine{00431\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00432\ TypeId\ GetTypeId()\ \{}
+\DoxyCodeLine{00433\ \ \ \textcolor{comment}{//\ The\ compiler\ is\ required\ to\ allocate\ a\ different}}
+\DoxyCodeLine{00434\ \ \ \textcolor{comment}{//\ TypeIdHelper<T>::dummy\_\ variable\ for\ each\ T\ used\ to\ instantiate}}
+\DoxyCodeLine{00435\ \ \ \textcolor{comment}{//\ the\ template.\ \ Therefore,\ the\ address\ of\ dummy\_\ is\ guaranteed\ to}}
+\DoxyCodeLine{00436\ \ \ \textcolor{comment}{//\ be\ unique.}}
+\DoxyCodeLine{00437\ \ \ \textcolor{keywordflow}{return}\ \&(\mbox{\hyperlink{classtesting_1_1internal_1_1_type_id_helper}{TypeIdHelper<T>::dummy\_}});}
+\DoxyCodeLine{00438\ \}}
+\DoxyCodeLine{00439\ }
+\DoxyCodeLine{00440\ \textcolor{comment}{//\ Returns\ the\ type\ ID\ of\ ::testing::Test.\ \ Always\ call\ this\ instead}}
+\DoxyCodeLine{00441\ \textcolor{comment}{//\ of\ GetTypeId<\ ::testing::Test>()\ to\ get\ the\ type\ ID\ of}}
+\DoxyCodeLine{00442\ \textcolor{comment}{//\ ::testing::Test,\ as\ the\ latter\ may\ give\ the\ wrong\ result\ due\ to\ a}}
+\DoxyCodeLine{00443\ \textcolor{comment}{//\ suspected\ linker\ bug\ when\ compiling\ Google\ Test\ as\ a\ Mac\ OS\ X}}
+\DoxyCodeLine{00444\ \textcolor{comment}{//\ framework.}}
+\DoxyCodeLine{00445\ GTEST\_API\_\ TypeId\ GetTestTypeId();}
+\DoxyCodeLine{00446\ }
+\DoxyCodeLine{00447\ \textcolor{comment}{//\ Defines\ the\ abstract\ factory\ interface\ that\ creates\ instances}}
+\DoxyCodeLine{00448\ \textcolor{comment}{//\ of\ a\ Test\ object.}}
+\DoxyCodeLine{00449\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}\ \{}
+\DoxyCodeLine{00450\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00451\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{\string~TestFactoryBase}}()\ \{\}}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00453\ \ \ \textcolor{comment}{//\ Creates\ a\ test\ instance\ to\ run.\ The\ instance\ is\ both\ created\ and\ destroyed}}
+\DoxyCodeLine{00454\ \ \ \textcolor{comment}{//\ within\ TestInfoImpl::Run()}}
+\DoxyCodeLine{00455\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classtesting_1_1_test}{Test}}*\ CreateTest()\ =\ 0;}
+\DoxyCodeLine{00456\ }
+\DoxyCodeLine{00457\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00458\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}()\ \{\}}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00460\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00461\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00462\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00463\ \};}
+\DoxyCodeLine{00464\ }
+\DoxyCodeLine{00465\ \textcolor{comment}{//\ This\ class\ provides\ implementation\ of\ TestFactoryBase\ interface.}}
+\DoxyCodeLine{00466\ \textcolor{comment}{//\ It\ is\ used\ in\ TEST\ and\ TEST\_F\ macros.}}
+\DoxyCodeLine{00467\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ TestClass>}
+\DoxyCodeLine{00468\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_impl}{TestFactoryImpl}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}\ \{}
+\DoxyCodeLine{00469\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00470\ \ \ \mbox{\hyperlink{classtesting_1_1_test}{Test}}*\ CreateTest()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ TestClass;\ \}}
+\DoxyCodeLine{00471\ \};}
+\DoxyCodeLine{00472\ }
+\DoxyCodeLine{00473\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00474\ }
+\DoxyCodeLine{00475\ \textcolor{comment}{//\ Predicate-\/formatters\ for\ implementing\ the\ HRESULT\ checking\ macros}}
+\DoxyCodeLine{00476\ \textcolor{comment}{//\ \{ASSERT|EXPECT\}\_HRESULT\_\{SUCCEEDED|FAILED\}}}
+\DoxyCodeLine{00477\ \textcolor{comment}{//\ We\ pass\ a\ long\ instead\ of\ HRESULT\ to\ avoid\ causing\ an}}
+\DoxyCodeLine{00478\ \textcolor{comment}{//\ include\ dependency\ for\ the\ HRESULT\ type.}}
+\DoxyCodeLine{00479\ GTEST\_API\_\ AssertionResult\ IsHRESULTSuccess(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expr,}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{long}\ hr);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00481\ GTEST\_API\_\ AssertionResult\ IsHRESULTFailure(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ expr,}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{long}\ hr);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00483\ }
+\DoxyCodeLine{00484\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00485\ }
+\DoxyCodeLine{00486\ \textcolor{comment}{//\ Types\ of\ SetUpTestSuite()\ and\ TearDownTestSuite()\ functions.}}
+\DoxyCodeLine{00487\ \textcolor{keyword}{using\ }SetUpTestSuiteFunc\ =\ void\ (*)();}
+\DoxyCodeLine{00488\ \textcolor{keyword}{using\ }TearDownTestSuiteFunc\ =\ void\ (*)();}
+\DoxyCodeLine{00489\ }
+\DoxyCodeLine{00490\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\ \{}
+\DoxyCodeLine{00491\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}(\textcolor{keyword}{const}\ std::string\&\ a\_file,\ \textcolor{keywordtype}{int}\ a\_line)}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ :\ file(a\_file),\ line(a\_line)\ \{\}}
+\DoxyCodeLine{00493\ }
+\DoxyCodeLine{00494\ \ \ std::string\ file;}
+\DoxyCodeLine{00495\ \ \ \textcolor{keywordtype}{int}\ line;}
+\DoxyCodeLine{00496\ \};}
+\DoxyCodeLine{00497\ }
+\DoxyCodeLine{00498\ \textcolor{comment}{//\ \ Helper\ to\ identify\ which\ setup\ function\ for\ TestCase\ /\ TestSuite\ to\ call.}}
+\DoxyCodeLine{00499\ \textcolor{comment}{//\ \ Only\ one\ function\ is\ allowed,\ either\ TestCase\ or\ TestSute\ but\ not\ both.}}
+\DoxyCodeLine{00500\ }
+\DoxyCodeLine{00501\ \textcolor{comment}{//\ Utility\ functions\ to\ help\ SuiteApiResolver}}
+\DoxyCodeLine{00502\ \textcolor{keyword}{using\ }SetUpTearDownSuiteFuncType\ =\ void\ (*)();}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ \textcolor{keyword}{inline}\ SetUpTearDownSuiteFuncType\ GetNotDefaultOrNull(}
+\DoxyCodeLine{00505\ \ \ \ \ SetUpTearDownSuiteFuncType\ a,\ SetUpTearDownSuiteFuncType\ def)\ \{}
+\DoxyCodeLine{00506\ \ \ \textcolor{keywordflow}{return}\ a\ ==\ def\ ?\ nullptr\ :\ a;}
+\DoxyCodeLine{00507\ \}}
+\DoxyCodeLine{00508\ }
+\DoxyCodeLine{00509\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00510\ \textcolor{comment}{//\ \ Note\ that\ SuiteApiResolver\ inherits\ from\ T\ because}}
+\DoxyCodeLine{00511\ \textcolor{comment}{//\ \ SetUpTestSuite()/TearDownTestSuite()\ could\ be\ protected.\ This\ way}}
+\DoxyCodeLine{00512\ \textcolor{comment}{//\ \ SuiteApiResolver\ can\ access\ them.}}
+\DoxyCodeLine{00513\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_suite_api_resolver}{SuiteApiResolver}}\ :\ T\ \{}
+\DoxyCodeLine{00514\ \ \ \textcolor{comment}{//\ testing::Test\ is\ only\ forward\ declared\ at\ this\ point.\ So\ we\ make\ it\ a}}
+\DoxyCodeLine{00515\ \ \ \textcolor{comment}{//\ dependent\ class\ for\ the\ compiler\ to\ be\ OK\ with\ it.}}
+\DoxyCodeLine{00516\ \ \ \textcolor{keyword}{using\ }Test\ =}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<\textcolor{keyword}{sizeof}(T)\ !=\ 0,\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}},\ \textcolor{keywordtype}{void}>::type;}
+\DoxyCodeLine{00518\ }
+\DoxyCodeLine{00519\ \ \ \textcolor{keyword}{static}\ SetUpTearDownSuiteFuncType\ GetSetUpCaseOrSuite(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename,}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ line\_num)\ \{}
+\DoxyCodeLine{00521\ \textcolor{preprocessor}{\#ifndef\ GTEST\_REMOVE\_LEGACY\_TEST\_CASEAPI\_}}
+\DoxyCodeLine{00522\ \ \ \ \ SetUpTearDownSuiteFuncType\ test\_case\_fp\ =}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ GetNotDefaultOrNull(\&T::SetUpTestCase,\ \&Test::SetUpTestCase);}
+\DoxyCodeLine{00524\ \ \ \ \ SetUpTearDownSuiteFuncType\ test\_suite\_fp\ =}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ GetNotDefaultOrNull(\&T::SetUpTestSuite,\ \&Test::SetUpTestSuite);}
+\DoxyCodeLine{00526\ }
+\DoxyCodeLine{00527\ \ \ \ \ GTEST\_CHECK\_(!test\_case\_fp\ ||\ !test\_suite\_fp)}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Test\ can\ not\ provide\ both\ SetUpTestSuite\ and\ SetUpTestCase,\ please\ "{}}}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}make\ sure\ there\ is\ only\ one\ present\ at\ "{}}}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ <<\ filename\ <<\ \textcolor{stringliteral}{"{}:"{}}\ <<\ line\_num;}
+\DoxyCodeLine{00531\ }
+\DoxyCodeLine{00532\ \ \ \ \ \textcolor{keywordflow}{return}\ test\_case\_fp\ !=\ \textcolor{keyword}{nullptr}\ ?\ test\_case\_fp\ :\ test\_suite\_fp;}
+\DoxyCodeLine{00533\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00534\ \ \ \ \ (void)(filename);}
+\DoxyCodeLine{00535\ \ \ \ \ (void)(line\_num);}
+\DoxyCodeLine{00536\ \ \ \ \ \textcolor{keywordflow}{return}\ \&T::SetUpTestSuite;}
+\DoxyCodeLine{00537\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00538\ \ \ \}}
+\DoxyCodeLine{00539\ }
+\DoxyCodeLine{00540\ \ \ \textcolor{keyword}{static}\ SetUpTearDownSuiteFuncType\ GetTearDownCaseOrSuite(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename,}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ line\_num)\ \{}
+\DoxyCodeLine{00542\ \textcolor{preprocessor}{\#ifndef\ GTEST\_REMOVE\_LEGACY\_TEST\_CASEAPI\_}}
+\DoxyCodeLine{00543\ \ \ \ \ SetUpTearDownSuiteFuncType\ test\_case\_fp\ =}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ GetNotDefaultOrNull(\&T::TearDownTestCase,\ \&Test::TearDownTestCase);}
+\DoxyCodeLine{00545\ \ \ \ \ SetUpTearDownSuiteFuncType\ test\_suite\_fp\ =}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ GetNotDefaultOrNull(\&T::TearDownTestSuite,\ \&Test::TearDownTestSuite);}
+\DoxyCodeLine{00547\ }
+\DoxyCodeLine{00548\ \ \ \ \ GTEST\_CHECK\_(!test\_case\_fp\ ||\ !test\_suite\_fp)}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Test\ can\ not\ provide\ both\ TearDownTestSuite\ and\ TearDownTestCase,"{}}}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ please\ make\ sure\ there\ is\ only\ one\ present\ at"{}}}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ <<\ filename\ <<\ \textcolor{stringliteral}{"{}:"{}}\ <<\ line\_num;}
+\DoxyCodeLine{00552\ }
+\DoxyCodeLine{00553\ \ \ \ \ \textcolor{keywordflow}{return}\ test\_case\_fp\ !=\ \textcolor{keyword}{nullptr}\ ?\ test\_case\_fp\ :\ test\_suite\_fp;}
+\DoxyCodeLine{00554\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00555\ \ \ \ \ (void)(filename);}
+\DoxyCodeLine{00556\ \ \ \ \ (void)(line\_num);}
+\DoxyCodeLine{00557\ \ \ \ \ \textcolor{keywordflow}{return}\ \&T::TearDownTestSuite;}
+\DoxyCodeLine{00558\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00559\ \ \ \}}
+\DoxyCodeLine{00560\ \};}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00562\ \textcolor{comment}{//\ Creates\ a\ new\ TestInfo\ object\ and\ registers\ it\ with\ Google\ Test;}}
+\DoxyCodeLine{00563\ \textcolor{comment}{//\ returns\ the\ created\ object.}}
+\DoxyCodeLine{00564\ \textcolor{comment}{//}}
+\DoxyCodeLine{00565\ \textcolor{comment}{//\ Arguments:}}
+\DoxyCodeLine{00566\ \textcolor{comment}{//}}
+\DoxyCodeLine{00567\ \textcolor{comment}{//\ \ \ test\_suite\_name:\ \ name\ of\ the\ test\ suite}}
+\DoxyCodeLine{00568\ \textcolor{comment}{//\ \ \ name:\ \ \ \ \ \ \ \ \ \ \ \ \ name\ of\ the\ test}}
+\DoxyCodeLine{00569\ \textcolor{comment}{//\ \ \ type\_param:\ \ \ \ \ \ \ the\ name\ of\ the\ test's\ type\ parameter,\ or\ NULL\ if}}
+\DoxyCodeLine{00570\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this\ is\ not\ a\ typed\ or\ a\ type-\/parameterized\ test.}}
+\DoxyCodeLine{00571\ \textcolor{comment}{//\ \ \ value\_param:\ \ \ \ \ \ text\ representation\ of\ the\ test's\ value\ parameter,}}
+\DoxyCodeLine{00572\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ or\ NULL\ if\ this\ is\ not\ a\ type-\/parameterized\ test.}}
+\DoxyCodeLine{00573\ \textcolor{comment}{//\ \ \ code\_location:\ \ \ \ code\ location\ where\ the\ test\ is\ defined}}
+\DoxyCodeLine{00574\ \textcolor{comment}{//\ \ \ fixture\_class\_id:\ ID\ of\ the\ test\ fixture\ class}}
+\DoxyCodeLine{00575\ \textcolor{comment}{//\ \ \ set\_up\_tc:\ \ \ \ \ \ \ \ pointer\ to\ the\ function\ that\ sets\ up\ the\ test\ suite}}
+\DoxyCodeLine{00576\ \textcolor{comment}{//\ \ \ tear\_down\_tc:\ \ \ \ \ pointer\ to\ the\ function\ that\ tears\ down\ the\ test\ suite}}
+\DoxyCodeLine{00577\ \textcolor{comment}{//\ \ \ factory:\ \ \ \ \ \ \ \ \ \ pointer\ to\ the\ factory\ that\ creates\ a\ test\ object.}}
+\DoxyCodeLine{00578\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ The\ newly\ created\ TestInfo\ instance\ will\ assume}}
+\DoxyCodeLine{00579\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ownership\ of\ the\ factory\ object.}}
+\DoxyCodeLine{00580\ GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}*\ MakeAndRegisterTestInfo(}
+\DoxyCodeLine{00581\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_suite\_name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ type\_param,}
+\DoxyCodeLine{00582\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ value\_param,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\ code\_location,}
+\DoxyCodeLine{00583\ \ \ \ \ TypeId\ fixture\_class\_id,\ SetUpTestSuiteFunc\ set\_up\_tc,}
+\DoxyCodeLine{00584\ \ \ \ \ TearDownTestSuiteFunc\ tear\_down\_tc,\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{TestFactoryBase}}*\ factory);}
+\DoxyCodeLine{00585\ }
+\DoxyCodeLine{00586\ \textcolor{comment}{//\ If\ *pstr\ starts\ with\ the\ given\ prefix,\ modifies\ *pstr\ to\ be\ right}}
+\DoxyCodeLine{00587\ \textcolor{comment}{//\ past\ the\ prefix\ and\ returns\ true;\ otherwise\ leaves\ *pstr\ unchanged}}
+\DoxyCodeLine{00588\ \textcolor{comment}{//\ and\ returns\ false.\ \ None\ of\ pstr,\ *pstr,\ and\ prefix\ can\ be\ NULL.}}
+\DoxyCodeLine{00589\ GTEST\_API\_\ \textcolor{keywordtype}{bool}\ SkipPrefix(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ prefix,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}**\ pstr);}
+\DoxyCodeLine{00590\ }
+\DoxyCodeLine{00591\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4251\ \(\backslash\)}
+\DoxyCodeLine{00592\ \textcolor{comment}{/*\ class\ A\ needs\ to\ have\ dll-\/interface\ to\ be\ used\ by\ clients\ of\ class\ B\ */})}
+\DoxyCodeLine{00593\ }
+\DoxyCodeLine{00594\ \textcolor{comment}{//\ State\ of\ the\ definition\ of\ a\ type-\/parameterized\ test\ suite.}}
+\DoxyCodeLine{00595\ class\ GTEST\_API\_\ TypedTestSuitePState\ \{}
+\DoxyCodeLine{00596\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00597\ \ \ TypedTestSuitePState()\ :\ registered\_(false)\ \{\}}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \ \ \textcolor{comment}{//\ Adds\ the\ given\ test\ name\ to\ defined\_test\_names\_\ and\ return\ true}}
+\DoxyCodeLine{00600\ \ \ \textcolor{comment}{//\ if\ the\ test\ suite\ hasn't\ been\ registered;\ otherwise\ aborts\ the}}
+\DoxyCodeLine{00601\ \ \ \textcolor{comment}{//\ program.}}
+\DoxyCodeLine{00602\ \ \ \textcolor{keywordtype}{bool}\ AddTestName(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ case\_name,}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_name)\ \{}
+\DoxyCodeLine{00604\ \ \ \ \ \textcolor{keywordflow}{if}\ (registered\_)\ \{}
+\DoxyCodeLine{00605\ \ \ \ \ \ \ fprintf(stderr,}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\%s\ Test\ \%s\ must\ be\ defined\ before\ "{}}}
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}REGISTER\_TYPED\_TEST\_SUITE\_P(\%s,\ ...).\(\backslash\)n"{}},}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FormatFileLocation(file,\ line).c\_str(),\ test\_name,\ case\_name);}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ fflush(stderr);}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{00611\ \ \ \ \ \}}
+\DoxyCodeLine{00612\ \ \ \ \ registered\_tests\_.insert(}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ ::std::make\_pair(test\_name,\ CodeLocation(file,\ line)));}
+\DoxyCodeLine{00614\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00615\ \ \ \}}
+\DoxyCodeLine{00616\ }
+\DoxyCodeLine{00617\ \ \ \textcolor{keywordtype}{bool}\ TestExists(\textcolor{keyword}{const}\ std::string\&\ test\_name)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00618\ \ \ \ \ \textcolor{keywordflow}{return}\ registered\_tests\_.count(test\_name)\ >\ 0;}
+\DoxyCodeLine{00619\ \ \ \}}
+\DoxyCodeLine{00620\ }
+\DoxyCodeLine{00621\ \ \ \textcolor{keyword}{const}\ CodeLocation\&\ GetCodeLocation(\textcolor{keyword}{const}\ std::string\&\ test\_name)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00622\ \ \ \ \ RegisteredTestsMap::const\_iterator\ it\ =\ registered\_tests\_.find(test\_name);}
+\DoxyCodeLine{00623\ \ \ \ \ GTEST\_CHECK\_(it\ !=\ registered\_tests\_.end());}
+\DoxyCodeLine{00624\ \ \ \ \ \textcolor{keywordflow}{return}\ it-\/>second;}
+\DoxyCodeLine{00625\ \ \ \}}
+\DoxyCodeLine{00626\ }
+\DoxyCodeLine{00627\ \ \ \textcolor{comment}{//\ Verifies\ that\ registered\_tests\ match\ the\ test\ names\ in}}
+\DoxyCodeLine{00628\ \ \ \textcolor{comment}{//\ defined\_test\_names\_;\ returns\ registered\_tests\ if\ successful,\ or}}
+\DoxyCodeLine{00629\ \ \ \textcolor{comment}{//\ aborts\ the\ program\ otherwise.}}
+\DoxyCodeLine{00630\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ VerifyRegisteredTestNames(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_suite\_name,}
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00632\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ registered\_tests);}
+\DoxyCodeLine{00633\ }
+\DoxyCodeLine{00634\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00635\ \ \ typedef\ ::std::map<std::string,\ CodeLocation,\ std::less<>>\ RegisteredTestsMap;}
+\DoxyCodeLine{00636\ }
+\DoxyCodeLine{00637\ \ \ \textcolor{keywordtype}{bool}\ registered\_;}
+\DoxyCodeLine{00638\ \ \ RegisteredTestsMap\ registered\_tests\_;}
+\DoxyCodeLine{00639\ \};}
+\DoxyCodeLine{00640\ }
+\DoxyCodeLine{00641\ \textcolor{comment}{//\ \ Legacy\ API\ is\ deprecated\ but\ still\ available}}
+\DoxyCodeLine{00642\ \textcolor{preprocessor}{\#ifndef\ GTEST\_REMOVE\_LEGACY\_TEST\_CASEAPI\_}}
+\DoxyCodeLine{00643\ \textcolor{keyword}{using\ }TypedTestCasePState\ =\ TypedTestSuitePState;}
+\DoxyCodeLine{00644\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \ GTEST\_REMOVE\_LEGACY\_TEST\_CASEAPI\_}}
+\DoxyCodeLine{00645\ }
+\DoxyCodeLine{00646\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4251}}
+\DoxyCodeLine{00647\ }
+\DoxyCodeLine{00648\ \textcolor{comment}{//\ Skips\ to\ the\ first\ non-\/space\ char\ after\ the\ first\ comma\ in\ 'str';}}
+\DoxyCodeLine{00649\ \textcolor{comment}{//\ returns\ NULL\ if\ no\ comma\ is\ found\ in\ 'str'.}}
+\DoxyCodeLine{00650\ inline\ const\ \textcolor{keywordtype}{char}*\ SkipComma(const\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00651\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ comma\ =\ strchr(str,\ \textcolor{charliteral}{','});}
+\DoxyCodeLine{00652\ \ \ \textcolor{keywordflow}{if}\ (comma\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00653\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00654\ \ \ \}}
+\DoxyCodeLine{00655\ \ \ \textcolor{keywordflow}{while}\ (IsSpace(*(++comma)))\ \{}
+\DoxyCodeLine{00656\ \ \ \}}
+\DoxyCodeLine{00657\ \ \ \textcolor{keywordflow}{return}\ comma;}
+\DoxyCodeLine{00658\ \}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00660\ \textcolor{comment}{//\ Returns\ the\ prefix\ of\ 'str'\ before\ the\ first\ comma\ in\ it;\ returns}}
+\DoxyCodeLine{00661\ \textcolor{comment}{//\ the\ entire\ string\ if\ it\ contains\ no\ comma.}}
+\DoxyCodeLine{00662\ \textcolor{keyword}{inline}\ std::string\ GetPrefixUntilComma(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00663\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ comma\ =\ strchr(str,\ \textcolor{charliteral}{','});}
+\DoxyCodeLine{00664\ \ \ \textcolor{keywordflow}{return}\ comma\ ==\ \textcolor{keyword}{nullptr}\ ?\ str\ :\ std::string(str,\ comma);}
+\DoxyCodeLine{00665\ \}}
+\DoxyCodeLine{00666\ }
+\DoxyCodeLine{00667\ \textcolor{comment}{//\ Splits\ a\ given\ string\ on\ a\ given\ delimiter,\ populating\ a\ given}}
+\DoxyCodeLine{00668\ \textcolor{comment}{//\ vector\ with\ the\ fields.}}
+\DoxyCodeLine{00669\ \textcolor{keywordtype}{void}\ SplitString(const\ ::std::string\&\ str,\ \textcolor{keywordtype}{char}\ delimiter,}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::std::vector<::std::string>*\ dest);}
+\DoxyCodeLine{00671\ }
+\DoxyCodeLine{00672\ \textcolor{comment}{//\ The\ default\ argument\ to\ the\ template\ below\ for\ the\ case\ when\ the\ user\ does}}
+\DoxyCodeLine{00673\ \textcolor{comment}{//\ not\ provide\ a\ name\ generator.}}
+\DoxyCodeLine{00674\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_default_name_generator}{DefaultNameGenerator}}\ \{}
+\DoxyCodeLine{00675\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00676\ \ \ \textcolor{keyword}{static}\ std::string\ GetName(\textcolor{keywordtype}{int}\ i)\ \{}
+\DoxyCodeLine{00677\ \ \ \ \ \textcolor{keywordflow}{return}\ StreamableToString(i);}
+\DoxyCodeLine{00678\ \ \ \}}
+\DoxyCodeLine{00679\ \};}
+\DoxyCodeLine{00680\ }
+\DoxyCodeLine{00681\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Prov\textcolor{keywordtype}{id}ed\ =\ DefaultNameGenerator>}
+\DoxyCodeLine{00682\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_name_generator_selector}{NameGeneratorSelector}}\ \{}
+\DoxyCodeLine{00683\ \ \ \textcolor{keyword}{typedef}\ Provided\ type;}
+\DoxyCodeLine{00684\ \};}
+\DoxyCodeLine{00685\ }
+\DoxyCodeLine{00686\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ NameGenerator>}
+\DoxyCodeLine{00687\ \textcolor{keywordtype}{void}\ GenerateNamesRecursively(\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{internal::None}},\ std::vector<std::string>*,\ \textcolor{keywordtype}{int})\ \{\}}
+\DoxyCodeLine{00688\ }
+\DoxyCodeLine{00689\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ NameGenerator,\ \textcolor{keyword}{typename}\ Types>}
+\DoxyCodeLine{00690\ \textcolor{keywordtype}{void}\ GenerateNamesRecursively(\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{Types}},\ std::vector<std::string>*\ result,\ \textcolor{keywordtype}{int}\ i)\ \{}
+\DoxyCodeLine{00691\ \ \ result-\/>push\_back(NameGenerator::template\ GetName<typename\ Types::Head>(i));}
+\DoxyCodeLine{00692\ \ \ GenerateNamesRecursively<NameGenerator>(\textcolor{keyword}{typename}\ Types::Tail(),\ result,}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ i\ +\ 1);}
+\DoxyCodeLine{00694\ \}}
+\DoxyCodeLine{00695\ }
+\DoxyCodeLine{00696\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ NameGenerator,\ \textcolor{keyword}{typename}\ Types>}
+\DoxyCodeLine{00697\ std::vector<std::string>\ GenerateNames()\ \{}
+\DoxyCodeLine{00698\ \ \ std::vector<std::string>\ result;}
+\DoxyCodeLine{00699\ \ \ GenerateNamesRecursively<NameGenerator>(Types(),\ \&result,\ 0);}
+\DoxyCodeLine{00700\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00701\ \}}
+\DoxyCodeLine{00702\ }
+\DoxyCodeLine{00703\ \textcolor{comment}{//\ TypeParameterizedTest<Fixture,\ TestSel,\ Types>::Register()}}
+\DoxyCodeLine{00704\ \textcolor{comment}{//\ registers\ a\ list\ of\ type-\/parameterized\ tests\ with\ Google\ Test.\ \ The}}
+\DoxyCodeLine{00705\ \textcolor{comment}{//\ return\ value\ is\ insignificant\ -\/\ we\ just\ need\ to\ return\ something}}
+\DoxyCodeLine{00706\ \textcolor{comment}{//\ such\ that\ we\ can\ call\ this\ function\ in\ a\ namespace\ scope.}}
+\DoxyCodeLine{00707\ \textcolor{comment}{//}}
+\DoxyCodeLine{00708\ \textcolor{comment}{//\ Implementation\ note:\ The\ GTEST\_TEMPLATE\_\ macro\ declares\ a\ template}}
+\DoxyCodeLine{00709\ \textcolor{comment}{//\ template\ parameter.\ \ It's\ defined\ in\ gtest-\/type-\/util.h.}}
+\DoxyCodeLine{00710\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Fixture,\ \textcolor{keyword}{class}\ TestSel,\ \textcolor{keyword}{typename}\ Types>}
+\DoxyCodeLine{00711\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test}{TypeParameterizedTest}}\ \{}
+\DoxyCodeLine{00712\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00713\ \ \ \textcolor{comment}{//\ 'index'\ is\ the\ index\ of\ the\ test\ in\ the\ type\ list\ 'Types'}}
+\DoxyCodeLine{00714\ \ \ \textcolor{comment}{//\ specified\ in\ INSTANTIATE\_TYPED\_TEST\_SUITE\_P(Prefix,\ TestSuite,}}
+\DoxyCodeLine{00715\ \ \ \textcolor{comment}{//\ Types).\ \ Valid\ values\ for\ 'index'\ are\ [0,\ N\ -\/\ 1]\ where\ N\ is\ the}}
+\DoxyCodeLine{00716\ \ \ \textcolor{comment}{//\ length\ of\ Types.}}
+\DoxyCodeLine{00717\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Register(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ prefix,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\&\ code\_location,}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ case\_name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_names,\ \textcolor{keywordtype}{int}\ index,}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ type\_names\ =}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GenerateNames<DefaultNameGenerator,\ Types>())\ \{}
+\DoxyCodeLine{00721\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Types::Head\ Type;}
+\DoxyCodeLine{00722\ \ \ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_fixture}{Fixture<Type>}}\ FixtureClass;}
+\DoxyCodeLine{00723\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ GTEST\_BIND\_(TestSel,\ Type)\ TestClass;}
+\DoxyCodeLine{00724\ }
+\DoxyCodeLine{00725\ \ \ \ \ \textcolor{comment}{//\ First,\ registers\ the\ first\ type-\/parameterized\ test\ in\ the\ type}}
+\DoxyCodeLine{00726\ \ \ \ \ \textcolor{comment}{//\ list.}}
+\DoxyCodeLine{00727\ \ \ \ \ MakeAndRegisterTestInfo(}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \ \ (std::string(prefix)\ +\ (prefix[0]\ ==\ \textcolor{charliteral}{'\(\backslash\)0'}\ ?\ \textcolor{stringliteral}{"{}"{}}\ :\ \textcolor{stringliteral}{"{}/"{}})\ +\ case\_name\ +}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}/"{}}\ +\ type\_names[\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(index)])}
+\DoxyCodeLine{00730\ \ \ \ \ \ \ \ \ \ \ \ \ .c\_str(),}
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ StripTrailingSpaces(GetPrefixUntilComma(test\_names)).c\_str(),}
+\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ GetTypeName<Type>().c\_str(),}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ No\ value\ parameter.}}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ code\_location,\ GetTypeId<FixtureClass>(),}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_suite_api_resolver}{SuiteApiResolver<TestClass>::GetSetUpCaseOrSuite}}(}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \ \ \ \ code\_location.file.c\_str(),\ code\_location.line),}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_suite_api_resolver}{SuiteApiResolver<TestClass>::GetTearDownCaseOrSuite}}(}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \ \ \ \ code\_location.file.c\_str(),\ code\_location.line),}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ \textcolor{keyword}{new}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_impl}{TestFactoryImpl<TestClass>}});}
+\DoxyCodeLine{00740\ }
+\DoxyCodeLine{00741\ \ \ \ \ \textcolor{comment}{//\ Next,\ recurses\ (at\ compile\ time)\ with\ the\ tail\ of\ the\ type\ list.}}
+\DoxyCodeLine{00742\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test}{TypeParameterizedTest}}<\mbox{\hyperlink{class_fixture}{Fixture}},\ TestSel,}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ Types::Tail>::Register(prefix,}
+\DoxyCodeLine{00744\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ code\_location,}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ case\_name,}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ test\_names,}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ index\ +\ 1,}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ type\_names);}
+\DoxyCodeLine{00749\ \ \ \}}
+\DoxyCodeLine{00750\ \};}
+\DoxyCodeLine{00751\ }
+\DoxyCodeLine{00752\ \textcolor{comment}{//\ The\ base\ case\ for\ the\ compile\ time\ recursion.}}
+\DoxyCodeLine{00753\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Fixture,\ \textcolor{keyword}{class}\ TestSel>}
+\DoxyCodeLine{00754\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test}{TypeParameterizedTest}}<\mbox{\hyperlink{class_fixture}{Fixture}},\ TestSel,\ internal::\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{None}}>\ \{}
+\DoxyCodeLine{00755\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00756\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Register(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*prefix*/},\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\&,}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*case\_name*/},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*test\_names*/},}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \textcolor{comment}{/*index*/},}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ =}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::string>()\ \textcolor{comment}{/*type\_names*/})\ \{}
+\DoxyCodeLine{00761\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00762\ \ \ \}}
+\DoxyCodeLine{00763\ \};}
+\DoxyCodeLine{00764\ }
+\DoxyCodeLine{00765\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ RegisterTypeParameterizedTestSuite(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_suite\_name,}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\ code\_location);}
+\DoxyCodeLine{00767\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ RegisterTypeParameterizedTestSuiteInstantiation(}
+\DoxyCodeLine{00768\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ case\_name);}
+\DoxyCodeLine{00769\ }
+\DoxyCodeLine{00770\ \textcolor{comment}{//\ TypeParameterizedTestSuite<Fixture,\ Tests,\ Types>::Register()}}
+\DoxyCodeLine{00771\ \textcolor{comment}{//\ registers\ *all\ combinations*\ of\ 'Tests'\ and\ 'Types'\ with\ Google}}
+\DoxyCodeLine{00772\ \textcolor{comment}{//\ Test.\ \ The\ return\ value\ is\ insignificant\ -\/\ we\ just\ need\ to\ return}}
+\DoxyCodeLine{00773\ \textcolor{comment}{//\ something\ such\ that\ we\ can\ call\ this\ function\ in\ a\ namespace\ scope.}}
+\DoxyCodeLine{00774\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Fixture,\ \textcolor{keyword}{typename}\ Tests,\ \textcolor{keyword}{typename}\ Types>}
+\DoxyCodeLine{00775\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test_suite}{TypeParameterizedTestSuite}}\ \{}
+\DoxyCodeLine{00776\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00777\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Register(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ prefix,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\ code\_location,}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ TypedTestSuitePState*\ state,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ case\_name,}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_names,}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ type\_names\ =}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GenerateNames<DefaultNameGenerator,\ Types>())\ \{}
+\DoxyCodeLine{00782\ \ \ \ \ RegisterTypeParameterizedTestSuiteInstantiation(case\_name);}
+\DoxyCodeLine{00783\ \ \ \ \ std::string\ test\_name\ =}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ StripTrailingSpaces(GetPrefixUntilComma(test\_names));}
+\DoxyCodeLine{00785\ \ \ \ \ \textcolor{keywordflow}{if}\ (!state-\/>TestExists(test\_name))\ \{}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Failed\ to\ get\ code\ location\ for\ test\ \%s.\%s\ at\ \%s."{}},}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ case\_name,\ test\_name.c\_str(),}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FormatFileLocation(code\_location.file.c\_str(),\ code\_location.line)}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .c\_str());}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ fflush(stderr);}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{00792\ \ \ \ \ \}}
+\DoxyCodeLine{00793\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\&\ test\_location\ =\ state-\/>GetCodeLocation(test\_name);}
+\DoxyCodeLine{00794\ }
+\DoxyCodeLine{00795\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Tests::Head\ Head;}
+\DoxyCodeLine{00796\ }
+\DoxyCodeLine{00797\ \ \ \ \ \textcolor{comment}{//\ First,\ register\ the\ first\ test\ in\ 'Test'\ for\ each\ type\ in\ 'Types'.}}
+\DoxyCodeLine{00798\ \ \ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test}{TypeParameterizedTest<Fixture,\ Head,\ Types>::Register}}(}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ prefix,\ test\_location,\ case\_name,\ test\_names,\ 0,\ type\_names);}
+\DoxyCodeLine{00800\ }
+\DoxyCodeLine{00801\ \ \ \ \ \textcolor{comment}{//\ Next,\ recurses\ (at\ compile\ time)\ with\ the\ tail\ of\ the\ test\ list.}}
+\DoxyCodeLine{00802\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test_suite}{TypeParameterizedTestSuite}}<\mbox{\hyperlink{class_fixture}{Fixture}},\ \textcolor{keyword}{typename}\ Tests::Tail,}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}>::Register(prefix,\ code\_location,}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ state,\ case\_name,}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SkipComma(test\_names),}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ type\_names);}
+\DoxyCodeLine{00807\ \ \ \}}
+\DoxyCodeLine{00808\ \};}
+\DoxyCodeLine{00809\ }
+\DoxyCodeLine{00810\ \textcolor{comment}{//\ The\ base\ case\ for\ the\ compile\ time\ recursion.}}
+\DoxyCodeLine{00811\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Fixture,\ \textcolor{keyword}{typename}\ Types>}
+\DoxyCodeLine{00812\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test_suite}{TypeParameterizedTestSuite}}<\mbox{\hyperlink{class_fixture}{Fixture}},\ internal::\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{None}},\ \mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}>\ \{}
+\DoxyCodeLine{00813\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00814\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Register(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*prefix*/},\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{CodeLocation}}\&,}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ TypedTestSuitePState*\ \textcolor{comment}{/*state*/},}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*case\_name*/},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{comment}{/*test\_names*/},}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\&\ =}
+\DoxyCodeLine{00818\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::string>()\ \textcolor{comment}{/*type\_names*/})\ \{}
+\DoxyCodeLine{00819\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00820\ \ \ \}}
+\DoxyCodeLine{00821\ \};}
+\DoxyCodeLine{00822\ }
+\DoxyCodeLine{00823\ \textcolor{comment}{//\ Returns\ the\ current\ OS\ stack\ trace\ as\ an\ std::string.}}
+\DoxyCodeLine{00824\ \textcolor{comment}{//}}
+\DoxyCodeLine{00825\ \textcolor{comment}{//\ The\ maximum\ number\ of\ stack\ frames\ to\ be\ included\ is\ specified\ by}}
+\DoxyCodeLine{00826\ \textcolor{comment}{//\ the\ gtest\_stack\_trace\_depth\ flag.\ \ The\ skip\_count\ parameter}}
+\DoxyCodeLine{00827\ \textcolor{comment}{//\ specifies\ the\ number\ of\ top\ frames\ to\ be\ skipped,\ which\ doesn't}}
+\DoxyCodeLine{00828\ \textcolor{comment}{//\ count\ against\ the\ number\ of\ frames\ to\ be\ included.}}
+\DoxyCodeLine{00829\ \textcolor{comment}{//}}
+\DoxyCodeLine{00830\ \textcolor{comment}{//\ For\ example,\ if\ Foo()\ calls\ Bar(),\ which\ in\ turn\ calls}}
+\DoxyCodeLine{00831\ \textcolor{comment}{//\ GetCurrentOsStackTraceExceptTop(...,\ 1),\ Foo()\ will\ be\ included\ in}}
+\DoxyCodeLine{00832\ \textcolor{comment}{//\ the\ trace\ but\ Bar()\ and\ GetCurrentOsStackTraceExceptTop()\ won't.}}
+\DoxyCodeLine{00833\ GTEST\_API\_\ std::string\ GetCurrentOsStackTraceExceptTop(\textcolor{keywordtype}{int}\ skip\_count);}
+\DoxyCodeLine{00834\ }
+\DoxyCodeLine{00835\ \textcolor{comment}{//\ Helpers\ for\ suppressing\ warnings\ on\ unreachable\ code\ or\ constant}}
+\DoxyCodeLine{00836\ \textcolor{comment}{//\ condition.}}
+\DoxyCodeLine{00837\ }
+\DoxyCodeLine{00838\ \textcolor{comment}{//\ Always\ returns\ true.}}
+\DoxyCodeLine{00839\ GTEST\_API\_\ \textcolor{keywordtype}{bool}\ AlwaysTrue();}
+\DoxyCodeLine{00840\ }
+\DoxyCodeLine{00841\ \textcolor{comment}{//\ Always\ returns\ false.}}
+\DoxyCodeLine{00842\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ AlwaysFalse()\ \{\ \textcolor{keywordflow}{return}\ !AlwaysTrue();\ \}}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00844\ \textcolor{comment}{//\ Helper\ for\ suppressing\ false\ warning\ from\ Clang\ on\ a\ const\ char*}}
+\DoxyCodeLine{00845\ \textcolor{comment}{//\ variable\ declared\ in\ a\ conditional\ expression\ always\ being\ NULL\ in}}
+\DoxyCodeLine{00846\ \textcolor{comment}{//\ the\ else\ branch.}}
+\DoxyCodeLine{00847\ \textcolor{keyword}{struct\ }GTEST\_API\_\ \mbox{\hyperlink{structtesting_1_1internal_1_1_const_char_ptr}{ConstCharPtr}}\ \{}
+\DoxyCodeLine{00848\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_const_char_ptr}{ConstCharPtr}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ :\ value(str)\ \{\}}
+\DoxyCodeLine{00849\ \ \ \textcolor{keyword}{operator}\ bool()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00850\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ value;}
+\DoxyCodeLine{00851\ \};}
+\DoxyCodeLine{00852\ }
+\DoxyCodeLine{00853\ \textcolor{comment}{//\ Helper\ for\ declaring\ std::string\ within\ 'if'\ statement}}
+\DoxyCodeLine{00854\ \textcolor{comment}{//\ in\ pre\ C++17\ build\ environment.}}
+\DoxyCodeLine{00855\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_true_with_string}{TrueWithString}}\ \{}
+\DoxyCodeLine{00856\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_true_with_string}{TrueWithString}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00857\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_true_with_string}{TrueWithString}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ :\ value(str)\ \{\}}
+\DoxyCodeLine{00858\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_true_with_string}{TrueWithString}}(\textcolor{keyword}{const}\ std::string\&\ str)\ :\ value(str)\ \{\}}
+\DoxyCodeLine{00859\ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{operator}\ bool()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00860\ \ \ std::string\ value;}
+\DoxyCodeLine{00861\ \};}
+\DoxyCodeLine{00862\ }
+\DoxyCodeLine{00863\ \textcolor{comment}{//\ A\ simple\ Linear\ Congruential\ Generator\ for\ generating\ random}}
+\DoxyCodeLine{00864\ \textcolor{comment}{//\ numbers\ with\ a\ uniform\ distribution.\ \ Unlike\ rand()\ and\ srand(),\ it}}
+\DoxyCodeLine{00865\ \textcolor{comment}{//\ doesn't\ use\ global\ state\ (and\ therefore\ can't\ interfere\ with\ user}}
+\DoxyCodeLine{00866\ \textcolor{comment}{//\ code).\ \ Unlike\ rand\_r(),\ it's\ portable.\ \ An\ LCG\ isn't\ very\ random,}}
+\DoxyCodeLine{00867\ \textcolor{comment}{//\ but\ it's\ good\ enough\ for\ our\ purposes.}}
+\DoxyCodeLine{00868\ \textcolor{keyword}{class\ }GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}\ \{}
+\DoxyCodeLine{00869\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00870\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ kMaxRange\ =\ 1u\ <<\ 31;}
+\DoxyCodeLine{00871\ }
+\DoxyCodeLine{00872\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}(uint32\_t\ seed)\ :\ state\_(seed)\ \{\}}
+\DoxyCodeLine{00873\ }
+\DoxyCodeLine{00874\ \ \ \textcolor{keywordtype}{void}\ Reseed(uint32\_t\ seed)\ \{\ state\_\ =\ seed;\ \}}
+\DoxyCodeLine{00875\ }
+\DoxyCodeLine{00876\ \ \ \textcolor{comment}{//\ Generates\ a\ random\ number\ from\ [0,\ range).\ \ Crashes\ if\ 'range'\ is}}
+\DoxyCodeLine{00877\ \ \ \textcolor{comment}{//\ 0\ or\ greater\ than\ kMaxRange.}}
+\DoxyCodeLine{00878\ \ \ uint32\_t\ Generate(uint32\_t\ range);}
+\DoxyCodeLine{00879\ }
+\DoxyCodeLine{00880\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00881\ \ \ uint32\_t\ state\_;}
+\DoxyCodeLine{00882\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00883\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_random}{Random}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00884\ \};}
+\DoxyCodeLine{00885\ }
+\DoxyCodeLine{00886\ \textcolor{comment}{//\ Turns\ const\ U\&,\ U\&,\ const\ U,\ and\ U\ all\ into\ U.}}
+\DoxyCodeLine{00887\ \textcolor{preprocessor}{\#define\ GTEST\_REMOVE\_REFERENCE\_AND\_CONST\_(T)\ \(\backslash\)}}
+\DoxyCodeLine{00888\ \textcolor{preprocessor}{\ \ typename\ std::remove\_const<typename\ std::remove\_reference<T>::type>::type}}
+\DoxyCodeLine{00889\ }
+\DoxyCodeLine{00890\ \textcolor{comment}{//\ HasDebugStringAndShortDebugString<T>::value\ is\ a\ compile-\/time\ bool\ constant}}
+\DoxyCodeLine{00891\ \textcolor{comment}{//\ that's\ true\ if\ and\ only\ if\ T\ has\ methods\ DebugString()\ and\ ShortDebugString()}}
+\DoxyCodeLine{00892\ \textcolor{comment}{//\ that\ return\ std::string.}}
+\DoxyCodeLine{00893\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00894\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_has_debug_string_and_short_debug_string}{HasDebugStringAndShortDebugString}}\ \{}
+\DoxyCodeLine{00895\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00896\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C>}
+\DoxyCodeLine{00897\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ CheckDebugString(C*)\ -\/>\ \textcolor{keyword}{typename}\ std::is\_same<}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ std::string,\ \textcolor{keyword}{decltype}(std::declval<const\ C>().DebugString())>::type;}
+\DoxyCodeLine{00899\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00900\ \ \ \textcolor{keyword}{static}\ std::false\_type\ CheckDebugString(...);}
+\DoxyCodeLine{00901\ }
+\DoxyCodeLine{00902\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C>}
+\DoxyCodeLine{00903\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{auto}\ CheckShortDebugString(C*)\ -\/>\ \textcolor{keyword}{typename}\ std::is\_same<}
+\DoxyCodeLine{00904\ \ \ \ \ \ \ std::string,\ \textcolor{keyword}{decltype}(std::declval<const\ C>().ShortDebugString())>::type;}
+\DoxyCodeLine{00905\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00906\ \ \ \textcolor{keyword}{static}\ std::false\_type\ CheckShortDebugString(...);}
+\DoxyCodeLine{00907\ }
+\DoxyCodeLine{00908\ \ \ \textcolor{keyword}{using\ }HasDebugStringType\ =\ \textcolor{keyword}{decltype}(CheckDebugString<T>(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00909\ \ \ \textcolor{keyword}{using\ }HasShortDebugStringType\ =\ \textcolor{keyword}{decltype}(CheckShortDebugString<T>(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00910\ }
+\DoxyCodeLine{00911\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00912\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ value\ =}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ HasDebugStringType::value\ \&\&\ HasShortDebugStringType::value;}
+\DoxyCodeLine{00914\ \};}
+\DoxyCodeLine{00915\ }
+\DoxyCodeLine{00916\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00917\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_has_debug_string_and_short_debug_string}{HasDebugStringAndShortDebugString<T>::value}};}
+\DoxyCodeLine{00918\ }
+\DoxyCodeLine{00919\ \textcolor{comment}{//\ When\ the\ compiler\ sees\ expression\ IsContainerTest<C>(0),\ if\ C\ is\ an}}
+\DoxyCodeLine{00920\ \textcolor{comment}{//\ STL-\/style\ container\ class,\ the\ first\ overload\ of\ IsContainerTest}}
+\DoxyCodeLine{00921\ \textcolor{comment}{//\ will\ be\ viable\ (since\ both\ C::iterator*\ and\ C::const\_iterator*\ are}}
+\DoxyCodeLine{00922\ \textcolor{comment}{//\ valid\ types\ and\ NULL\ can\ be\ implicitly\ converted\ to\ them).\ \ It\ will}}
+\DoxyCodeLine{00923\ \textcolor{comment}{//\ be\ picked\ over\ the\ second\ overload\ as\ 'int'\ is\ a\ perfect\ match\ for}}
+\DoxyCodeLine{00924\ \textcolor{comment}{//\ the\ type\ of\ argument\ 0.\ \ If\ C::iterator\ or\ C::const\_iterator\ is\ not}}
+\DoxyCodeLine{00925\ \textcolor{comment}{//\ a\ valid\ type,\ the\ first\ overload\ is\ not\ viable,\ and\ the\ second}}
+\DoxyCodeLine{00926\ \textcolor{comment}{//\ overload\ will\ be\ picked.\ \ Therefore,\ we\ can\ determine\ whether\ C\ is}}
+\DoxyCodeLine{00927\ \textcolor{comment}{//\ a\ container\ class\ by\ checking\ the\ type\ of\ IsContainerTest<C>(0).}}
+\DoxyCodeLine{00928\ \textcolor{comment}{//\ The\ value\ of\ the\ expression\ is\ insignificant.}}
+\DoxyCodeLine{00929\ \textcolor{comment}{//}}
+\DoxyCodeLine{00930\ \textcolor{comment}{//\ In\ C++11\ mode\ we\ check\ the\ existence\ of\ a\ const\_iterator\ and\ that\ an}}
+\DoxyCodeLine{00931\ \textcolor{comment}{//\ iterator\ is\ properly\ implemented\ for\ the\ container.}}
+\DoxyCodeLine{00932\ \textcolor{comment}{//}}
+\DoxyCodeLine{00933\ \textcolor{comment}{//\ For\ pre-\/C++11\ that\ we\ look\ for\ both\ C::iterator\ and\ C::const\_iterator.}}
+\DoxyCodeLine{00934\ \textcolor{comment}{//\ The\ reason\ is\ that\ C++\ injects\ the\ name\ of\ a\ class\ as\ a\ member\ of\ the}}
+\DoxyCodeLine{00935\ \textcolor{comment}{//\ class\ itself\ (e.g.\ you\ can\ refer\ to\ class\ iterator\ as\ either}}
+\DoxyCodeLine{00936\ \textcolor{comment}{//\ 'iterator'\ or\ 'iterator::iterator').\ \ If\ we\ look\ for\ C::iterator}}
+\DoxyCodeLine{00937\ \textcolor{comment}{//\ only,\ for\ example,\ we\ would\ mistakenly\ think\ that\ a\ class\ named}}
+\DoxyCodeLine{00938\ \textcolor{comment}{//\ iterator\ is\ an\ STL\ container.}}
+\DoxyCodeLine{00939\ \textcolor{comment}{//}}
+\DoxyCodeLine{00940\ \textcolor{comment}{//\ Also\ note\ that\ the\ simpler\ approach\ of\ overloading}}
+\DoxyCodeLine{00941\ \textcolor{comment}{//\ IsContainerTest(typename\ C::const\_iterator*)\ and}}
+\DoxyCodeLine{00942\ \textcolor{comment}{//\ IsContainerTest(...)\ doesn't\ work\ with\ Visual\ Age\ C++\ and\ Sun\ C++.}}
+\DoxyCodeLine{00943\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{int}\ IsContainer;}
+\DoxyCodeLine{00944\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }C,}
+\DoxyCodeLine{00945\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Iterator\ =\ \textcolor{keyword}{decltype}(::std::declval<const\ C\&>().begin()),}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{class}\ =\ \textcolor{keyword}{decltype}(::std::declval<const\ C\&>().end()),}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{class}\ =\ \textcolor{keyword}{decltype}(++::std::declval<Iterator\&>()),}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{class}\ =\ \textcolor{keyword}{decltype}(*::std::declval<Iterator>()),}
+\DoxyCodeLine{00949\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{class}\ =\ \textcolor{keyword}{typename}\ C::const\_iterator>}
+\DoxyCodeLine{00950\ IsContainer\ IsContainerTest(\textcolor{keywordtype}{int}\ \textcolor{comment}{/*\ dummy\ */})\ \{}
+\DoxyCodeLine{00951\ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00952\ \}}
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00954\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{char}\ IsNotContainer;}
+\DoxyCodeLine{00955\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ C>}
+\DoxyCodeLine{00956\ IsNotContainer\ IsContainerTest(\textcolor{keywordtype}{long}\ \textcolor{comment}{/*\ dummy\ */})\ \{}
+\DoxyCodeLine{00957\ \ \ \textcolor{keywordflow}{return}\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00958\ \}}
+\DoxyCodeLine{00959\ }
+\DoxyCodeLine{00960\ \textcolor{comment}{//\ Trait\ to\ detect\ whether\ a\ type\ T\ is\ a\ hash\ table.}}
+\DoxyCodeLine{00961\ \textcolor{comment}{//\ The\ heuristic\ used\ is\ that\ the\ type\ contains\ an\ inner\ type\ \`{}hasher`\ and\ does}}
+\DoxyCodeLine{00962\ \textcolor{comment}{//\ not\ contain\ an\ inner\ type\ \`{}reverse\_iterator`.}}
+\DoxyCodeLine{00963\ \textcolor{comment}{//\ If\ the\ container\ is\ iterable\ in\ reverse,\ then\ order\ might\ actually\ matter.}}
+\DoxyCodeLine{00964\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00965\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_is_hash_table}{IsHashTable}}\ \{}
+\DoxyCodeLine{00966\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00967\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00968\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{char}\ test(\textcolor{keyword}{typename}\ U::hasher*,\ \textcolor{keyword}{typename}\ U::reverse\_iterator*);}
+\DoxyCodeLine{00969\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00970\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ test(\textcolor{keyword}{typename}\ U::hasher*,\ ...);}
+\DoxyCodeLine{00971\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00972\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{char}\ test(...);}
+\DoxyCodeLine{00973\ }
+\DoxyCodeLine{00974\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00975\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ value\ =\ \textcolor{keyword}{sizeof}(test<T>(\textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr}))\ ==\ \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{00976\ \};}
+\DoxyCodeLine{00977\ }
+\DoxyCodeLine{00978\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00979\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_is_hash_table}{IsHashTable<T>::value}};}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C,}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ =\ \textcolor{keyword}{sizeof}(IsContainerTest<C>(0))\ ==\ \textcolor{keyword}{sizeof}(IsContainer)>}
+\DoxyCodeLine{00983\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_is_recursive_container_impl}{IsRecursiveContainerImpl}};}
+\DoxyCodeLine{00984\ }
+\DoxyCodeLine{00985\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C>}
+\DoxyCodeLine{00986\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_is_recursive_container_impl}{IsRecursiveContainerImpl}}<C,\ false>\ :\ \textcolor{keyword}{public}\ std::false\_type\ \{\};}
+\DoxyCodeLine{00987\ }
+\DoxyCodeLine{00988\ \textcolor{comment}{//\ Since\ the\ IsRecursiveContainerImpl\ depends\ on\ the\ IsContainerTest\ we\ need\ to}}
+\DoxyCodeLine{00989\ \textcolor{comment}{//\ obey\ the\ same\ inconsistencies\ as\ the\ IsContainerTest,\ namely\ check\ if}}
+\DoxyCodeLine{00990\ \textcolor{comment}{//\ something\ is\ a\ container\ is\ relying\ on\ only\ const\_iterator\ in\ C++11\ and}}
+\DoxyCodeLine{00991\ \textcolor{comment}{//\ is\ relying\ on\ both\ const\_iterator\ and\ iterator\ otherwise}}
+\DoxyCodeLine{00992\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C>}
+\DoxyCodeLine{00993\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_is_recursive_container_impl}{IsRecursiveContainerImpl}}<C,\ true>\ \{}
+\DoxyCodeLine{00994\ \ \ \textcolor{keyword}{using\ }value\_type\ =\ \textcolor{keyword}{decltype}(*std::declval<typename\ C::const\_iterator>());}
+\DoxyCodeLine{00995\ \ \ \textcolor{keyword}{using\ }type\ =}
+\DoxyCodeLine{00996\ \ \ \ \ \ \ std::is\_same<\textcolor{keyword}{typename}\ std::remove\_const<}
+\DoxyCodeLine{00997\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::remove\_reference<value\_type>::type>::type,}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ C>;}
+\DoxyCodeLine{00999\ \};}
+\DoxyCodeLine{01000\ }
+\DoxyCodeLine{01001\ \textcolor{comment}{//\ IsRecursiveContainer<Type>\ is\ a\ unary\ compile-\/time\ predicate\ that}}
+\DoxyCodeLine{01002\ \textcolor{comment}{//\ evaluates\ whether\ C\ is\ a\ recursive\ container\ type.\ A\ recursive\ container}}
+\DoxyCodeLine{01003\ \textcolor{comment}{//\ type\ is\ a\ container\ type\ whose\ value\_type\ is\ equal\ to\ the\ container\ type}}
+\DoxyCodeLine{01004\ \textcolor{comment}{//\ itself.\ An\ example\ for\ a\ recursive\ container\ type\ is}}
+\DoxyCodeLine{01005\ \textcolor{comment}{//\ boost::filesystem::path,\ whose\ iterator\ has\ a\ value\_type\ that\ is\ equal\ to}}
+\DoxyCodeLine{01006\ \textcolor{comment}{//\ boost::filesystem::path.}}
+\DoxyCodeLine{01007\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ C>}
+\DoxyCodeLine{01008\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_is_recursive_container}{IsRecursiveContainer}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_is_recursive_container_impl}{IsRecursiveContainerImpl}}<C>::type\ \{\};}
+\DoxyCodeLine{01009\ }
+\DoxyCodeLine{01010\ \textcolor{comment}{//\ Utilities\ for\ native\ arrays.}}
+\DoxyCodeLine{01011\ }
+\DoxyCodeLine{01012\ \textcolor{comment}{//\ ArrayEq()\ compares\ two\ k-\/dimensional\ native\ arrays\ using\ the}}
+\DoxyCodeLine{01013\ \textcolor{comment}{//\ elements'\ operator==,\ where\ k\ can\ be\ any\ integer\ >=\ 0.\ \ When\ k\ is}}
+\DoxyCodeLine{01014\ \textcolor{comment}{//\ 0,\ ArrayEq()\ degenerates\ into\ comparing\ a\ single\ pair\ of\ values.}}
+\DoxyCodeLine{01015\ }
+\DoxyCodeLine{01016\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01017\ \textcolor{keywordtype}{bool}\ ArrayEq(\textcolor{keyword}{const}\ T*\ lhs,\ \textcolor{keywordtype}{size\_t}\ size,\ \textcolor{keyword}{const}\ U*\ rhs);}
+\DoxyCodeLine{01018\ }
+\DoxyCodeLine{01019\ \textcolor{comment}{//\ This\ generic\ version\ is\ used\ when\ k\ is\ 0.}}
+\DoxyCodeLine{01020\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01021\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ ArrayEq(\textcolor{keyword}{const}\ T\&\ lhs,\ \textcolor{keyword}{const}\ U\&\ rhs)\ \{}
+\DoxyCodeLine{01022\ \ \ \textcolor{keywordflow}{return}\ lhs\ ==\ rhs;}
+\DoxyCodeLine{01023\ \}}
+\DoxyCodeLine{01024\ }
+\DoxyCodeLine{01025\ \textcolor{comment}{//\ This\ overload\ is\ used\ when\ k\ >=\ 1.}}
+\DoxyCodeLine{01026\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U,\ \textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{01027\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ ArrayEq(\textcolor{keyword}{const}\ T\ (\&lhs)[N],\ \textcolor{keyword}{const}\ U\ (\&rhs)[N])\ \{}
+\DoxyCodeLine{01028\ \ \ \textcolor{keywordflow}{return}\ internal::ArrayEq(lhs,\ N,\ rhs);}
+\DoxyCodeLine{01029\ \}}
+\DoxyCodeLine{01030\ }
+\DoxyCodeLine{01031\ \textcolor{comment}{//\ This\ helper\ reduces\ code\ bloat.\ \ If\ we\ instead\ put\ its\ logic\ inside}}
+\DoxyCodeLine{01032\ \textcolor{comment}{//\ the\ previous\ ArrayEq()\ function,\ arrays\ with\ different\ sizes\ would}}
+\DoxyCodeLine{01033\ \textcolor{comment}{//\ lead\ to\ different\ copies\ of\ the\ template\ code.}}
+\DoxyCodeLine{01034\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01035\ \textcolor{keywordtype}{bool}\ ArrayEq(\textcolor{keyword}{const}\ T*\ lhs,\ \textcolor{keywordtype}{size\_t}\ size,\ \textcolor{keyword}{const}\ U*\ rhs)\ \{}
+\DoxyCodeLine{01036\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ size;\ i++)\ \{}
+\DoxyCodeLine{01037\ \ \ \ \ \textcolor{keywordflow}{if}\ (!internal::ArrayEq(lhs[i],\ rhs[i]))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01038\ \ \ \}}
+\DoxyCodeLine{01039\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01040\ \}}
+\DoxyCodeLine{01041\ }
+\DoxyCodeLine{01042\ \textcolor{comment}{//\ Finds\ the\ first\ element\ in\ the\ iterator\ range\ [begin,\ end)\ that}}
+\DoxyCodeLine{01043\ \textcolor{comment}{//\ equals\ elem.\ \ Element\ may\ be\ a\ native\ array\ type\ itself.}}
+\DoxyCodeLine{01044\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Iter,\ \textcolor{keyword}{typename}\ Element>}
+\DoxyCodeLine{01045\ Iter\ ArrayAwareFind(Iter\ begin,\ Iter\ end,\ \textcolor{keyword}{const}\ Element\&\ elem)\ \{}
+\DoxyCodeLine{01046\ \ \ \textcolor{keywordflow}{for}\ (Iter\ it\ =\ begin;\ it\ !=\ end;\ ++it)\ \{}
+\DoxyCodeLine{01047\ \ \ \ \ \textcolor{keywordflow}{if}\ (internal::ArrayEq(*it,\ elem))\ \textcolor{keywordflow}{return}\ it;}
+\DoxyCodeLine{01048\ \ \ \}}
+\DoxyCodeLine{01049\ \ \ \textcolor{keywordflow}{return}\ end;}
+\DoxyCodeLine{01050\ \}}
+\DoxyCodeLine{01051\ }
+\DoxyCodeLine{01052\ \textcolor{comment}{//\ CopyArray()\ copies\ a\ k-\/dimensional\ native\ array\ using\ the\ elements'}}
+\DoxyCodeLine{01053\ \textcolor{comment}{//\ operator=,\ where\ k\ can\ be\ any\ integer\ >=\ 0.\ \ When\ k\ is\ 0,}}
+\DoxyCodeLine{01054\ \textcolor{comment}{//\ CopyArray()\ degenerates\ into\ copying\ a\ single\ value.}}
+\DoxyCodeLine{01055\ }
+\DoxyCodeLine{01056\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01057\ \textcolor{keywordtype}{void}\ CopyArray(\textcolor{keyword}{const}\ T*\ from,\ \textcolor{keywordtype}{size\_t}\ size,\ U*\ to);}
+\DoxyCodeLine{01058\ }
+\DoxyCodeLine{01059\ \textcolor{comment}{//\ This\ generic\ version\ is\ used\ when\ k\ is\ 0.}}
+\DoxyCodeLine{01060\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01061\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ CopyArray(\textcolor{keyword}{const}\ T\&\ from,\ U*\ to)\ \{}
+\DoxyCodeLine{01062\ \ \ *to\ =\ from;}
+\DoxyCodeLine{01063\ \}}
+\DoxyCodeLine{01064\ }
+\DoxyCodeLine{01065\ \textcolor{comment}{//\ This\ overload\ is\ used\ when\ k\ >=\ 1.}}
+\DoxyCodeLine{01066\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U,\ \textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{01067\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ CopyArray(\textcolor{keyword}{const}\ T\ (\&from)[N],\ U\ (*to)[N])\ \{}
+\DoxyCodeLine{01068\ \ \ internal::CopyArray(from,\ N,\ *to);}
+\DoxyCodeLine{01069\ \}}
+\DoxyCodeLine{01070\ }
+\DoxyCodeLine{01071\ \textcolor{comment}{//\ This\ helper\ reduces\ code\ bloat.\ \ If\ we\ instead\ put\ its\ logic\ inside}}
+\DoxyCodeLine{01072\ \textcolor{comment}{//\ the\ previous\ CopyArray()\ function,\ arrays\ with\ different\ sizes}}
+\DoxyCodeLine{01073\ \textcolor{comment}{//\ would\ lead\ to\ different\ copies\ of\ the\ template\ code.}}
+\DoxyCodeLine{01074\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01075\ \textcolor{keywordtype}{void}\ CopyArray(\textcolor{keyword}{const}\ T*\ from,\ \textcolor{keywordtype}{size\_t}\ size,\ U*\ to)\ \{}
+\DoxyCodeLine{01076\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ size;\ i++)\ \{}
+\DoxyCodeLine{01077\ \ \ \ \ internal::CopyArray(from[i],\ to\ +\ i);}
+\DoxyCodeLine{01078\ \ \ \}}
+\DoxyCodeLine{01079\ \}}
+\DoxyCodeLine{01080\ }
+\DoxyCodeLine{01081\ \textcolor{comment}{//\ The\ relation\ between\ an\ NativeArray\ object\ (see\ below)\ and\ the}}
+\DoxyCodeLine{01082\ \textcolor{comment}{//\ native\ array\ it\ represents.}}
+\DoxyCodeLine{01083\ \textcolor{comment}{//\ We\ use\ 2\ different\ structs\ to\ allow\ non-\/copyable\ types\ to\ be\ used,\ as\ long}}
+\DoxyCodeLine{01084\ \textcolor{comment}{//\ as\ RelationToSourceReference()\ is\ passed.}}
+\DoxyCodeLine{01085\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_reference}{RelationToSourceReference}}\ \{\};}
+\DoxyCodeLine{01086\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_copy}{RelationToSourceCopy}}\ \{\};}
+\DoxyCodeLine{01087\ }
+\DoxyCodeLine{01088\ \textcolor{comment}{//\ Adapts\ a\ native\ array\ to\ a\ read-\/only\ STL-\/style\ container.\ \ Instead}}
+\DoxyCodeLine{01089\ \textcolor{comment}{//\ of\ the\ complete\ STL\ container\ concept,\ this\ adaptor\ only\ implements}}
+\DoxyCodeLine{01090\ \textcolor{comment}{//\ members\ useful\ for\ Google\ Mock's\ container\ matchers.\ \ New\ members}}
+\DoxyCodeLine{01091\ \textcolor{comment}{//\ should\ be\ added\ as\ needed.\ \ To\ simplify\ the\ implementation,\ we\ only}}
+\DoxyCodeLine{01092\ \textcolor{comment}{//\ support\ Element\ being\ a\ raw\ type\ (i.e.\ having\ no\ top-\/level\ const\ or}}
+\DoxyCodeLine{01093\ \textcolor{comment}{//\ reference\ modifier).\ \ It's\ the\ client's\ responsibility\ to\ satisfy}}
+\DoxyCodeLine{01094\ \textcolor{comment}{//\ this\ requirement.\ \ Element\ can\ be\ an\ array\ type\ itself\ (hence}}
+\DoxyCodeLine{01095\ \textcolor{comment}{//\ multi-\/dimensional\ arrays\ are\ supported).}}
+\DoxyCodeLine{01096\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Element>}
+\DoxyCodeLine{01097\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}\ \{}
+\DoxyCodeLine{01098\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01099\ \ \ \textcolor{comment}{//\ STL-\/style\ container\ typedefs.}}
+\DoxyCodeLine{01100\ \ \ \textcolor{keyword}{typedef}\ Element\ value\_type;}
+\DoxyCodeLine{01101\ \ \ \textcolor{keyword}{typedef}\ Element*\ iterator;}
+\DoxyCodeLine{01102\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ Element*\ const\_iterator;}
+\DoxyCodeLine{01103\ }
+\DoxyCodeLine{01104\ \ \ \textcolor{comment}{//\ Constructs\ from\ a\ native\ array.\ References\ the\ source.}}
+\DoxyCodeLine{01105\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}(\textcolor{keyword}{const}\ Element*\ array,\ \textcolor{keywordtype}{size\_t}\ count,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_reference}{RelationToSourceReference}})\ \{}
+\DoxyCodeLine{01106\ \ \ \ \ InitRef(array,\ count);}
+\DoxyCodeLine{01107\ \ \ \}}
+\DoxyCodeLine{01108\ }
+\DoxyCodeLine{01109\ \ \ \textcolor{comment}{//\ Constructs\ from\ a\ native\ array.\ Copies\ the\ source.}}
+\DoxyCodeLine{01110\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}(\textcolor{keyword}{const}\ Element*\ array,\ \textcolor{keywordtype}{size\_t}\ count,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_copy}{RelationToSourceCopy}})\ \{}
+\DoxyCodeLine{01111\ \ \ \ \ InitCopy(array,\ count);}
+\DoxyCodeLine{01112\ \ \ \}}
+\DoxyCodeLine{01113\ }
+\DoxyCodeLine{01114\ \ \ \textcolor{comment}{//\ Copy\ constructor.}}
+\DoxyCodeLine{01115\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}\&\ rhs)\ \{}
+\DoxyCodeLine{01116\ \ \ \ \ (this-\/>*rhs.clone\_)(rhs.array\_,\ rhs.size\_);}
+\DoxyCodeLine{01117\ \ \ \}}
+\DoxyCodeLine{01118\ }
+\DoxyCodeLine{01119\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{\string~NativeArray}}()\ \{}
+\DoxyCodeLine{01120\ \ \ \ \ \textcolor{keywordflow}{if}\ (clone\_\ !=\ \&NativeArray::InitRef)\ \textcolor{keyword}{delete}[]\ array\_;}
+\DoxyCodeLine{01121\ \ \ \}}
+\DoxyCodeLine{01122\ }
+\DoxyCodeLine{01123\ \ \ \textcolor{comment}{//\ STL-\/style\ container\ methods.}}
+\DoxyCodeLine{01124\ \ \ \textcolor{keywordtype}{size\_t}\ size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ size\_;\ \}}
+\DoxyCodeLine{01125\ \ \ const\_iterator\ begin()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ array\_;\ \}}
+\DoxyCodeLine{01126\ \ \ const\_iterator\ end()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ array\_\ +\ size\_;\ \}}
+\DoxyCodeLine{01127\ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}\&\ rhs)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01128\ \ \ \ \ \textcolor{keywordflow}{return}\ size()\ ==\ rhs.size()\ \&\&\ ArrayEq(begin(),\ size(),\ rhs.begin());}
+\DoxyCodeLine{01129\ \ \ \}}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01131\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01132\ \ \ \textcolor{keyword}{static\_assert}(!std::is\_const<Element>::value,\ \textcolor{stringliteral}{"{}Type\ must\ not\ be\ const"{}});}
+\DoxyCodeLine{01133\ \ \ \textcolor{keyword}{static\_assert}(!std::is\_reference<Element>::value,}
+\DoxyCodeLine{01134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Type\ must\ not\ be\ a\ reference"{}});}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \ \ \textcolor{comment}{//\ Initializes\ this\ object\ with\ a\ copy\ of\ the\ input.}}
+\DoxyCodeLine{01137\ \ \ \textcolor{keywordtype}{void}\ InitCopy(\textcolor{keyword}{const}\ Element*\ array,\ \textcolor{keywordtype}{size\_t}\ a\_size)\ \{}
+\DoxyCodeLine{01138\ \ \ \ \ Element*\ \textcolor{keyword}{const}\ copy\ =\ \textcolor{keyword}{new}\ Element[a\_size];}
+\DoxyCodeLine{01139\ \ \ \ \ CopyArray(array,\ a\_size,\ copy);}
+\DoxyCodeLine{01140\ \ \ \ \ array\_\ =\ copy;}
+\DoxyCodeLine{01141\ \ \ \ \ size\_\ =\ a\_size;}
+\DoxyCodeLine{01142\ \ \ \ \ clone\_\ =\ \&NativeArray::InitCopy;}
+\DoxyCodeLine{01143\ \ \ \}}
+\DoxyCodeLine{01144\ }
+\DoxyCodeLine{01145\ \ \ \textcolor{comment}{//\ Initializes\ this\ object\ with\ a\ reference\ of\ the\ input.}}
+\DoxyCodeLine{01146\ \ \ \textcolor{keywordtype}{void}\ InitRef(\textcolor{keyword}{const}\ Element*\ array,\ \textcolor{keywordtype}{size\_t}\ a\_size)\ \{}
+\DoxyCodeLine{01147\ \ \ \ \ array\_\ =\ array;}
+\DoxyCodeLine{01148\ \ \ \ \ size\_\ =\ a\_size;}
+\DoxyCodeLine{01149\ \ \ \ \ clone\_\ =\ \&NativeArray::InitRef;}
+\DoxyCodeLine{01150\ \ \ \}}
+\DoxyCodeLine{01151\ }
+\DoxyCodeLine{01152\ \ \ \textcolor{keyword}{const}\ Element*\ array\_;}
+\DoxyCodeLine{01153\ \ \ \textcolor{keywordtype}{size\_t}\ size\_;}
+\DoxyCodeLine{01154\ \ \ void\ (\mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{NativeArray}}::*clone\_)(\textcolor{keyword}{const}\ Element*,\ \textcolor{keywordtype}{size\_t});}
+\DoxyCodeLine{01155\ \};}
+\DoxyCodeLine{01156\ }
+\DoxyCodeLine{01157\ \textcolor{comment}{//\ Backport\ of\ std::index\_sequence.}}
+\DoxyCodeLine{01158\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ Is>}
+\DoxyCodeLine{01159\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}\ \{}
+\DoxyCodeLine{01160\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{type}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}};}
+\DoxyCodeLine{01161\ \};}
+\DoxyCodeLine{01162\ }
+\DoxyCodeLine{01163\ \textcolor{comment}{//\ Double\ the\ IndexSequence,\ and\ one\ if\ plus\_one\ is\ true.}}
+\DoxyCodeLine{01164\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{bool}\ plus\_one,\ \textcolor{keyword}{typename}\ T,\ \textcolor{keywordtype}{size\_t}\ sizeofT>}
+\DoxyCodeLine{01165\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_double_sequence}{DoubleSequence}};}
+\DoxyCodeLine{01166\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ I,\ \textcolor{keywordtype}{size\_t}\ sizeofT>}
+\DoxyCodeLine{01167\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_double_sequence}{DoubleSequence}}<true,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<I...>,\ sizeofT>\ \{}
+\DoxyCodeLine{01168\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{type}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<I...,\ (sizeofT\ +\ I)...,\ 2\ *\ sizeofT>;}
+\DoxyCodeLine{01169\ \};}
+\DoxyCodeLine{01170\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ I,\ \textcolor{keywordtype}{size\_t}\ sizeofT>}
+\DoxyCodeLine{01171\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_double_sequence}{DoubleSequence}}<false,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<I...>,\ sizeofT>\ \{}
+\DoxyCodeLine{01172\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{type}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<I...,\ (sizeofT\ +\ I)...>;}
+\DoxyCodeLine{01173\ \};}
+\DoxyCodeLine{01174\ }
+\DoxyCodeLine{01175\ \textcolor{comment}{//\ Backport\ of\ std::make\_index\_sequence.}}
+\DoxyCodeLine{01176\ \textcolor{comment}{//\ It\ uses\ O(ln(N))\ instantiation\ depth.}}
+\DoxyCodeLine{01177\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{01178\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_make_index_sequence_impl}{MakeIndexSequenceImpl}}}
+\DoxyCodeLine{01179\ \ \ \ \ :\ \mbox{\hyperlink{structtesting_1_1internal_1_1_double_sequence}{DoubleSequence}}<N\ \%\ 2\ ==\ 1,\ typename\ MakeIndexSequenceImpl<N\ /\ 2>::type,}
+\DoxyCodeLine{01180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ N\ /\ 2>::type\ \{\};}
+\DoxyCodeLine{01181\ }
+\DoxyCodeLine{01182\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{01183\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_make_index_sequence_impl}{MakeIndexSequenceImpl}}<0>\ :\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<>\ \{\};}
+\DoxyCodeLine{01184\ }
+\DoxyCodeLine{01185\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{01186\ \textcolor{keyword}{using\ }MakeIndexSequence\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_make_index_sequence_impl}{MakeIndexSequenceImpl<N>::type}};}
+\DoxyCodeLine{01187\ }
+\DoxyCodeLine{01188\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01189\ \textcolor{keyword}{using\ }IndexSequenceFor\ =\ \textcolor{keyword}{typename}\ MakeIndexSequence<\textcolor{keyword}{sizeof}...(T)>::type;}
+\DoxyCodeLine{01190\ }
+\DoxyCodeLine{01191\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}>}
+\DoxyCodeLine{01192\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_ignore}{Ignore}}\ \{}
+\DoxyCodeLine{01193\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_ignore}{Ignore}}(...);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01194\ \};}
+\DoxyCodeLine{01195\ }
+\DoxyCodeLine{01196\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{01197\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list_impl}{ElemFromListImpl}};}
+\DoxyCodeLine{01198\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ I>}
+\DoxyCodeLine{01199\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list_impl}{ElemFromListImpl}}<\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<I...>>\ \{}
+\DoxyCodeLine{01200\ \ \ \textcolor{comment}{//\ We\ make\ Ignore\ a\ template\ to\ solve\ a\ problem\ with\ MSVC.}}
+\DoxyCodeLine{01201\ \ \ \textcolor{comment}{//\ A\ non-\/template\ Ignore\ would\ work\ fine\ with\ \`{}decltype(Ignore(I))...`,\ but}}
+\DoxyCodeLine{01202\ \ \ \textcolor{comment}{//\ MSVC\ doesn't\ understand\ how\ to\ deal\ with\ that\ pack\ expansion.}}
+\DoxyCodeLine{01203\ \ \ \textcolor{comment}{//\ Use\ \`{}0\ *\ I`\ to\ have\ a\ single\ instantiation\ of\ Ignore.}}
+\DoxyCodeLine{01204\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{01205\ \ \ \textcolor{keyword}{static}\ R\ Apply(\mbox{\hyperlink{structtesting_1_1internal_1_1_ignore}{Ignore<0\ *\ I>}}...,\ R\ (*)(),\ ...);}
+\DoxyCodeLine{01206\ \};}
+\DoxyCodeLine{01207\ }
+\DoxyCodeLine{01208\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01209\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{ElemFromList}}\ \{}
+\DoxyCodeLine{01210\ \ \ \textcolor{keyword}{using\ }type\ =}
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \textcolor{keyword}{decltype}(\mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list_impl}{ElemFromListImpl<typename\ MakeIndexSequence<N>::type}}>::Apply(}
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}T\ (*)()\textcolor{keyword}{>}(\textcolor{keyword}{nullptr})...));}
+\DoxyCodeLine{01213\ \};}
+\DoxyCodeLine{01214\ }
+\DoxyCodeLine{01215\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_construct_tag}{FlatTupleConstructTag}}\ \{\};}
+\DoxyCodeLine{01216\ }
+\DoxyCodeLine{01217\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01218\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}};}
+\DoxyCodeLine{01219\ }
+\DoxyCodeLine{01220\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Derived,\ \textcolor{keywordtype}{size\_t}\ I>}
+\DoxyCodeLine{01221\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}};}
+\DoxyCodeLine{01222\ }
+\DoxyCodeLine{01223\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T,\ \textcolor{keywordtype}{size\_t}\ I>}
+\DoxyCodeLine{01224\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}<\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ I>\ \{}
+\DoxyCodeLine{01225\ \ \ \textcolor{keyword}{using\ }value\_type\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{ElemFromList}}<I,\ T...>::type;}
+\DoxyCodeLine{01226\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01227\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Arg>}
+\DoxyCodeLine{01228\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}(\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_construct_tag}{FlatTupleConstructTag}},\ Arg\&\&\ t)}
+\DoxyCodeLine{01229\ \ \ \ \ \ \ :\ value(std::forward<Arg>(t))\ \{\}}
+\DoxyCodeLine{01230\ \ \ value\_type\ value;}
+\DoxyCodeLine{01231\ \};}
+\DoxyCodeLine{01232\ }
+\DoxyCodeLine{01233\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Derived,\ \textcolor{keyword}{typename}\ Idx>}
+\DoxyCodeLine{01234\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}};}
+\DoxyCodeLine{01235\ }
+\DoxyCodeLine{01236\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ Idx,\ \textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01237\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}}<\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<Idx...>>}
+\DoxyCodeLine{01238\ \ \ \ \ :\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}<FlatTuple<T...>,\ Idx>...\ \{}
+\DoxyCodeLine{01239\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{Indices}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence}}<Idx...>;}
+\DoxyCodeLine{01240\ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01241\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01242\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}}(\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_construct_tag}{FlatTupleConstructTag}},\ Args\&\&...\ args)}
+\DoxyCodeLine{01243\ \ \ \ \ \ \ :\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}<\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ Idx>(\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_construct_tag}{FlatTupleConstructTag}}\{\},}
+\DoxyCodeLine{01244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<Args>(args))...\ \{\}}
+\DoxyCodeLine{01245\ }
+\DoxyCodeLine{01246\ \ \ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ I>}
+\DoxyCodeLine{01247\ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{ElemFromList}}<I,\ T...>::type\&\ Get()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01248\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}<\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ I>::value;}
+\DoxyCodeLine{01249\ \ \ \}}
+\DoxyCodeLine{01250\ }
+\DoxyCodeLine{01251\ \ \ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ I>}
+\DoxyCodeLine{01252\ \ \ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{ElemFromList}}<I,\ T...>::type\&\ Get()\ \{}
+\DoxyCodeLine{01253\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_elem_base}{FlatTupleElemBase}}<\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ I>::value;}
+\DoxyCodeLine{01254\ \ \ \}}
+\DoxyCodeLine{01255\ }
+\DoxyCodeLine{01256\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{01257\ \ \ \textcolor{keyword}{auto}\ Apply(F\&\&\ f)\ -\/>\ \textcolor{keyword}{decltype}(std::forward<F>(f)(this-\/>Get<Idx>()...))\ \{}
+\DoxyCodeLine{01258\ \ \ \ \ \textcolor{keywordflow}{return}\ std::forward<F>(f)(Get<Idx>()...);}
+\DoxyCodeLine{01259\ \ \ \}}
+\DoxyCodeLine{01260\ }
+\DoxyCodeLine{01261\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{01262\ \ \ \textcolor{keyword}{auto}\ Apply(F\&\&\ f)\ \textcolor{keyword}{const}\ -\/>\ \textcolor{keyword}{decltype}(std::forward<F>(f)(this-\/>Get<Idx>()...))\ \{}
+\DoxyCodeLine{01263\ \ \ \ \ \textcolor{keywordflow}{return}\ std::forward<F>(f)(Get<Idx>()...);}
+\DoxyCodeLine{01264\ \ \ \}}
+\DoxyCodeLine{01265\ \};}
+\DoxyCodeLine{01266\ }
+\DoxyCodeLine{01267\ \textcolor{comment}{//\ Analog\ to\ std::tuple\ but\ with\ different\ tradeoffs.}}
+\DoxyCodeLine{01268\ \textcolor{comment}{//\ This\ class\ minimizes\ the\ template\ instantiation\ depth,\ thus\ allowing\ more}}
+\DoxyCodeLine{01269\ \textcolor{comment}{//\ elements\ than\ std::tuple\ would.\ std::tuple\ has\ been\ seen\ to\ require\ an}}
+\DoxyCodeLine{01270\ \textcolor{comment}{//\ instantiation\ depth\ of\ more\ than\ 10x\ the\ number\ of\ elements\ in\ some}}
+\DoxyCodeLine{01271\ \textcolor{comment}{//\ implementations.}}
+\DoxyCodeLine{01272\ \textcolor{comment}{//\ FlatTuple\ and\ ElemFromList\ are\ not\ recursive\ and\ have\ a\ fixed\ depth}}
+\DoxyCodeLine{01273\ \textcolor{comment}{//\ regardless\ of\ T...}}
+\DoxyCodeLine{01274\ \textcolor{comment}{//\ MakeIndexSequence,\ on\ the\ other\ hand,\ it\ is\ recursive\ but\ with\ an}}
+\DoxyCodeLine{01275\ \textcolor{comment}{//\ instantiation\ depth\ of\ O(ln(N)).}}
+\DoxyCodeLine{01276\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ T>}
+\DoxyCodeLine{01277\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}}
+\DoxyCodeLine{01278\ \ \ \ \ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}}<FlatTuple<T...>,}
+\DoxyCodeLine{01279\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ typename\ MakeIndexSequence<sizeof...(T)>::type>\ \{}
+\DoxyCodeLine{01280\ \ \ \textcolor{keyword}{using\ }Indices\ =\ \textcolor{keyword}{typename}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_base}{FlatTupleBase}}<}
+\DoxyCodeLine{01281\ \ \ \ \ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}<T...>,\ \textcolor{keyword}{typename}\ MakeIndexSequence<\textcolor{keyword}{sizeof}...(T)>::type>::Indices;}
+\DoxyCodeLine{01282\ }
+\DoxyCodeLine{01283\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01284\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01285\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01286\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_flat_tuple}{FlatTuple}}(\mbox{\hyperlink{structtesting_1_1internal_1_1_flat_tuple_construct_tag}{FlatTupleConstructTag}}\ tag,\ Args\&\&...\ args)}
+\DoxyCodeLine{01287\ \ \ \ \ \ \ :\ FlatTuple::FlatTupleBase(tag,\ std::forward<Args>(args)...)\ \{\}}
+\DoxyCodeLine{01288\ }
+\DoxyCodeLine{01289\ \ \ \textcolor{keyword}{using\ }FlatTuple::FlatTupleBase::Apply;}
+\DoxyCodeLine{01290\ \ \ \textcolor{keyword}{using\ }FlatTuple::FlatTupleBase::Get;}
+\DoxyCodeLine{01291\ \};}
+\DoxyCodeLine{01292\ }
+\DoxyCodeLine{01293\ \textcolor{comment}{//\ Utility\ functions\ to\ be\ called\ with\ static\_assert\ to\ induce\ deprecation}}
+\DoxyCodeLine{01294\ \textcolor{comment}{//\ warnings.}}
+\DoxyCodeLine{01295\ GTEST\_INTERNAL\_DEPRECATED(}
+\DoxyCodeLine{01296\ \ \ \ \ \textcolor{stringliteral}{"{}INSTANTIATE\_TEST\_CASE\_P\ is\ deprecated,\ please\ use\ "{}}}
+\DoxyCodeLine{01297\ \ \ \ \ \textcolor{stringliteral}{"{}INSTANTIATE\_TEST\_SUITE\_P"{}})}
+\DoxyCodeLine{01298\ constexpr\ \textcolor{keywordtype}{bool}\ InstantiateTestCase\_P\_IsDeprecated()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{01299\ }
+\DoxyCodeLine{01300\ GTEST\_INTERNAL\_DEPRECATED(}
+\DoxyCodeLine{01301\ \ \ \ \ \textcolor{stringliteral}{"{}TYPED\_TEST\_CASE\_P\ is\ deprecated,\ please\ use\ "{}}}
+\DoxyCodeLine{01302\ \ \ \ \ \textcolor{stringliteral}{"{}TYPED\_TEST\_SUITE\_P"{}})}
+\DoxyCodeLine{01303\ constexpr\ \textcolor{keywordtype}{bool}\ TypedTestCase\_P\_IsDeprecated()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{01304\ }
+\DoxyCodeLine{01305\ GTEST\_INTERNAL\_DEPRECATED(}
+\DoxyCodeLine{01306\ \ \ \ \ \textcolor{stringliteral}{"{}TYPED\_TEST\_CASE\ is\ deprecated,\ please\ use\ "{}}}
+\DoxyCodeLine{01307\ \ \ \ \ \textcolor{stringliteral}{"{}TYPED\_TEST\_SUITE"{}})}
+\DoxyCodeLine{01308\ constexpr\ \textcolor{keywordtype}{bool}\ TypedTestCaseIsDeprecated()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{01309\ }
+\DoxyCodeLine{01310\ GTEST\_INTERNAL\_DEPRECATED(}
+\DoxyCodeLine{01311\ \ \ \ \ \textcolor{stringliteral}{"{}REGISTER\_TYPED\_TEST\_CASE\_P\ is\ deprecated,\ please\ use\ "{}}}
+\DoxyCodeLine{01312\ \ \ \ \ \textcolor{stringliteral}{"{}REGISTER\_TYPED\_TEST\_SUITE\_P"{}})}
+\DoxyCodeLine{01313\ constexpr\ \textcolor{keywordtype}{bool}\ RegisterTypedTestCase\_P\_IsDeprecated()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{01314\ }
+\DoxyCodeLine{01315\ GTEST\_INTERNAL\_DEPRECATED(}
+\DoxyCodeLine{01316\ \ \ \ \ \textcolor{stringliteral}{"{}INSTANTIATE\_TYPED\_TEST\_CASE\_P\ is\ deprecated,\ please\ use\ "{}}}
+\DoxyCodeLine{01317\ \ \ \ \ \textcolor{stringliteral}{"{}INSTANTIATE\_TYPED\_TEST\_SUITE\_P"{}})}
+\DoxyCodeLine{01318\ constexpr\ \textcolor{keywordtype}{bool}\ InstantiateTypedTestCase\_P\_IsDeprecated()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{01319\ }
+\DoxyCodeLine{01320\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01321\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{01322\ }
+\DoxyCodeLine{01323\ \textcolor{keyword}{namespace\ }std\ \{}
+\DoxyCodeLine{01324\ \textcolor{comment}{//\ Some\ standard\ library\ implementations\ use\ \`{}struct\ tuple\_size`\ and\ some\ use}}
+\DoxyCodeLine{01325\ \textcolor{comment}{//\ \`{}class\ tuple\_size`.\ Clang\ warns\ about\ the\ mismatch.}}
+\DoxyCodeLine{01326\ \textcolor{comment}{//\ https://reviews.llvm.org/D55466}}
+\DoxyCodeLine{01327\ \textcolor{preprocessor}{\#ifdef\ \_\_clang\_\_}}
+\DoxyCodeLine{01328\ \textcolor{preprocessor}{\#pragma\ clang\ diagnostic\ push}}
+\DoxyCodeLine{01329\ \textcolor{preprocessor}{\#pragma\ clang\ diagnostic\ ignored\ "{}-\/Wmismatched-\/tags"{}}}
+\DoxyCodeLine{01330\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01331\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{01332\ \textcolor{keyword}{struct\ }tuple\_size<testing::internal::FlatTuple<Ts...>>}
+\DoxyCodeLine{01333\ \ \ \ \ :\ std::integral\_constant<size\_t,\ sizeof...(Ts)>\ \{\};}
+\DoxyCodeLine{01334\ \textcolor{preprocessor}{\#ifdef\ \_\_clang\_\_}}
+\DoxyCodeLine{01335\ \textcolor{preprocessor}{\#pragma\ clang\ diagnostic\ pop}}
+\DoxyCodeLine{01336\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01337\ \}\ \ \textcolor{comment}{//\ namespace\ std}}
+\DoxyCodeLine{01338\ }
+\DoxyCodeLine{01339\ \textcolor{preprocessor}{\#define\ GTEST\_MESSAGE\_AT\_(file,\ line,\ message,\ result\_type)\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01340\ \textcolor{preprocessor}{\ \ ::testing::internal::AssertHelper(result\_type,\ file,\ line,\ message)\ =\ \(\backslash\)}}
+\DoxyCodeLine{01341\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::Message()}}
+\DoxyCodeLine{01342\ }
+\DoxyCodeLine{01343\ \textcolor{preprocessor}{\#define\ GTEST\_MESSAGE\_(message,\ result\_type)\ \(\backslash\)}}
+\DoxyCodeLine{01344\ \textcolor{preprocessor}{\ \ GTEST\_MESSAGE\_AT\_(\_\_FILE\_\_,\ \_\_LINE\_\_,\ message,\ result\_type)}}
+\DoxyCodeLine{01345\ }
+\DoxyCodeLine{01346\ \textcolor{preprocessor}{\#define\ GTEST\_FATAL\_FAILURE\_(message)\ \(\backslash\)}}
+\DoxyCodeLine{01347\ \textcolor{preprocessor}{\ \ return\ GTEST\_MESSAGE\_(message,\ ::testing::TestPartResult::kFatalFailure)}}
+\DoxyCodeLine{01348\ }
+\DoxyCodeLine{01349\ \textcolor{preprocessor}{\#define\ GTEST\_NONFATAL\_FAILURE\_(message)\ \(\backslash\)}}
+\DoxyCodeLine{01350\ \textcolor{preprocessor}{\ \ GTEST\_MESSAGE\_(message,\ ::testing::TestPartResult::kNonFatalFailure)}}
+\DoxyCodeLine{01351\ }
+\DoxyCodeLine{01352\ \textcolor{preprocessor}{\#define\ GTEST\_SUCCESS\_(message)\ \(\backslash\)}}
+\DoxyCodeLine{01353\ \textcolor{preprocessor}{\ \ GTEST\_MESSAGE\_(message,\ ::testing::TestPartResult::kSuccess)}}
+\DoxyCodeLine{01354\ }
+\DoxyCodeLine{01355\ \textcolor{preprocessor}{\#define\ GTEST\_SKIP\_(message)\ \(\backslash\)}}
+\DoxyCodeLine{01356\ \textcolor{preprocessor}{\ \ return\ GTEST\_MESSAGE\_(message,\ ::testing::TestPartResult::kSkip)}}
+\DoxyCodeLine{01357\ }
+\DoxyCodeLine{01358\ \textcolor{comment}{//\ Suppress\ MSVC\ warning\ 4072\ (unreachable\ code)\ for\ the\ code\ following}}
+\DoxyCodeLine{01359\ \textcolor{comment}{//\ statement\ if\ it\ returns\ or\ throws\ (or\ doesn't\ return\ or\ throw\ in\ some}}
+\DoxyCodeLine{01360\ \textcolor{comment}{//\ situations).}}
+\DoxyCodeLine{01361\ \textcolor{comment}{//\ NOTE:\ The\ "{}else"{}\ is\ important\ to\ keep\ this\ expansion\ to\ prevent\ a\ top-\/level}}
+\DoxyCodeLine{01362\ \textcolor{comment}{//\ "{}else"{}\ from\ attaching\ to\ our\ "{}if"{}.}}
+\DoxyCodeLine{01363\ \textcolor{preprocessor}{\#define\ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement)\ \(\backslash\)}}
+\DoxyCodeLine{01364\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01365\ \textcolor{preprocessor}{\ \ \ \ statement;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01366\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{comment}{/*\ NOLINT\ */}\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01367\ \textcolor{preprocessor}{\ \ \ \ static\_assert(true,\ "{}"{})\ \ }\textcolor{comment}{//\ User\ must\ have\ a\ semicolon\ after\ expansion.}}
+\DoxyCodeLine{01368\ }
+\DoxyCodeLine{01369\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01370\ }
+\DoxyCodeLine{01371\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{01372\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{01373\ }
+\DoxyCodeLine{01374\ \textcolor{keyword}{class\ }NeverThrown\ \{}
+\DoxyCodeLine{01375\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01376\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ what()\ const\ noexcept\ \{}
+\DoxyCodeLine{01377\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}this\ exception\ should\ never\ be\ thrown"{}};}
+\DoxyCodeLine{01378\ \ \ \}}
+\DoxyCodeLine{01379\ \};}
+\DoxyCodeLine{01380\ }
+\DoxyCodeLine{01381\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01382\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{01383\ }
+\DoxyCodeLine{01384\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{01385\ }
+\DoxyCodeLine{01386\ \textcolor{preprocessor}{\#define\ GTEST\_EXCEPTION\_TYPE\_(e)\ ::testing::internal::GetTypeName(typeid(e))}}
+\DoxyCodeLine{01387\ }
+\DoxyCodeLine{01388\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{01389\ }
+\DoxyCodeLine{01390\ \textcolor{preprocessor}{\#define\ GTEST\_EXCEPTION\_TYPE\_(e)\ \(\backslash\)}}
+\DoxyCodeLine{01391\ \textcolor{preprocessor}{\ \ std::string\ \{\ "{}an\ std::exception-\/derived\ error"{}\ \}}}
+\DoxyCodeLine{01392\ }
+\DoxyCodeLine{01393\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{01394\ }
+\DoxyCodeLine{01395\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_THROW\_CATCH\_STD\_EXCEPTION\_(statement,\ expected\_exception)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{01396\ \textcolor{preprocessor}{\ \ catch\ (typename\ std::conditional<\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01397\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ std::is\_same<typename\ std::remove\_cv<typename\ std::remove\_reference<\ \ \(\backslash\)}}
+\DoxyCodeLine{01398\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ expected\_exception>::type>::type,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01399\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::exception>::value,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01400\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ const\ ::testing::internal::NeverThrown\&,\ const\ std::exception\&>::type\ \(\backslash\)}}
+\DoxyCodeLine{01401\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ e)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01402\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ =\ "{}Expected:\ "{}\ \#statement\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01403\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ throws\ an\ exception\ of\ type\ "{}\ \#expected\_exception\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01404\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}.\(\backslash\)n\ \ Actual:\ it\ throws\ "{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01405\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ GTEST\_EXCEPTION\_TYPE\_(e);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01406\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ "{}\ with\ description\ \(\backslash\)"{}"{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01407\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ e.what();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01408\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ "{}\(\backslash\)"{}."{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01409\ \textcolor{preprocessor}{\ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testthrow\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01410\ \textcolor{preprocessor}{\ \ \}}}
+\DoxyCodeLine{01411\ }
+\DoxyCodeLine{01412\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01413\ }
+\DoxyCodeLine{01414\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_THROW\_CATCH\_STD\_EXCEPTION\_(statement,\ expected\_exception)}}
+\DoxyCodeLine{01415\ }
+\DoxyCodeLine{01416\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01417\ }
+\DoxyCodeLine{01418\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_THROW\_(statement,\ expected\_exception,\ fail)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01419\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01420\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::TrueWithString\ gtest\_msg\{\})\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01421\ \textcolor{preprocessor}{\ \ \ \ bool\ gtest\_caught\_expected\ =\ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01422\ \textcolor{preprocessor}{\ \ \ \ try\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01423\ \textcolor{preprocessor}{\ \ \ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01424\ \textcolor{preprocessor}{\ \ \ \ \}\ catch\ (expected\_exception\ const\&)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01425\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_caught\_expected\ =\ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01426\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01427\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_THROW\_CATCH\_STD\_EXCEPTION\_(statement,\ expected\_exception)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01428\ \textcolor{preprocessor}{\ \ \ \ catch\ (...)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01429\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_msg.value\ =\ "{}Expected:\ "{}\ \#statement\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01430\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ throws\ an\ exception\ of\ type\ "{}\ \#expected\_exception\ \(\backslash\)}}
+\DoxyCodeLine{01431\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}.\(\backslash\)n\ \ Actual:\ it\ throws\ a\ different\ type."{};\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01432\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testthrow\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01433\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01434\ \textcolor{preprocessor}{\ \ \ \ if\ (!gtest\_caught\_expected)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01435\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_msg.value\ =\ "{}Expected:\ "{}\ \#statement\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01436\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ throws\ an\ exception\ of\ type\ "{}\ \#expected\_exception\ \(\backslash\)}}
+\DoxyCodeLine{01437\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}.\(\backslash\)n\ \ Actual:\ it\ throws\ nothing."{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01438\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testthrow\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01439\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01440\ \textcolor{preprocessor}{\ \ \}\ else\ }\textcolor{comment}{/*NOLINT*/}\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01441\ \textcolor{preprocessor}{\ \ \ \ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testthrow\_,\ \_\_LINE\_\_)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01442\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ fail(gtest\_msg.value.c\_str())}}
+\DoxyCodeLine{01443\ }
+\DoxyCodeLine{01444\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01445\ }
+\DoxyCodeLine{01446\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_NO\_THROW\_CATCH\_STD\_EXCEPTION\_()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01447\ \textcolor{preprocessor}{\ \ catch\ (std::exception\ const\&\ e)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01448\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ =\ "{}it\ throws\ "{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01449\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ GTEST\_EXCEPTION\_TYPE\_(e);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01450\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ "{}\ with\ description\ \(\backslash\)"{}"{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01451\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ e.what();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01452\ \textcolor{preprocessor}{\ \ \ \ gtest\_msg.value\ +=\ "{}\(\backslash\)"{}."{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01453\ \textcolor{preprocessor}{\ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testnothrow\_,\ \_\_LINE\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{01454\ \textcolor{preprocessor}{\ \ \}}}
+\DoxyCodeLine{01455\ }
+\DoxyCodeLine{01456\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01457\ }
+\DoxyCodeLine{01458\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_NO\_THROW\_CATCH\_STD\_EXCEPTION\_()}}
+\DoxyCodeLine{01459\ }
+\DoxyCodeLine{01460\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01461\ }
+\DoxyCodeLine{01462\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_NO\_THROW\_(statement,\ fail)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01463\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01464\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::TrueWithString\ gtest\_msg\{\})\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01465\ \textcolor{preprocessor}{\ \ \ \ try\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01466\ \textcolor{preprocessor}{\ \ \ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01467\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01468\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_NO\_THROW\_CATCH\_STD\_EXCEPTION\_()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01469\ \textcolor{preprocessor}{\ \ \ \ catch\ (...)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01470\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_msg.value\ =\ "{}it\ throws."{};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01471\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testnothrow\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01472\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01473\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01474\ \textcolor{preprocessor}{\ \ \ \ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testnothrow\_,\ \_\_LINE\_\_)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01475\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ fail(("{}Expected:\ "{}\ \#statement\ "{}\ doesn't\ throw\ an\ exception.\(\backslash\)n"{}\ \(\backslash\)}}
+\DoxyCodeLine{01476\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ \ Actual:\ "{}\ +\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01477\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ gtest\_msg.value)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01478\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .c\_str())}}
+\DoxyCodeLine{01479\ }
+\DoxyCodeLine{01480\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_ANY\_THROW\_(statement,\ fail)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01481\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01482\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01483\ \textcolor{preprocessor}{\ \ \ \ bool\ gtest\_caught\_any\ =\ false;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01484\ \textcolor{preprocessor}{\ \ \ \ try\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01485\ \textcolor{preprocessor}{\ \ \ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01486\ \textcolor{preprocessor}{\ \ \ \ \}\ catch\ (...)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01487\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_caught\_any\ =\ true;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01488\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01489\ \textcolor{preprocessor}{\ \ \ \ if\ (!gtest\_caught\_any)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01490\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testanythrow\_,\ \_\_LINE\_\_);\ \(\backslash\)}}
+\DoxyCodeLine{01491\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01492\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01493\ \textcolor{preprocessor}{\ \ \ \ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testanythrow\_,\ \_\_LINE\_\_)\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01494\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ fail("{}Expected:\ "{}\ \#statement\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01495\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ throws\ an\ exception.\(\backslash\)n"{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01496\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ \ Actual:\ it\ doesn't."{})}}
+\DoxyCodeLine{01497\ }
+\DoxyCodeLine{01498\ \textcolor{comment}{//\ Implements\ Boolean\ test\ assertions\ such\ as\ EXPECT\_TRUE.\ expression\ can\ be}}
+\DoxyCodeLine{01499\ \textcolor{comment}{//\ either\ a\ boolean\ expression\ or\ an\ AssertionResult.\ text\ is\ a\ textual}}
+\DoxyCodeLine{01500\ \textcolor{comment}{//\ representation\ of\ expression\ as\ it\ was\ passed\ into\ the\ EXPECT\_TRUE.}}
+\DoxyCodeLine{01501\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_BOOLEAN\_(expression,\ text,\ actual,\ expected,\ fail)\ \(\backslash\)}}
+\DoxyCodeLine{01502\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01503\ \textcolor{preprocessor}{\ \ if\ (const\ ::testing::AssertionResult\ gtest\_ar\_\ =\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01504\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::AssertionResult(expression))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01505\ \textcolor{preprocessor}{\ \ \ \ ;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01506\ \textcolor{preprocessor}{\ \ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01507\ \textcolor{preprocessor}{\ \ \ \ fail(::testing::internal::GetBoolAssertionFailureMessage(\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01508\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ gtest\_ar\_,\ text,\ \#actual,\ \#expected)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01509\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ .c\_str())}}
+\DoxyCodeLine{01510\ }
+\DoxyCodeLine{01511\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_NO\_FATAL\_FAILURE\_(statement,\ fail)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01512\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01513\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01514\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::HasNewFatalFailureHelper\ gtest\_fatal\_failure\_checker;\ \(\backslash\)}}
+\DoxyCodeLine{01515\ \textcolor{preprocessor}{\ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01516\ \textcolor{preprocessor}{\ \ \ \ if\ (gtest\_fatal\_failure\_checker.has\_new\_fatal\_failure())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01517\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testnofatal\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01518\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01519\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01520\ \textcolor{preprocessor}{\ \ \ \ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_testnofatal\_,\ \_\_LINE\_\_)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01521\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ fail("{}Expected:\ "{}\ \#statement\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01522\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ doesn't\ generate\ new\ fatal\ "{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01523\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}failures\ in\ the\ current\ thread.\(\backslash\)n"{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01524\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\ \ Actual:\ it\ does."{})}}
+\DoxyCodeLine{01525\ }
+\DoxyCodeLine{01526\ \textcolor{comment}{//\ Expands\ to\ the\ name\ of\ the\ class\ that\ implements\ the\ given\ test.}}
+\DoxyCodeLine{01527\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \(\backslash\)}}
+\DoxyCodeLine{01528\ \textcolor{preprocessor}{\ \ test\_suite\_name\#\#\_\#\#test\_name\#\#\_Test}}
+\DoxyCodeLine{01529\ }
+\DoxyCodeLine{01530\ \textcolor{comment}{//\ Helper\ macro\ for\ defining\ tests.}}
+\DoxyCodeLine{01531\ \textcolor{preprocessor}{\#define\ GTEST\_TEST\_(test\_suite\_name,\ test\_name,\ parent\_class,\ parent\_id)\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01532\ \textcolor{preprocessor}{\ \ static\_assert(sizeof(GTEST\_STRINGIFY\_(test\_suite\_name))\ >\ 1,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01533\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}test\_suite\_name\ must\ not\ be\ empty"{});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01534\ \textcolor{preprocessor}{\ \ static\_assert(sizeof(GTEST\_STRINGIFY\_(test\_name))\ >\ 1,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01535\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}test\_name\ must\ not\ be\ empty"{});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01536\ \textcolor{preprocessor}{\ \ class\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01537\ \textcolor{preprocessor}{\ \ \ \ \ \ :\ public\ parent\_class\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01538\ \textcolor{preprocessor}{\ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01539\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)()\ =\ default;\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01540\ \textcolor{preprocessor}{\ \ \ \ \string~GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)()\ override\ =\ default;\ \ \(\backslash\)}}
+\DoxyCodeLine{01541\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01542\ \textcolor{preprocessor}{\ \ \ \ (const\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \&)\ =\ delete;\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01543\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \&\ operator=(\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01544\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ const\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01545\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ test\_name)\ \&)\ =\ delete;\ }\textcolor{comment}{/*\ NOLINT\ */}\textcolor{preprocessor}{\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01546\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01547\ \textcolor{preprocessor}{\ \ \ \ (GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \&\&)\ noexcept\ =\ delete;\ \(\backslash\)}}
+\DoxyCodeLine{01548\ \textcolor{preprocessor}{\ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)\ \&\ operator=(\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01549\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01550\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ test\_name)\ \&\&)\ noexcept\ =\ delete;\ }\textcolor{comment}{/*\ NOLINT\ */}\textcolor{preprocessor}{\ \ \(\backslash\)}}
+\DoxyCodeLine{01551\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01552\ \textcolor{preprocessor}{\ \ \ private:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01553\ \textcolor{preprocessor}{\ \ \ \ void\ TestBody()\ override;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01554\ \textcolor{preprocessor}{\ \ \ \ static\ ::testing::TestInfo*\ const\ test\_info\_\ GTEST\_ATTRIBUTE\_UNUSED\_;\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01555\ \textcolor{preprocessor}{\ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01556\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01557\ \textcolor{preprocessor}{\ \ ::testing::TestInfo*\ const\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01558\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ test\_name)::test\_info\_\ =\ \ \ \(\backslash\)}}
+\DoxyCodeLine{01559\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::internal::MakeAndRegisterTestInfo(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01560\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \#test\_suite\_name,\ \#test\_name,\ nullptr,\ nullptr,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01561\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::internal::CodeLocation(\_\_FILE\_\_,\ \_\_LINE\_\_),\ (parent\_id),\ \ \(\backslash\)}}
+\DoxyCodeLine{01562\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::internal::SuiteApiResolver<\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01563\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ parent\_class>::GetSetUpCaseOrSuite(\_\_FILE\_\_,\ \_\_LINE\_\_),\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01564\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::internal::SuiteApiResolver<\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01565\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ parent\_class>::GetTearDownCaseOrSuite(\_\_FILE\_\_,\ \_\_LINE\_\_),\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01566\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ new\ ::testing::internal::TestFactoryImpl<GTEST\_TEST\_CLASS\_NAME\_(\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01567\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ test\_suite\_name,\ test\_name)>);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01568\ \textcolor{preprocessor}{\ \ void\ GTEST\_TEST\_CLASS\_NAME\_(test\_suite\_name,\ test\_name)::TestBody()}}
+\DoxyCodeLine{01569\ }
+\DoxyCodeLine{01570\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_INTERNAL\_H\_}}
+
+\end{DoxyCode}

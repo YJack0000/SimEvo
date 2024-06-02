@@ -1,0 +1,828 @@
+\chapter{Testing Reference}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing}{}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing}\index{Testing Reference@{Testing Reference}}
+\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md272}%
+\Hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md272}%
+
+
+This page lists the facilities provided by Google\+Test for writing test programs. To use them, include the header {\ttfamily \doxylink{gtest_8h_source}{gtest/gtest.\+h}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md273}{}\doxysection{\texorpdfstring{Macros}{Macros}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md273}
+Google\+Test defines the following macros for writing tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST}{}\doxysubsection{\texorpdfstring{TEST}{TEST}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST}
+
+\begin{DoxyPre}
+TEST({\itshape TestSuiteName}, {\itshape TestName}) \{
+  ... {\itshape statements} ...
+\}
+\end{DoxyPre}
+
+
+Defines an individual test named \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} in the test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}, consisting of the given statements.
+
+Both arguments \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*} and \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} must be valid C++ identifiers and must not contain underscores ({\ttfamily \+\_\+}). Tests in different test suites can have the same individual name.
+
+The statements within the test body can be any code under test. \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2assertions}{Assertions}{0} used within the test body determine the outcome of the test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_F}{}\doxysubsection{\texorpdfstring{TEST\+\_\+F}{TEST\+\_\+F}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_F}
+
+\begin{DoxyPre}
+TEST\_F({\itshape TestFixtureName}, {\itshape TestName}) \{
+  ... {\itshape statements} ...
+\}
+\end{DoxyPre}
+
+
+Defines an individual test named \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} that uses the test fixture class \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}. The test suite name is \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}.
+
+Both arguments \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} and \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} must be valid C++ identifiers and must not contain underscores ({\ttfamily \+\_\+}). \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} must be the name of a test fixture class—see \href{../primer.md\#same-data-multiple-tests}{\texttt{ Test Fixtures}}.
+
+The statements within the test body can be any code under test. \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2assertions}{Assertions}{0} used within the test body determine the outcome of the test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_P}{}\doxysubsection{\texorpdfstring{TEST\+\_\+P}{TEST\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_P}
+
+\begin{DoxyPre}
+TEST\_P({\itshape TestFixtureName}, {\itshape TestName}) \{
+  ... {\itshape statements} ...
+\}
+\end{DoxyPre}
+
+
+Defines an individual value-\/parameterized test named \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} that uses the test fixture class \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}. The test suite name is \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}.
+
+Both arguments \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} and \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} must be valid C++ identifiers and must not contain underscores ({\ttfamily \+\_\+}). \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} must be the name of a value-\/parameterized test fixture class—see \href{../advanced.md\#value-parameterized-tests}{\texttt{ Value-\/\+Parameterized Tests}}.
+
+The statements within the test body can be any code under test. Within the test body, the test parameter can be accessed with the {\ttfamily Get\+Param()} function (see \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_WithParamInterface}{\`{}\+With\+Param\+Interface\`{}}{2}). For example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{TEST\_P(MyTestSuite,\ DoesSomething)\ \{}
+\DoxyCodeLine{\ \ ...}
+\DoxyCodeLine{\ \ EXPECT\_TRUE(DoSomething(GetParam()));}
+\DoxyCodeLine{\ \ ...}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2assertions}{Assertions}{0} used within the test body determine the outcome of the test.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TEST_SUITE_P}{\`{}\+INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TEST_SUITE_P}{}\doxysubsection{\texorpdfstring{INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}{INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TEST_SUITE_P}
+{\ttfamily INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P(}\texorpdfstring{$\ast$}{*}{\ttfamily Instantiation\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily param\+\_\+generator}\texorpdfstring{$\ast$}{*}{\ttfamily )} \textbackslash{} {\ttfamily INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P(}\texorpdfstring{$\ast$}{*}{\ttfamily Instantiation\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily param\+\_\+generator}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily name\+\_\+generator}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Instantiates the value-\/parameterized test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*} (defined with \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_P}{\`{}\+TEST\+\_\+\+P\`{}}{2}).
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Instantiation\+Name}\texorpdfstring{$\ast$}{*} is a unique name for the instantiation of the test suite, to distinguish between multiple instantiations. In test output, the instantiation name is added as a prefix to the test suite name \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}.
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily param\+\_\+generator}\texorpdfstring{$\ast$}{*} is one of the following Google\+Test-\/provided functions that generate the test parameters, all defined in the {\ttfamily testing} namespace\+:
+
+
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Parameter Generator   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Behavior    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Parameter Generator   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Behavior    }\\\cline{1-2}
+\endhead
+{\ttfamily Range(begin, end \mbox{[}, step\mbox{]})}   &Yields values {\ttfamily \{begin, begin+step, begin+step+step, ...\}}. The values do not include {\ttfamily end}. {\ttfamily step} defaults to 1.    \\\cline{1-2}
+{\ttfamily Values(v1, v2, ..., v\+N)}   &Yields values {\ttfamily \{v1, v2, ..., vN\}}.    \\\cline{1-2}
+{\ttfamily Values\+In(container)} or {\ttfamily Values\+In(begin,end)}   &Yields values from a C-\/style array, an STL-\/style container, or an iterator range {\ttfamily \mbox{[}begin, end)}.    \\\cline{1-2}
+{\ttfamily \doxylink{struct_bool}{Bool()}}   &Yields sequence {\ttfamily \{false, true\}}.    \\\cline{1-2}
+{\ttfamily Combine(g1, g2, ..., g\+N)}   &Yields as {\ttfamily std\+::tuple} {\itshape n}-\/tuples all combinations (Cartesian product) of the values generated by the given {\itshape n} generators {\ttfamily g1}, {\ttfamily g2}, ..., {\ttfamily gN}.    \\\cline{1-2}
+{\ttfamily Convert\+Generator\texorpdfstring{$<$}{<}T\texorpdfstring{$>$}{>}(g)}   &Yields values generated by generator {\ttfamily g}, {\ttfamily static\+\_\+cast} to {\ttfamily T}.   \\\cline{1-2}
+\end{longtabu}
+The optional last argument \texorpdfstring{$\ast$}{*}{\ttfamily name\+\_\+generator}\texorpdfstring{$\ast$}{*} is a function or functor that generates custom test name suffixes based on the test parameters. The function must accept an argument of type \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestParamInfo}{\`{}\+Test\+Param\+Info\`{}}{2} and return a {\ttfamily std\+::string}. The test name suffix can only contain alphanumeric characters and underscores. Google\+Test provides \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToStringParamName}{\`{}\+Print\+To\+String\+Param\+Name\`{}}{2}, or a custom function can be used for more control\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{INSTANTIATE\_TEST\_SUITE\_P(}
+\DoxyCodeLine{\ \ \ \ MyInstantiation,\ MyTestSuite,}
+\DoxyCodeLine{\ \ \ \ ::testing::Values(...),}
+\DoxyCodeLine{\ \ \ \ [](const\ ::testing::TestParamInfo<MyTestSuite::ParamType>\&\ info)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{comment}{//\ Can\ use\ info.param\ here\ to\ generate\ the\ test\ suffix}}
+\DoxyCodeLine{\ \ \ \ \ \ std::string\ name\ =\ ...}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keywordflow}{return}\ name;}
+\DoxyCodeLine{\ \ \ \ \});}
+
+\end{DoxyCode}
+
+
+For more information, see \href{../advanced.md\#value-parameterized-tests}{\texttt{ Value-\/\+Parameterized Tests}}.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST}{\`{}\+GTEST\+\_\+\+ALLOW\+\_\+\+UNINSTANTIATED\+\_\+\+PARAMETERIZED\+\_\+\+TEST\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE}{}\doxysubsection{\texorpdfstring{TYPED\+\_\+\+TEST\+\_\+\+SUITE}{TYPED\+\_\+\+TEST\+\_\+\+SUITE}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE}
+{\ttfamily TYPED\+\_\+\+TEST\+\_\+\+SUITE(}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Types}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Defines a typed test suite based on the test fixture \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}. The test suite name is \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}.
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} is a fixture class template, parameterized by a type, for example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyFixture\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}\ \{}
+\DoxyCodeLine{\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{\ \ ...}
+\DoxyCodeLine{\ \ \textcolor{keyword}{using\ }List\ =\ std::list<T>;}
+\DoxyCodeLine{\ \ \textcolor{keyword}{static}\ T\ shared\_;}
+\DoxyCodeLine{\ \ T\ value\_;}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Types}\texorpdfstring{$\ast$}{*} is a \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Types}{\`{}\+Types\`{}}{2} object representing the list of types to run the tests on, for example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{MyTypes}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{::testing::Types<char,\ int,\ unsigned\ int>}};}
+\DoxyCodeLine{TYPED\_TEST\_SUITE(MyFixture,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{MyTypes}});}
+
+\end{DoxyCode}
+
+
+The type alias ({\ttfamily using} or {\ttfamily typedef}) is necessary for the {\ttfamily TYPED\+\_\+\+TEST\+\_\+\+SUITE} macro to parse correctly.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST}{\`{}\+TYPED\+\_\+\+TEST\`{}}{2} and \href{../advanced.md\#typed-tests}{\texttt{ Typed Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST}{}\doxysubsection{\texorpdfstring{TYPED\+\_\+\+TEST}{TYPED\+\_\+\+TEST}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST}
+
+\begin{DoxyPre}
+TYPED\_TEST({\itshape TestSuiteName}, {\itshape TestName}) \{
+  ... {\itshape statements} ...
+\}
+\end{DoxyPre}
+
+
+Defines an individual typed test named \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} in the typed test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}. The test suite must be defined with \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\`{}}{2}.
+
+Within the test body, the special name {\ttfamily Type\+Param} refers to the type parameter, and {\ttfamily Test\+Fixture} refers to the fixture class. See the following example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{TYPED\_TEST(MyFixture,\ Example)\ \{}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ Inside\ a\ test,\ refer\ to\ the\ special\ name\ TypeParam\ to\ get\ the\ type}}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ parameter.\ \ Since\ we\ are\ inside\ a\ derived\ class\ template,\ C++\ requires}}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ us\ to\ visit\ the\ members\ of\ MyFixture\ via\ 'this'.}}
+\DoxyCodeLine{\ \ TypeParam\ n\ =\ this-\/>value\_;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ To\ visit\ static\ members\ of\ the\ fixture,\ add\ the\ 'TestFixture::'}}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ prefix.}}
+\DoxyCodeLine{\ \ n\ +=\ TestFixture::shared\_;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ To\ refer\ to\ typedefs\ in\ the\ fixture,\ add\ the\ 'typename\ TestFixture::'}}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ prefix.\ The\ 'typename'\ is\ required\ to\ satisfy\ the\ compiler.}}
+\DoxyCodeLine{\ \ \textcolor{keyword}{typename}\ TestFixture::List\ values;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ values.push\_back(n);}
+\DoxyCodeLine{\ \ ...}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+For more information, see \href{../advanced.md\#typed-tests}{\texttt{ Typed Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE_P}{}\doxysubsection{\texorpdfstring{TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}{TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE_P}
+{\ttfamily TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P(}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Defines a type-\/parameterized test suite based on the test fixture \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}. The test suite name is \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*}.
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Fixture\+Name}\texorpdfstring{$\ast$}{*} is a fixture class template, parameterized by a type. See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\`{}}{2} for an example.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_P}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+P\`{}}{2} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_P}{}\doxysubsection{\texorpdfstring{TYPED\+\_\+\+TEST\+\_\+P}{TYPED\+\_\+\+TEST\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_P}
+
+\begin{DoxyPre}
+TYPED\_TEST\_P({\itshape TestSuiteName}, {\itshape TestName}) \{
+  ... {\itshape statements} ...
+\}
+\end{DoxyPre}
+
+
+Defines an individual type-\/parameterized test named \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*} in the type-\/parameterized test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}. The test suite must be defined with \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE_P}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2}.
+
+Within the test body, the special name {\ttfamily Type\+Param} refers to the type parameter, and {\ttfamily Test\+Fixture} refers to the fixture class. See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST}{\`{}\+TYPED\+\_\+\+TEST\`{}}{2} for an example.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_REGISTER_TYPED_TEST_SUITE_P}{\`{}\+REGISTER\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_REGISTER_TYPED_TEST_SUITE_P}{}\doxysubsection{\texorpdfstring{REGISTER\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}{REGISTER\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_REGISTER_TYPED_TEST_SUITE_P}
+{\ttfamily REGISTER\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P(}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Names...}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Registers the type-\/parameterized tests \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Names...}\texorpdfstring{$\ast$}{*} of the test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}. The test suite and tests must be defined with \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_SUITE_P}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2} and \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TYPED_TEST_P}{\`{}\+TYPED\+\_\+\+TEST\+\_\+\+P\`{}}{2}.
+
+For example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{//\ Define\ the\ test\ suite\ and\ tests.}}
+\DoxyCodeLine{TYPED\_TEST\_SUITE\_P(MyFixture);}
+\DoxyCodeLine{TYPED\_TEST\_P(MyFixture,\ HasPropertyA)\ \{\ ...\ \}}
+\DoxyCodeLine{TYPED\_TEST\_P(MyFixture,\ HasPropertyB)\ \{\ ...\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Register\ the\ tests\ in\ the\ test\ suite.}}
+\DoxyCodeLine{REGISTER\_TYPED\_TEST\_SUITE\_P(MyFixture,\ HasPropertyA,\ HasPropertyB);}
+
+\end{DoxyCode}
+
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TYPED_TEST_SUITE_P}{\`{}\+INSTANTIATE\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TYPED_TEST_SUITE_P}{}\doxysubsection{\texorpdfstring{INSTANTIATE\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}{INSTANTIATE\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TYPED_TEST_SUITE_P}
+{\ttfamily INSTANTIATE\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P(}\texorpdfstring{$\ast$}{*}{\ttfamily Instantiation\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Types}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Instantiates the type-\/parameterized test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}. The test suite must be registered with \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_REGISTER_TYPED_TEST_SUITE_P}{\`{}\+REGISTER\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2}.
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Instantiation\+Name}\texorpdfstring{$\ast$}{*} is a unique name for the instantiation of the test suite, to distinguish between multiple instantiations. In test output, the instantiation name is added as a prefix to the test suite name \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}.
+
+The argument \texorpdfstring{$\ast$}{*}{\ttfamily Types}\texorpdfstring{$\ast$}{*} is a \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Types}{\`{}\+Types\`{}}{2} object representing the list of types to run the tests on, for example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{MyTypes}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{::testing::Types<char,\ int,\ unsigned\ int>}};}
+\DoxyCodeLine{INSTANTIATE\_TYPED\_TEST\_SUITE\_P(MyInstantiation,\ MyFixture,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{MyTypes}});}
+
+\end{DoxyCode}
+
+
+The type alias ({\ttfamily using} or {\ttfamily typedef}) is necessary for the {\ttfamily INSTANTIATE\+\_\+\+TYPED\+\_\+\+TEST\+\_\+\+SUITE\+\_\+P} macro to parse correctly.
+
+For more information, see \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_FRIEND_TEST}{}\doxysubsection{\texorpdfstring{FRIEND\+\_\+\+TEST}{FRIEND\+\_\+\+TEST}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_FRIEND_TEST}
+{\ttfamily FRIEND\+\_\+\+TEST(}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily ,}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Within a class body, declares an individual test as a friend of the class, enabling the test to access private class members.
+
+If the class is defined in a namespace, then in order to be friends of the class, test fixtures and tests must be defined in the exact same namespace, without inline or anonymous namespaces.
+
+For example, if the class definition looks like the following\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{namespace\ }my\_namespace\ \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyClass\ \{}
+\DoxyCodeLine{\ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }MyClassTest;}
+\DoxyCodeLine{\ \ FRIEND\_TEST(MyClassTest,\ HasPropertyA);}
+\DoxyCodeLine{\ \ FRIEND\_TEST(MyClassTest,\ HasPropertyB);}
+\DoxyCodeLine{\ \ ...\ definition\ of\ \textcolor{keyword}{class\ }MyClass\ ...}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\}\ \ \textcolor{comment}{//\ namespace\ my\_namespace}}
+
+\end{DoxyCode}
+
+
+Then the test code should look like\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{namespace\ }my\_namespace\ \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class\ }MyClassTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}\ \{}
+\DoxyCodeLine{\ \ ...}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{TEST\_F(MyClassTest,\ HasPropertyA)\ \{\ ...\ \}}
+\DoxyCodeLine{TEST\_F(MyClassTest,\ HasPropertyB)\ \{\ ...\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\}\ \ \textcolor{comment}{//\ namespace\ my\_namespace}}
+
+\end{DoxyCode}
+
+
+See \href{../advanced.md\#testing-private-code}{\texttt{ Testing Private Code}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_SCOPED_TRACE}{}\doxysubsection{\texorpdfstring{SCOPED\+\_\+\+TRACE}{SCOPED\+\_\+\+TRACE}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_SCOPED_TRACE}
+{\ttfamily SCOPED\+\_\+\+TRACE(}\texorpdfstring{$\ast$}{*}{\ttfamily message}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Causes the current file name, line number, and the given message \texorpdfstring{$\ast$}{*}{\ttfamily message}\texorpdfstring{$\ast$}{*} to be added to the failure message for each assertion failure that occurs in the scope.
+
+For more information, see \href{../advanced.md\#adding-traces-to-assertions}{\texttt{ Adding Traces to Assertions}}.
+
+See also the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_ScopedTrace}{\`{}\+Scoped\+Trace\`{} class}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_GTEST_SKIP}{}\doxysubsection{\texorpdfstring{GTEST\+\_\+\+SKIP}{GTEST\+\_\+\+SKIP}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_GTEST_SKIP}
+{\ttfamily GTEST\+\_\+\+SKIP()}
+
+Prevents further test execution at runtime.
+
+Can be used in individual test cases or in the {\ttfamily Set\+Up()} methods of test environments or test fixtures (classes derived from the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment}{\`{}\+Environment\`{}}{2} or \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test}{\`{}\+Test\`{}}{2} classes). If used in a global test environment {\ttfamily Set\+Up()} method, it skips all tests in the test program. If used in a test fixture {\ttfamily Set\+Up()} method, it skips all tests in the corresponding test suite.
+
+Similar to assertions, {\ttfamily GTEST\+\_\+\+SKIP} allows streaming a custom message into it.
+
+See \href{../advanced.md\#skipping-test-execution}{\texttt{ Skipping Test Execution}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST}{}\doxysubsection{\texorpdfstring{GTEST\+\_\+\+ALLOW\+\_\+\+UNINSTANTIATED\+\_\+\+PARAMETERIZED\+\_\+\+TEST}{GTEST\+\_\+\+ALLOW\+\_\+\+UNINSTANTIATED\+\_\+\+PARAMETERIZED\+\_\+\+TEST}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST}
+{\ttfamily GTEST\+\_\+\+ALLOW\+\_\+\+UNINSTANTIATED\+\_\+\+PARAMETERIZED\+\_\+\+TEST(}\texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*}{\ttfamily )}
+
+Allows the value-\/parameterized test suite \texorpdfstring{$\ast$}{*}{\ttfamily Test\+Suite\+Name}\texorpdfstring{$\ast$}{*} to be uninstantiated.
+
+By default, every \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_P}{\`{}\+TEST\+\_\+\+P\`{}}{2} call without a corresponding \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TEST_SUITE_P}{\`{}\+INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2} call causes a failing test in the test suite {\ttfamily Google\+Test\+Verification}. {\ttfamily GTEST\+\_\+\+ALLOW\+\_\+\+UNINSTANTIATED\+\_\+\+PARAMETERIZED\+\_\+\+TEST} suppresses this failure for the given test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md274}{}\doxysection{\texorpdfstring{Classes and types}{Classes and types}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md274}
+Google\+Test defines the following classes and types to help with writing tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionResult}{}\doxysubsection{\texorpdfstring{Assertion\+Result}{Assertion\+Result}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionResult}
+{\ttfamily testing\+::\+Assertion\+Result}
+
+A class for indicating whether an assertion was successful.
+
+When the assertion wasn\textquotesingle{}t successful, the {\ttfamily Assertion\+Result} object stores a non-\/empty failure message that can be retrieved with the object\textquotesingle{}s {\ttfamily message()} method.
+
+To create an instance of this class, use one of the factory functions \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionSuccess}{\`{}\+Assertion\+Success()\`{}}{2} or \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionFailure}{\`{}\+Assertion\+Failure()\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionException}{}\doxysubsection{\texorpdfstring{Assertion\+Exception}{Assertion\+Exception}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionException}
+{\ttfamily testing\+::\+Assertion\+Exception}
+
+Exception which can be thrown from \`{}\+Test\+Event\+Listener\+::On\+Test\+Part\+Result\`{}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_EmptyTestEventListener}{}\doxysubsection{\texorpdfstring{Empty\+Test\+Event\+Listener}{Empty\+Test\+Event\+Listener}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_EmptyTestEventListener}
+{\ttfamily \doxylink{classtesting_1_1_empty_test_event_listener}{testing\+::\+Empty\+Test\+Event\+Listener}}
+
+Provides an empty implementation of all methods in the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListener}{\`{}\+Test\+Event\+Listener\`{}}{2} interface, such that a subclass only needs to override the methods it cares about.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment}{}\doxysubsection{\texorpdfstring{Environment}{Environment}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment}
+{\ttfamily \doxylink{classtesting_1_1_environment}{testing\+::\+Environment}}
+
+Represents a global test environment. See \href{../advanced.md\#global-set-up-and-tear-down}{\texttt{ Global Set-\/\+Up and Tear-\/\+Down}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment-protected}{}\doxysubsubsection{\texorpdfstring{Protected Methods}{Protected Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment-protected}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md275}{}\doxysubsubsubsection{\texorpdfstring{Set\+Up \{\#\+Environment\+::\+Set\+Up\}}{Set\+Up \{\#\+Environment\+::\+Set\+Up\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md275}
+{\ttfamily virtual void Environment\+::\+Set\+Up()}
+
+Override this to define how to set up the environment.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md276}{}\doxysubsubsubsection{\texorpdfstring{Tear\+Down \{\#\+Environment\+::\+Tear\+Down\}}{Tear\+Down \{\#\+Environment\+::\+Tear\+Down\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md276}
+{\ttfamily virtual void Environment\+::\+Tear\+Down()}
+
+Override this to define how to tear down the environment.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_ScopedTrace}{}\doxysubsection{\texorpdfstring{Scoped\+Trace}{Scoped\+Trace}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_ScopedTrace}
+{\ttfamily \doxylink{classtesting_1_1_scoped_trace}{testing\+::\+Scoped\+Trace}}
+
+An instance of this class causes a trace to be included in every test failure message generated by code in the scope of the lifetime of the {\ttfamily Scoped\+Trace} instance. The effect is undone with the destruction of the instance.
+
+The {\ttfamily Scoped\+Trace} constructor has the following form\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{ScopedTrace(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,\ \textcolor{keyword}{const}\ T\&\ message)}
+
+\end{DoxyCode}
+
+
+Example usage\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{classtesting_1_1_scoped_trace}{::testing::ScopedTrace}}\ trace(\textcolor{stringliteral}{"{}file.cc"{}},\ 123,\ \textcolor{stringliteral}{"{}message"{}});}
+
+\end{DoxyCode}
+
+
+The resulting trace includes the given source file path and line number, and the given message. The {\ttfamily message} argument can be anything streamable to {\ttfamily std\+::ostream}.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_SCOPED_TRACE}{\`{}\+SCOPED\+\_\+\+TRACE\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test}{}\doxysubsection{\texorpdfstring{Test}{Test}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test}
+{\ttfamily \doxylink{classtesting_1_1_test}{testing\+::\+Test}}
+
+The abstract class that all tests inherit from. {\ttfamily Test} is not copyable.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md277}{}\doxysubsubsubsection{\texorpdfstring{Set\+Up\+Test\+Suite \{\#\+Test\+::\+Set\+Up\+Test\+Suite\}}{Set\+Up\+Test\+Suite \{\#\+Test\+::\+Set\+Up\+Test\+Suite\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md277}
+{\ttfamily static void Test\+::\+Set\+Up\+Test\+Suite()}
+
+Performs shared setup for all tests in the test suite. Google\+Test calls {\ttfamily Set\+Up\+Test\+Suite()} before running the first test in the test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md278}{}\doxysubsubsubsection{\texorpdfstring{Tear\+Down\+Test\+Suite \{\#\+Test\+::\+Tear\+Down\+Test\+Suite\}}{Tear\+Down\+Test\+Suite \{\#\+Test\+::\+Tear\+Down\+Test\+Suite\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md278}
+{\ttfamily static void Test\+::\+Tear\+Down\+Test\+Suite()}
+
+Performs shared teardown for all tests in the test suite. Google\+Test calls {\ttfamily Tear\+Down\+Test\+Suite()} after running the last test in the test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md279}{}\doxysubsubsubsection{\texorpdfstring{Has\+Fatal\+Failure \{\#\+Test\+::\+Has\+Fatal\+Failure\}}{Has\+Fatal\+Failure \{\#\+Test\+::\+Has\+Fatal\+Failure\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md279}
+{\ttfamily static bool Test\+::\+Has\+Fatal\+Failure()}
+
+Returns true if and only if the current test has a fatal failure.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md280}{}\doxysubsubsubsection{\texorpdfstring{Has\+Nonfatal\+Failure \{\#\+Test\+::\+Has\+Nonfatal\+Failure\}}{Has\+Nonfatal\+Failure \{\#\+Test\+::\+Has\+Nonfatal\+Failure\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md280}
+{\ttfamily static bool Test\+::\+Has\+Nonfatal\+Failure()}
+
+Returns true if and only if the current test has a nonfatal failure.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md281}{}\doxysubsubsubsection{\texorpdfstring{Has\+Failure \{\#\+Test\+::\+Has\+Failure\}}{Has\+Failure \{\#\+Test\+::\+Has\+Failure\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md281}
+{\ttfamily static bool Test\+::\+Has\+Failure()}
+
+Returns true if and only if the current test has any failure, either fatal or nonfatal.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md282}{}\doxysubsubsubsection{\texorpdfstring{Is\+Skipped \{\#\+Test\+::\+Is\+Skipped\}}{Is\+Skipped \{\#\+Test\+::\+Is\+Skipped\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md282}
+{\ttfamily static bool Test\+::\+Is\+Skipped()}
+
+Returns true if and only if the current test was skipped.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md283}{}\doxysubsubsubsection{\texorpdfstring{Record\+Property \{\#\+Test\+::\+Record\+Property\}}{Record\+Property \{\#\+Test\+::\+Record\+Property\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md283}
+{\ttfamily static void Test\+::\+Record\+Property(const std\+::string\& key, const std\+::string\& value)} \textbackslash{} {\ttfamily static void Test\+::\+Record\+Property(const std\+::string\& key, int value)}
+
+Logs a property for the current test, test suite, or entire invocation of the test program. Only the last value for a given key is logged.
+
+The key must be a valid XML attribute name, and cannot conflict with the ones already used by Google\+Test ({\ttfamily name}, {\ttfamily file}, {\ttfamily line}, {\ttfamily status}, {\ttfamily time}, {\ttfamily classname}, {\ttfamily type\+\_\+param}, and {\ttfamily value\+\_\+param}).
+
+{\ttfamily Record\+Property} is {\ttfamily public static} so it can be called from utility functions that are not members of the test fixture.
+
+Calls to {\ttfamily Record\+Property} made during the lifespan of the test (from the moment its constructor starts to the moment its destructor finishes) are output in XML as attributes of the {\ttfamily \texorpdfstring{$<$}{<}testcase\texorpdfstring{$>$}{>}} element. Properties recorded from a fixture\textquotesingle{}s {\ttfamily Set\+Up\+Test\+Suite} or {\ttfamily Tear\+Down\+Test\+Suite} methods are logged as attributes of the corresponding {\ttfamily \texorpdfstring{$<$}{<}testsuite\texorpdfstring{$>$}{>}} element. Calls to {\ttfamily Record\+Property} made in the global context (before or after invocation of {\ttfamily RUN\+\_\+\+ALL\+\_\+\+TESTS} or from the {\ttfamily Set\+Up}/{\ttfamily Tear\+Down} methods of registered {\ttfamily \doxylink{class_environment}{Environment}} objects) are output as attributes of the {\ttfamily \texorpdfstring{$<$}{<}testsuites\texorpdfstring{$>$}{>}} element.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test-protected}{}\doxysubsubsection{\texorpdfstring{Protected Methods}{Protected Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test-protected}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md284}{}\doxysubsubsubsection{\texorpdfstring{Set\+Up \{\#\+Test\+::\+Set\+Up\}}{Set\+Up \{\#\+Test\+::\+Set\+Up\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md284}
+{\ttfamily virtual void Test\+::\+Set\+Up()}
+
+Override this to perform test fixture setup. Google\+Test calls {\ttfamily Set\+Up()} before running each individual test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md285}{}\doxysubsubsubsection{\texorpdfstring{Tear\+Down \{\#\+Test\+::\+Tear\+Down\}}{Tear\+Down \{\#\+Test\+::\+Tear\+Down\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md285}
+{\ttfamily virtual void Test\+::\+Tear\+Down()}
+
+Override this to perform test fixture teardown. Google\+Test calls {\ttfamily Tear\+Down()} after running each individual test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestWithParam}{}\doxysubsection{\texorpdfstring{Test\+With\+Param}{Test\+With\+Param}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestWithParam}
+{\ttfamily \doxylink{classtesting_1_1_test_with_param}{testing\+::\+Test\+With\+Param}\texorpdfstring{$<$}{<}T\texorpdfstring{$>$}{>}}
+
+A convenience class which inherits from both \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test}{\`{}\+Test\`{}}{2} and \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_WithParamInterface}{\`{}\+With\+Param\+Interface\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite}{}\doxysubsection{\texorpdfstring{Test\+Suite}{Test\+Suite}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite}
+Represents a test suite. {\ttfamily Test\+Suite} is not copyable.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md286}{}\doxysubsubsubsection{\texorpdfstring{name \{\#\+Test\+Suite\+::name\}}{name \{\#\+Test\+Suite\+::name\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md286}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Suite\+::name() const}
+
+Gets the name of the test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md287}{}\doxysubsubsubsection{\texorpdfstring{type\+\_\+param \{\#\+Test\+Suite\+::type\+\_\+param\}}{type\+\_\+param \{\#\+Test\+Suite\+::type\+\_\+param\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md287}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Suite\+::type\+\_\+param() const}
+
+Returns the name of the parameter type, or {\ttfamily NULL} if this is not a typed or type-\/parameterized test suite. See \href{../advanced.md\#typed-tests}{\texttt{ Typed Tests}} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md288}{}\doxysubsubsubsection{\texorpdfstring{should\+\_\+run \{\#\+Test\+Suite\+::should\+\_\+run\}}{should\+\_\+run \{\#\+Test\+Suite\+::should\+\_\+run\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md288}
+{\ttfamily bool Test\+Suite\+::should\+\_\+run() const}
+
+Returns true if any test in this test suite should run.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md289}{}\doxysubsubsubsection{\texorpdfstring{successful\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::successful\+\_\+test\+\_\+count\}}{successful\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::successful\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md289}
+{\ttfamily int Test\+Suite\+::successful\+\_\+test\+\_\+count() const}
+
+Gets the number of successful tests in this test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md290}{}\doxysubsubsubsection{\texorpdfstring{skipped\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::skipped\+\_\+test\+\_\+count\}}{skipped\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::skipped\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md290}
+{\ttfamily int Test\+Suite\+::skipped\+\_\+test\+\_\+count() const}
+
+Gets the number of skipped tests in this test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md291}{}\doxysubsubsubsection{\texorpdfstring{failed\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::failed\+\_\+test\+\_\+count\}}{failed\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::failed\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md291}
+{\ttfamily int Test\+Suite\+::failed\+\_\+test\+\_\+count() const}
+
+Gets the number of failed tests in this test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md292}{}\doxysubsubsubsection{\texorpdfstring{reportable\+\_\+disabled\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::reportable\+\_\+disabled\+\_\+test\+\_\+count\}}{reportable\+\_\+disabled\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::reportable\+\_\+disabled\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md292}
+{\ttfamily int Test\+Suite\+::reportable\+\_\+disabled\+\_\+test\+\_\+count() const}
+
+Gets the number of disabled tests that will be reported in the XML report.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md293}{}\doxysubsubsubsection{\texorpdfstring{disabled\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::disabled\+\_\+test\+\_\+count\}}{disabled\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::disabled\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md293}
+{\ttfamily int Test\+Suite\+::disabled\+\_\+test\+\_\+count() const}
+
+Gets the number of disabled tests in this test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md294}{}\doxysubsubsubsection{\texorpdfstring{reportable\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::reportable\+\_\+test\+\_\+count\}}{reportable\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::reportable\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md294}
+{\ttfamily int Test\+Suite\+::reportable\+\_\+test\+\_\+count() const}
+
+Gets the number of tests to be printed in the XML report.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md295}{}\doxysubsubsubsection{\texorpdfstring{test\+\_\+to\+\_\+run\+\_\+count \{\#\+Test\+Suite\+::test\+\_\+to\+\_\+run\+\_\+count\}}{test\+\_\+to\+\_\+run\+\_\+count \{\#\+Test\+Suite\+::test\+\_\+to\+\_\+run\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md295}
+{\ttfamily int Test\+Suite\+::test\+\_\+to\+\_\+run\+\_\+count() const}
+
+Get the number of tests in this test suite that should run.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md296}{}\doxysubsubsubsection{\texorpdfstring{total\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::total\+\_\+test\+\_\+count\}}{total\+\_\+test\+\_\+count \{\#\+Test\+Suite\+::total\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md296}
+{\ttfamily int Test\+Suite\+::total\+\_\+test\+\_\+count() const}
+
+Gets the number of all tests in this test suite.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md297}{}\doxysubsubsubsection{\texorpdfstring{Passed \{\#\+Test\+Suite\+::\+Passed\}}{Passed \{\#\+Test\+Suite\+::\+Passed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md297}
+{\ttfamily bool Test\+Suite\+::\+Passed() const}
+
+Returns true if and only if the test suite passed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md298}{}\doxysubsubsubsection{\texorpdfstring{Failed \{\#\+Test\+Suite\+::\+Failed\}}{Failed \{\#\+Test\+Suite\+::\+Failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md298}
+{\ttfamily bool Test\+Suite\+::\+Failed() const}
+
+Returns true if and only if the test suite failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md299}{}\doxysubsubsubsection{\texorpdfstring{elapsed\+\_\+time \{\#\+Test\+Suite\+::elapsed\+\_\+time\}}{elapsed\+\_\+time \{\#\+Test\+Suite\+::elapsed\+\_\+time\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md299}
+{\ttfamily Time\+In\+Millis Test\+Suite\+::elapsed\+\_\+time() const}
+
+Returns the elapsed time, in milliseconds.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md300}{}\doxysubsubsubsection{\texorpdfstring{start\+\_\+timestamp \{\#\+Test\+Suite\+::start\+\_\+timestamp\}}{start\+\_\+timestamp \{\#\+Test\+Suite\+::start\+\_\+timestamp\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md300}
+{\ttfamily Time\+In\+Millis Test\+Suite\+::start\+\_\+timestamp() const}
+
+Gets the time of the test suite start, in ms from the start of the UNIX epoch.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md301}{}\doxysubsubsubsection{\texorpdfstring{Get\+Test\+Info \{\#\+Test\+Suite\+::\+Get\+Test\+Info\}}{Get\+Test\+Info \{\#\+Test\+Suite\+::\+Get\+Test\+Info\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md301}
+{\ttfamily const Test\+Info\texorpdfstring{$\ast$}{*} Test\+Suite\+::\+Get\+Test\+Info(int i) const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo}{\`{}\+Test\+Info\`{}}{2} for the {\ttfamily i}-\/th test among all the tests. {\ttfamily i} can range from 0 to {\ttfamily total\+\_\+test\+\_\+count() -\/ 1}. If {\ttfamily i} is not in that range, returns {\ttfamily NULL}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md302}{}\doxysubsubsubsection{\texorpdfstring{ad\+\_\+hoc\+\_\+test\+\_\+result \{\#\+Test\+Suite\+::ad\+\_\+hoc\+\_\+test\+\_\+result\}}{ad\+\_\+hoc\+\_\+test\+\_\+result \{\#\+Test\+Suite\+::ad\+\_\+hoc\+\_\+test\+\_\+result\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md302}
+{\ttfamily const Test\+Result\& Test\+Suite\+::ad\+\_\+hoc\+\_\+test\+\_\+result() const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult}{\`{}\+Test\+Result\`{}}{2} that holds test properties recorded during execution of {\ttfamily Set\+Up\+Test\+Suite} and {\ttfamily Tear\+Down\+Test\+Suite}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo}{}\doxysubsection{\texorpdfstring{Test\+Info}{Test\+Info}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo}
+{\ttfamily \doxylink{classtesting_1_1_test_info}{testing\+::\+Test\+Info}}
+
+Stores information about a test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md303}{}\doxysubsubsubsection{\texorpdfstring{test\+\_\+suite\+\_\+name \{\#\+Test\+Info\+::test\+\_\+suite\+\_\+name\}}{test\+\_\+suite\+\_\+name \{\#\+Test\+Info\+::test\+\_\+suite\+\_\+name\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md303}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Info\+::test\+\_\+suite\+\_\+name() const}
+
+Returns the test suite name.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md304}{}\doxysubsubsubsection{\texorpdfstring{name \{\#\+Test\+Info\+::name\}}{name \{\#\+Test\+Info\+::name\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md304}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Info\+::name() const}
+
+Returns the test name.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md305}{}\doxysubsubsubsection{\texorpdfstring{type\+\_\+param \{\#\+Test\+Info\+::type\+\_\+param\}}{type\+\_\+param \{\#\+Test\+Info\+::type\+\_\+param\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md305}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Info\+::type\+\_\+param() const}
+
+Returns the name of the parameter type, or {\ttfamily NULL} if this is not a typed or type-\/parameterized test. See \href{../advanced.md\#typed-tests}{\texttt{ Typed Tests}} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md306}{}\doxysubsubsubsection{\texorpdfstring{value\+\_\+param \{\#\+Test\+Info\+::value\+\_\+param\}}{value\+\_\+param \{\#\+Test\+Info\+::value\+\_\+param\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md306}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Info\+::value\+\_\+param() const}
+
+Returns the text representation of the value parameter, or {\ttfamily NULL} if this is not a value-\/parameterized test. See \href{../advanced.md\#value-parameterized-tests}{\texttt{ Value-\/\+Parameterized Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md307}{}\doxysubsubsubsection{\texorpdfstring{file \{\#\+Test\+Info\+::file\}}{file \{\#\+Test\+Info\+::file\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md307}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Info\+::file() const}
+
+Returns the file name where this test is defined.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md308}{}\doxysubsubsubsection{\texorpdfstring{line \{\#\+Test\+Info\+::line\}}{line \{\#\+Test\+Info\+::line\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md308}
+{\ttfamily int Test\+Info\+::line() const}
+
+Returns the line where this test is defined.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md309}{}\doxysubsubsubsection{\texorpdfstring{is\+\_\+in\+\_\+another\+\_\+shard \{\#\+Test\+Info\+::is\+\_\+in\+\_\+another\+\_\+shard\}}{is\+\_\+in\+\_\+another\+\_\+shard \{\#\+Test\+Info\+::is\+\_\+in\+\_\+another\+\_\+shard\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md309}
+{\ttfamily bool Test\+Info\+::is\+\_\+in\+\_\+another\+\_\+shard() const}
+
+Returns true if this test should not be run because it\textquotesingle{}s in another shard.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md310}{}\doxysubsubsubsection{\texorpdfstring{should\+\_\+run \{\#\+Test\+Info\+::should\+\_\+run\}}{should\+\_\+run \{\#\+Test\+Info\+::should\+\_\+run\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md310}
+{\ttfamily bool Test\+Info\+::should\+\_\+run() const}
+
+Returns true if this test should run, that is if the test is not disabled (or it is disabled but the {\ttfamily also\+\_\+run\+\_\+disabled\+\_\+tests} flag has been specified) and its full name matches the user-\/specified filter.
+
+Google\+Test allows the user to filter the tests by their full names. Only the tests that match the filter will run. See \href{../advanced.md\#running-a-subset-of-the-tests}{\texttt{ Running a Subset of the Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md311}{}\doxysubsubsubsection{\texorpdfstring{is\+\_\+reportable \{\#\+Test\+Info\+::is\+\_\+reportable\}}{is\+\_\+reportable \{\#\+Test\+Info\+::is\+\_\+reportable\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md311}
+{\ttfamily bool Test\+Info\+::is\+\_\+reportable() const}
+
+Returns true if and only if this test will appear in the XML report.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md312}{}\doxysubsubsubsection{\texorpdfstring{result \{\#\+Test\+Info\+::result\}}{result \{\#\+Test\+Info\+::result\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md312}
+{\ttfamily const Test\+Result\texorpdfstring{$\ast$}{*} Test\+Info\+::result() const}
+
+Returns the result of the test. See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult}{\`{}\+Test\+Result\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestParamInfo}{}\doxysubsection{\texorpdfstring{Test\+Param\+Info}{Test\+Param\+Info}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestParamInfo}
+{\ttfamily \doxylink{structtesting_1_1_test_param_info}{testing\+::\+Test\+Param\+Info}\texorpdfstring{$<$}{<}T\texorpdfstring{$>$}{>}}
+
+Describes a parameter to a value-\/parameterized test. The type {\ttfamily T} is the type of the parameter.
+
+Contains the fields {\ttfamily param} and {\ttfamily index} which hold the value of the parameter and its integer index respectively.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_UnitTest}{}\doxysubsection{\texorpdfstring{Unit\+Test}{Unit\+Test}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_UnitTest}
+{\ttfamily \doxylink{classtesting_1_1_unit_test}{testing\+::\+Unit\+Test}}
+
+This class contains information about the test program.
+
+{\ttfamily Unit\+Test} is a singleton class. The only instance is created when {\ttfamily Unit\+Test\+::\+Get\+Instance()} is first called. This instance is never deleted.
+
+{\ttfamily Unit\+Test} is not copyable.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_UnitTest-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_UnitTest-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md313}{}\doxysubsubsubsection{\texorpdfstring{Get\+Instance \{\#\+Unit\+Test\+::\+Get\+Instance\}}{Get\+Instance \{\#\+Unit\+Test\+::\+Get\+Instance\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md313}
+{\ttfamily static Unit\+Test\texorpdfstring{$\ast$}{*} Unit\+Test\+::\+Get\+Instance()}
+
+Gets the singleton {\ttfamily Unit\+Test} object. The first time this method is called, a {\ttfamily Unit\+Test} object is constructed and returned. Consecutive calls will return the same object.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md314}{}\doxysubsubsubsection{\texorpdfstring{original\+\_\+working\+\_\+dir \{\#\+Unit\+Test\+::original\+\_\+working\+\_\+dir\}}{original\+\_\+working\+\_\+dir \{\#\+Unit\+Test\+::original\+\_\+working\+\_\+dir\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md314}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Unit\+Test\+::original\+\_\+working\+\_\+dir() const}
+
+Returns the working directory when the first \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST}{\`{}\+TEST()\`{}}{2} or \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TEST_F}{\`{}\+TEST\+\_\+F()\`{}}{2} was executed. The {\ttfamily Unit\+Test} object owns the string.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md315}{}\doxysubsubsubsection{\texorpdfstring{current\+\_\+test\+\_\+suite \{\#\+Unit\+Test\+::current\+\_\+test\+\_\+suite\}}{current\+\_\+test\+\_\+suite \{\#\+Unit\+Test\+::current\+\_\+test\+\_\+suite\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md315}
+{\ttfamily const Test\+Suite\texorpdfstring{$\ast$}{*} Unit\+Test\+::current\+\_\+test\+\_\+suite() const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite}{\`{}\+Test\+Suite\`{}}{2} object for the test that\textquotesingle{}s currently running, or {\ttfamily NULL} if no test is running.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md316}{}\doxysubsubsubsection{\texorpdfstring{current\+\_\+test\+\_\+info \{\#\+Unit\+Test\+::current\+\_\+test\+\_\+info\}}{current\+\_\+test\+\_\+info \{\#\+Unit\+Test\+::current\+\_\+test\+\_\+info\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md316}
+{\ttfamily const Test\+Info\texorpdfstring{$\ast$}{*} Unit\+Test\+::current\+\_\+test\+\_\+info() const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestInfo}{\`{}\+Test\+Info\`{}}{2} object for the test that\textquotesingle{}s currently running, or {\ttfamily NULL} if no test is running.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md317}{}\doxysubsubsubsection{\texorpdfstring{random\+\_\+seed \{\#\+Unit\+Test\+::random\+\_\+seed\}}{random\+\_\+seed \{\#\+Unit\+Test\+::random\+\_\+seed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md317}
+{\ttfamily int Unit\+Test\+::random\+\_\+seed() const}
+
+Returns the random seed used at the start of the current test run.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md318}{}\doxysubsubsubsection{\texorpdfstring{successful\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::successful\+\_\+test\+\_\+suite\+\_\+count\}}{successful\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::successful\+\_\+test\+\_\+suite\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md318}
+{\ttfamily int Unit\+Test\+::successful\+\_\+test\+\_\+suite\+\_\+count() const}
+
+Gets the number of successful test suites.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md319}{}\doxysubsubsubsection{\texorpdfstring{failed\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::failed\+\_\+test\+\_\+suite\+\_\+count\}}{failed\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::failed\+\_\+test\+\_\+suite\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md319}
+{\ttfamily int Unit\+Test\+::failed\+\_\+test\+\_\+suite\+\_\+count() const}
+
+Gets the number of failed test suites.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md320}{}\doxysubsubsubsection{\texorpdfstring{total\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::total\+\_\+test\+\_\+suite\+\_\+count\}}{total\+\_\+test\+\_\+suite\+\_\+count \{\#\+Unit\+Test\+::total\+\_\+test\+\_\+suite\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md320}
+{\ttfamily int Unit\+Test\+::total\+\_\+test\+\_\+suite\+\_\+count() const}
+
+Gets the number of all test suites.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md321}{}\doxysubsubsubsection{\texorpdfstring{test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count \{\#\+Unit\+Test\+::test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count\}}{test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count \{\#\+Unit\+Test\+::test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md321}
+{\ttfamily int Unit\+Test\+::test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count() const}
+
+Gets the number of all test suites that contain at least one test that should run.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md322}{}\doxysubsubsubsection{\texorpdfstring{successful\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::successful\+\_\+test\+\_\+count\}}{successful\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::successful\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md322}
+{\ttfamily int Unit\+Test\+::successful\+\_\+test\+\_\+count() const}
+
+Gets the number of successful tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md323}{}\doxysubsubsubsection{\texorpdfstring{skipped\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::skipped\+\_\+test\+\_\+count\}}{skipped\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::skipped\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md323}
+{\ttfamily int Unit\+Test\+::skipped\+\_\+test\+\_\+count() const}
+
+Gets the number of skipped tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md324}{}\doxysubsubsubsection{\texorpdfstring{failed\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::failed\+\_\+test\+\_\+count\}}{failed\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::failed\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md324}
+{\ttfamily int Unit\+Test\+::failed\+\_\+test\+\_\+count() const}
+
+Gets the number of failed tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md325}{}\doxysubsubsubsection{\texorpdfstring{reportable\+\_\+disabled\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::reportable\+\_\+disabled\+\_\+test\+\_\+count\}}{reportable\+\_\+disabled\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::reportable\+\_\+disabled\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md325}
+{\ttfamily int Unit\+Test\+::reportable\+\_\+disabled\+\_\+test\+\_\+count() const}
+
+Gets the number of disabled tests that will be reported in the XML report.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md326}{}\doxysubsubsubsection{\texorpdfstring{disabled\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::disabled\+\_\+test\+\_\+count\}}{disabled\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::disabled\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md326}
+{\ttfamily int Unit\+Test\+::disabled\+\_\+test\+\_\+count() const}
+
+Gets the number of disabled tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md327}{}\doxysubsubsubsection{\texorpdfstring{reportable\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::reportable\+\_\+test\+\_\+count\}}{reportable\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::reportable\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md327}
+{\ttfamily int Unit\+Test\+::reportable\+\_\+test\+\_\+count() const}
+
+Gets the number of tests to be printed in the XML report.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md328}{}\doxysubsubsubsection{\texorpdfstring{total\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::total\+\_\+test\+\_\+count\}}{total\+\_\+test\+\_\+count \{\#\+Unit\+Test\+::total\+\_\+test\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md328}
+{\ttfamily int Unit\+Test\+::total\+\_\+test\+\_\+count() const}
+
+Gets the number of all tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md329}{}\doxysubsubsubsection{\texorpdfstring{test\+\_\+to\+\_\+run\+\_\+count \{\#\+Unit\+Test\+::test\+\_\+to\+\_\+run\+\_\+count\}}{test\+\_\+to\+\_\+run\+\_\+count \{\#\+Unit\+Test\+::test\+\_\+to\+\_\+run\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md329}
+{\ttfamily int Unit\+Test\+::test\+\_\+to\+\_\+run\+\_\+count() const}
+
+Gets the number of tests that should run.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md330}{}\doxysubsubsubsection{\texorpdfstring{start\+\_\+timestamp \{\#\+Unit\+Test\+::start\+\_\+timestamp\}}{start\+\_\+timestamp \{\#\+Unit\+Test\+::start\+\_\+timestamp\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md330}
+{\ttfamily Time\+In\+Millis Unit\+Test\+::start\+\_\+timestamp() const}
+
+Gets the time of the test program start, in ms from the start of the UNIX epoch.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md331}{}\doxysubsubsubsection{\texorpdfstring{elapsed\+\_\+time \{\#\+Unit\+Test\+::elapsed\+\_\+time\}}{elapsed\+\_\+time \{\#\+Unit\+Test\+::elapsed\+\_\+time\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md331}
+{\ttfamily Time\+In\+Millis Unit\+Test\+::elapsed\+\_\+time() const}
+
+Gets the elapsed time, in milliseconds.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md332}{}\doxysubsubsubsection{\texorpdfstring{Passed \{\#\+Unit\+Test\+::\+Passed\}}{Passed \{\#\+Unit\+Test\+::\+Passed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md332}
+{\ttfamily bool Unit\+Test\+::\+Passed() const}
+
+Returns true if and only if the unit test passed (i.\+e. all test suites passed).\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md333}{}\doxysubsubsubsection{\texorpdfstring{Failed \{\#\+Unit\+Test\+::\+Failed\}}{Failed \{\#\+Unit\+Test\+::\+Failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md333}
+{\ttfamily bool Unit\+Test\+::\+Failed() const}
+
+Returns true if and only if the unit test failed (i.\+e. some test suite failed or something outside of all tests failed).\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md334}{}\doxysubsubsubsection{\texorpdfstring{Get\+Test\+Suite \{\#\+Unit\+Test\+::\+Get\+Test\+Suite\}}{Get\+Test\+Suite \{\#\+Unit\+Test\+::\+Get\+Test\+Suite\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md334}
+{\ttfamily const Test\+Suite\texorpdfstring{$\ast$}{*} Unit\+Test\+::\+Get\+Test\+Suite(int i) const}
+
+Gets the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestSuite}{\`{}\+Test\+Suite\`{}}{2} object for the {\ttfamily i}-\/th test suite among all the test suites. {\ttfamily i} can range from 0 to {\ttfamily total\+\_\+test\+\_\+suite\+\_\+count() -\/ 1}. If {\ttfamily i} is not in that range, returns {\ttfamily NULL}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md335}{}\doxysubsubsubsection{\texorpdfstring{ad\+\_\+hoc\+\_\+test\+\_\+result \{\#\+Unit\+Test\+::ad\+\_\+hoc\+\_\+test\+\_\+result\}}{ad\+\_\+hoc\+\_\+test\+\_\+result \{\#\+Unit\+Test\+::ad\+\_\+hoc\+\_\+test\+\_\+result\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md335}
+{\ttfamily const Test\+Result\& Unit\+Test\+::ad\+\_\+hoc\+\_\+test\+\_\+result() const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult}{\`{}\+Test\+Result\`{}}{2} containing information on test failures and properties logged outside of individual test suites.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md336}{}\doxysubsubsubsection{\texorpdfstring{listeners \{\#\+Unit\+Test\+::listeners\}}{listeners \{\#\+Unit\+Test\+::listeners\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md336}
+{\ttfamily Test\+Event\+Listeners\& Unit\+Test\+::listeners()}
+
+Returns the list of event listeners that can be used to track events inside Google\+Test. See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListeners}{\`{}\+Test\+Event\+Listeners\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListener}{}\doxysubsection{\texorpdfstring{Test\+Event\+Listener}{Test\+Event\+Listener}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListener}
+{\ttfamily \doxylink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}
+
+The interface for tracing execution of tests. The methods below are listed in the order the corresponding events are fired.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListener-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListener-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md337}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Program\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Program\+Start\}}{On\+Test\+Program\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Program\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md337}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Program\+Start(const Unit\+Test\& unit\+\_\+test)}
+
+Fired before any test activity starts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md338}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Iteration\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Iteration\+Start\}}{On\+Test\+Iteration\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Iteration\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md338}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Iteration\+Start(const Unit\+Test\& unit\+\_\+test, int iteration)}
+
+Fired before each iteration of tests starts. There may be more than one iteration if {\ttfamily GTEST\+\_\+\+FLAG(repeat)} is set. {\ttfamily iteration} is the iteration index, starting from 0.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md339}{}\doxysubsubsubsection{\texorpdfstring{On\+Environments\+Set\+Up\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+Start\}}{On\+Environments\+Set\+Up\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md339}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+Start(const Unit\+Test\& unit\+\_\+test)}
+
+Fired before environment set-\/up for each iteration of tests starts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md340}{}\doxysubsubsubsection{\texorpdfstring{On\+Environments\+Set\+Up\+End \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+End\}}{On\+Environments\+Set\+Up\+End \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md340}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Environments\+Set\+Up\+End(const Unit\+Test\& unit\+\_\+test)}
+
+Fired after environment set-\/up for each iteration of tests ends.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md341}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Suite\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Suite\+Start\}}{On\+Test\+Suite\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Suite\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md341}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Suite\+Start(const Test\+Suite\& test\+\_\+suite)}
+
+Fired before the test suite starts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md342}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Start\}}{On\+Test\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md342}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Start(const Test\+Info\& test\+\_\+info)}
+
+Fired before the test starts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md343}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Part\+Result \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Part\+Result\}}{On\+Test\+Part\+Result \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Part\+Result\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md343}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Part\+Result(const Test\+Part\+Result\& test\+\_\+part\+\_\+result)}
+
+Fired after a failed assertion or a {\ttfamily SUCCEED()} invocation. If you want to throw an exception from this function to skip to the next test, it must be an \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionException}{\`{}\+Assertion\+Exception\`{}}{2} or inherited from it.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md344}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+End\}}{On\+Test\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md344}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+End(const Test\+Info\& test\+\_\+info)}
+
+Fired after the test ends.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md345}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Suite\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Suite\+End\}}{On\+Test\+Suite\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Suite\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md345}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Suite\+End(const Test\+Suite\& test\+\_\+suite)}
+
+Fired after the test suite ends.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md346}{}\doxysubsubsubsection{\texorpdfstring{On\+Environments\+Tear\+Down\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+Start\}}{On\+Environments\+Tear\+Down\+Start \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+Start\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md346}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+Start(const Unit\+Test\& unit\+\_\+test)}
+
+Fired before environment tear-\/down for each iteration of tests starts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md347}{}\doxysubsubsubsection{\texorpdfstring{On\+Environments\+Tear\+Down\+End \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+End\}}{On\+Environments\+Tear\+Down\+End \{\#\+Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md347}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Environments\+Tear\+Down\+End(const Unit\+Test\& unit\+\_\+test)}
+
+Fired after environment tear-\/down for each iteration of tests ends.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md348}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Iteration\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Iteration\+End\}}{On\+Test\+Iteration\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Iteration\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md348}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Iteration\+End(const Unit\+Test\& unit\+\_\+test, int iteration)}
+
+Fired after each iteration of tests finishes.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md349}{}\doxysubsubsubsection{\texorpdfstring{On\+Test\+Program\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Program\+End\}}{On\+Test\+Program\+End \{\#\+Test\+Event\+Listener\+::\+On\+Test\+Program\+End\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md349}
+{\ttfamily virtual void Test\+Event\+Listener\+::\+On\+Test\+Program\+End(const Unit\+Test\& unit\+\_\+test)}
+
+Fired after all test activities have ended.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListeners}{}\doxysubsection{\texorpdfstring{Test\+Event\+Listeners}{Test\+Event\+Listeners}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListeners}
+{\ttfamily \doxylink{classtesting_1_1_test_event_listeners}{testing\+::\+Test\+Event\+Listeners}}
+
+Lets users add listeners to track events in Google\+Test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListeners-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestEventListeners-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md350}{}\doxysubsubsubsection{\texorpdfstring{Append \{\#\+Test\+Event\+Listeners\+::\+Append\}}{Append \{\#\+Test\+Event\+Listeners\+::\+Append\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md350}
+{\ttfamily void Test\+Event\+Listeners\+::\+Append(\+Test\+Event\+Listener\texorpdfstring{$\ast$}{*} listener)}
+
+Appends an event listener to the end of the list. Google\+Test assumes ownership of the listener (i.\+e. it will delete the listener when the test program finishes).\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md351}{}\doxysubsubsubsection{\texorpdfstring{Release \{\#\+Test\+Event\+Listeners\+::\+Release\}}{Release \{\#\+Test\+Event\+Listeners\+::\+Release\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md351}
+{\ttfamily Test\+Event\+Listener\texorpdfstring{$\ast$}{*} Test\+Event\+Listeners\+::\+Release(\+Test\+Event\+Listener\texorpdfstring{$\ast$}{*} listener)}
+
+Removes the given event listener from the list and returns it. It then becomes the caller\textquotesingle{}s responsibility to delete the listener. Returns {\ttfamily NULL} if the listener is not found in the list.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md352}{}\doxysubsubsubsection{\texorpdfstring{default\+\_\+result\+\_\+printer \{\#\+Test\+Event\+Listeners\+::default\+\_\+result\+\_\+printer\}}{default\+\_\+result\+\_\+printer \{\#\+Test\+Event\+Listeners\+::default\+\_\+result\+\_\+printer\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md352}
+{\ttfamily Test\+Event\+Listener\texorpdfstring{$\ast$}{*} Test\+Event\+Listeners\+::default\+\_\+result\+\_\+printer() const}
+
+Returns the standard listener responsible for the default console output. Can be removed from the listeners list to shut down default console output. Note that removing this object from the listener list with \`{}\+Release()\`{} transfers its ownership to the caller and makes this function return {\ttfamily NULL} the next time.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md353}{}\doxysubsubsubsection{\texorpdfstring{default\+\_\+xml\+\_\+generator \{\#\+Test\+Event\+Listeners\+::default\+\_\+xml\+\_\+generator\}}{default\+\_\+xml\+\_\+generator \{\#\+Test\+Event\+Listeners\+::default\+\_\+xml\+\_\+generator\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md353}
+{\ttfamily Test\+Event\+Listener\texorpdfstring{$\ast$}{*} Test\+Event\+Listeners\+::default\+\_\+xml\+\_\+generator() const}
+
+Returns the standard listener responsible for the default XML output controlled by the {\ttfamily -\/-\/gtest\+\_\+output=xml} flag. Can be removed from the listeners list by users who want to shut down the default XML output controlled by this flag and substitute it with custom one. Note that removing this object from the listener list with \`{}\+Release()\`{} transfers its ownership to the caller and makes this function return {\ttfamily NULL} the next time.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestPartResult}{}\doxysubsection{\texorpdfstring{Test\+Part\+Result}{Test\+Part\+Result}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestPartResult}
+{\ttfamily testing\+::\+Test\+Part\+Result}
+
+A copyable object representing the result of a test part (i.\+e. an assertion or an explicit {\ttfamily FAIL()}, {\ttfamily ADD\+\_\+\+FAILURE()}, or {\ttfamily SUCCESS()}).\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestPartResult-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestPartResult-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md354}{}\doxysubsubsubsection{\texorpdfstring{type \{\#\+Test\+Part\+Result\+::type\}}{type \{\#\+Test\+Part\+Result\+::type\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md354}
+{\ttfamily Type Test\+Part\+Result\+::type() const}
+
+Gets the outcome of the test part.
+
+The return type {\ttfamily Type} is an enum defined as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{enum}\ Type\ \{}
+\DoxyCodeLine{\ \ kSuccess,\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Succeeded.}}
+\DoxyCodeLine{\ \ kNonFatalFailure,\ \ \textcolor{comment}{//\ Failed\ but\ the\ test\ can\ continue.}}
+\DoxyCodeLine{\ \ kFatalFailure,\ \ \ \ \ \textcolor{comment}{//\ Failed\ and\ the\ test\ should\ be\ terminated.}}
+\DoxyCodeLine{\ \ kSkip\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Skipped.}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md355}{}\doxysubsubsubsection{\texorpdfstring{file\+\_\+name \{\#\+Test\+Part\+Result\+::file\+\_\+name\}}{file\+\_\+name \{\#\+Test\+Part\+Result\+::file\+\_\+name\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md355}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Part\+Result\+::file\+\_\+name() const}
+
+Gets the name of the source file where the test part took place, or {\ttfamily NULL} if it\textquotesingle{}s unknown.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md356}{}\doxysubsubsubsection{\texorpdfstring{line\+\_\+number \{\#\+Test\+Part\+Result\+::line\+\_\+number\}}{line\+\_\+number \{\#\+Test\+Part\+Result\+::line\+\_\+number\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md356}
+{\ttfamily int Test\+Part\+Result\+::line\+\_\+number() const}
+
+Gets the line in the source file where the test part took place, or {\ttfamily -\/1} if it\textquotesingle{}s unknown.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md357}{}\doxysubsubsubsection{\texorpdfstring{summary \{\#\+Test\+Part\+Result\+::summary\}}{summary \{\#\+Test\+Part\+Result\+::summary\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md357}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Part\+Result\+::summary() const}
+
+Gets the summary of the failure message.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md358}{}\doxysubsubsubsection{\texorpdfstring{message \{\#\+Test\+Part\+Result\+::message\}}{message \{\#\+Test\+Part\+Result\+::message\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md358}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} Test\+Part\+Result\+::message() const}
+
+Gets the message associated with the test part.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md359}{}\doxysubsubsubsection{\texorpdfstring{skipped \{\#\+Test\+Part\+Result\+::skipped\}}{skipped \{\#\+Test\+Part\+Result\+::skipped\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md359}
+{\ttfamily bool Test\+Part\+Result\+::skipped() const}
+
+Returns true if and only if the test part was skipped.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md360}{}\doxysubsubsubsection{\texorpdfstring{passed \{\#\+Test\+Part\+Result\+::passed\}}{passed \{\#\+Test\+Part\+Result\+::passed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md360}
+{\ttfamily bool Test\+Part\+Result\+::passed() const}
+
+Returns true if and only if the test part passed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md361}{}\doxysubsubsubsection{\texorpdfstring{nonfatally\+\_\+failed \{\#\+Test\+Part\+Result\+::nonfatally\+\_\+failed\}}{nonfatally\+\_\+failed \{\#\+Test\+Part\+Result\+::nonfatally\+\_\+failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md361}
+{\ttfamily bool Test\+Part\+Result\+::nonfatally\+\_\+failed() const}
+
+Returns true if and only if the test part non-\/fatally failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md362}{}\doxysubsubsubsection{\texorpdfstring{fatally\+\_\+failed \{\#\+Test\+Part\+Result\+::fatally\+\_\+failed\}}{fatally\+\_\+failed \{\#\+Test\+Part\+Result\+::fatally\+\_\+failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md362}
+{\ttfamily bool Test\+Part\+Result\+::fatally\+\_\+failed() const}
+
+Returns true if and only if the test part fatally failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md363}{}\doxysubsubsubsection{\texorpdfstring{failed \{\#\+Test\+Part\+Result\+::failed\}}{failed \{\#\+Test\+Part\+Result\+::failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md363}
+{\ttfamily bool Test\+Part\+Result\+::failed() const}
+
+Returns true if and only if the test part failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestProperty}{}\doxysubsection{\texorpdfstring{Test\+Property}{Test\+Property}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestProperty}
+{\ttfamily \doxylink{classtesting_1_1_test_property}{testing\+::\+Test\+Property}}
+
+A copyable object representing a user-\/specified test property which can be output as a key/value string pair.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestProperty-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestProperty-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_key}{}\doxysubsubsubsection{\texorpdfstring{key}{key}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_key}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} key() const}
+
+Gets the user-\/supplied key.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_value}{}\doxysubsubsubsection{\texorpdfstring{value}{value}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_value}
+{\ttfamily const char\texorpdfstring{$\ast$}{*} value() const}
+
+Gets the user-\/supplied value.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_SetValue}{}\doxysubsubsubsection{\texorpdfstring{Set\+Value}{Set\+Value}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_SetValue}
+{\ttfamily void Set\+Value(const std\+::string\& new\+\_\+value)}
+
+Sets a new value, overriding the previous one.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult}{}\doxysubsection{\texorpdfstring{Test\+Result}{Test\+Result}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult}
+{\ttfamily \doxylink{classtesting_1_1_test_result}{testing\+::\+Test\+Result}}
+
+Contains information about the result of a single test.
+
+{\ttfamily Test\+Result} is not copyable.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult-public}{}\doxysubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestResult-public}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md364}{}\doxysubsubsubsection{\texorpdfstring{total\+\_\+part\+\_\+count \{\#\+Test\+Result\+::total\+\_\+part\+\_\+count\}}{total\+\_\+part\+\_\+count \{\#\+Test\+Result\+::total\+\_\+part\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md364}
+{\ttfamily int Test\+Result\+::total\+\_\+part\+\_\+count() const}
+
+Gets the number of all test parts. This is the sum of the number of successful test parts and the number of failed test parts.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md365}{}\doxysubsubsubsection{\texorpdfstring{test\+\_\+property\+\_\+count \{\#\+Test\+Result\+::test\+\_\+property\+\_\+count\}}{test\+\_\+property\+\_\+count \{\#\+Test\+Result\+::test\+\_\+property\+\_\+count\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md365}
+{\ttfamily int Test\+Result\+::test\+\_\+property\+\_\+count() const}
+
+Returns the number of test properties.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md366}{}\doxysubsubsubsection{\texorpdfstring{Passed \{\#\+Test\+Result\+::\+Passed\}}{Passed \{\#\+Test\+Result\+::\+Passed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md366}
+{\ttfamily bool Test\+Result\+::\+Passed() const}
+
+Returns true if and only if the test passed (i.\+e. no test part failed).\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md367}{}\doxysubsubsubsection{\texorpdfstring{Skipped \{\#\+Test\+Result\+::\+Skipped\}}{Skipped \{\#\+Test\+Result\+::\+Skipped\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md367}
+{\ttfamily bool Test\+Result\+::\+Skipped() const}
+
+Returns true if and only if the test was skipped.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md368}{}\doxysubsubsubsection{\texorpdfstring{Failed \{\#\+Test\+Result\+::\+Failed\}}{Failed \{\#\+Test\+Result\+::\+Failed\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md368}
+{\ttfamily bool Test\+Result\+::\+Failed() const}
+
+Returns true if and only if the test failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md369}{}\doxysubsubsubsection{\texorpdfstring{Has\+Fatal\+Failure \{\#\+Test\+Result\+::\+Has\+Fatal\+Failure\}}{Has\+Fatal\+Failure \{\#\+Test\+Result\+::\+Has\+Fatal\+Failure\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md369}
+{\ttfamily bool Test\+Result\+::\+Has\+Fatal\+Failure() const}
+
+Returns true if and only if the test fatally failed.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md370}{}\doxysubsubsubsection{\texorpdfstring{Has\+Nonfatal\+Failure \{\#\+Test\+Result\+::\+Has\+Nonfatal\+Failure\}}{Has\+Nonfatal\+Failure \{\#\+Test\+Result\+::\+Has\+Nonfatal\+Failure\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md370}
+{\ttfamily bool Test\+Result\+::\+Has\+Nonfatal\+Failure() const}
+
+Returns true if and only if the test has a non-\/fatal failure.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md371}{}\doxysubsubsubsection{\texorpdfstring{elapsed\+\_\+time \{\#\+Test\+Result\+::elapsed\+\_\+time\}}{elapsed\+\_\+time \{\#\+Test\+Result\+::elapsed\+\_\+time\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md371}
+{\ttfamily Time\+In\+Millis Test\+Result\+::elapsed\+\_\+time() const}
+
+Returns the elapsed time, in milliseconds.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md372}{}\doxysubsubsubsection{\texorpdfstring{start\+\_\+timestamp \{\#\+Test\+Result\+::start\+\_\+timestamp\}}{start\+\_\+timestamp \{\#\+Test\+Result\+::start\+\_\+timestamp\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md372}
+{\ttfamily Time\+In\+Millis Test\+Result\+::start\+\_\+timestamp() const}
+
+Gets the time of the test case start, in ms from the start of the UNIX epoch.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md373}{}\doxysubsubsubsection{\texorpdfstring{Get\+Test\+Part\+Result \{\#\+Test\+Result\+::\+Get\+Test\+Part\+Result\}}{Get\+Test\+Part\+Result \{\#\+Test\+Result\+::\+Get\+Test\+Part\+Result\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md373}
+{\ttfamily const Test\+Part\+Result\& Test\+Result\+::\+Get\+Test\+Part\+Result(int i) const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestPartResult}{\`{}\+Test\+Part\+Result\`{}}{2} for the {\ttfamily i}-\/th test part result among all the results. {\ttfamily i} can range from 0 to {\ttfamily total\+\_\+part\+\_\+count() -\/ 1}. If {\ttfamily i} is not in that range, aborts the program.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md374}{}\doxysubsubsubsection{\texorpdfstring{Get\+Test\+Property \{\#\+Test\+Result\+::\+Get\+Test\+Property\}}{Get\+Test\+Property \{\#\+Test\+Result\+::\+Get\+Test\+Property\}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md374}
+{\ttfamily const Test\+Property\& Test\+Result\+::\+Get\+Test\+Property(int i) const}
+
+Returns the \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestProperty}{\`{}\+Test\+Property\`{}}{2} object for the {\ttfamily i}-\/th test property. {\ttfamily i} can range from 0 to {\ttfamily test\+\_\+property\+\_\+count() -\/ 1}. If {\ttfamily i} is not in that range, aborts the program.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TimeInMillis}{}\doxysubsection{\texorpdfstring{Time\+In\+Millis}{Time\+In\+Millis}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TimeInMillis}
+{\ttfamily testing\+::\+Time\+In\+Millis}
+
+An integer type representing time in milliseconds.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Types}{}\doxysubsection{\texorpdfstring{Types}{Types}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Types}
+{\ttfamily testing\+::\+Types\texorpdfstring{$<$}{<}T...\texorpdfstring{$>$}{>}}
+
+Represents a list of types for use in typed tests and type-\/parameterized tests.
+
+The template argument {\ttfamily T...} can be any number of types, for example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{::testing::Types<char,\ int,\ unsigned\ int>}
+
+\end{DoxyCode}
+
+
+See \href{../advanced.md\#typed-tests}{\texttt{ Typed Tests}} and \href{../advanced.md\#type-parameterized-tests}{\texttt{ Type-\/\+Parameterized Tests}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_WithParamInterface}{}\doxysubsection{\texorpdfstring{With\+Param\+Interface}{With\+Param\+Interface}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_WithParamInterface}
+{\ttfamily \doxylink{classtesting_1_1_with_param_interface}{testing\+::\+With\+Param\+Interface}\texorpdfstring{$<$}{<}T\texorpdfstring{$>$}{>}}
+
+The pure interface class that all value-\/parameterized tests inherit from.
+
+A value-\/parameterized test fixture class must inherit from both \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Test}{\`{}\+Test\`{}}{2} and {\ttfamily With\+Param\+Interface}. In most cases that just means inheriting from \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestWithParam}{\`{}\+Test\+With\+Param\`{}}{2}, but more complicated test hierarchies may need to inherit from {\ttfamily Test} and {\ttfamily With\+Param\+Interface} at different levels.
+
+This interface defines the type alias {\ttfamily Param\+Type} for the parameter type {\ttfamily T} and has support for accessing the test parameter value via the {\ttfamily Get\+Param()} method\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{static\ const\ ParamType\&\ GetParam()}
+
+\end{DoxyCode}
+
+
+For more information, see \href{../advanced.md\#value-parameterized-tests}{\texttt{ Value-\/\+Parameterized Tests}}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md375}{}\doxysection{\texorpdfstring{Functions}{Functions}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_autotoc_md375}
+Google\+Test defines the following functions to help with writing and running tests.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_InitGoogleTest}{}\doxysubsection{\texorpdfstring{Init\+Google\+Test}{Init\+Google\+Test}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_InitGoogleTest}
+{\ttfamily void testing\+::\+Init\+Google\+Test(int\texorpdfstring{$\ast$}{*} argc, char\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} argv)} \textbackslash{} {\ttfamily void testing\+::\+Init\+Google\+Test(int\texorpdfstring{$\ast$}{*} argc, wchar\+\_\+t\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} argv)} \textbackslash{} {\ttfamily void testing\+::\+Init\+Google\+Test()}
+
+Initializes Google\+Test. This must be called before calling \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RUN_ALL_TESTS}{\`{}\+RUN\+\_\+\+ALL\+\_\+\+TESTS()\`{}}{2}. In particular, it parses the command line for the flags that Google\+Test recognizes. Whenever a Google\+Test flag is seen, it is removed from {\ttfamily argv}, and {\ttfamily \texorpdfstring{$\ast$}{*}argc} is decremented.
+
+No value is returned. Instead, the Google\+Test flag variables are updated.
+
+The {\ttfamily Init\+Google\+Test(int\texorpdfstring{$\ast$}{*} argc, wchar\+\_\+t\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} argv)} overload can be used in Windows programs compiled in {\ttfamily UNICODE} mode.
+
+The argument-\/less {\ttfamily Init\+Google\+Test()} overload can be used on Arduino/embedded platforms where there is no {\ttfamily argc}/{\ttfamily argv}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AddGlobalTestEnvironment}{}\doxysubsection{\texorpdfstring{Add\+Global\+Test\+Environment}{Add\+Global\+Test\+Environment}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AddGlobalTestEnvironment}
+{\ttfamily Environment\texorpdfstring{$\ast$}{*} testing\+::\+Add\+Global\+Test\+Environment(\+Environment\texorpdfstring{$\ast$}{*} env)}
+
+Adds a test environment to the test program. Must be called before \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RUN_ALL_TESTS}{\`{}\+RUN\+\_\+\+ALL\+\_\+\+TESTS()\`{}}{2} is called. See \href{../advanced.md\#global-set-up-and-tear-down}{\texttt{ Global Set-\/\+Up and Tear-\/\+Down}} for more information.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_Environment}{\`{}\+Environment\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RegisterTest}{}\doxysubsection{\texorpdfstring{Register\+Test}{Register\+Test}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RegisterTest}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Factory>}
+\DoxyCodeLine{TestInfo*\ ::testing::RegisterTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_suite\_name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_name,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ type\_param,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ value\_param,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,\ Factory\ factory)}
+
+\end{DoxyCode}
+
+
+Dynamically registers a test with the framework.
+
+The {\ttfamily factory} argument is a factory callable (move-\/constructible) object or function pointer that creates a new instance of the {\ttfamily Test} object. It handles ownership to the caller. The signature of the callable is {\ttfamily Fixture\texorpdfstring{$\ast$}{*}()}, where {\ttfamily \doxylink{class_fixture}{Fixture}} is the test fixture class for the test. All tests registered with the same {\ttfamily test\+\_\+suite\+\_\+name} must return the same fixture type. This is checked at runtime.
+
+The framework will infer the fixture class from the factory and will call the {\ttfamily Set\+Up\+Test\+Suite} and {\ttfamily Tear\+Down\+Test\+Suite} methods for it.
+
+Must be called before \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RUN_ALL_TESTS}{\`{}\+RUN\+\_\+\+ALL\+\_\+\+TESTS()\`{}}{2} is invoked, otherwise behavior is undefined.
+
+See \href{../advanced.md\#registering-tests-programmatically}{\texttt{ Registering tests programmatically}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RUN_ALL_TESTS}{}\doxysubsection{\texorpdfstring{RUN\+\_\+\+ALL\+\_\+\+TESTS}{RUN\+\_\+\+ALL\+\_\+\+TESTS}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_RUN_ALL_TESTS}
+{\ttfamily int RUN\+\_\+\+ALL\+\_\+\+TESTS()}
+
+Use this function in {\ttfamily main()} to run all tests. It returns {\ttfamily 0} if all tests are successful, or {\ttfamily 1} otherwise.
+
+{\ttfamily RUN\+\_\+\+ALL\+\_\+\+TESTS()} should be invoked after the command line has been parsed by \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_InitGoogleTest}{\`{}\+Init\+Google\+Test()\`{}}{2}.
+
+This function was formerly a macro; thus, it is in the global namespace and has an all-\/caps name.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionSuccess}{}\doxysubsection{\texorpdfstring{Assertion\+Success}{Assertion\+Success}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionSuccess}
+{\ttfamily Assertion\+Result testing\+::\+Assertion\+Success()}
+
+Creates a successful assertion result. See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionResult}{\`{}\+Assertion\+Result\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionFailure}{}\doxysubsection{\texorpdfstring{Assertion\+Failure}{Assertion\+Failure}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionFailure}
+{\ttfamily Assertion\+Result testing\+::\+Assertion\+Failure()}
+
+Creates a failed assertion result. Use the {\ttfamily \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<}} operator to store a failure message\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{::testing::AssertionFailure()\ <<\ \textcolor{stringliteral}{"{}My\ failure\ message"{}};}
+
+\end{DoxyCode}
+
+
+See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_AssertionResult}{\`{}\+Assertion\+Result\`{}}{2}.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_StaticAssertTypeEq}{}\doxysubsection{\texorpdfstring{Static\+Assert\+Type\+Eq}{Static\+Assert\+Type\+Eq}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_StaticAssertTypeEq}
+{\ttfamily testing\+::\+Static\+Assert\+Type\+Eq\texorpdfstring{$<$}{<}T1, T2\texorpdfstring{$>$}{>}()}
+
+Compile-\/time assertion for type equality. Compiles if and only if {\ttfamily T1} and {\ttfamily T2} are the same type. The value it returns is irrelevant.
+
+See \href{../advanced.md\#type-assertions}{\texttt{ Type Assertions}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToString}{}\doxysubsection{\texorpdfstring{Print\+To\+String}{Print\+To\+String}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToString}
+{\ttfamily std\+::string testing\+::\+Print\+To\+String(x)}
+
+Prints any value {\ttfamily x} using Google\+Test\textquotesingle{}s value printer.
+
+See \href{../advanced.md\#teaching-googletest-how-to-print-your-values}{\texttt{ Teaching Google\+Test How to Print Your Values}} for more information.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToStringParamName}{}\doxysubsection{\texorpdfstring{Print\+To\+String\+Param\+Name}{Print\+To\+String\+Param\+Name}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToStringParamName}
+{\ttfamily std\+::string \doxylink{structtesting_1_1_print_to_string_param_name}{testing\+::\+Print\+To\+String\+Param\+Name}(Test\+Param\+Info\texorpdfstring{$<$}{<}T\texorpdfstring{$>$}{>}\& info)}
+
+A built-\/in parameterized test name generator which returns the result of \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_PrintToString}{\`{}\+Print\+To\+String\`{}}{2} called on {\ttfamily info.\+param}. Does not work when the test parameter is a {\ttfamily std\+::string} or C string. See \href{../advanced.md\#specifying-names-for-value-parameterized-test-parameters}{\texttt{ Specifying Names for Value-\/\+Parameterized Test Parameters}} for more information.
+
+See also \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_TestParamInfo}{\`{}\+Test\+Param\+Info\`{}}{2} and \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2reference_2testing_INSTANTIATE_TEST_SUITE_P}{\`{}\+INSTANTIATE\+\_\+\+TEST\+\_\+\+SUITE\+\_\+\+P\`{}}{2}. 

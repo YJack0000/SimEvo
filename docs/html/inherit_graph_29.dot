@@ -1,0 +1,13 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="gmock_test_utils.TestCase",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node0 -> Node1 [id="edge7_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="gmock_leak_test.GMockLeakTest",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classgmock__leak__test_1_1_g_mock_leak_test.html",tooltip=" "];
+  Node0 -> Node2 [id="edge8_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="gmock_output_test.GMockOutputTest",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classgmock__output__test_1_1_g_mock_output_test.html",tooltip=" "];
+}

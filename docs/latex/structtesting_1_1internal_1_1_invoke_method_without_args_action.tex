@@ -1,0 +1,43 @@
+\doxysection{testing\+::internal\+::Invoke\+Method\+Without\+Args\+Action\texorpdfstring{$<$}{<} Class, Method\+Ptr \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structtesting_1_1internal_1_1_invoke_method_without_args_action}{}\label{structtesting_1_1internal_1_1_invoke_method_without_args_action}\index{testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$@{testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{structtesting_1_1internal_1_1_invoke_method_without_args_action_a402ad087a48f62c11a8ea292ce2eb18c}{Return\+Type}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_invoke_method_without_args_action_a1f4e57fe7516b5106374d9acda304a99}\label{structtesting_1_1internal_1_1_invoke_method_without_args_action_a1f4e57fe7516b5106374d9acda304a99} 
+{\footnotesize template$<$typename... Args$>$ }\\Return\+Type {\bfseries operator()} (const Args \&...) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_invoke_method_without_args_action_a86cc5d1b668ef7b54a84cd5151d6b952}\label{structtesting_1_1internal_1_1_invoke_method_without_args_action_a86cc5d1b668ef7b54a84cd5151d6b952} 
+Class \texorpdfstring{$\ast$}{*}const {\bfseries obj\+\_\+ptr}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_invoke_method_without_args_action_a4f8dea00c7921dd60381f6c70273cb9f}\label{structtesting_1_1internal_1_1_invoke_method_without_args_action_a4f8dea00c7921dd60381f6c70273cb9f} 
+const Method\+Ptr {\bfseries method\+\_\+ptr}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{structtesting_1_1internal_1_1_invoke_method_without_args_action_a402ad087a48f62c11a8ea292ce2eb18c}\index{testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$@{testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$}!ReturnType@{ReturnType}}
+\index{ReturnType@{ReturnType}!testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$@{testing::internal::InvokeMethodWithoutArgsAction$<$ Class, MethodPtr $>$}}
+\doxysubsubsection{\texorpdfstring{ReturnType}{ReturnType}}
+{\footnotesize\ttfamily \label{structtesting_1_1internal_1_1_invoke_method_without_args_action_a402ad087a48f62c11a8ea292ce2eb18c} 
+template$<$class Class , typename Method\+Ptr $>$ \\
+using \mbox{\hyperlink{structtesting_1_1internal_1_1_invoke_method_without_args_action}{testing\+::internal\+::\+Invoke\+Method\+Without\+Args\+Action}}$<$ Class, Method\+Ptr $>$\+::\+Return\+Type}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keyword}{decltype}((std::declval<Class*>()-\/>*std::declval<MethodPtr>())())}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googlemock/include/gmock/gmock-\/actions.\+h\end{DoxyCompactItemize}

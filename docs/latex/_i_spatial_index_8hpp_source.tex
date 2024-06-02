@@ -1,0 +1,39 @@
+\doxysection{ISpatial\+Index.\+hpp}
+\hypertarget{_i_spatial_index_8hpp_source}{}\label{_i_spatial_index_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/index/ISpatialIndex.hpp@{/Users/yjack/GitHub/SimEvo/include/index/ISpatialIndex.hpp}}
+\mbox{\hyperlink{_i_spatial_index_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ ISPATIALINDEX\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ ISPATIALINDEX\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_spatial_object}{SpatialObject}}\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_spatial_object_a1a249f15322ccfc4c4fbd8a94981e2e8}{SpatialObject}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{class_spatial_object_a358febc1e5fb699ecd1827c762773101}{object}}(\mbox{\hyperlink{class_spatial_object_a358febc1e5fb699ecd1827c762773101}{object}}),\ \mbox{\hyperlink{class_spatial_object_a90460250279cc2a3a79195fb9a02edd9}{position}}(std::make\_pair(x,\ y))\ \{\}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ T\ \mbox{\hyperlink{class_spatial_object_abe6b147de73a1b474a3f8a70d6b97931}{getObject}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_spatial_object_a358febc1e5fb699ecd1827c762773101}{object}};\ \}}
+\DoxyCodeLine{00014\ \ \ \ \ std::pair<float,\ float>\ \mbox{\hyperlink{class_spatial_object_a4d1884ca3db7a9857d03017079085ff0}{getPosition}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_spatial_object_a90460250279cc2a3a79195fb9a02edd9}{position}};\ \}}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_spatial_object_a66a0cc4c138eb6ccc1a9a0a1418e5d9a}{setPosition}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ \{\ \mbox{\hyperlink{class_spatial_object_a90460250279cc2a3a79195fb9a02edd9}{position}}\ =\ std::make\_pair(x,\ y);\ \}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00018\ \ \ \ \ T\ \mbox{\hyperlink{class_spatial_object_a358febc1e5fb699ecd1827c762773101}{object}};}
+\DoxyCodeLine{00019\ \ \ \ \ std::pair<float,\ float>\ \mbox{\hyperlink{class_spatial_object_a90460250279cc2a3a79195fb9a02edd9}{position}};}
+\DoxyCodeLine{00020\ \};}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00023\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_i_spatial_index}{ISpatialIndex}}\ \{}
+\DoxyCodeLine{00024\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_i_spatial_index_ae48d225f9a5785e28f5fd796a3132549}{insert}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ =\ 0;}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{virtual}\ std::vector<T>\ \mbox{\hyperlink{class_i_spatial_index_a15c59b62cd45173873f37317fa571b61}{query}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ range)\ =\ 0;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_i_spatial_index_a585d34008ccc15001f65592e3250e95a}{update}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{float}\ newX,\ \textcolor{keywordtype}{float}\ newY)\ =\ 0;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_i_spatial_index_a2c6a2a9e9af19ebaf9be97367d12705a}{remove}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object})\ =\ 0;}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_i_spatial_index_a9ebdbdd6bb38235f38533997a2bbc6b8}{clear}}()\ =\ 0;}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_i_spatial_index_af9d2bc7d59b524ac2f036f7b9685526d}{\string~ISpatialIndex}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00031\ \};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

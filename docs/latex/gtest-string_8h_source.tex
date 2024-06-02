@@ -1,0 +1,183 @@
+\doxysection{gtest-\/string.h}
+\hypertarget{gtest-string_8h_source}{}\label{gtest-string_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/string.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/string.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2005,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework\ (Google\ Test)}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ header\ file\ declares\ the\ String\ class\ and\ functions\ used\ internally\ by}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Google\ Test.\ \ They\ are\ subject\ to\ change\ without\ notice.\ They\ should\ not\ used}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ by\ code\ external\ to\ Google\ Test.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ This\ header\ file\ is\ \#included\ by\ gtest-\/internal.h.}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ It\ should\ not\ be\ \#included\ by\ other\ files.}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_STRING\_H\_}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_STRING\_H\_}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#ifdef\ \_\_BORLANDC\_\_}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ string.h\ is\ not\ guaranteed\ to\ provide\ strcpy\ on\ C++\ Builder.}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <mem.h>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00059\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ String\ -\/\ an\ abstract\ class\ holding\ static\ string\ utilities.}}
+\DoxyCodeLine{00062\ \textcolor{keyword}{class\ }GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_string}{String}}\ \{}
+\DoxyCodeLine{00063\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00064\ \ \ \textcolor{comment}{//\ Static\ utility\ methods}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{comment}{//\ Clones\ a\ 0-\/terminated\ C\ string,\ allocating\ memory\ using\ new.\ \ The}}
+\DoxyCodeLine{00067\ \ \ \textcolor{comment}{//\ caller\ is\ responsible\ for\ deleting\ the\ return\ value\ using}}
+\DoxyCodeLine{00068\ \ \ \textcolor{comment}{//\ delete[].\ \ Returns\ the\ cloned\ string,\ or\ NULL\ if\ the\ input\ is}}
+\DoxyCodeLine{00069\ \ \ \textcolor{comment}{//\ NULL.}}
+\DoxyCodeLine{00070\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ This\ is\ different\ from\ strdup()\ in\ string.h,\ which\ allocates}}
+\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ memory\ using\ malloc().}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ CloneCString(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ c\_str);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00076\ \ \ \textcolor{comment}{//\ Windows\ CE\ does\ not\ have\ the\ 'ANSI'\ versions\ of\ Win32\ APIs.\ To\ be}}
+\DoxyCodeLine{00077\ \ \ \textcolor{comment}{//\ able\ to\ pass\ strings\ to\ Win32\ APIs\ on\ CE\ we\ need\ to\ convert\ them}}
+\DoxyCodeLine{00078\ \ \ \textcolor{comment}{//\ to\ 'Unicode',\ UTF-\/16.}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \textcolor{comment}{//\ Creates\ a\ UTF-\/16\ wide\ string\ from\ the\ given\ ANSI\ string,\ allocating}}
+\DoxyCodeLine{00081\ \ \ \textcolor{comment}{//\ memory\ using\ new.\ The\ caller\ is\ responsible\ for\ deleting\ the\ return}}
+\DoxyCodeLine{00082\ \ \ \textcolor{comment}{//\ value\ using\ delete[].\ Returns\ the\ wide\ string,\ or\ NULL\ if\ the}}
+\DoxyCodeLine{00083\ \ \ \textcolor{comment}{//\ input\ is\ NULL.}}
+\DoxyCodeLine{00084\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00085\ \ \ \textcolor{comment}{//\ The\ wide\ string\ is\ created\ using\ the\ ANSI\ codepage\ (CP\_ACP)\ to}}
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ match\ the\ behaviour\ of\ the\ ANSI\ versions\ of\ Win32\ calls\ and\ the}}
+\DoxyCodeLine{00087\ \ \ \textcolor{comment}{//\ C\ runtime.}}
+\DoxyCodeLine{00088\ \ \ \textcolor{keyword}{static}\ LPCWSTR\ AnsiToUtf16(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ c\_str);}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \textcolor{comment}{//\ Creates\ an\ ANSI\ string\ from\ the\ given\ wide\ string,\ allocating}}
+\DoxyCodeLine{00091\ \ \ \textcolor{comment}{//\ memory\ using\ new.\ The\ caller\ is\ responsible\ for\ deleting\ the\ return}}
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//\ value\ using\ delete[].\ Returns\ the\ ANSI\ string,\ or\ NULL\ if\ the}}
+\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//\ input\ is\ NULL.}}
+\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00095\ \ \ \textcolor{comment}{//\ The\ returned\ string\ is\ created\ using\ the\ ANSI\ codepage\ (CP\_ACP)\ to}}
+\DoxyCodeLine{00096\ \ \ \textcolor{comment}{//\ match\ the\ behaviour\ of\ the\ ANSI\ versions\ of\ Win32\ calls\ and\ the}}
+\DoxyCodeLine{00097\ \ \ \textcolor{comment}{//\ C\ runtime.}}
+\DoxyCodeLine{00098\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ Utf16ToAnsi(LPCWSTR\ utf16\_str);}
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \textcolor{comment}{//\ Compares\ two\ C\ strings.\ \ Returns\ true\ if\ and\ only\ if\ they\ have\ the\ same}}
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ content.}}
+\DoxyCodeLine{00103\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00104\ \ \ \textcolor{comment}{//\ Unlike\ strcmp(),\ this\ function\ can\ handle\ NULL\ argument(s).\ \ A}}
+\DoxyCodeLine{00105\ \ \ \textcolor{comment}{//\ NULL\ C\ string\ is\ considered\ different\ to\ any\ non-\/NULL\ C\ string,}}
+\DoxyCodeLine{00106\ \ \ \textcolor{comment}{//\ including\ the\ empty\ string.}}
+\DoxyCodeLine{00107\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ CStringEquals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ lhs,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ rhs);}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \textcolor{comment}{//\ Converts\ a\ wide\ C\ string\ to\ a\ String\ using\ the\ UTF-\/8\ encoding.}}
+\DoxyCodeLine{00110\ \ \ \textcolor{comment}{//\ NULL\ will\ be\ converted\ to\ "{}(null)"{}.\ \ If\ an\ error\ occurred\ during}}
+\DoxyCodeLine{00111\ \ \ \textcolor{comment}{//\ the\ conversion,\ "{}(failed\ to\ convert\ from\ wide\ string)"{}\ is}}
+\DoxyCodeLine{00112\ \ \ \textcolor{comment}{//\ returned.}}
+\DoxyCodeLine{00113\ \ \ \textcolor{keyword}{static}\ std::string\ ShowWideCString(\textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ wide\_c\_str);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \textcolor{comment}{//\ Compares\ two\ wide\ C\ strings.\ \ Returns\ true\ if\ and\ only\ if\ they\ have\ the}}
+\DoxyCodeLine{00116\ \ \ \textcolor{comment}{//\ same\ content.}}
+\DoxyCodeLine{00117\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//\ Unlike\ wcscmp(),\ this\ function\ can\ handle\ NULL\ argument(s).\ \ A}}
+\DoxyCodeLine{00119\ \ \ \textcolor{comment}{//\ NULL\ C\ string\ is\ considered\ different\ to\ any\ non-\/NULL\ C\ string,}}
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ including\ the\ empty\ string.}}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ WideCStringEquals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ lhs,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ rhs);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \textcolor{comment}{//\ Compares\ two\ C\ strings,\ ignoring\ case.\ \ Returns\ true\ if\ and\ only\ if}}
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ they\ have\ the\ same\ content.}}
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//\ Unlike\ strcasecmp(),\ this\ function\ can\ handle\ NULL\ argument(s).}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ A\ NULL\ C\ string\ is\ considered\ different\ to\ any\ non-\/NULL\ C\ string,}}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ including\ the\ empty\ string.}}
+\DoxyCodeLine{00129\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ CaseInsensitiveCStringEquals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ lhs,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ rhs);}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \textcolor{comment}{//\ Compares\ two\ wide\ C\ strings,\ ignoring\ case.\ \ Returns\ true\ if\ and\ only\ if}}
+\DoxyCodeLine{00132\ \ \ \textcolor{comment}{//\ they\ have\ the\ same\ content.}}
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00134\ \ \ \textcolor{comment}{//\ Unlike\ wcscasecmp(),\ this\ function\ can\ handle\ NULL\ argument(s).}}
+\DoxyCodeLine{00135\ \ \ \textcolor{comment}{//\ A\ NULL\ C\ string\ is\ considered\ different\ to\ any\ non-\/NULL\ wide\ C\ string,}}
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ including\ the\ empty\ string.}}
+\DoxyCodeLine{00137\ \ \ \textcolor{comment}{//\ NB:\ The\ implementations\ on\ different\ platforms\ slightly\ differ.}}
+\DoxyCodeLine{00138\ \ \ \textcolor{comment}{//\ On\ windows,\ this\ method\ uses\ \_wcsicmp\ which\ compares\ according\ to\ LC\_CTYPE}}
+\DoxyCodeLine{00139\ \ \ \textcolor{comment}{//\ environment\ variable.\ On\ GNU\ platform\ this\ method\ uses\ wcscasecmp}}
+\DoxyCodeLine{00140\ \ \ \textcolor{comment}{//\ which\ compares\ according\ to\ LC\_CTYPE\ category\ of\ the\ current\ locale.}}
+\DoxyCodeLine{00141\ \ \ \textcolor{comment}{//\ On\ MacOS\ X,\ it\ uses\ towlower,\ which\ also\ uses\ LC\_CTYPE\ category\ of\ the}}
+\DoxyCodeLine{00142\ \ \ \textcolor{comment}{//\ current\ locale.}}
+\DoxyCodeLine{00143\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ CaseInsensitiveWideCStringEquals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ lhs,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ rhs);}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ given\ string\ ends\ with\ the\ given\ suffix,}}
+\DoxyCodeLine{00147\ \ \ \textcolor{comment}{//\ ignoring\ case.\ Any\ string\ is\ considered\ to\ end\ with\ an\ empty\ suffix.}}
+\DoxyCodeLine{00148\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ EndsWithCaseInsensitive(\textcolor{keyword}{const}\ std::string\&\ str,}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ suffix);}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \textcolor{comment}{//\ Formats\ an\ int\ value\ as\ "{}\%02d"{}.}}
+\DoxyCodeLine{00152\ \ \ \textcolor{keyword}{static}\ std::string\ FormatIntWidth2(\textcolor{keywordtype}{int}\ value);\ \ \textcolor{comment}{//\ "{}\%02d"{}\ for\ width\ ==\ 2}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \textcolor{comment}{//\ Formats\ an\ int\ value\ to\ given\ width\ with\ leading\ zeros.}}
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{static}\ std::string\ FormatIntWidthN(\textcolor{keywordtype}{int}\ value,\ \textcolor{keywordtype}{int}\ width);}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \textcolor{comment}{//\ Formats\ an\ int\ value\ as\ "{}\%X"{}.}}
+\DoxyCodeLine{00158\ \ \ \textcolor{keyword}{static}\ std::string\ FormatHexInt(\textcolor{keywordtype}{int}\ value);}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \textcolor{comment}{//\ Formats\ an\ int\ value\ as\ "{}\%X"{}.}}
+\DoxyCodeLine{00161\ \ \ \textcolor{keyword}{static}\ std::string\ FormatHexUInt32(uint32\_t\ value);}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//\ Formats\ a\ byte\ as\ "{}\%02X"{}.}}
+\DoxyCodeLine{00164\ \ \ \textcolor{keyword}{static}\ std::string\ FormatByte(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ value);}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00167\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_string}{String}}();\ \ \textcolor{comment}{//\ Not\ meant\ to\ be\ instantiated.}}
+\DoxyCodeLine{00168\ \};\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ class\ String}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{comment}{//\ Gets\ the\ content\ of\ the\ stringstream's\ buffer\ as\ an\ std::string.\ \ Each\ '\(\backslash\)0'}}
+\DoxyCodeLine{00171\ \textcolor{comment}{//\ character\ in\ the\ buffer\ is\ replaced\ with\ "{}\(\backslash\)\(\backslash\)0"{}.}}
+\DoxyCodeLine{00172\ GTEST\_API\_\ std::string\ StringStreamToString(::std::stringstream*\ stream);}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00175\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_STRING\_H\_}}
+
+\end{DoxyCode}

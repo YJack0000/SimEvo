@@ -1,0 +1,199 @@
+\doxysection{testing\+::internal\+::Unit\+Test\+Impl Class Reference}
+\hypertarget{classtesting_1_1internal_1_1_unit_test_impl}{}\label{classtesting_1_1internal_1_1_unit_test_impl}\index{testing::internal::UnitTestImpl@{testing::internal::UnitTestImpl}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_acc5ffd3f9bc2e87bb3dba4218f58af43}\label{classtesting_1_1internal_1_1_unit_test_impl_acc5ffd3f9bc2e87bb3dba4218f58af43} 
+enum {\bfseries Reaction\+To\+Sharding} \{ {\bfseries HONOR\+\_\+\+SHARDING\+\_\+\+PROTOCOL}
+, {\bfseries IGNORE\+\_\+\+SHARDING\+\_\+\+PROTOCOL}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a5fb75faa88ee71f26e16473455b70839}\label{classtesting_1_1internal_1_1_unit_test_impl_a5fb75faa88ee71f26e16473455b70839} 
+{\bfseries Unit\+Test\+Impl} (\mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \texorpdfstring{$\ast$}{*}parent)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a1cd291fd6751654924362164735d4b49}\label{classtesting_1_1internal_1_1_unit_test_impl_a1cd291fd6751654924362164735d4b49} 
+Test\+Part\+Result\+Reporter\+Interface \texorpdfstring{$\ast$}{*} {\bfseries Get\+Global\+Test\+Part\+Result\+Reporter} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a892b0e25b28af5e4400cf6fac336f2d8}\label{classtesting_1_1internal_1_1_unit_test_impl_a892b0e25b28af5e4400cf6fac336f2d8} 
+void {\bfseries Set\+Global\+Test\+Part\+Result\+Reporter} (Test\+Part\+Result\+Reporter\+Interface \texorpdfstring{$\ast$}{*}reporter)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a5fb3dd8bc839e10b62eba07790704132}\label{classtesting_1_1internal_1_1_unit_test_impl_a5fb3dd8bc839e10b62eba07790704132} 
+Test\+Part\+Result\+Reporter\+Interface \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Part\+Result\+Reporter\+For\+Current\+Thread} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a1403fc10aebcc64479c5ee980c9b4eb4}\label{classtesting_1_1internal_1_1_unit_test_impl_a1403fc10aebcc64479c5ee980c9b4eb4} 
+void {\bfseries Set\+Test\+Part\+Result\+Reporter\+For\+Current\+Thread} (Test\+Part\+Result\+Reporter\+Interface \texorpdfstring{$\ast$}{*}reporter)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a959a2246e4ea23e8c8fb4f4d35846a1d}\label{classtesting_1_1internal_1_1_unit_test_impl_a959a2246e4ea23e8c8fb4f4d35846a1d} 
+int {\bfseries successful\+\_\+test\+\_\+suite\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_abeac4631ea379289c3592b5ecb753fe9}\label{classtesting_1_1internal_1_1_unit_test_impl_abeac4631ea379289c3592b5ecb753fe9} 
+int {\bfseries failed\+\_\+test\+\_\+suite\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_af4d396fe75580e5b7b0f60762f17b24a}\label{classtesting_1_1internal_1_1_unit_test_impl_af4d396fe75580e5b7b0f60762f17b24a} 
+int {\bfseries total\+\_\+test\+\_\+suite\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a31538f33ce4816d710aa282d4c1f043c}\label{classtesting_1_1internal_1_1_unit_test_impl_a31538f33ce4816d710aa282d4c1f043c} 
+int {\bfseries test\+\_\+suite\+\_\+to\+\_\+run\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac363f681cbecf10fea5c04408b98e744}\label{classtesting_1_1internal_1_1_unit_test_impl_ac363f681cbecf10fea5c04408b98e744} 
+int {\bfseries successful\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ad3f9765253b1d9deb7cb6eb7a3aa85ff}\label{classtesting_1_1internal_1_1_unit_test_impl_ad3f9765253b1d9deb7cb6eb7a3aa85ff} 
+int {\bfseries skipped\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ad0abe95b66466268363d7fa407bac41b}\label{classtesting_1_1internal_1_1_unit_test_impl_ad0abe95b66466268363d7fa407bac41b} 
+int {\bfseries failed\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a04827d118a329af68a1de2d6b93eb4e5}\label{classtesting_1_1internal_1_1_unit_test_impl_a04827d118a329af68a1de2d6b93eb4e5} 
+int {\bfseries reportable\+\_\+disabled\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a0c18b2a9cb240722b1e38a3530aa2269}\label{classtesting_1_1internal_1_1_unit_test_impl_a0c18b2a9cb240722b1e38a3530aa2269} 
+int {\bfseries disabled\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_addb3896c4e0973bb5d2744fcb158afce}\label{classtesting_1_1internal_1_1_unit_test_impl_addb3896c4e0973bb5d2744fcb158afce} 
+int {\bfseries reportable\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a89e8531ee2ba3f0aadc27a95ac6149f1}\label{classtesting_1_1internal_1_1_unit_test_impl_a89e8531ee2ba3f0aadc27a95ac6149f1} 
+int {\bfseries total\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a0f15365d1d1ce00eaeb6f8a1370113ec}\label{classtesting_1_1internal_1_1_unit_test_impl_a0f15365d1d1ce00eaeb6f8a1370113ec} 
+int {\bfseries test\+\_\+to\+\_\+run\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_abb02dfd689760c6323acec725d9631d5}\label{classtesting_1_1internal_1_1_unit_test_impl_abb02dfd689760c6323acec725d9631d5} 
+Time\+In\+Millis {\bfseries start\+\_\+timestamp} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a4376881063f945dcc8ec4dbb38b5ecc1}\label{classtesting_1_1internal_1_1_unit_test_impl_a4376881063f945dcc8ec4dbb38b5ecc1} 
+Time\+In\+Millis {\bfseries elapsed\+\_\+time} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ae8e461369acfec902da382bc02297fe5}\label{classtesting_1_1internal_1_1_unit_test_impl_ae8e461369acfec902da382bc02297fe5} 
+bool {\bfseries Passed} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a0c95d1b56b5f33057afc516db05ac313}\label{classtesting_1_1internal_1_1_unit_test_impl_a0c95d1b56b5f33057afc516db05ac313} 
+bool {\bfseries Failed} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_afc836a50f5fbffb42c162a681a4261ab}\label{classtesting_1_1internal_1_1_unit_test_impl_afc836a50f5fbffb42c162a681a4261ab} 
+const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Suite} (int i) const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac068f08191712109d720fb4b020cb79f}\label{classtesting_1_1internal_1_1_unit_test_impl_ac068f08191712109d720fb4b020cb79f} 
+const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Case} (int i) const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a4eb6a4aaca02ccc78e110d1708954d05}\label{classtesting_1_1internal_1_1_unit_test_impl_a4eb6a4aaca02ccc78e110d1708954d05} 
+\mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Mutable\+Suite\+Case} (int i)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a22544d28679e9d1e2eaa3735607c8b63}\label{classtesting_1_1internal_1_1_unit_test_impl_a22544d28679e9d1e2eaa3735607c8b63} 
+\mbox{\hyperlink{classtesting_1_1_test_event_listeners}{Test\+Event\+Listeners}} \texorpdfstring{$\ast$}{*} {\bfseries listeners} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_aba3caef4ad23ce98be80250aeb0cc787}\label{classtesting_1_1internal_1_1_unit_test_impl_aba3caef4ad23ce98be80250aeb0cc787} 
+\mbox{\hyperlink{classtesting_1_1_test_result}{Test\+Result}} \texorpdfstring{$\ast$}{*} {\bfseries current\+\_\+test\+\_\+result} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a79b8b8c8b89e361faf2e9a3028447407}\label{classtesting_1_1internal_1_1_unit_test_impl_a79b8b8c8b89e361faf2e9a3028447407} 
+const \mbox{\hyperlink{classtesting_1_1_test_result}{Test\+Result}} \texorpdfstring{$\ast$}{*} {\bfseries ad\+\_\+hoc\+\_\+test\+\_\+result} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a3306f7d2b19bca54b841006e4a2e0260}\label{classtesting_1_1internal_1_1_unit_test_impl_a3306f7d2b19bca54b841006e4a2e0260} 
+void {\bfseries set\+\_\+os\+\_\+stack\+\_\+trace\+\_\+getter} (\mbox{\hyperlink{classtesting_1_1internal_1_1_os_stack_trace_getter_interface}{Os\+Stack\+Trace\+Getter\+Interface}} \texorpdfstring{$\ast$}{*}getter)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a71753679854f7fbba6c1568eb422fecb}\label{classtesting_1_1internal_1_1_unit_test_impl_a71753679854f7fbba6c1568eb422fecb} 
+\mbox{\hyperlink{classtesting_1_1internal_1_1_os_stack_trace_getter_interface}{Os\+Stack\+Trace\+Getter\+Interface}} \texorpdfstring{$\ast$}{*} {\bfseries os\+\_\+stack\+\_\+trace\+\_\+getter} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a2320c999cd87f4f03db9ea4552572108}\label{classtesting_1_1internal_1_1_unit_test_impl_a2320c999cd87f4f03db9ea4552572108} 
+std\+::string {\bfseries Current\+Os\+Stack\+Trace\+Except\+Top} (int skip\+\_\+count) GTEST\+\_\+\+NO\+\_\+\+INLINE\+\_\+ GTEST\+\_\+\+NO\+\_\+\+TAIL\+\_\+\+CALL\+\_\+
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_af816605b75754651206b2b750bb10aa9}\label{classtesting_1_1internal_1_1_unit_test_impl_af816605b75754651206b2b750bb10aa9} 
+\mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Suite} (const char \texorpdfstring{$\ast$}{*}test\+\_\+suite\+\_\+name, const char \texorpdfstring{$\ast$}{*}type\+\_\+param, internal\+::\+Set\+Up\+Test\+Suite\+Func set\+\_\+up\+\_\+tc, internal\+::\+Tear\+Down\+Test\+Suite\+Func tear\+\_\+down\+\_\+tc)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_afd6f43b5b7f567287766dd6ffeef3f2b}\label{classtesting_1_1internal_1_1_unit_test_impl_afd6f43b5b7f567287766dd6ffeef3f2b} 
+\mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Case} (const char \texorpdfstring{$\ast$}{*}test\+\_\+case\+\_\+name, const char \texorpdfstring{$\ast$}{*}type\+\_\+param, internal\+::\+Set\+Up\+Test\+Suite\+Func set\+\_\+up\+\_\+tc, internal\+::\+Tear\+Down\+Test\+Suite\+Func tear\+\_\+down\+\_\+tc)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_aa44354fe079a4140ce70c1b6ad7832fb}\label{classtesting_1_1internal_1_1_unit_test_impl_aa44354fe079a4140ce70c1b6ad7832fb} 
+void {\bfseries Add\+Test\+Info} (internal\+::\+Set\+Up\+Test\+Suite\+Func set\+\_\+up\+\_\+tc, internal\+::\+Tear\+Down\+Test\+Suite\+Func tear\+\_\+down\+\_\+tc, \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \texorpdfstring{$\ast$}{*}test\+\_\+info)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a00ea629cebc07244fd56b72bc805ccd9}\label{classtesting_1_1internal_1_1_unit_test_impl_a00ea629cebc07244fd56b72bc805ccd9} 
+\mbox{\hyperlink{classtesting_1_1internal_1_1_parameterized_test_suite_registry}{internal\+::\+Parameterized\+Test\+Suite\+Registry}} \& {\bfseries parameterized\+\_\+test\+\_\+registry} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a52a22f15ebac732d7a9e282ebbd8c8a6}\label{classtesting_1_1internal_1_1_unit_test_impl_a52a22f15ebac732d7a9e282ebbd8c8a6} 
+std\+::set$<$ std\+::string $>$ \texorpdfstring{$\ast$}{*} {\bfseries ignored\+\_\+parameterized\+\_\+test\+\_\+suites} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac33f27dd2e5103b71d85d7bacd33fcce}\label{classtesting_1_1internal_1_1_unit_test_impl_ac33f27dd2e5103b71d85d7bacd33fcce} 
+\mbox{\hyperlink{classtesting_1_1internal_1_1_type_parameterized_test_suite_registry}{internal\+::\+Type\+Parameterized\+Test\+Suite\+Registry}} \& {\bfseries type\+\_\+parameterized\+\_\+test\+\_\+registry} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_abe8dee80b17fe7d399ca95f048012571}\label{classtesting_1_1internal_1_1_unit_test_impl_abe8dee80b17fe7d399ca95f048012571} 
+void {\bfseries set\+\_\+current\+\_\+test\+\_\+suite} (\mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \texorpdfstring{$\ast$}{*}a\+\_\+current\+\_\+test\+\_\+suite)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ab72211c99ce4427dfb472d6ecea62989}\label{classtesting_1_1internal_1_1_unit_test_impl_ab72211c99ce4427dfb472d6ecea62989} 
+void {\bfseries set\+\_\+current\+\_\+test\+\_\+info} (\mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \texorpdfstring{$\ast$}{*}a\+\_\+current\+\_\+test\+\_\+info)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_af84d2515f1a272a8783f00a3e8c0aff8}\label{classtesting_1_1internal_1_1_unit_test_impl_af84d2515f1a272a8783f00a3e8c0aff8} 
+void {\bfseries Register\+Parameterized\+Tests} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a1fb6be9971f4768c4136a05aa9e7e375}\label{classtesting_1_1internal_1_1_unit_test_impl_a1fb6be9971f4768c4136a05aa9e7e375} 
+bool {\bfseries Run\+All\+Tests} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a96c2a5b23541ef01020c402644563ba1}\label{classtesting_1_1internal_1_1_unit_test_impl_a96c2a5b23541ef01020c402644563ba1} 
+void {\bfseries Clear\+Non\+Ad\+Hoc\+Test\+Result} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac44629cc4fa12b788779d4aa76939510}\label{classtesting_1_1internal_1_1_unit_test_impl_ac44629cc4fa12b788779d4aa76939510} 
+void {\bfseries Clear\+Ad\+Hoc\+Test\+Result} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a15e4af4df167d2504decbc8fcc108a6f}\label{classtesting_1_1internal_1_1_unit_test_impl_a15e4af4df167d2504decbc8fcc108a6f} 
+void {\bfseries Record\+Property} (const \mbox{\hyperlink{classtesting_1_1_test_property}{Test\+Property}} \&test\+\_\+property)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_abd47e447f0c2557ed528db0350671bed}\label{classtesting_1_1internal_1_1_unit_test_impl_abd47e447f0c2557ed528db0350671bed} 
+int {\bfseries Filter\+Tests} (Reaction\+To\+Sharding shard\+\_\+tests)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ad2cfedef41d3d29aad23c2c64214e6f3}\label{classtesting_1_1internal_1_1_unit_test_impl_ad2cfedef41d3d29aad23c2c64214e6f3} 
+void {\bfseries List\+Tests\+Matching\+Filter} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a282442986ab83b1842ac03321c51ed47}\label{classtesting_1_1internal_1_1_unit_test_impl_a282442986ab83b1842ac03321c51ed47} 
+const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \texorpdfstring{$\ast$}{*} {\bfseries current\+\_\+test\+\_\+suite} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_aae2009f581b6c1129ae084d8a2c1e781}\label{classtesting_1_1internal_1_1_unit_test_impl_aae2009f581b6c1129ae084d8a2c1e781} 
+\mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \texorpdfstring{$\ast$}{*} {\bfseries current\+\_\+test\+\_\+info} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ab0c759ee568a1ff6ed5cfd54dbd25646}\label{classtesting_1_1internal_1_1_unit_test_impl_ab0c759ee568a1ff6ed5cfd54dbd25646} 
+const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \texorpdfstring{$\ast$}{*} {\bfseries current\+\_\+test\+\_\+info} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac0756bc092288072201acda0903b4a82}\label{classtesting_1_1internal_1_1_unit_test_impl_ac0756bc092288072201acda0903b4a82} 
+std\+::vector$<$ \mbox{\hyperlink{classtesting_1_1_environment}{Environment}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries environments} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_ac6212d90a1321cf51035a09b5bdede46}\label{classtesting_1_1internal_1_1_unit_test_impl_ac6212d90a1321cf51035a09b5bdede46} 
+std\+::vector$<$ \mbox{\hyperlink{structtesting_1_1internal_1_1_trace_info}{Trace\+Info}} $>$ \& {\bfseries gtest\+\_\+trace\+\_\+stack} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a0480e61a32e930aafb0681494e8ac893}\label{classtesting_1_1internal_1_1_unit_test_impl_a0480e61a32e930aafb0681494e8ac893} 
+const std\+::vector$<$ \mbox{\hyperlink{structtesting_1_1internal_1_1_trace_info}{Trace\+Info}} $>$ \& {\bfseries gtest\+\_\+trace\+\_\+stack} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a21cd7b2928de03a55b5252f29dd5ae6d}\label{classtesting_1_1internal_1_1_unit_test_impl_a21cd7b2928de03a55b5252f29dd5ae6d} 
+void {\bfseries Configure\+Xml\+Output} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a772894193104b1b2516f16e6ff813168}\label{classtesting_1_1internal_1_1_unit_test_impl_a772894193104b1b2516f16e6ff813168} 
+void {\bfseries Post\+Flag\+Parsing\+Init} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a625b9fb6d17b008c44fc902255e6343c}\label{classtesting_1_1internal_1_1_unit_test_impl_a625b9fb6d17b008c44fc902255e6343c} 
+int {\bfseries random\+\_\+seed} () const
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a0df7a76078e9b91e3bbb3c13024b51a7}\label{classtesting_1_1internal_1_1_unit_test_impl_a0df7a76078e9b91e3bbb3c13024b51a7} 
+\mbox{\hyperlink{classtesting_1_1internal_1_1_random}{internal\+::\+Random}} \texorpdfstring{$\ast$}{*} {\bfseries random} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_aaaa38e6a4372e6bb9bbe3143a3a32b65}\label{classtesting_1_1internal_1_1_unit_test_impl_aaaa38e6a4372e6bb9bbe3143a3a32b65} 
+void {\bfseries Shuffle\+Tests} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a1ee7db3bf8284dd9dce4dc857564bce3}\label{classtesting_1_1internal_1_1_unit_test_impl_a1ee7db3bf8284dd9dce4dc857564bce3} 
+void {\bfseries Unshuffle\+Tests} ()
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_aa311b980783a9cfb547831f7b19e3f3a}\label{classtesting_1_1internal_1_1_unit_test_impl_aa311b980783a9cfb547831f7b19e3f3a} 
+bool {\bfseries catch\+\_\+exceptions} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_unit_test_impl_a893404438388dec058dc5c02e8f9a014}\label{classtesting_1_1internal_1_1_unit_test_impl_a893404438388dec058dc5c02e8f9a014} 
+class {\bfseries \+::testing\+::\+Unit\+Test}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/src/gtest-\/internal-\/inl.\+h\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/src/gtest.\+cc\end{DoxyCompactItemize}

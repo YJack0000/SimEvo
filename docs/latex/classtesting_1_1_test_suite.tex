@@ -1,0 +1,74 @@
+\doxysection{testing\+::Test\+Suite Class Reference}
+\hypertarget{classtesting_1_1_test_suite}{}\label{classtesting_1_1_test_suite}\index{testing::TestSuite@{testing::TestSuite}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a2d6469bcb83701e1bbfe47c465e9731f}\label{classtesting_1_1_test_suite_a2d6469bcb83701e1bbfe47c465e9731f} 
+{\bfseries Test\+Suite} (const char \texorpdfstring{$\ast$}{*}name, const char \texorpdfstring{$\ast$}{*}a\+\_\+type\+\_\+param, internal\+::\+Set\+Up\+Test\+Suite\+Func set\+\_\+up\+\_\+tc, internal\+::\+Tear\+Down\+Test\+Suite\+Func tear\+\_\+down\+\_\+tc)
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a29a561b569c01065b586bc85991a5d4c}\label{classtesting_1_1_test_suite_a29a561b569c01065b586bc85991a5d4c} 
+const char \texorpdfstring{$\ast$}{*} {\bfseries name} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a463ecd6ee0761f6a891e8628b3571414}\label{classtesting_1_1_test_suite_a463ecd6ee0761f6a891e8628b3571414} 
+const char \texorpdfstring{$\ast$}{*} {\bfseries type\+\_\+param} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a8f62c17baef80042e0ff03ef5d5e4ba7}\label{classtesting_1_1_test_suite_a8f62c17baef80042e0ff03ef5d5e4ba7} 
+bool {\bfseries should\+\_\+run} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a85bc4191681df7e8bae810c1744465ec}\label{classtesting_1_1_test_suite_a85bc4191681df7e8bae810c1744465ec} 
+int {\bfseries successful\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_ae48c72ff92fa1c555e3b577f8661285c}\label{classtesting_1_1_test_suite_ae48c72ff92fa1c555e3b577f8661285c} 
+int {\bfseries skipped\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_aaf18223e67cf0761f56bd4b8167abc6c}\label{classtesting_1_1_test_suite_aaf18223e67cf0761f56bd4b8167abc6c} 
+int {\bfseries failed\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_ab0b3d1ee8efaa18ceb2553a71002c678}\label{classtesting_1_1_test_suite_ab0b3d1ee8efaa18ceb2553a71002c678} 
+int {\bfseries reportable\+\_\+disabled\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_adba738351633471e3256dcf7d3c2e61e}\label{classtesting_1_1_test_suite_adba738351633471e3256dcf7d3c2e61e} 
+int {\bfseries disabled\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a24f62e17cfd37b90263f1194fb7d4d74}\label{classtesting_1_1_test_suite_a24f62e17cfd37b90263f1194fb7d4d74} 
+int {\bfseries reportable\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a1ccf2681712a3a27659789009815db8f}\label{classtesting_1_1_test_suite_a1ccf2681712a3a27659789009815db8f} 
+int {\bfseries test\+\_\+to\+\_\+run\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a38a5e95341cfee5a88d8910f69da4960}\label{classtesting_1_1_test_suite_a38a5e95341cfee5a88d8910f69da4960} 
+int {\bfseries total\+\_\+test\+\_\+count} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_add51ece89b069b29e07f0476e0e6aae9}\label{classtesting_1_1_test_suite_add51ece89b069b29e07f0476e0e6aae9} 
+bool {\bfseries Passed} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_adec55446c23dc2d0bfea91c6125a1047}\label{classtesting_1_1_test_suite_adec55446c23dc2d0bfea91c6125a1047} 
+bool {\bfseries Failed} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a2ede69fa37985ab8b21128955c56d6d7}\label{classtesting_1_1_test_suite_a2ede69fa37985ab8b21128955c56d6d7} 
+Time\+In\+Millis {\bfseries elapsed\+\_\+time} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_ac0cbbbe96addf56964380b2bbc013e41}\label{classtesting_1_1_test_suite_ac0cbbbe96addf56964380b2bbc013e41} 
+Time\+In\+Millis {\bfseries start\+\_\+timestamp} () const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a604220b75b3c6252287ba62d1d1754a9}\label{classtesting_1_1_test_suite_a604220b75b3c6252287ba62d1d1754a9} 
+const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Test\+Info} (int i) const
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a49240ef7daa116f858ef14570d189892}\label{classtesting_1_1_test_suite_a49240ef7daa116f858ef14570d189892} 
+const \mbox{\hyperlink{classtesting_1_1_test_result}{Test\+Result}} \& {\bfseries ad\+\_\+hoc\+\_\+test\+\_\+result} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1_test_suite_a5b78b1c2e1fa07ffed92da365593eaa4}\label{classtesting_1_1_test_suite_a5b78b1c2e1fa07ffed92da365593eaa4} 
+class {\bfseries Test}
+\item 
+\Hypertarget{classtesting_1_1_test_suite_acc0a5e7573fd6ae7ad1878613bb86853}\label{classtesting_1_1_test_suite_acc0a5e7573fd6ae7ad1878613bb86853} 
+class {\bfseries internal\+::\+Unit\+Test\+Impl}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/include/gtest/gtest.\+h\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/src/gtest.\+cc\end{DoxyCompactItemize}

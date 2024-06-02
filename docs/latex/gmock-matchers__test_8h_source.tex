@@ -1,0 +1,198 @@
+\doxysection{gmock-\/matchers\+\_\+test.h}
+\hypertarget{gmock-matchers__test_8h_source}{}\label{gmock-matchers__test_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock-\/matchers\_test.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock-\/matchers\_test.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ tests\ some\ commonly\ used\ argument\ matchers.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_TEST\_GMOCK\_MATCHERS\_TEST\_H\_}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_TEST\_GMOCK\_MATCHERS\_TEST\_H\_}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <time.h>}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <deque>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <forward\_list>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <limits>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ <unordered\_set>}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/matchers.h"{}}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/more-\/matchers.h"{}}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00067\ \textcolor{keyword}{namespace\ }gmock\_matchers\_test\ \{}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{using\ }std::greater;}
+\DoxyCodeLine{00070\ \textcolor{keyword}{using\ }std::less;}
+\DoxyCodeLine{00071\ \textcolor{keyword}{using\ }std::list;}
+\DoxyCodeLine{00072\ \textcolor{keyword}{using\ }std::make\_pair;}
+\DoxyCodeLine{00073\ \textcolor{keyword}{using\ }std::map;}
+\DoxyCodeLine{00074\ \textcolor{keyword}{using\ }std::multimap;}
+\DoxyCodeLine{00075\ \textcolor{keyword}{using\ }std::multiset;}
+\DoxyCodeLine{00076\ \textcolor{keyword}{using\ }std::ostream;}
+\DoxyCodeLine{00077\ \textcolor{keyword}{using\ }std::pair;}
+\DoxyCodeLine{00078\ \textcolor{keyword}{using\ }std::set;}
+\DoxyCodeLine{00079\ \textcolor{keyword}{using\ }std::stringstream;}
+\DoxyCodeLine{00080\ \textcolor{keyword}{using\ }std::vector;}
+\DoxyCodeLine{00081\ \textcolor{keyword}{using\ }testing::internal::DummyMatchResultListener;}
+\DoxyCodeLine{00082\ \textcolor{keyword}{using\ }testing::internal::ElementMatcherPair;}
+\DoxyCodeLine{00083\ \textcolor{keyword}{using\ }testing::internal::ElementMatcherPairs;}
+\DoxyCodeLine{00084\ \textcolor{keyword}{using\ }testing::internal::ElementsAreArrayMatcher;}
+\DoxyCodeLine{00085\ \textcolor{keyword}{using\ }testing::internal::ExplainMatchFailureTupleTo;}
+\DoxyCodeLine{00086\ \textcolor{keyword}{using\ }testing::internal::FloatingEqMatcher;}
+\DoxyCodeLine{00087\ \textcolor{keyword}{using\ }testing::internal::FormatMatcherDescription;}
+\DoxyCodeLine{00088\ \textcolor{keyword}{using\ }testing::internal::IsReadableTypeName;}
+\DoxyCodeLine{00089\ \textcolor{keyword}{using\ }testing::internal::MatchMatrix;}
+\DoxyCodeLine{00090\ \textcolor{keyword}{using\ }testing::internal::PredicateFormatterFromMatcher;}
+\DoxyCodeLine{00091\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_r_e}{testing::internal::RE}};}
+\DoxyCodeLine{00092\ \textcolor{keyword}{using\ }testing::internal::StreamMatchResultListener;}
+\DoxyCodeLine{00093\ \textcolor{keyword}{using\ }testing::internal::Strings;}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{comment}{//\ Helper\ for\ testing\ container-\/valued\ matchers\ in\ mock\ method\ context.\ It\ is}}
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ important\ to\ test\ matchers\ in\ this\ context,\ since\ it\ requires\ additional\ type}}
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ deduction\ beyond\ what\ EXPECT\_THAT\ does,\ thus\ making\ it\ more\ restrictive.}}
+\DoxyCodeLine{00098\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1gmock__matchers__test_1_1_container_helper}{ContainerHelper}}\ \{}
+\DoxyCodeLine{00099\ \ \ MOCK\_METHOD1(Call,\ \textcolor{keywordtype}{void}(std::vector<std::unique\_ptr<int>>));}
+\DoxyCodeLine{00100\ \};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ For\ testing\ ExplainMatchResultTo().}}
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00104\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1gmock__matchers__test_1_1_gtest_greater_than_matcher}{GtestGreaterThanMatcher}}\ \{}
+\DoxyCodeLine{00105\ \ \ \textcolor{keyword}{using\ }is\_gtest\_matcher\ =\ void;}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(ostream*\ os)\textcolor{keyword}{\ const\ }\{\ *os\ <<\ \textcolor{stringliteral}{"{}is\ >\ "{}}\ <<\ rhs;\ \}}
+\DoxyCodeLine{00108\ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(ostream*\ os)\textcolor{keyword}{\ const\ }\{\ *os\ <<\ \textcolor{stringliteral}{"{}is\ <=\ "{}}\ <<\ rhs;\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(T\ lhs,\ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordflow}{if}\ (lhs\ >\ rhs)\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ *listener\ <<\ \textcolor{stringliteral}{"{}which\ is\ "{}}\ <<\ (lhs\ -\/\ rhs)\ <<\ \textcolor{stringliteral}{"{}\ more\ than\ "{}}\ <<\ rhs;}
+\DoxyCodeLine{00113\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (lhs\ ==\ rhs)\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ *listener\ <<\ \textcolor{stringliteral}{"{}which\ is\ the\ same\ as\ "{}}\ <<\ rhs;}
+\DoxyCodeLine{00115\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ *listener\ <<\ \textcolor{stringliteral}{"{}which\ is\ "{}}\ <<\ (rhs\ -\/\ lhs)\ <<\ \textcolor{stringliteral}{"{}\ less\ than\ "{}}\ <<\ rhs;}
+\DoxyCodeLine{00117\ \ \ \ \ \}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordflow}{return}\ lhs\ >\ rhs;}
+\DoxyCodeLine{00120\ \ \ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ T\ rhs;}
+\DoxyCodeLine{00123\ \};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00126\ \mbox{\hyperlink{structtesting_1_1gmock__matchers__test_1_1_gtest_greater_than_matcher}{GtestGreaterThanMatcher<typename\ std::decay<T>::type}}>\ GtestGreaterThan(}
+\DoxyCodeLine{00127\ \ \ \ \ T\&\&\ rhs)\ \{}
+\DoxyCodeLine{00128\ \ \ \textcolor{keywordflow}{return}\ \{rhs\};}
+\DoxyCodeLine{00129\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \textcolor{comment}{//\ As\ the\ matcher\ above,\ but\ using\ the\ base\ class\ with\ virtual\ functions.}}
+\DoxyCodeLine{00132\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00133\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1gmock__matchers__test_1_1_greater_than_matcher}{GreaterThanMatcher}}\ :\ \textcolor{keyword}{public}\ MatcherInterface<T>\ \{}
+\DoxyCodeLine{00134\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00135\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1gmock__matchers__test_1_1_greater_than_matcher}{GreaterThanMatcher}}(T\ rhs)\ :\ impl\_\{rhs\}\ \{\}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(ostream*\ os)\textcolor{keyword}{\ const\ override\ }\{\ impl\_.DescribeTo(os);\ \}}
+\DoxyCodeLine{00138\ \ \ \textcolor{keywordtype}{void}\ DescribeNegationTo(ostream*\ os)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00139\ \ \ \ \ impl\_.DescribeNegationTo(os);}
+\DoxyCodeLine{00140\ \ \ \}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(T\ lhs,\ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordflow}{return}\ impl\_.MatchAndExplain(lhs,\ listener);}
+\DoxyCodeLine{00144\ \ \ \}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00147\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structtesting_1_1gmock__matchers__test_1_1_gtest_greater_than_matcher}{GtestGreaterThanMatcher<T>}}\ impl\_;}
+\DoxyCodeLine{00148\ \};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{comment}{//\ Names\ and\ instantiates\ a\ new\ instance\ of\ GTestMatcherTestP.}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ INSTANTIATE\_GTEST\_MATCHER\_TEST\_P(TestSuite)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\ \ using\ TestSuite\#\#P\ =\ GTestMatcherTestP;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\ \ INSTANTIATE\_TEST\_SUITE\_P(MatcherInterface,\ TestSuite\#\#P,\ Values(false));\ \ \(\backslash\)}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\ \ INSTANTIATE\_TEST\_SUITE\_P(GtestMatcher,\ TestSuite\#\#P,\ Values(true))}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1gmock__matchers__test_1_1_g_test_matcher_test_p}{GTestMatcherTestP}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test_with_param}{testing::TestWithParam}}<bool>\ \{}
+\DoxyCodeLine{00157\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00158\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00159\ \ \ \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<T>}}\ GreaterThan(T\ n)\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keywordflow}{if}\ (use\_gtest\_matcher\_)\ \{}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ GtestGreaterThan(n);}
+\DoxyCodeLine{00162\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ MakeMatcher(\textcolor{keyword}{new}\ \mbox{\hyperlink{classtesting_1_1gmock__matchers__test_1_1_greater_than_matcher}{GreaterThanMatcher<T>}}(n));}
+\DoxyCodeLine{00164\ \ \ \ \ \}}
+\DoxyCodeLine{00165\ \ \ \}}
+\DoxyCodeLine{00166\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ use\_gtest\_matcher\_\ =\ GetParam();}
+\DoxyCodeLine{00167\ \};}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{comment}{//\ Returns\ the\ description\ of\ the\ given\ matcher.}}
+\DoxyCodeLine{00170\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00171\ std::string\ Describe(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<T>}}\&\ m)\ \{}
+\DoxyCodeLine{00172\ \ \ \textcolor{keywordflow}{return}\ DescribeMatcher<T>(m);}
+\DoxyCodeLine{00173\ \}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \textcolor{comment}{//\ Returns\ the\ description\ of\ the\ negation\ of\ the\ given\ matcher.}}
+\DoxyCodeLine{00176\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00177\ std::string\ DescribeNegation(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<T>}}\&\ m)\ \{}
+\DoxyCodeLine{00178\ \ \ \textcolor{keywordflow}{return}\ DescribeMatcher<T>(m,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00179\ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \textcolor{comment}{//\ Returns\ the\ reason\ why\ x\ matches,\ or\ doesn't\ match,\ m.}}
+\DoxyCodeLine{00182\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ MatcherType,\ \textcolor{keyword}{typename}\ Value>}
+\DoxyCodeLine{00183\ std::string\ Explain(\textcolor{keyword}{const}\ MatcherType\&\ m,\ \textcolor{keyword}{const}\ Value\&\ x)\ \{}
+\DoxyCodeLine{00184\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{00185\ \ \ ExplainMatchResult(m,\ x,\ \&listener);}
+\DoxyCodeLine{00186\ \ \ \textcolor{keywordflow}{return}\ listener.str();}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \}\ \ \textcolor{comment}{//\ namespace\ gmock\_matchers\_test}}
+\DoxyCodeLine{00190\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_TEST\_GMOCK\_MATCHERS\_TEST\_H\_}}
+
+\end{DoxyCode}

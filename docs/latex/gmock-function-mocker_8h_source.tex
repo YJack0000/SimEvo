@@ -1,0 +1,520 @@
+\doxysection{gmock-\/function-\/mocker.h}
+\hypertarget{gmock-function-mocker_8h_source}{}\label{gmock-function-mocker_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/function-\/mocker.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/function-\/mocker.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ implements\ MOCK\_METHOD.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_FUNCTION\_MOCKER\_H\_}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_FUNCTION\_MOCKER\_H\_}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <type\_traits>}\ \ \textcolor{comment}{//\ IWYU\ pragma:\ keep}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <utility>}\ \ \ \ \ \ \textcolor{comment}{//\ IWYU\ pragma:\ keep}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/spec-\/builders.h"{}}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/internal-\/utils.h"{}}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/pp.h"{}}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00048\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00049\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00050\ \textcolor{keyword}{using\ }identity\_t\ =\ T;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Pattern>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_this_ref_adjuster}{ThisRefAdjuster}}\ \{}
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{using\ }AdjustT\ =\ \textcolor{keyword}{typename}\ std::conditional<}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ std::is\_const<typename\ std::remove\_reference<Pattern>::type>::value,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<std::is\_lvalue\_reference<Pattern>::value,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&,\ \textcolor{keyword}{const}\ T\&\&>::type,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<std::is\_lvalue\_reference<Pattern>::value,\ T\&,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\&\&>::type>::type;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ MockType>}
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{static}\ AdjustT<MockType>\ Adjust(\textcolor{keyword}{const}\ MockType\&\ mock)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}AdjustT<MockType>\textcolor{keyword}{>}(\textcolor{keyword}{const\_cast<}MockType\&\textcolor{keyword}{>}(mock));}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ PrefixOf(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ b)\ \{}
+\DoxyCodeLine{00069\ \ \ \textcolor{keywordflow}{return}\ *a\ ==\ 0\ ||\ (*a\ ==\ *b\ \&\&\ internal::PrefixOf(a\ +\ 1,\ b\ +\ 1));}
+\DoxyCodeLine{00070\ \}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ N,\ \textcolor{keywordtype}{int}\ M>}
+\DoxyCodeLine{00073\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ StartsWith(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&prefix)[N],\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&str)[M])\ \{}
+\DoxyCodeLine{00074\ \ \ \textcolor{keywordflow}{return}\ N\ <=\ M\ \&\&\ internal::PrefixOf(prefix,\ str);}
+\DoxyCodeLine{00075\ \}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ N,\ \textcolor{keywordtype}{int}\ M>}
+\DoxyCodeLine{00078\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ EndsWith(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&suffix)[N],\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&str)[M])\ \{}
+\DoxyCodeLine{00079\ \ \ \textcolor{keywordflow}{return}\ N\ <=\ M\ \&\&\ internal::PrefixOf(suffix,\ str\ +\ M\ -\/\ N);}
+\DoxyCodeLine{00080\ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ N,\ \textcolor{keywordtype}{int}\ M>}
+\DoxyCodeLine{00083\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ Equals(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&a)[N],\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&b)[M])\ \{}
+\DoxyCodeLine{00084\ \ \ \textcolor{keywordflow}{return}\ N\ ==\ M\ \&\&\ internal::PrefixOf(a,\ b);}
+\DoxyCodeLine{00085\ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ N>}
+\DoxyCodeLine{00088\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ ValidateSpec(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ (\&spec)[N])\ \{}
+\DoxyCodeLine{00089\ \ \ \textcolor{keywordflow}{return}\ internal::Equals(\textcolor{stringliteral}{"{}const"{}},\ spec)\ ||}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ internal::Equals(\textcolor{stringliteral}{"{}override"{}},\ spec)\ ||}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ internal::Equals(\textcolor{stringliteral}{"{}final"{}},\ spec)\ ||}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ internal::Equals(\textcolor{stringliteral}{"{}noexcept"{}},\ spec)\ ||}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ (internal::StartsWith(\textcolor{stringliteral}{"{}noexcept("{}},\ spec)\ \&\&}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ internal::EndsWith(\textcolor{stringliteral}{"{})"{}},\ spec))\ ||}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ internal::Equals(\textcolor{stringliteral}{"{}ref(\&)"{}},\ spec)\ ||}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ internal::Equals(\textcolor{stringliteral}{"{}ref(\&\&)"{}},\ spec)\ ||}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ (internal::StartsWith(\textcolor{stringliteral}{"{}Calltype("{}},\ spec)\ \&\&}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ internal::EndsWith(\textcolor{stringliteral}{"{})"{}},\ spec));}
+\DoxyCodeLine{00099\ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ The\ style\ guide\ prohibits\ "{}using"{}\ statements\ in\ a\ namespace\ scope}}
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ inside\ a\ header\ file.\ \ However,\ the\ FunctionMocker\ class\ template}}
+\DoxyCodeLine{00105\ \textcolor{comment}{//\ is\ meant\ to\ be\ defined\ in\ the\ ::testing\ namespace.\ \ The\ following}}
+\DoxyCodeLine{00106\ \textcolor{comment}{//\ line\ is\ just\ a\ trick\ for\ working\ around\ a\ bug\ in\ MSVC\ 8.0,\ which}}
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ cannot\ handle\ it\ if\ we\ define\ FunctionMocker\ in\ ::testing.}}
+\DoxyCodeLine{00108\ \textcolor{keyword}{using\ }internal::FunctionMocker;}
+\DoxyCodeLine{00109\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD(...)\ \(\backslash\)}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_VARIADIC\_CALL(GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_1(...)\ \(\backslash\)}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_WRONG\_ARITY(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_2(...)\ \(\backslash\)}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_WRONG\_ARITY(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_3(\_Ret,\ \_MethodName,\ \_Args)\ \(\backslash\)}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_4(\_Ret,\ \_MethodName,\ \_Args,\ ())}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_4(\_Ret,\ \_MethodName,\ \_Args,\ \_Spec)\ \ \(\backslash\)}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ASSERT\_PARENTHESIS(\_Args);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ASSERT\_PARENTHESIS(\_Spec);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ASSERT\_VALID\_SIGNATURE(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_NARG0\ \_Args,\ GMOCK\_INTERNAL\_SIGNATURE(\_Ret,\ \_Args));\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ASSERT\_VALID\_SPEC(\_Spec)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHOD\_IMPL(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_NARG0\ \_Args,\ \_MethodName,\ GMOCK\_INTERNAL\_HAS\_CONST(\_Spec),\ \ \(\backslash\)}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_INTERNAL\_HAS\_OVERRIDE(\_Spec),\ GMOCK\_INTERNAL\_HAS\_FINAL(\_Spec),\ \(\backslash\)}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_INTERNAL\_GET\_NOEXCEPT\_SPEC(\_Spec),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_INTERNAL\_GET\_CALLTYPE\_SPEC(\_Spec),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_INTERNAL\_GET\_REF\_SPEC(\_Spec),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\ \ \ \ \ \ (GMOCK\_INTERNAL\_SIGNATURE(\_Ret,\ \_Args)))}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_5(...)\ \(\backslash\)}}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_WRONG\_ARITY(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_6(...)\ \(\backslash\)}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_WRONG\_ARITY(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_ARG\_7(...)\ \(\backslash\)}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_WRONG\_ARITY(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_WRONG\_ARITY(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\ \ \ \ \ \ false,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}MOCK\_METHOD\ must\ be\ called\ with\ 3\ or\ 4\ arguments.\ \_Ret,\ "{}\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}\_MethodName,\ \_Args\ and\ optionally\ \_Spec.\ \_Args\ and\ \_Spec\ must\ be\ "{}\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}enclosed\ in\ parentheses.\ If\ \_Ret\ is\ a\ type\ with\ unprotected\ commas,\ "{}\ \(\backslash\)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}it\ must\ also\ be\ enclosed\ in\ parentheses."{})}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ASSERT\_PARENTHESIS(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_IS\_ENCLOSED\_PARENS(\_Tuple),\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_STRINGIZE(\_Tuple)\ "{}\ should\ be\ enclosed\ in\ parentheses."{})}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ASSERT\_VALID\_SIGNATURE(\_N,\ ...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00160\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\ \ \ \ \ \ std::is\_function<\_\_VA\_ARGS\_\_>::value,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}Signature\ must\ be\ a\ function\ type,\ maybe\ return\ type\ contains\ "{}\ \(\backslash\)}}
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}unprotected\ comma."{});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00164\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::tuple\_size<typename\ ::testing::internal::Function<\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_VA\_ARGS\_\_>::ArgumentTuple>::value\ ==\ \_N,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}This\ method\ does\ not\ take\ "{}\ GMOCK\_PP\_STRINGIZE(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \_N)\ "{}\ arguments.\ Parenthesize\ all\ types\ with\ unprotected\ commas."{})}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ASSERT\_VALID\_SPEC(\_Spec)\ \(\backslash\)}}
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_ASSERT\_VALID\_SPEC\_ELEMENT,\ \string~,\ \_Spec)}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHOD\_IMPL(\_N,\ \_MethodName,\ \_Constness,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_Override,\ \_Final,\ \_NoexceptSpec,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_CallType,\ \_RefSpec,\ \_Signature)\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\ \ typename\ ::testing::internal::Function<GMOCK\_PP\_REMOVE\_PARENS(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\ \ \ \ \ \ \_Signature)>::Result\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_EXPAND(\_CallType)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\ \ \ \ \ \ \_MethodName(GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_PARAMETER,\ \_Signature,\ \_N))\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_IF(\_Constness,\ const,\ )\ \_RefSpec\ \_NoexceptSpec\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_IF(\_Override,\ override,\ )\ GMOCK\_PP\_IF(\_Final,\ final,\ )\ \{\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\ \ \ \ GMOCK\_MOCKER\_(\_N,\ \_Constness,\ \_MethodName)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00183\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .SetOwnerAndName(this,\ \#\_MethodName);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\ \ \ \ return\ GMOCK\_MOCKER\_(\_N,\ \_Constness,\ \_MethodName)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .Invoke(GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_FORWARD\_ARG,\ \_Signature,\ \_N));\ \ \(\backslash\)}}
+\DoxyCodeLine{00186\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\ \ ::testing::MockSpec<GMOCK\_PP\_REMOVE\_PARENS(\_Signature)>\ gmock\_\#\#\_MethodName(\ \(\backslash\)}}
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_MATCHER\_PARAMETER,\ \_Signature,\ \_N))\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_IF(\_Constness,\ const,\ )\ \_RefSpec\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00190\ \textcolor{preprocessor}{\ \ \ \ GMOCK\_MOCKER\_(\_N,\ \_Constness,\ \_MethodName).RegisterOwner(this);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00191\ \textcolor{preprocessor}{\ \ \ \ return\ GMOCK\_MOCKER\_(\_N,\ \_Constness,\ \_MethodName)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .With(GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_MATCHER\_ARGUMENT,\ ,\ \_N));\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00193\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00194\ \textcolor{preprocessor}{\ \ ::testing::MockSpec<GMOCK\_PP\_REMOVE\_PARENS(\_Signature)>\ gmock\_\#\#\_MethodName(\ \(\backslash\)}}
+\DoxyCodeLine{00195\ \textcolor{preprocessor}{\ \ \ \ \ \ const\ ::testing::internal::WithoutMatchers\&,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_IF(\_Constness,\ const,\ )::testing::internal::Function<\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_REMOVE\_PARENS(\_Signature)>*)\ const\ \_RefSpec\ \_NoexceptSpec\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\ \ \ \ return\ ::testing::internal::ThisRefAdjuster<GMOCK\_PP\_IF(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \_Constness,\ const,\ )\ int\ \_RefSpec>::Adjust(*this)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00200\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ .gmock\_\#\#\_MethodName(GMOCK\_PP\_REPEAT(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_INTERNAL\_A\_MATCHER\_ARGUMENT,\ \_Signature,\ \_N));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00203\ \textcolor{preprocessor}{\ \ mutable\ ::testing::FunctionMocker<GMOCK\_PP\_REMOVE\_PARENS(\_Signature)>\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\ \ GMOCK\_MOCKER\_(\_N,\ \_Constness,\ \_MethodName)}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_EXPAND(...)\ \_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \textcolor{comment}{//\ Valid\ modifiers.}}
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_HAS\_CONST(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_DETECT\_CONST,\ \string~,\ \_Tuple))}}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_HAS\_OVERRIDE(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_HAS\_COMMA(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_DETECT\_OVERRIDE,\ \string~,\ \_Tuple))}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_HAS\_FINAL(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_DETECT\_FINAL,\ \string~,\ \_Tuple))}}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_GET\_NOEXCEPT\_SPEC(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_NOEXCEPT\_SPEC\_IF\_NOEXCEPT,\ \string~,\ \_Tuple)}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_NOEXCEPT\_SPEC\_IF\_NOEXCEPT(\_i,\ \_,\ \_elem)\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_NOEXCEPT(\_i,\ \_,\ \_elem)),\ \(\backslash\)}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\ \ \ \ \ \ \_elem,\ )}}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_GET\_CALLTYPE\_SPEC(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_CALLTYPE\_SPEC\_IF\_CALLTYPE,\ \string~,\ \_Tuple)}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_CALLTYPE\_SPEC\_IF\_CALLTYPE(\_i,\ \_,\ \_elem)\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_CALLTYPE(\_i,\ \_,\ \_elem)),\ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_UNPACK\_,\ \_elem),\ )}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_GET\_REF\_SPEC(\_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_REF\_SPEC\_IF\_REF,\ \string~,\ \_Tuple)}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_REF\_SPEC\_IF\_REF(\_i,\ \_,\ \_elem)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00239\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_REF(\_i,\ \_,\ \_elem)),\ \(\backslash\)}}
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_UNPACK\_,\ \_elem),\ )}}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#ifdef\ GMOCK\_INTERNAL\_STRICT\_SPEC\_ASSERT}}
+\DoxyCodeLine{00243\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ASSERT\_VALID\_SPEC\_ELEMENT(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00244\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00245\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::internal::ValidateSpec(GMOCK\_PP\_STRINGIZE(\_elem)),\ \ \(\backslash\)}}
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\ \ \ \ \ \ "{}Token\ \(\backslash\)'"{}\ GMOCK\_PP\_STRINGIZE(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00247\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \_elem)\ "{}\(\backslash\)'\ cannot\ be\ recognized\ as\ a\ valid\ specification\ "{}\ \(\backslash\)}}
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}modifier.\ Is\ a\ ','\ missing?"{});}}
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ASSERT\_VALID\_SPEC\_ELEMENT(\_i,\ \_,\ \_elem)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00251\ \textcolor{preprocessor}{\ \ static\_assert(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\ \ \ \ \ \ (GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_CONST(\_i,\ \_,\ \_elem))\ +\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00253\ \textcolor{preprocessor}{\ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_OVERRIDE(\_i,\ \_,\ \_elem))\ +\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_FINAL(\_i,\ \_,\ \_elem))\ +\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00255\ \textcolor{preprocessor}{\ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_NOEXCEPT(\_i,\ \_,\ \_elem))\ +\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00256\ \textcolor{preprocessor}{\ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_REF(\_i,\ \_,\ \_elem))\ +\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_INTERNAL\_DETECT\_CALLTYPE(\_i,\ \_,\ \_elem)))\ ==\ 1,\ \(\backslash\)}}
+\DoxyCodeLine{00258\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_STRINGIZE(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \_elem)\ "{}\ cannot\ be\ recognized\ as\ a\ valid\ specification\ modifier."{});}}
+\DoxyCodeLine{00260\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GMOCK\_INTERNAL\_STRICT\_SPEC\_ASSERT}}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \textcolor{comment}{//\ Modifiers\ implementation.}}
+\DoxyCodeLine{00263\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_CONST(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00264\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_CONST\_I\_,\ \_elem)}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_CONST\_I\_const\ ,}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_OVERRIDE(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00269\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_OVERRIDE\_I\_,\ \_elem)}}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_OVERRIDE\_I\_override\ ,}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_FINAL(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00274\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_FINAL\_I\_,\ \_elem)}}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_FINAL\_I\_final\ ,}}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_NOEXCEPT(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00279\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_NOEXCEPT\_I\_,\ \_elem)}}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_NOEXCEPT\_I\_noexcept\ ,}}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_REF(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00284\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_REF\_I\_,\ \_elem)}}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_REF\_I\_ref\ ,}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_UNPACK\_ref(x)\ x}}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_CALLTYPE(\_i,\ \_,\ \_elem)\ \(\backslash\)}}
+\DoxyCodeLine{00291\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_INTERNAL\_DETECT\_CALLTYPE\_I\_,\ \_elem)}}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_DETECT\_CALLTYPE\_I\_Calltype\ ,}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_UNPACK\_Calltype(...)\ \_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \textcolor{comment}{//\ Note:\ The\ use\ of\ \`{}identity\_t`\ here\ allows\ \_Ret\ to\ represent\ return\ types\ that}}
+\DoxyCodeLine{00298\ \textcolor{comment}{//\ would\ normally\ need\ to\ be\ specified\ in\ a\ different\ way.\ For\ example,\ a\ method}}
+\DoxyCodeLine{00299\ \textcolor{comment}{//\ returning\ a\ function\ pointer\ must\ be\ written\ as}}
+\DoxyCodeLine{00300\ \textcolor{comment}{//}}
+\DoxyCodeLine{00301\ \textcolor{comment}{//\ fn\_ptr\_return\_t\ (*method(method\_args\_t...))(fn\_ptr\_args\_t...)}}
+\DoxyCodeLine{00302\ \textcolor{comment}{//}}
+\DoxyCodeLine{00303\ \textcolor{comment}{//\ But\ we\ only\ support\ placing\ the\ return\ type\ at\ the\ beginning.\ To\ handle\ this,}}
+\DoxyCodeLine{00304\ \textcolor{comment}{//\ we\ wrap\ all\ calls\ in\ identity\_t,\ so\ that\ a\ declaration\ will\ be\ expanded\ to}}
+\DoxyCodeLine{00305\ \textcolor{comment}{//}}
+\DoxyCodeLine{00306\ \textcolor{comment}{//\ identity\_t<fn\_ptr\_return\_t\ (*)(fn\_ptr\_args\_t...)>\ method(method\_args\_t...)}}
+\DoxyCodeLine{00307\ \textcolor{comment}{//}}
+\DoxyCodeLine{00308\ \textcolor{comment}{//\ This\ allows\ us\ to\ work\ around\ the\ syntactic\ oddities\ of\ function/method}}
+\DoxyCodeLine{00309\ \textcolor{comment}{//\ types.}}
+\DoxyCodeLine{00310\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_SIGNATURE(\_Ret,\ \_Args)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00311\ \textcolor{preprocessor}{\ \ ::testing::internal::identity\_t<GMOCK\_PP\_IF(GMOCK\_PP\_IS\_BEGIN\_PARENS(\_Ret),\ \(\backslash\)}}
+\DoxyCodeLine{00312\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_REMOVE\_PARENS,\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00313\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_IDENTITY)(\_Ret)>(\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00314\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_GET\_TYPE,\ \_,\ \_Args))}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_GET\_TYPE(\_i,\ \_,\ \_elem)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00317\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00318\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(GMOCK\_PP\_IS\_BEGIN\_PARENS(\_elem),\ GMOCK\_PP\_REMOVE\_PARENS,\ \(\backslash\)}}
+\DoxyCodeLine{00319\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_IDENTITY)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00320\ \textcolor{preprocessor}{\ \ (\_elem)}}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_PARAMETER(\_i,\ \_Signature,\ \_)\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00323\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00324\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ARG\_O(\_i,\ GMOCK\_PP\_REMOVE\_PARENS(\_Signature))\ \(\backslash\)}}
+\DoxyCodeLine{00325\ \textcolor{preprocessor}{\ \ gmock\_a\#\#\_i}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_FORWARD\_ARG(\_i,\ \_Signature,\ \_)\ \(\backslash\)}}
+\DoxyCodeLine{00328\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00329\ \textcolor{preprocessor}{\ \ ::std::forward<GMOCK\_INTERNAL\_ARG\_O(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00330\ \textcolor{preprocessor}{\ \ \ \ \ \ \_i,\ GMOCK\_PP\_REMOVE\_PARENS(\_Signature))>(gmock\_a\#\#\_i)}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MATCHER\_PARAMETER(\_i,\ \_Signature,\ \_)\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00333\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00334\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MATCHER\_O(\_i,\ GMOCK\_PP\_REMOVE\_PARENS(\_Signature))\ \(\backslash\)}}
+\DoxyCodeLine{00335\ \textcolor{preprocessor}{\ \ gmock\_a\#\#\_i}}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MATCHER\_ARGUMENT(\_i,\ \_1,\ \_2)\ \(\backslash\)}}
+\DoxyCodeLine{00338\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00339\ \textcolor{preprocessor}{\ \ gmock\_a\#\#\_i}}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_A\_MATCHER\_ARGUMENT(\_i,\ \_Signature,\ \_)\ \(\backslash\)}}
+\DoxyCodeLine{00342\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_COMMA\_IF(\_i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00343\ \textcolor{preprocessor}{\ \ ::testing::A<GMOCK\_INTERNAL\_ARG\_O(\_i,\ GMOCK\_PP\_REMOVE\_PARENS(\_Signature))>()}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ARG\_O(\_i,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00346\ \textcolor{preprocessor}{\ \ typename\ ::testing::internal::Function<\_\_VA\_ARGS\_\_>::template\ Arg<\_i>::type}}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00348\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MATCHER\_O(\_i,\ ...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00349\ \textcolor{preprocessor}{\ \ const\ ::testing::Matcher<typename\ ::testing::internal::Function<\ \(\backslash\)}}
+\DoxyCodeLine{00350\ \textcolor{preprocessor}{\ \ \ \ \ \ \_\_VA\_ARGS\_\_>::template\ Arg<\_i>::type>\&}}
+\DoxyCodeLine{00351\ }
+\DoxyCodeLine{00352\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD0(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 0,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00353\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD1(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 1,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00354\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD2(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 2,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00355\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD3(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 3,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00356\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD4(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 4,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00357\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD5(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 5,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00358\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD6(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 6,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00359\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD7(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 7,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00360\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD8(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 8,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00361\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD9(m,\ ...)\ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 9,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00362\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD10(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00363\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ,\ m,\ 10,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD0(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00366\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 0,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00367\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD1(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00368\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 1,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00369\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD2(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00370\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 2,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00371\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD3(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00372\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 3,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00373\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD4(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00374\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 4,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00375\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD5(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00376\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 5,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00377\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD6(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00378\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 6,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00379\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD7(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00380\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 7,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00381\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD8(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00382\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 8,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00383\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD9(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00384\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 9,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00385\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD10(m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00386\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ,\ m,\ 10,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00387\ }
+\DoxyCodeLine{00388\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD0\_T(m,\ ...)\ MOCK\_METHOD0(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00389\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD1\_T(m,\ ...)\ MOCK\_METHOD1(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00390\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD2\_T(m,\ ...)\ MOCK\_METHOD2(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00391\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD3\_T(m,\ ...)\ MOCK\_METHOD3(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00392\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD4\_T(m,\ ...)\ MOCK\_METHOD4(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00393\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD5\_T(m,\ ...)\ MOCK\_METHOD5(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00394\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD6\_T(m,\ ...)\ MOCK\_METHOD6(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00395\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD7\_T(m,\ ...)\ MOCK\_METHOD7(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00396\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD8\_T(m,\ ...)\ MOCK\_METHOD8(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00397\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD9\_T(m,\ ...)\ MOCK\_METHOD9(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00398\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD10\_T(m,\ ...)\ MOCK\_METHOD10(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00399\ }
+\DoxyCodeLine{00400\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD0\_T(m,\ ...)\ MOCK\_CONST\_METHOD0(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00401\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD1\_T(m,\ ...)\ MOCK\_CONST\_METHOD1(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00402\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD2\_T(m,\ ...)\ MOCK\_CONST\_METHOD2(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00403\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD3\_T(m,\ ...)\ MOCK\_CONST\_METHOD3(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00404\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD4\_T(m,\ ...)\ MOCK\_CONST\_METHOD4(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00405\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD5\_T(m,\ ...)\ MOCK\_CONST\_METHOD5(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00406\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD6\_T(m,\ ...)\ MOCK\_CONST\_METHOD6(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00407\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD7\_T(m,\ ...)\ MOCK\_CONST\_METHOD7(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00408\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD8\_T(m,\ ...)\ MOCK\_CONST\_METHOD8(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00409\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD9\_T(m,\ ...)\ MOCK\_CONST\_METHOD9(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00410\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD10\_T(m,\ ...)\ MOCK\_CONST\_METHOD10(m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00412\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD0\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00413\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 0,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00414\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD1\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00415\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 1,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00416\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD2\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00417\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 2,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00418\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD3\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00419\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 3,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00420\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD4\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00421\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 4,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00422\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD5\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00423\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 5,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00424\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD6\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00425\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 6,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00426\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD7\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00427\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 7,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00428\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD8\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00429\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 8,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00430\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD9\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00431\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 9,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00432\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD10\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00433\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(,\ ct,\ m,\ 10,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00434\ }
+\DoxyCodeLine{00435\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD0\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00436\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 0,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00437\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD1\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00438\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 1,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00439\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD2\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00440\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 2,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00441\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD3\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00442\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 3,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00443\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD4\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00444\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 4,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00445\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD5\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00446\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 5,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00447\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD6\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00448\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 6,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00449\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD7\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00450\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 7,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00451\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD8\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00452\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 8,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00453\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD9\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00454\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 9,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00455\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD10\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00456\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHODN(const,\ ct,\ m,\ 10,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00457\ }
+\DoxyCodeLine{00458\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD0\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00459\ \textcolor{preprocessor}{\ \ MOCK\_METHOD0\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00460\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD1\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00461\ \textcolor{preprocessor}{\ \ MOCK\_METHOD1\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00462\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD2\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00463\ \textcolor{preprocessor}{\ \ MOCK\_METHOD2\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00464\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD3\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00465\ \textcolor{preprocessor}{\ \ MOCK\_METHOD3\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00466\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD4\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00467\ \textcolor{preprocessor}{\ \ MOCK\_METHOD4\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00468\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD5\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00469\ \textcolor{preprocessor}{\ \ MOCK\_METHOD5\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00470\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD6\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00471\ \textcolor{preprocessor}{\ \ MOCK\_METHOD6\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00472\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD7\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00473\ \textcolor{preprocessor}{\ \ MOCK\_METHOD7\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00474\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD8\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00475\ \textcolor{preprocessor}{\ \ MOCK\_METHOD8\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00476\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD9\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00477\ \textcolor{preprocessor}{\ \ MOCK\_METHOD9\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00478\ \textcolor{preprocessor}{\#define\ MOCK\_METHOD10\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00479\ \textcolor{preprocessor}{\ \ MOCK\_METHOD10\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00480\ }
+\DoxyCodeLine{00481\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD0\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00482\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD0\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00483\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD1\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00484\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD1\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00485\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD2\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00486\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD2\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00487\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD3\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00488\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD3\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00489\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD4\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00490\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD4\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00491\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD5\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00492\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD5\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00493\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD6\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00494\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD6\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00495\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD7\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00496\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD7\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00497\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD8\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00498\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD8\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00499\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD9\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00500\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD9\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00501\ \textcolor{preprocessor}{\#define\ MOCK\_CONST\_METHOD10\_T\_WITH\_CALLTYPE(ct,\ m,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00502\ \textcolor{preprocessor}{\ \ MOCK\_CONST\_METHOD10\_WITH\_CALLTYPE(ct,\ m,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_MOCK\_METHODN(constness,\ ct,\ Method,\ args\_num,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00505\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ASSERT\_VALID\_SIGNATURE(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00506\ \textcolor{preprocessor}{\ \ \ \ \ \ args\_num,\ ::testing::internal::identity\_t<\_\_VA\_ARGS\_\_>);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00507\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_MOCK\_METHOD\_IMPL(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00508\ \textcolor{preprocessor}{\ \ \ \ \ \ args\_num,\ Method,\ GMOCK\_PP\_NARG0(constness),\ 0,\ 0,\ ,\ ct,\ ,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00509\ \textcolor{preprocessor}{\ \ \ \ \ \ (::testing::internal::identity\_t<\_\_VA\_ARGS\_\_>))}}
+\DoxyCodeLine{00510\ }
+\DoxyCodeLine{00511\ \textcolor{preprocessor}{\#define\ GMOCK\_MOCKER\_(arity,\ constness,\ Method)\ \(\backslash\)}}
+\DoxyCodeLine{00512\ \textcolor{preprocessor}{\ \ GTEST\_CONCAT\_TOKEN\_(gmock\#\#constness\#\#arity\#\#\_\#\#Method\#\#\_,\ \_\_LINE\_\_)}}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_FUNCTION\_MOCKER\_H\_}}
+
+\end{DoxyCode}

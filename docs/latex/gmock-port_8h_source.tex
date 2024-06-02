@@ -1,0 +1,145 @@
+\doxysection{gmock-\/port.h}
+\hypertarget{gmock-port_8h_source}{}\label{gmock-port_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/port.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/port.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Low-\/level\ types\ and\ utilities\ for\ porting\ Google\ Mock\ to\ various}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ platforms.\ \ All\ macros\ ending\ with\ \_\ and\ symbols\ defined\ in\ an}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ internal\ namespace\ are\ subject\ to\ change\ without\ notice.\ \ Code}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ outside\ Google\ Mock\ MUST\ NOT\ USE\ THEM\ DIRECTLY.\ \ Macros\ that\ don't}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ end\ with\ \_\ are\ part\ of\ Google\ Mock's\ public\ API\ and\ can\ be\ used\ by}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ code\ outside\ Google\ Mock.}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <assert.h>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ Most\ of\ the\ utilities\ needed\ for\ porting\ Google\ Mock\ are\ also}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ required\ for\ Google\ Test\ and\ are\ defined\ in\ gtest-\/port.h.}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ Note\ to\ maintainers:\ to\ reduce\ code\ duplication,\ prefer\ adding}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ portability\ utilities\ to\ Google\ Test's\ gtest-\/port.h\ instead\ of}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ here,\ as\ Google\ Mock\ depends\ on\ Google\ Test.\ \ Only\ add\ a\ utility}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ here\ if\ it's\ truly\ specific\ to\ Google\ Mock.}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/custom/gmock-\/port.h"{}}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ABSL}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ "{}absl/flags/declare.h"{}}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ "{}absl/flags/flag.h"{}}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ For\ MS\ Visual\ C++,\ check\ the\ compiler\ version.\ At\ least\ VS\ 2015\ is}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//\ required\ to\ compile\ Google\ Mock.}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#if\ defined(\_MSC\_VER)\ \&\&\ \_MSC\_VER\ <\ 1900}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#error\ "{}At\ least\ Visual\ C++\ 2015\ (14.0)\ is\ required\ to\ compile\ Google\ Mock."{}}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ Macro\ for\ referencing\ flags.\ \ This\ is\ public\ as\ we\ want\ the\ user\ to}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ use\ this\ syntax\ to\ reference\ Google\ Mock\ flags.}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG\_NAME\_(name)\ gmock\_\#\#name}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG(name)\ FLAGS\_gmock\_\#\#name}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ Pick\ a\ command\ line\ flags\ implementation.}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ABSL}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ Macros\ for\ defining\ flags.}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_bool\_(name,\ default\_val,\ doc)\ \(\backslash\)}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\ \ ABSL\_FLAG(bool,\ GMOCK\_FLAG\_NAME\_(name),\ default\_val,\ doc)}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_int32\_(name,\ default\_val,\ doc)\ \(\backslash\)}}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\ \ ABSL\_FLAG(int32\_t,\ GMOCK\_FLAG\_NAME\_(name),\ default\_val,\ doc)}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_string\_(name,\ default\_val,\ doc)\ \(\backslash\)}}
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\ \ ABSL\_FLAG(std::string,\ GMOCK\_FLAG\_NAME\_(name),\ default\_val,\ doc)}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{comment}{//\ Macros\ for\ declaring\ flags.}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_bool\_(name)\ \(\backslash\)}}
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\ \ ABSL\_DECLARE\_FLAG(bool,\ GMOCK\_FLAG\_NAME\_(name))}}
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_int32\_(name)\ \(\backslash\)}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\ \ ABSL\_DECLARE\_FLAG(int32\_t,\ GMOCK\_FLAG\_NAME\_(name))}}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_string\_(name)\ \(\backslash\)}}
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\ \ ABSL\_DECLARE\_FLAG(std::string,\ GMOCK\_FLAG\_NAME\_(name))}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG\_GET(name)\ ::absl::GetFlag(GMOCK\_FLAG(name))}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG\_SET(name,\ value)\ \(\backslash\)}}
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\ \ (void)(::absl::SetFlag(\&GMOCK\_FLAG(name),\ value))}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ GTEST\_HAS\_ABSL}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ Macros\ for\ defining\ flags.}}
+\DoxyCodeLine{00101\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_bool\_(name,\ default\_val,\ doc)\ \ \(\backslash\)}}
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ bool\ GMOCK\_FLAG(name)\ =\ (default\_val);\ \(\backslash\)}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_int32\_(name,\ default\_val,\ doc)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ int32\_t\ GMOCK\_FLAG(name)\ =\ (default\_val);\ \(\backslash\)}}
+\DoxyCodeLine{00109\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_string\_(name,\ default\_val,\ doc)\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ ::std::string\ GMOCK\_FLAG(name)\ =\ (default\_val);\ \(\backslash\)}}
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{comment}{//\ Macros\ for\ declaring\ flags.}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_bool\_(name)\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ extern\ bool\ GMOCK\_FLAG(name);\ \(\backslash\)}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_int32\_(name)\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ extern\ int32\_t\ GMOCK\_FLAG(name);\ \(\backslash\)}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_string\_(name)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\ \ namespace\ testing\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\ \ GTEST\_API\_\ extern\ ::std::string\ GMOCK\_FLAG(name);\ \(\backslash\)}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\ \ static\_assert(true,\ "{}no-\/op\ to\ require\ trailing\ semicolon"{})}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG\_GET(name)\ ::testing::GMOCK\_FLAG(name)}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#define\ GMOCK\_FLAG\_SET(name,\ value)\ (void)(::testing::GMOCK\_FLAG(name)\ =\ value)}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_ABSL}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+
+\end{DoxyCode}

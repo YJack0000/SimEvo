@@ -1,0 +1,257 @@
+\doxysection{gmock-\/internal-\/utils.cc}
+\hypertarget{gmock-internal-utils_8cc_source}{}\label{gmock-internal-utils_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/src/gmock-\/internal-\/utils.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/src/gmock-\/internal-\/utils.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ defines\ some\ utilities\ useful\ for\ implementing\ Google}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Mock.\ \ They\ are\ subject\ to\ change\ without\ notice,\ so\ please\ DO\ NOT}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ USE\ THEM\ IN\ USER\ CODE.}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/internal-\/utils.h"{}}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <cctype>}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <ostream>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00053\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ Joins\ a\ vector\ of\ strings\ as\ if\ they\ are\ fields\ of\ a\ tuple;\ returns}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ the\ joined\ string.}}
+\DoxyCodeLine{00057\ GTEST\_API\_\ std::string\ JoinAsKeyValueTuple(}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<const\ char*>\&\ names,\ \textcolor{keyword}{const}\ Strings\&\ values)\ \{}
+\DoxyCodeLine{00059\ \ \ GTEST\_CHECK\_(names.size()\ ==\ values.size());}
+\DoxyCodeLine{00060\ \ \ \textcolor{keywordflow}{if}\ (values.empty())\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00062\ \ \ \}}
+\DoxyCodeLine{00063\ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ build\_one\ =\ [\&](\textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ i)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ std::string(names[i])\ +\ \textcolor{stringliteral}{"{}:\ "{}}\ +\ values[i];}
+\DoxyCodeLine{00065\ \ \ \};}
+\DoxyCodeLine{00066\ \ \ std::string\ result\ =\ \textcolor{stringliteral}{"{}("{}}\ +\ build\_one(0);}
+\DoxyCodeLine{00067\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 1;\ i\ <\ values.size();\ i++)\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ result\ +=\ \textcolor{stringliteral}{"{},\ "{}};}
+\DoxyCodeLine{00069\ \ \ \ \ result\ +=\ build\_one(i);}
+\DoxyCodeLine{00070\ \ \ \}}
+\DoxyCodeLine{00071\ \ \ result\ +=\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00072\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00073\ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ Converts\ an\ identifier\ name\ to\ a\ space-\/separated\ list\ of\ lower-\/case}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ words.\ \ Each\ maximum\ substring\ of\ the\ form\ [A-\/Za-\/z][a-\/z]*|\(\backslash\)d+\ is}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ treated\ as\ one\ word.\ \ For\ example,\ both\ "{}FooBar123"{}\ and}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ "{}foo\_bar\_123"{}\ are\ converted\ to\ "{}foo\ bar\ 123"{}.}}
+\DoxyCodeLine{00079\ GTEST\_API\_\ std::string\ ConvertIdentifierNameToWords(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ id\_name)\ \{}
+\DoxyCodeLine{00080\ \ \ std::string\ result;}
+\DoxyCodeLine{00081\ \ \ \textcolor{keywordtype}{char}\ prev\_char\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00082\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ p\ =\ id\_name;\ *p\ !=\ \textcolor{charliteral}{'\(\backslash\)0'};\ prev\_char\ =\ *(p++))\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ We\ don't\ care\ about\ the\ current\ locale\ as\ the\ input\ is}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//\ guaranteed\ to\ be\ a\ valid\ C++\ identifier\ name.}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ starts\_new\_word\ =\ IsUpper(*p)\ ||}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (!IsAlpha(prev\_char)\ \&\&\ IsLower(*p))\ ||}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (!IsDigit(prev\_char)\ \&\&\ IsDigit(*p));}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsAlNum(*p))\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (starts\_new\_word\ \&\&\ result\ !=\ \textcolor{stringliteral}{"{}"{}})\ result\ +=\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ result\ +=\ ToLower(*p);}
+\DoxyCodeLine{00092\ \ \ \ \ \}}
+\DoxyCodeLine{00093\ \ \ \}}
+\DoxyCodeLine{00094\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00095\ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ This\ class\ reports\ Google\ Mock\ failures\ as\ Google\ Test\ failures.\ \ A}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ user\ can\ define\ another\ class\ in\ a\ similar\ fashion\ if\ they\ intend\ to}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ use\ Google\ Mock\ with\ a\ testing\ framework\ other\ than\ Google\ Test.}}
+\DoxyCodeLine{00100\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_google_test_failure_reporter}{GoogleTestFailureReporter}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{FailureReporterInterface}}\ \{}
+\DoxyCodeLine{00101\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00102\ \ \ \textcolor{keywordtype}{void}\ ReportFailure(FailureType\ type,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ message)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00104\ \ \ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{AssertHelper}}(type\ ==\ kFatal\ ?\ TestPartResult::kFatalFailure}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ TestPartResult::kNonFatalFailure,}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ file,\ line,\ message.c\_str())\ =\ \mbox{\hyperlink{classtesting_1_1_message}{Message}}();}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{if}\ (type\ ==\ kFatal)\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{00109\ \ \ \ \ \}}
+\DoxyCodeLine{00110\ \ \ \}}
+\DoxyCodeLine{00111\ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ Returns\ the\ global\ failure\ reporter.\ \ Will\ create\ a}}
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ GoogleTestFailureReporter\ and\ return\ it\ the\ first\ time\ called.}}
+\DoxyCodeLine{00115\ GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{FailureReporterInterface}}*\ GetFailureReporter()\ \{}
+\DoxyCodeLine{00116\ \ \ \textcolor{comment}{//\ Points\ to\ the\ global\ failure\ reporter\ used\ by\ Google\ Mock.\ \ gcc}}
+\DoxyCodeLine{00117\ \ \ \textcolor{comment}{//\ guarantees\ that\ the\ following\ use\ of\ failure\_reporter\ is}}
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//\ thread-\/safe.\ \ We\ may\ need\ to\ add\ additional\ synchronization\ to}}
+\DoxyCodeLine{00119\ \ \ \textcolor{comment}{//\ protect\ failure\_reporter\ if\ we\ port\ Google\ Mock\ to\ other}}
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ compilers.}}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{FailureReporterInterface}}*\ \textcolor{keyword}{const}\ failure\_reporter\ =}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \textcolor{keyword}{new}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_google_test_failure_reporter}{GoogleTestFailureReporter}}();}
+\DoxyCodeLine{00123\ \ \ \textcolor{keywordflow}{return}\ failure\_reporter;}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ Protects\ global\ resources\ (stdout\ in\ particular)\ used\ by\ Log().}}
+\DoxyCodeLine{00127\ \textcolor{keyword}{static}\ GTEST\_DEFINE\_STATIC\_MUTEX\_(g\_log\_mutex);}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ a\ log\ with\ the\ given\ severity\ is\ visible}}
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ according\ to\ the\ -\/-\/gmock\_verbose\ flag.}}
+\DoxyCodeLine{00131\ GTEST\_API\_\ \textcolor{keywordtype}{bool}\ LogIsVisible(LogSeverity\ severity)\ \{}
+\DoxyCodeLine{00132\ \ \ \textcolor{keywordflow}{if}\ (GMOCK\_FLAG\_GET(verbose)\ ==\ kInfoVerbosity)\ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{comment}{//\ Always\ show\ the\ log\ if\ -\/-\/gmock\_verbose=info.}}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00135\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (GMOCK\_FLAG\_GET(verbose)\ ==\ kErrorVerbosity)\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{comment}{//\ Always\ hide\ it\ if\ -\/-\/gmock\_verbose=error.}}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00138\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{comment}{//\ If\ -\/-\/gmock\_verbose\ is\ neither\ "{}info"{}\ nor\ "{}error"{},\ we\ treat\ it}}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{comment}{//\ as\ "{}warning"{}\ (its\ default\ value).}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{return}\ severity\ ==\ kWarning;}
+\DoxyCodeLine{00142\ \ \ \}}
+\DoxyCodeLine{00143\ \}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{comment}{//\ Prints\ the\ given\ message\ to\ stdout\ if\ and\ only\ if\ 'severity'\ >=\ the\ level}}
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ specified\ by\ the\ -\/-\/gmock\_verbose\ flag.\ \ If\ stack\_frames\_to\_skip\ >=}}
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ 0,\ also\ prints\ the\ stack\ trace\ excluding\ the\ top}}
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ stack\_frames\_to\_skip\ frames.\ \ In\ opt\ mode,\ any\ positive}}
+\DoxyCodeLine{00149\ \textcolor{comment}{//\ stack\_frames\_to\_skip\ is\ treated\ as\ 0,\ since\ we\ don't\ know\ which}}
+\DoxyCodeLine{00150\ \textcolor{comment}{//\ function\ calls\ will\ be\ inlined\ by\ the\ compiler\ and\ need\ to\ be}}
+\DoxyCodeLine{00151\ \textcolor{comment}{//\ conservative.}}
+\DoxyCodeLine{00152\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ Log(LogSeverity\ severity,\ \textcolor{keyword}{const}\ std::string\&\ message,}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stack\_frames\_to\_skip)\ \{}
+\DoxyCodeLine{00154\ \ \ \textcolor{keywordflow}{if}\ (!LogIsVisible(severity))\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \textcolor{comment}{//\ Ensures\ that\ logs\ from\ different\ threads\ don't\ interleave.}}
+\DoxyCodeLine{00157\ \ \ MutexLock\ l(\&g\_log\_mutex);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \textcolor{keywordflow}{if}\ (severity\ ==\ kWarning)\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{comment}{//\ Prints\ a\ GMOCK\ WARNING\ marker\ to\ make\ the\ warnings\ easily\ searchable.}}
+\DoxyCodeLine{00161\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)nGMOCK\ WARNING:"{}};}
+\DoxyCodeLine{00162\ \ \ \}}
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//\ Pre-\/pends\ a\ new-\/line\ to\ message\ if\ it\ doesn't\ start\ with\ one.}}
+\DoxyCodeLine{00164\ \ \ \textcolor{keywordflow}{if}\ (message.empty()\ ||\ message[0]\ !=\ \textcolor{charliteral}{'\(\backslash\)n'})\ \{}
+\DoxyCodeLine{00165\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00166\ \ \ \}}
+\DoxyCodeLine{00167\ \ \ std::cout\ <<\ message;}
+\DoxyCodeLine{00168\ \ \ \textcolor{keywordflow}{if}\ (stack\_frames\_to\_skip\ >=\ 0)\ \{}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#ifdef\ NDEBUG}}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{comment}{//\ In\ opt\ mode,\ we\ have\ to\ be\ conservative\ and\ skip\ no\ stack\ frame.}}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ actual\_to\_skip\ =\ 0;}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{comment}{//\ In\ dbg\ mode,\ we\ can\ do\ what\ the\ caller\ tell\ us\ to\ do\ (plus\ one}}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{comment}{//\ for\ skipping\ this\ function's\ stack\ frame).}}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ actual\_to\_skip\ =\ stack\_frames\_to\_skip\ +\ 1;}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ NDEBUG}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{comment}{//\ Appends\ a\ new-\/line\ to\ message\ if\ it\ doesn't\ end\ with\ one.}}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordflow}{if}\ (!message.empty()\ \&\&\ *message.rbegin()\ !=\ \textcolor{charliteral}{'\(\backslash\)n'})\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00181\ \ \ \ \ \}}
+\DoxyCodeLine{00182\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Stack\ trace:\(\backslash\)n"{}}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ ::testing::internal::GetCurrentOsStackTraceExceptTop(}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ actual\_to\_skip);}
+\DoxyCodeLine{00185\ \ \ \}}
+\DoxyCodeLine{00186\ \ \ std::cout\ <<\ ::std::flush;}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ GTEST\_API\_\ WithoutMatchers\ GetWithoutMatchers()\ \{\ \textcolor{keywordflow}{return}\ WithoutMatchers();\ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ IllegalDoDefault(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)\ \{}
+\DoxyCodeLine{00192\ \ \ internal::Assert(}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \textcolor{keyword}{false},\ file,\ line,}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}You\ are\ using\ DoDefault()\ inside\ a\ composite\ action\ like\ "{}}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}DoAll()\ or\ WithArgs().\ \ This\ is\ not\ supported\ for\ technical\ "{}}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}reasons.\ \ Please\ instead\ spell\ out\ the\ default\ action,\ or\ "{}}}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}assign\ the\ default\ action\ to\ an\ Action\ variable\ and\ use\ "{}}}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}the\ variable\ in\ various\ places."{}});}
+\DoxyCodeLine{00199\ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{char}\ UnBase64Impl(\textcolor{keywordtype}{char}\ c,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ base64,\ \textcolor{keywordtype}{char}\ carry)\ \{}
+\DoxyCodeLine{00202\ \ \ \textcolor{keywordflow}{return}\ *base64\ ==\ 0\ ?\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(65)}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ :\ *base64\ ==\ c}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ ?\ carry}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ UnBase64Impl(c,\ base64\ +\ 1,\ static\_cast<char>(carry\ +\ 1));}
+\DoxyCodeLine{00206\ \}}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}...\ I>}
+\DoxyCodeLine{00209\ \textcolor{keyword}{constexpr}\ std::array<char,\ 256>\ UnBase64Impl(IndexSequence<I...>,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ base64)\ \{}
+\DoxyCodeLine{00211\ \ \ \textcolor{keywordflow}{return}\ \{\{UnBase64Impl(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(I),\ base64,\ 0)...\}\};}
+\DoxyCodeLine{00212\ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \textcolor{keyword}{constexpr}\ std::array<char,\ 256>\ UnBase64(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ base64)\ \{}
+\DoxyCodeLine{00215\ \ \ \textcolor{keywordflow}{return}\ UnBase64Impl(MakeIndexSequence<256>\{\},\ base64);}
+\DoxyCodeLine{00216\ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{char}\ kBase64[]\ =}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{stringliteral}{"{}ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"{}};}
+\DoxyCodeLine{00220\ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ std::array<char,\ 256>\ kUnBase64\ =\ UnBase64(kBase64);}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{keywordtype}{bool}\ Base64Unescape(\textcolor{keyword}{const}\ std::string\&\ encoded,\ std::string*\ decoded)\ \{}
+\DoxyCodeLine{00223\ \ \ decoded-\/>clear();}
+\DoxyCodeLine{00224\ \ \ \textcolor{keywordtype}{size\_t}\ encoded\_len\ =\ encoded.size();}
+\DoxyCodeLine{00225\ \ \ decoded-\/>reserve(3\ *\ (encoded\_len\ /\ 4)\ +\ (encoded\_len\ \%\ 4));}
+\DoxyCodeLine{00226\ \ \ \textcolor{keywordtype}{int}\ bit\_pos\ =\ 0;}
+\DoxyCodeLine{00227\ \ \ \textcolor{keywordtype}{char}\ dst\ =\ 0;}
+\DoxyCodeLine{00228\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ src\ :\ encoded)\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keywordflow}{if}\ (std::isspace(src)\ ||\ src\ ==\ \textcolor{charliteral}{'='})\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00231\ \ \ \ \ \}}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keywordtype}{char}\ src\_bin\ =\ kUnBase64[\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(src)];}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{if}\ (src\_bin\ >=\ 64)\ \{}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ decoded-\/>clear();}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00236\ \ \ \ \ \}}
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keywordflow}{if}\ (bit\_pos\ ==\ 0)\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ dst\ |=\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(src\_bin\ <<\ 2);}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ bit\_pos\ =\ 6;}
+\DoxyCodeLine{00240\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ dst\ |=\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(src\_bin\ >>\ (bit\_pos\ -\/\ 2));}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ decoded-\/>push\_back(dst);}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ dst\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(src\_bin\ <<\ (10\ -\/\ bit\_pos));}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ bit\_pos\ =\ (bit\_pos\ +\ 6)\ \%\ 8;}
+\DoxyCodeLine{00245\ \ \ \ \ \}}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00248\ \}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00251\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

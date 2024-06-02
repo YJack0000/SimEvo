@@ -1,0 +1,1400 @@
+\doxysection{gtest-\/port.cc}
+\hypertarget{gtest-port_8cc_source}{}\label{gtest-port_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/port.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/port.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <io.h>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <sys/stat.h>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <map>}\ \ \textcolor{comment}{//\ Used\ in\ ThreadLocal.}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <crtdbg.h>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ <mach/mach\_init.h>}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ <mach/task.h>}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ <mach/vm\_map.h>}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_DRAGONFLY\ ||\ GTEST\_OS\_FREEBSD\ ||\ GTEST\_OS\_GNU\_KFREEBSD\ ||\ \(\backslash\)}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\ \ \ \ GTEST\_OS\_NETBSD\ ||\ GTEST\_OS\_OPENBSD}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ <sys/sysctl.h>}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_DRAGONFLY\ ||\ GTEST\_OS\_FREEBSD\ ||\ GTEST\_OS\_GNU\_KFREEBSD}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#include\ <sys/user.h>}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#include\ <devctl.h>}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#include\ <fcntl.h>}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#include\ <sys/procfs.h>}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_AIX}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#include\ <procinfo.h>}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#include\ <sys/types.h>}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_AIX}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#include\ <zircon/process.h>}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#include\ <zircon/syscalls.h>}}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/message.h"{}}}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/internal.h"{}}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/string.h"{}}}
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00091\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX\ ||\ GTEST\_OS\_GNU\_HURD}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00096\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00097\ T\ ReadProcFileField(\textcolor{keyword}{const}\ std::string\&\ filename,\ \textcolor{keywordtype}{int}\ field)\ \{}
+\DoxyCodeLine{00098\ \ \ std::string\ dummy;}
+\DoxyCodeLine{00099\ \ \ std::ifstream\ file(filename.c\_str());}
+\DoxyCodeLine{00100\ \ \ \textcolor{keywordflow}{while}\ (field-\/-\/\ >\ 0)\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ file\ >>\ dummy;}
+\DoxyCodeLine{00102\ \ \ \}}
+\DoxyCodeLine{00103\ \ \ T\ output\ =\ 0;}
+\DoxyCodeLine{00104\ \ \ file\ >>\ output;}
+\DoxyCodeLine{00105\ \ \ \textcolor{keywordflow}{return}\ output;}
+\DoxyCodeLine{00106\ \}}
+\DoxyCodeLine{00107\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ Returns\ the\ number\ of\ active\ threads,\ or\ 0\ when\ there\ is\ an\ error.}}
+\DoxyCodeLine{00110\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{const}\ std::string\ filename\ =}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ (Message()\ <<\ \textcolor{stringliteral}{"{}/proc/"{}}\ <<\ getpid()\ <<\ \textcolor{stringliteral}{"{}/stat"{}}).GetString();}
+\DoxyCodeLine{00113\ \ \ \textcolor{keywordflow}{return}\ ReadProcFileField<size\_t>(filename,\ 19);}
+\DoxyCodeLine{00114\ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00119\ \ \ \textcolor{keyword}{const}\ task\_t\ task\ =\ mach\_task\_self();}
+\DoxyCodeLine{00120\ \ \ mach\_msg\_type\_number\_t\ thread\_count;}
+\DoxyCodeLine{00121\ \ \ thread\_act\_array\_t\ thread\_list;}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{const}\ kern\_return\_t\ status\ =\ task\_threads(task,\ \&thread\_list,\ \&thread\_count);}
+\DoxyCodeLine{00123\ \ \ \textcolor{keywordflow}{if}\ (status\ ==\ KERN\_SUCCESS)\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{comment}{//\ task\_threads\ allocates\ resources\ in\ thread\_list\ and\ we\ need\ to\ free\ them}}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{comment}{//\ to\ avoid\ leaks.}}
+\DoxyCodeLine{00126\ \ \ \ \ vm\_deallocate(task,\ \textcolor{keyword}{reinterpret\_cast<}vm\_address\_t\textcolor{keyword}{>}(thread\_list),}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(thread\_t)\ *\ thread\_count);}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(thread\_count);}
+\DoxyCodeLine{00129\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00131\ \ \ \}}
+\DoxyCodeLine{00132\ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_DRAGONFLY\ ||\ GTEST\_OS\_FREEBSD\ ||\ GTEST\_OS\_GNU\_KFREEBSD\ ||\ \(\backslash\)}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\ \ \ \ GTEST\_OS\_NETBSD}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_NETBSD}}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#undef\ KERN\_PROC}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#define\ KERN\_PROC\ KERN\_PROC2}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#define\ kinfo\_proc\ kinfo\_proc2}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_DRAGONFLY}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#define\ KP\_NLWP(kp)\ (kp.kp\_nthreads)}}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FREEBSD\ ||\ GTEST\_OS\_GNU\_KFREEBSD}}
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#define\ KP\_NLWP(kp)\ (kp.ki\_numthreads)}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_NETBSD}}
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#define\ KP\_NLWP(kp)\ (kp.p\_nlwps)}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{comment}{//\ Returns\ the\ number\ of\ threads\ running\ in\ the\ process,\ or\ 0\ to\ indicate\ that}}
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ we\ cannot\ detect\ it.}}
+\DoxyCodeLine{00153\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00154\ \ \ \textcolor{keywordtype}{int}\ mib[]\ =\ \{}
+\DoxyCodeLine{00155\ \ \ \ \ CTL\_KERN,}
+\DoxyCodeLine{00156\ \ \ \ \ KERN\_PROC,}
+\DoxyCodeLine{00157\ \ \ \ \ KERN\_PROC\_PID,}
+\DoxyCodeLine{00158\ \ \ \ \ getpid(),}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_NETBSD}}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keyword}{sizeof}(\textcolor{keyword}{struct\ }kinfo\_proc),}
+\DoxyCodeLine{00161\ \ \ \ \ 1,}
+\DoxyCodeLine{00162\ \#endif}
+\DoxyCodeLine{00163\ \ \ \};}
+\DoxyCodeLine{00164\ \ \ u\_int\ miblen\ =\ \textcolor{keyword}{sizeof}(mib)\ /\ \textcolor{keyword}{sizeof}(mib[0]);}
+\DoxyCodeLine{00165\ \ \ \textcolor{keyword}{struct\ }kinfo\_proc\ info;}
+\DoxyCodeLine{00166\ \ \ \textcolor{keywordtype}{size\_t}\ size\ =\ \textcolor{keyword}{sizeof}(info);}
+\DoxyCodeLine{00167\ \ \ \textcolor{keywordflow}{if}\ (sysctl(mib,\ miblen,\ \&info,\ \&size,\ NULL,\ 0))\ \{}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00169\ \ \ \}}
+\DoxyCodeLine{00170\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(KP\_NLWP(info));}
+\DoxyCodeLine{00171\ \}}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_OPENBSD}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{comment}{//\ Returns\ the\ number\ of\ threads\ running\ in\ the\ process,\ or\ 0\ to\ indicate\ that}}
+\DoxyCodeLine{00175\ \textcolor{comment}{//\ we\ cannot\ detect\ it.}}
+\DoxyCodeLine{00176\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00177\ \ \ \textcolor{keywordtype}{int}\ mib[]\ =\ \{}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ CTL\_KERN,}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ KERN\_PROC,}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ KERN\_PROC\_PID\ |\ KERN\_PROC\_SHOW\_THREADS,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ getpid(),}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(\textcolor{keyword}{struct\ }kinfo\_proc),}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ 0,}
+\DoxyCodeLine{00184\ \ \ \};}
+\DoxyCodeLine{00185\ \ \ u\_int\ miblen\ =\ \textcolor{keyword}{sizeof}(mib)\ /\ \textcolor{keyword}{sizeof}(mib[0]);}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \ \ \textcolor{comment}{//\ get\ number\ of\ structs}}
+\DoxyCodeLine{00188\ \ \ \textcolor{keywordtype}{size\_t}\ size;}
+\DoxyCodeLine{00189\ \ \ \textcolor{keywordflow}{if}\ (sysctl(mib,\ miblen,\ NULL,\ \&size,\ NULL,\ 0))\ \{}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00191\ \ \ \}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ mib[5]\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(size\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(mib[4]));}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \textcolor{comment}{//\ populate\ array\ of\ structs}}
+\DoxyCodeLine{00196\ \ \ \textcolor{keyword}{struct\ }kinfo\_proc\ info[mib[5]];}
+\DoxyCodeLine{00197\ \ \ \textcolor{keywordflow}{if}\ (sysctl(mib,\ miblen,\ \&info,\ \&size,\ NULL,\ 0))\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00199\ \ \ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \textcolor{comment}{//\ exclude\ empty\ members}}
+\DoxyCodeLine{00202\ \ \ \textcolor{keywordtype}{size\_t}\ nthreads\ =\ 0;}
+\DoxyCodeLine{00203\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ size\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(mib[4]);\ i++)\ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordflow}{if}\ (info[i].p\_tid\ !=\ -\/1)\ nthreads++;}
+\DoxyCodeLine{00205\ \ \ \}}
+\DoxyCodeLine{00206\ \ \ \textcolor{keywordflow}{return}\ nthreads;}
+\DoxyCodeLine{00207\ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \textcolor{comment}{//\ Returns\ the\ number\ of\ threads\ running\ in\ the\ process,\ or\ 0\ to\ indicate\ that}}
+\DoxyCodeLine{00212\ \textcolor{comment}{//\ we\ cannot\ detect\ it.}}
+\DoxyCodeLine{00213\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00214\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ fd\ =\ open(\textcolor{stringliteral}{"{}/proc/self/as"{}},\ O\_RDONLY);}
+\DoxyCodeLine{00215\ \ \ \textcolor{keywordflow}{if}\ (fd\ <\ 0)\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00217\ \ \ \}}
+\DoxyCodeLine{00218\ \ \ procfs\_info\ process\_info;}
+\DoxyCodeLine{00219\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ status\ =}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ devctl(fd,\ DCMD\_PROC\_INFO,\ \&process\_info,\ \textcolor{keyword}{sizeof}(process\_info),\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00221\ \ \ close(fd);}
+\DoxyCodeLine{00222\ \ \ \textcolor{keywordflow}{if}\ (status\ ==\ EOK)\ \{}
+\DoxyCodeLine{00223\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(process\_info.num\_threads);}
+\DoxyCodeLine{00224\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00226\ \ \ \}}
+\DoxyCodeLine{00227\ \}}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_AIX}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00232\ \ \ \textcolor{keyword}{struct\ }procentry64\ entry;}
+\DoxyCodeLine{00233\ \ \ pid\_t\ pid\ =\ getpid();}
+\DoxyCodeLine{00234\ \ \ \textcolor{keywordtype}{int}\ status\ =\ getprocs64(\&entry,\ \textcolor{keyword}{sizeof}(entry),\ \textcolor{keyword}{nullptr},\ 0,\ \&pid,\ 1);}
+\DoxyCodeLine{00235\ \ \ \textcolor{keywordflow}{if}\ (status\ ==\ 1)\ \{}
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordflow}{return}\ entry.pi\_thcount;}
+\DoxyCodeLine{00237\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00239\ \ \ \}}
+\DoxyCodeLine{00240\ \}}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00245\ \ \ \textcolor{keywordtype}{int}\ dummy\_buffer;}
+\DoxyCodeLine{00246\ \ \ \textcolor{keywordtype}{size\_t}\ avail;}
+\DoxyCodeLine{00247\ \ \ zx\_status\_t\ status\ =}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ zx\_object\_get\_info(zx\_process\_self(),\ ZX\_INFO\_PROCESS\_THREADS,}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&dummy\_buffer,\ 0,\ \textcolor{keyword}{nullptr},\ \&avail);}
+\DoxyCodeLine{00250\ \ \ \textcolor{keywordflow}{if}\ (status\ ==\ ZX\_OK)\ \{}
+\DoxyCodeLine{00251\ \ \ \ \ \textcolor{keywordflow}{return}\ avail;}
+\DoxyCodeLine{00252\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00254\ \ \ \}}
+\DoxyCodeLine{00255\ \}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \textcolor{keywordtype}{size\_t}\ GetThreadCount()\ \{}
+\DoxyCodeLine{00260\ \ \ \textcolor{comment}{//\ There's\ no\ portable\ way\ to\ detect\ the\ number\ of\ threads,\ so\ we\ just}}
+\DoxyCodeLine{00261\ \ \ \textcolor{comment}{//\ return\ 0\ to\ indicate\ that\ we\ cannot\ detect\ it.}}
+\DoxyCodeLine{00262\ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00263\ \}}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \textcolor{preprocessor}{\#if\ GTEST\_IS\_THREADSAFE\ \&\&\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ AutoHandle::AutoHandle()\ :\ handle\_(INVALID\_HANDLE\_VALUE)\ \{\}}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ AutoHandle::AutoHandle(Handle\ handle)\ :\ handle\_(handle)\ \{\}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ AutoHandle::\string~AutoHandle()\ \{\ Reset();\ \}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ AutoHandle::Handle\ AutoHandle::Get()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ handle\_;\ \}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \textcolor{keywordtype}{void}\ AutoHandle::Reset()\ \{\ Reset(INVALID\_HANDLE\_VALUE);\ \}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \textcolor{keywordtype}{void}\ AutoHandle::Reset(HANDLE\ handle)\ \{}
+\DoxyCodeLine{00280\ \ \ \textcolor{comment}{//\ Resetting\ with\ the\ same\ handle\ we\ already\ own\ is\ invalid.}}
+\DoxyCodeLine{00281\ \ \ \textcolor{keywordflow}{if}\ (handle\_\ !=\ handle)\ \{}
+\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsCloseable())\ \{}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ ::CloseHandle(handle\_);}
+\DoxyCodeLine{00284\ \ \ \ \ \}}
+\DoxyCodeLine{00285\ \ \ \ \ handle\_\ =\ handle;}
+\DoxyCodeLine{00286\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ GTEST\_CHECK\_(!IsCloseable())}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Resetting\ a\ valid\ handle\ to\ itself\ is\ likely\ a\ programmer\ error\ "{}}}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ thus\ not\ allowed."{}};}
+\DoxyCodeLine{00290\ \ \ \}}
+\DoxyCodeLine{00291\ \}}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{keywordtype}{bool}\ AutoHandle::IsCloseable()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00294\ \ \ \textcolor{comment}{//\ Different\ Windows\ APIs\ may\ use\ either\ of\ these\ values\ to\ represent\ an}}
+\DoxyCodeLine{00295\ \ \ \textcolor{comment}{//\ invalid\ handle.}}
+\DoxyCodeLine{00296\ \ \ \textcolor{keywordflow}{return}\ handle\_\ !=\ \textcolor{keyword}{nullptr}\ \&\&\ handle\_\ !=\ INVALID\_HANDLE\_VALUE;}
+\DoxyCodeLine{00297\ \}}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ Mutex::Mutex()}
+\DoxyCodeLine{00300\ \ \ \ \ :\ owner\_thread\_id\_(0),}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ type\_(kDynamic),}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ critical\_section\_init\_phase\_(0),}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ critical\_section\_(new\ CRITICAL\_SECTION)\ \{}
+\DoxyCodeLine{00304\ \ \ ::InitializeCriticalSection(critical\_section\_);}
+\DoxyCodeLine{00305\ \}}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00307\ Mutex::\string~Mutex()\ \{}
+\DoxyCodeLine{00308\ \ \ \textcolor{comment}{//\ Static\ mutexes\ are\ leaked\ intentionally.\ It\ is\ not\ thread-\/safe\ to\ try}}
+\DoxyCodeLine{00309\ \ \ \textcolor{comment}{//\ to\ clean\ them\ up.}}
+\DoxyCodeLine{00310\ \ \ \textcolor{keywordflow}{if}\ (type\_\ ==\ kDynamic)\ \{}
+\DoxyCodeLine{00311\ \ \ \ \ ::DeleteCriticalSection(critical\_section\_);}
+\DoxyCodeLine{00312\ \ \ \ \ \textcolor{keyword}{delete}\ critical\_section\_;}
+\DoxyCodeLine{00313\ \ \ \ \ critical\_section\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00314\ \ \ \}}
+\DoxyCodeLine{00315\ \}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \textcolor{keywordtype}{void}\ Mutex::Lock()\ \{}
+\DoxyCodeLine{00318\ \ \ ThreadSafeLazyInit();}
+\DoxyCodeLine{00319\ \ \ ::EnterCriticalSection(critical\_section\_);}
+\DoxyCodeLine{00320\ \ \ owner\_thread\_id\_\ =\ ::GetCurrentThreadId();}
+\DoxyCodeLine{00321\ \}}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \textcolor{keywordtype}{void}\ Mutex::Unlock()\ \{}
+\DoxyCodeLine{00324\ \ \ ThreadSafeLazyInit();}
+\DoxyCodeLine{00325\ \ \ \textcolor{comment}{//\ We\ don't\ protect\ writing\ to\ owner\_thread\_id\_\ here,\ as\ it's\ the}}
+\DoxyCodeLine{00326\ \ \ \textcolor{comment}{//\ caller's\ responsibility\ to\ ensure\ that\ the\ current\ thread\ holds\ the}}
+\DoxyCodeLine{00327\ \ \ \textcolor{comment}{//\ mutex\ when\ this\ is\ called.}}
+\DoxyCodeLine{00328\ \ \ owner\_thread\_id\_\ =\ 0;}
+\DoxyCodeLine{00329\ \ \ ::LeaveCriticalSection(critical\_section\_);}
+\DoxyCodeLine{00330\ \}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \textcolor{comment}{//\ Does\ nothing\ if\ the\ current\ thread\ holds\ the\ mutex.\ Otherwise,\ crashes}}
+\DoxyCodeLine{00333\ \textcolor{comment}{//\ with\ high\ probability.}}
+\DoxyCodeLine{00334\ \textcolor{keywordtype}{void}\ Mutex::AssertHeld()\ \{}
+\DoxyCodeLine{00335\ \ \ ThreadSafeLazyInit();}
+\DoxyCodeLine{00336\ \ \ GTEST\_CHECK\_(owner\_thread\_id\_\ ==\ ::GetCurrentThreadId())}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}The\ current\ thread\ is\ not\ holding\ the\ mutex\ @"{}}\ <<\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00338\ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00343\ \textcolor{comment}{//\ Use\ the\ RAII\ idiom\ to\ flag\ mem\ allocs\ that\ are\ intentionally\ never}}
+\DoxyCodeLine{00344\ \textcolor{comment}{//\ deallocated.\ The\ motivation\ is\ to\ silence\ the\ false\ positive\ mem\ leaks}}
+\DoxyCodeLine{00345\ \textcolor{comment}{//\ that\ are\ reported\ by\ the\ debug\ version\ of\ MS's\ CRT\ which\ can\ only\ detect}}
+\DoxyCodeLine{00346\ \textcolor{comment}{//\ if\ an\ alloc\ is\ missing\ a\ matching\ deallocation.}}
+\DoxyCodeLine{00347\ \textcolor{comment}{//\ Example:}}
+\DoxyCodeLine{00348\ \textcolor{comment}{//\ \ \ \ MemoryIsNotDeallocated\ memory\_is\_not\_deallocated;}}
+\DoxyCodeLine{00349\ \textcolor{comment}{//\ \ \ \ critical\_section\_\ =\ new\ CRITICAL\_SECTION;}}
+\DoxyCodeLine{00350\ \textcolor{comment}{//}}
+\DoxyCodeLine{00351\ \textcolor{keyword}{class\ }MemoryIsNotDeallocated\ \{}
+\DoxyCodeLine{00352\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00353\ \ \ MemoryIsNotDeallocated()\ :\ old\_crtdbg\_flag\_(0)\ \{}
+\DoxyCodeLine{00354\ \ \ \ \ old\_crtdbg\_flag\_\ =\ \_CrtSetDbgFlag(\_CRTDBG\_REPORT\_FLAG);}
+\DoxyCodeLine{00355\ \ \ \ \ \textcolor{comment}{//\ Set\ heap\ allocation\ block\ type\ to\ \_IGNORE\_BLOCK\ so\ that\ MS\ debug\ CRT}}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{comment}{//\ doesn't\ report\ mem\ leak\ if\ there's\ no\ matching\ deallocation.}}
+\DoxyCodeLine{00357\ \ \ \ \ (void)\_CrtSetDbgFlag(old\_crtdbg\_flag\_\ \&\ \string~\_CRTDBG\_ALLOC\_MEM\_DF);}
+\DoxyCodeLine{00358\ \ \ \}}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \string~MemoryIsNotDeallocated()\ \{}
+\DoxyCodeLine{00361\ \ \ \ \ \textcolor{comment}{//\ Restore\ the\ original\ \_CRTDBG\_ALLOC\_MEM\_DF\ flag}}
+\DoxyCodeLine{00362\ \ \ \ \ (void)\_CrtSetDbgFlag(old\_crtdbg\_flag\_);}
+\DoxyCodeLine{00363\ \ \ \}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00366\ \ \ \textcolor{keywordtype}{int}\ old\_crtdbg\_flag\_;}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ MemoryIsNotDeallocated(\textcolor{keyword}{const}\ MemoryIsNotDeallocated\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00369\ \ \ MemoryIsNotDeallocated\&\ operator=(\textcolor{keyword}{const}\ MemoryIsNotDeallocated\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00370\ \};}
+\DoxyCodeLine{00371\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00373\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \textcolor{comment}{//\ Initializes\ owner\_thread\_id\_\ and\ critical\_section\_\ in\ static\ mutexes.}}
+\DoxyCodeLine{00376\ \textcolor{keywordtype}{void}\ Mutex::ThreadSafeLazyInit()\ \{}
+\DoxyCodeLine{00377\ \ \ \textcolor{comment}{//\ Dynamic\ mutexes\ are\ initialized\ in\ the\ constructor.}}
+\DoxyCodeLine{00378\ \ \ \textcolor{keywordflow}{if}\ (type\_\ ==\ kStatic)\ \{}
+\DoxyCodeLine{00379\ \ \ \ \ \textcolor{keywordflow}{switch}\ (}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ ::InterlockedCompareExchange(\&critical\_section\_init\_phase\_,\ 1L,\ 0L))\ \{}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ If\ critical\_section\_init\_phase\_\ was\ 0\ before\ the\ exchange,\ we}}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ are\ the\ first\ to\ test\ it\ and\ need\ to\ perform\ the\ initialization.}}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ owner\_thread\_id\_\ =\ 0;}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Use\ RAII\ to\ flag\ that\ following\ mem\ alloc\ is\ never\ deallocated.}}
+\DoxyCodeLine{00387\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \ \ MemoryIsNotDeallocated\ memory\_is\_not\_deallocated;}
+\DoxyCodeLine{00389\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \ \ critical\_section\_\ =\ \textcolor{keyword}{new}\ CRITICAL\_SECTION;}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ ::InitializeCriticalSection(critical\_section\_);}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Updates\ the\ critical\_section\_init\_phase\_\ to\ 2\ to\ signal}}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ initialization\ complete.}}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ GTEST\_CHECK\_(::InterlockedCompareExchange(\&critical\_section\_init\_phase\_,}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 2L,\ 1L)\ ==\ 1L);}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Somebody\ else\ is\ already\ initializing\ the\ mutex;\ spin\ until\ they}}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ are\ done.}}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (::InterlockedCompareExchange(\&critical\_section\_init\_phase\_,\ 2L,}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 2L)\ !=\ 2L)\ \{}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Possibly\ yields\ the\ rest\ of\ the\ thread's\ time\ slice\ to\ other}}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ threads.}}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \ \ ::Sleep(0);}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00408\ }
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};\ \ \textcolor{comment}{//\ The\ mutex\ is\ already\ initialized\ and\ ready\ for\ use.}}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{false})}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Unexpected\ value\ of\ critical\_section\_init\_phase\_\ "{}}}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}while\ initializing\ a\ static\ mutex."{}};}
+\DoxyCodeLine{00416\ \ \ \ \ \}}
+\DoxyCodeLine{00417\ \ \ \}}
+\DoxyCodeLine{00418\ \}}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00420\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00421\ }
+\DoxyCodeLine{00422\ \textcolor{keyword}{class\ }ThreadWithParamSupport\ :\ \textcolor{keyword}{public}\ ThreadWithParamBase\ \{}
+\DoxyCodeLine{00423\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00424\ \ \ \textcolor{keyword}{static}\ HANDLE\ CreateThread(Runnable*\ runnable,}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Notification*\ thread\_can\_start)\ \{}
+\DoxyCodeLine{00426\ \ \ \ \ ThreadMainParam*\ param\ =\ \textcolor{keyword}{new}\ ThreadMainParam(runnable,\ thread\_can\_start);}
+\DoxyCodeLine{00427\ \ \ \ \ DWORD\ thread\_id;}
+\DoxyCodeLine{00428\ \ \ \ \ HANDLE\ thread\_handle\ =\ ::CreateThread(}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ Default\ security.}}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ 0,\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Default\ stack\ size.}}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \&ThreadWithParamSupport::ThreadMain,}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ param,\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Parameter\ to\ ThreadMainStatic}}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ 0x0,\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Default\ creation\ flags.}}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \&thread\_id);\ \ \textcolor{comment}{//\ Need\ a\ valid\ pointer\ for\ the\ call\ to\ work\ under\ Win98.}}
+\DoxyCodeLine{00435\ \ \ \ \ GTEST\_CHECK\_(thread\_handle\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}CreateThread\ failed\ with\ error\ "{}}\ <<\ ::GetLastError()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00437\ \ \ \ \ \textcolor{keywordflow}{if}\ (thread\_handle\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ param;}
+\DoxyCodeLine{00439\ \ \ \ \ \}}
+\DoxyCodeLine{00440\ \ \ \ \ \textcolor{keywordflow}{return}\ thread\_handle;}
+\DoxyCodeLine{00441\ \ \ \}}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00443\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00444\ \ \ \textcolor{keyword}{struct\ }ThreadMainParam\ \{}
+\DoxyCodeLine{00445\ \ \ \ \ ThreadMainParam(Runnable*\ runnable,\ Notification*\ thread\_can\_start)}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ :\ runnable\_(runnable),\ thread\_can\_start\_(thread\_can\_start)\ \{\}}
+\DoxyCodeLine{00447\ \ \ \ \ std::unique\_ptr<Runnable>\ runnable\_;}
+\DoxyCodeLine{00448\ \ \ \ \ \textcolor{comment}{//\ Does\ not\ own.}}
+\DoxyCodeLine{00449\ \ \ \ \ Notification*\ thread\_can\_start\_;}
+\DoxyCodeLine{00450\ \ \ \};}
+\DoxyCodeLine{00451\ }
+\DoxyCodeLine{00452\ \ \ \textcolor{keyword}{static}\ DWORD\ WINAPI\ ThreadMain(\textcolor{keywordtype}{void}*\ ptr)\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \textcolor{comment}{//\ Transfers\ ownership.}}
+\DoxyCodeLine{00454\ \ \ \ \ std::unique\_ptr<ThreadMainParam>\ param(\textcolor{keyword}{static\_cast<}ThreadMainParam*\textcolor{keyword}{>}(ptr));}
+\DoxyCodeLine{00455\ \ \ \ \ \textcolor{keywordflow}{if}\ (param-\/>thread\_can\_start\_\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ param-\/>thread\_can\_start\_-\/>WaitForNotification();}
+\DoxyCodeLine{00457\ \ \ \ \ param-\/>runnable\_-\/>Run();}
+\DoxyCodeLine{00458\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00459\ \ \ \}}
+\DoxyCodeLine{00460\ }
+\DoxyCodeLine{00461\ \ \ \textcolor{comment}{//\ Prohibit\ instantiation.}}
+\DoxyCodeLine{00462\ \ \ ThreadWithParamSupport();}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ \ \ ThreadWithParamSupport(\textcolor{keyword}{const}\ ThreadWithParamSupport\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00465\ \ \ ThreadWithParamSupport\&\ operator=(\textcolor{keyword}{const}\ ThreadWithParamSupport\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00466\ \};}
+\DoxyCodeLine{00467\ }
+\DoxyCodeLine{00468\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00469\ }
+\DoxyCodeLine{00470\ ThreadWithParamBase::ThreadWithParamBase(Runnable*\ runnable,}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Notification*\ thread\_can\_start)}
+\DoxyCodeLine{00472\ \ \ \ \ :\ thread\_(}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ ThreadWithParamSupport::CreateThread(runnable,\ thread\_can\_start))\ \{\}}
+\DoxyCodeLine{00474\ }
+\DoxyCodeLine{00475\ ThreadWithParamBase::\string~ThreadWithParamBase()\ \{\ Join();\ \}}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \textcolor{keywordtype}{void}\ ThreadWithParamBase::Join()\ \{}
+\DoxyCodeLine{00478\ \ \ GTEST\_CHECK\_(::WaitForSingleObject(thread\_.Get(),\ INFINITE)\ ==\ WAIT\_OBJECT\_0)}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Failed\ to\ join\ the\ thread\ with\ error\ "{}}\ <<\ ::GetLastError()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00480\ \}}
+\DoxyCodeLine{00481\ }
+\DoxyCodeLine{00482\ \textcolor{comment}{//\ Maps\ a\ thread\ to\ a\ set\ of\ ThreadIdToThreadLocals\ that\ have\ values}}
+\DoxyCodeLine{00483\ \textcolor{comment}{//\ instantiated\ on\ that\ thread\ and\ notifies\ them\ when\ the\ thread\ exits.\ \ A}}
+\DoxyCodeLine{00484\ \textcolor{comment}{//\ ThreadLocal\ instance\ is\ expected\ to\ persist\ until\ all\ threads\ it\ has}}
+\DoxyCodeLine{00485\ \textcolor{comment}{//\ values\ on\ have\ terminated.}}
+\DoxyCodeLine{00486\ \textcolor{keyword}{class\ }ThreadLocalRegistryImpl\ \{}
+\DoxyCodeLine{00487\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00488\ \ \ \textcolor{comment}{//\ Registers\ thread\_local\_instance\ as\ having\ value\ on\ the\ current\ thread.}}
+\DoxyCodeLine{00489\ \ \ \textcolor{comment}{//\ Returns\ a\ value\ that\ can\ be\ used\ to\ identify\ the\ thread\ from\ other\ threads.}}
+\DoxyCodeLine{00490\ \ \ \textcolor{keyword}{static}\ ThreadLocalValueHolderBase*\ GetValueOnCurrentThread(}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \textcolor{keyword}{const}\ ThreadLocalBase*\ thread\_local\_instance)\ \{}
+\DoxyCodeLine{00492\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00493\ \ \ \ \ MemoryIsNotDeallocated\ memory\_is\_not\_deallocated;}
+\DoxyCodeLine{00494\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00495\ \ \ \ \ DWORD\ current\_thread\ =\ ::GetCurrentThreadId();}
+\DoxyCodeLine{00496\ \ \ \ \ MutexLock\ lock(\&mutex\_);}
+\DoxyCodeLine{00497\ \ \ \ \ ThreadIdToThreadLocals*\ \textcolor{keyword}{const}\ thread\_to\_thread\_locals\ =}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ GetThreadLocalsMapLocked();}
+\DoxyCodeLine{00499\ \ \ \ \ ThreadIdToThreadLocals::iterator\ thread\_local\_pos\ =}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ thread\_to\_thread\_locals-\/>find(current\_thread);}
+\DoxyCodeLine{00501\ \ \ \ \ \textcolor{keywordflow}{if}\ (thread\_local\_pos\ ==\ thread\_to\_thread\_locals-\/>end())\ \{}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ thread\_local\_pos\ =}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \ \ thread\_to\_thread\_locals}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -\/>insert(std::make\_pair(current\_thread,\ ThreadLocalValues()))}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .first;}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ StartWatcherThreadFor(current\_thread);}
+\DoxyCodeLine{00507\ \ \ \ \ \}}
+\DoxyCodeLine{00508\ \ \ \ \ ThreadLocalValues\&\ thread\_local\_values\ =\ thread\_local\_pos-\/>second;}
+\DoxyCodeLine{00509\ \ \ \ \ ThreadLocalValues::iterator\ value\_pos\ =}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ thread\_local\_values.find(thread\_local\_instance);}
+\DoxyCodeLine{00511\ \ \ \ \ \textcolor{keywordflow}{if}\ (value\_pos\ ==\ thread\_local\_values.end())\ \{}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ value\_pos\ =}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ \ \ thread\_local\_values}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .insert(std::make\_pair(}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ thread\_local\_instance,}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::shared\_ptr<ThreadLocalValueHolderBase>(}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ thread\_local\_instance-\/>NewValueForCurrentThread())))}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .first;}
+\DoxyCodeLine{00519\ \ \ \ \ \}}
+\DoxyCodeLine{00520\ \ \ \ \ \textcolor{keywordflow}{return}\ value\_pos-\/>second.get();}
+\DoxyCodeLine{00521\ \ \ \}}
+\DoxyCodeLine{00522\ }
+\DoxyCodeLine{00523\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ OnThreadLocalDestroyed(}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \textcolor{keyword}{const}\ ThreadLocalBase*\ thread\_local\_instance)\ \{}
+\DoxyCodeLine{00525\ \ \ \ \ std::vector<std::shared\_ptr<ThreadLocalValueHolderBase>\ >\ value\_holders;}
+\DoxyCodeLine{00526\ \ \ \ \ \textcolor{comment}{//\ Clean\ up\ the\ ThreadLocalValues\ data\ structure\ while\ holding\ the\ lock,\ but}}
+\DoxyCodeLine{00527\ \ \ \ \ \textcolor{comment}{//\ defer\ the\ destruction\ of\ the\ ThreadLocalValueHolderBases.}}
+\DoxyCodeLine{00528\ \ \ \ \ \{}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ MutexLock\ lock(\&mutex\_);}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ ThreadIdToThreadLocals*\ \textcolor{keyword}{const}\ thread\_to\_thread\_locals\ =}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \ \ GetThreadLocalsMapLocked();}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (ThreadIdToThreadLocals::iterator\ it\ =}
+\DoxyCodeLine{00533\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ thread\_to\_thread\_locals-\/>begin();}
+\DoxyCodeLine{00534\ \ \ \ \ \ \ \ \ \ \ \ it\ !=\ thread\_to\_thread\_locals-\/>end();\ ++it)\ \{}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ ThreadLocalValues\&\ thread\_local\_values\ =\ it-\/>second;}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ ThreadLocalValues::iterator\ value\_pos\ =}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \ \ \ \ thread\_local\_values.find(thread\_local\_instance);}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value\_pos\ !=\ thread\_local\_values.end())\ \{}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \ \ value\_holders.push\_back(value\_pos-\/>second);}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \ \ thread\_local\_values.erase(value\_pos);}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ 'if'\ can\ only\ be\ successful\ at\ most\ once,\ so\ theoretically\ we}}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ could\ break\ out\ of\ the\ loop\ here,\ but\ we\ don't\ bother\ doing\ so.}}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00545\ \ \ \ \ \}}
+\DoxyCodeLine{00546\ \ \ \ \ \textcolor{comment}{//\ Outside\ the\ lock,\ let\ the\ destructor\ for\ 'value\_holders'\ deallocate\ the}}
+\DoxyCodeLine{00547\ \ \ \ \ \textcolor{comment}{//\ ThreadLocalValueHolderBases.}}
+\DoxyCodeLine{00548\ \ \ \}}
+\DoxyCodeLine{00549\ }
+\DoxyCodeLine{00550\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ OnThreadExit(DWORD\ thread\_id)\ \{}
+\DoxyCodeLine{00551\ \ \ \ \ GTEST\_CHECK\_(thread\_id\ !=\ 0)\ <<\ ::GetLastError();}
+\DoxyCodeLine{00552\ \ \ \ \ std::vector<std::shared\_ptr<ThreadLocalValueHolderBase>\ >\ value\_holders;}
+\DoxyCodeLine{00553\ \ \ \ \ \textcolor{comment}{//\ Clean\ up\ the\ ThreadIdToThreadLocals\ data\ structure\ while\ holding\ the}}
+\DoxyCodeLine{00554\ \ \ \ \ \textcolor{comment}{//\ lock,\ but\ defer\ the\ destruction\ of\ the\ ThreadLocalValueHolderBases.}}
+\DoxyCodeLine{00555\ \ \ \ \ \{}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ MutexLock\ lock(\&mutex\_);}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ ThreadIdToThreadLocals*\ \textcolor{keyword}{const}\ thread\_to\_thread\_locals\ =}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ \ \ GetThreadLocalsMapLocked();}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ ThreadIdToThreadLocals::iterator\ thread\_local\_pos\ =}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \ \ thread\_to\_thread\_locals-\/>find(thread\_id);}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (thread\_local\_pos\ !=\ thread\_to\_thread\_locals-\/>end())\ \{}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ ThreadLocalValues\&\ thread\_local\_values\ =\ thread\_local\_pos-\/>second;}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (ThreadLocalValues::iterator\ value\_pos\ =}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ thread\_local\_values.begin();}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \ \ \ \ \ value\_pos\ !=\ thread\_local\_values.end();\ ++value\_pos)\ \{}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \ \ value\_holders.push\_back(value\_pos-\/>second);}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ thread\_to\_thread\_locals-\/>erase(thread\_local\_pos);}
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00570\ \ \ \ \ \}}
+\DoxyCodeLine{00571\ \ \ \ \ \textcolor{comment}{//\ Outside\ the\ lock,\ let\ the\ destructor\ for\ 'value\_holders'\ deallocate\ the}}
+\DoxyCodeLine{00572\ \ \ \ \ \textcolor{comment}{//\ ThreadLocalValueHolderBases.}}
+\DoxyCodeLine{00573\ \ \ \}}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00576\ \ \ \textcolor{comment}{//\ In\ a\ particular\ thread,\ maps\ a\ ThreadLocal\ object\ to\ its\ value.}}
+\DoxyCodeLine{00577\ \ \ \textcolor{keyword}{typedef}\ std::map<\textcolor{keyword}{const}\ ThreadLocalBase*,}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::shared\_ptr<ThreadLocalValueHolderBase>\ >}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ ThreadLocalValues;}
+\DoxyCodeLine{00580\ \ \ \textcolor{comment}{//\ Stores\ all\ ThreadIdToThreadLocals\ having\ values\ in\ a\ thread,\ indexed\ by}}
+\DoxyCodeLine{00581\ \ \ \textcolor{comment}{//\ thread's\ ID.}}
+\DoxyCodeLine{00582\ \ \ \textcolor{keyword}{typedef}\ std::map<DWORD,\ ThreadLocalValues>\ ThreadIdToThreadLocals;}
+\DoxyCodeLine{00583\ }
+\DoxyCodeLine{00584\ \ \ \textcolor{comment}{//\ Holds\ the\ thread\ id\ and\ thread\ handle\ that\ we\ pass\ from}}
+\DoxyCodeLine{00585\ \ \ \textcolor{comment}{//\ StartWatcherThreadFor\ to\ WatcherThreadFunc.}}
+\DoxyCodeLine{00586\ \ \ \textcolor{keyword}{typedef}\ std::pair<DWORD,\ HANDLE>\ ThreadIdAndHandle;}
+\DoxyCodeLine{00587\ }
+\DoxyCodeLine{00588\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ StartWatcherThreadFor(DWORD\ thread\_id)\ \{}
+\DoxyCodeLine{00589\ \ \ \ \ \textcolor{comment}{//\ The\ returned\ handle\ will\ be\ kept\ in\ thread\_map\ and\ closed\ by}}
+\DoxyCodeLine{00590\ \ \ \ \ \textcolor{comment}{//\ watcher\_thread\ in\ WatcherThreadFunc.}}
+\DoxyCodeLine{00591\ \ \ \ \ HANDLE\ thread\ =}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ ::OpenThread(SYNCHRONIZE\ |\ THREAD\_QUERY\_INFORMATION,\ FALSE,\ thread\_id);}
+\DoxyCodeLine{00593\ \ \ \ \ GTEST\_CHECK\_(thread\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00594\ \ \ \ \ \textcolor{comment}{//\ We\ need\ to\ pass\ a\ valid\ thread\ ID\ pointer\ into\ CreateThread\ for\ it}}
+\DoxyCodeLine{00595\ \ \ \ \ \textcolor{comment}{//\ to\ work\ correctly\ under\ Win98.}}
+\DoxyCodeLine{00596\ \ \ \ \ DWORD\ watcher\_thread\_id;}
+\DoxyCodeLine{00597\ \ \ \ \ HANDLE\ watcher\_thread\ =\ ::CreateThread(}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ Default\ security.}}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ 0,\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Default\ stack\ size}}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \&ThreadLocalRegistryImpl::WatcherThreadFunc,}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}LPVOID\textcolor{keyword}{>}(\textcolor{keyword}{new}\ ThreadIdAndHandle(thread\_id,\ thread)),}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ CREATE\_SUSPENDED,\ \&watcher\_thread\_id);}
+\DoxyCodeLine{00603\ \ \ \ \ GTEST\_CHECK\_(watcher\_thread\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}CreateThread\ failed\ with\ error\ "{}}\ <<\ ::GetLastError()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00605\ \ \ \ \ \textcolor{comment}{//\ Give\ the\ watcher\ thread\ the\ same\ priority\ as\ ours\ to\ avoid\ being}}
+\DoxyCodeLine{00606\ \ \ \ \ \textcolor{comment}{//\ blocked\ by\ it.}}
+\DoxyCodeLine{00607\ \ \ \ \ ::SetThreadPriority(watcher\_thread,}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::GetThreadPriority(::GetCurrentThread()));}
+\DoxyCodeLine{00609\ \ \ \ \ ::ResumeThread(watcher\_thread);}
+\DoxyCodeLine{00610\ \ \ \ \ ::CloseHandle(watcher\_thread);}
+\DoxyCodeLine{00611\ \ \ \}}
+\DoxyCodeLine{00612\ }
+\DoxyCodeLine{00613\ \ \ \textcolor{comment}{//\ Monitors\ exit\ from\ a\ given\ thread\ and\ notifies\ those}}
+\DoxyCodeLine{00614\ \ \ \textcolor{comment}{//\ ThreadIdToThreadLocals\ about\ thread\ termination.}}
+\DoxyCodeLine{00615\ \ \ \textcolor{keyword}{static}\ DWORD\ WINAPI\ WatcherThreadFunc(LPVOID\ param)\ \{}
+\DoxyCodeLine{00616\ \ \ \ \ \textcolor{keyword}{const}\ ThreadIdAndHandle*\ tah\ =}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }ThreadIdAndHandle*\textcolor{keyword}{>}(param);}
+\DoxyCodeLine{00618\ \ \ \ \ GTEST\_CHECK\_(::WaitForSingleObject(tah-\/>second,\ INFINITE)\ ==\ WAIT\_OBJECT\_0);}
+\DoxyCodeLine{00619\ \ \ \ \ OnThreadExit(tah-\/>first);}
+\DoxyCodeLine{00620\ \ \ \ \ ::CloseHandle(tah-\/>second);}
+\DoxyCodeLine{00621\ \ \ \ \ \textcolor{keyword}{delete}\ tah;}
+\DoxyCodeLine{00622\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00623\ \ \ \}}
+\DoxyCodeLine{00624\ }
+\DoxyCodeLine{00625\ \ \ \textcolor{comment}{//\ Returns\ map\ of\ thread\ local\ instances.}}
+\DoxyCodeLine{00626\ \ \ \textcolor{keyword}{static}\ ThreadIdToThreadLocals*\ GetThreadLocalsMapLocked()\ \{}
+\DoxyCodeLine{00627\ \ \ \ \ mutex\_.AssertHeld();}
+\DoxyCodeLine{00628\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00629\ \ \ \ \ MemoryIsNotDeallocated\ memory\_is\_not\_deallocated;}
+\DoxyCodeLine{00630\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00631\ \ \ \ \ \textcolor{keyword}{static}\ ThreadIdToThreadLocals*\ map\ =\ \textcolor{keyword}{new}\ ThreadIdToThreadLocals();}
+\DoxyCodeLine{00632\ \ \ \ \ \textcolor{keywordflow}{return}\ map;}
+\DoxyCodeLine{00633\ \ \ \}}
+\DoxyCodeLine{00634\ }
+\DoxyCodeLine{00635\ \ \ \textcolor{comment}{//\ Protects\ access\ to\ GetThreadLocalsMapLocked()\ and\ its\ return\ value.}}
+\DoxyCodeLine{00636\ \ \ \textcolor{keyword}{static}\ Mutex\ mutex\_;}
+\DoxyCodeLine{00637\ \ \ \textcolor{comment}{//\ Protects\ access\ to\ GetThreadMapLocked()\ and\ its\ return\ value.}}
+\DoxyCodeLine{00638\ \ \ \textcolor{keyword}{static}\ Mutex\ thread\_map\_mutex\_;}
+\DoxyCodeLine{00639\ \};}
+\DoxyCodeLine{00640\ }
+\DoxyCodeLine{00641\ Mutex\ ThreadLocalRegistryImpl::mutex\_(Mutex::kStaticMutex);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00642\ Mutex\ ThreadLocalRegistryImpl::thread\_map\_mutex\_(}
+\DoxyCodeLine{00643\ \ \ \ \ Mutex::kStaticMutex);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00644\ }
+\DoxyCodeLine{00645\ ThreadLocalValueHolderBase*\ ThreadLocalRegistry::GetValueOnCurrentThread(}
+\DoxyCodeLine{00646\ \ \ \ \ \textcolor{keyword}{const}\ ThreadLocalBase*\ thread\_local\_instance)\ \{}
+\DoxyCodeLine{00647\ \ \ \textcolor{keywordflow}{return}\ ThreadLocalRegistryImpl::GetValueOnCurrentThread(}
+\DoxyCodeLine{00648\ \ \ \ \ \ \ thread\_local\_instance);}
+\DoxyCodeLine{00649\ \}}
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00651\ \textcolor{keywordtype}{void}\ ThreadLocalRegistry::OnThreadLocalDestroyed(}
+\DoxyCodeLine{00652\ \ \ \ \ \textcolor{keyword}{const}\ ThreadLocalBase*\ thread\_local\_instance)\ \{}
+\DoxyCodeLine{00653\ \ \ ThreadLocalRegistryImpl::OnThreadLocalDestroyed(thread\_local\_instance);}
+\DoxyCodeLine{00654\ \}}
+\DoxyCodeLine{00655\ }
+\DoxyCodeLine{00656\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_IS\_THREADSAFE\ \&\&\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00657\ }
+\DoxyCodeLine{00658\ \textcolor{preprocessor}{\#if\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00660\ \textcolor{comment}{//\ Implements\ RE.\ \ Currently\ only\ needed\ for\ death\ tests.}}
+\DoxyCodeLine{00661\ }
+\DoxyCodeLine{00662\ RE::\string~RE()\ \{}
+\DoxyCodeLine{00663\ \ \ \textcolor{keywordflow}{if}\ (is\_valid\_)\ \{}
+\DoxyCodeLine{00664\ \ \ \ \ \textcolor{comment}{//\ regfree'ing\ an\ invalid\ regex\ might\ crash\ because\ the\ content}}
+\DoxyCodeLine{00665\ \ \ \ \ \textcolor{comment}{//\ of\ the\ regex\ is\ undefined.\ Since\ the\ regex's\ are\ essentially}}
+\DoxyCodeLine{00666\ \ \ \ \ \textcolor{comment}{//\ the\ same,\ one\ cannot\ be\ valid\ (or\ invalid)\ without\ the\ other}}
+\DoxyCodeLine{00667\ \ \ \ \ \textcolor{comment}{//\ being\ so\ too.}}
+\DoxyCodeLine{00668\ \ \ \ \ regfree(\&partial\_regex\_);}
+\DoxyCodeLine{00669\ \ \ \ \ regfree(\&full\_regex\_);}
+\DoxyCodeLine{00670\ \ \ \}}
+\DoxyCodeLine{00671\ \ \ free(\textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(pattern\_));}
+\DoxyCodeLine{00672\ \}}
+\DoxyCodeLine{00673\ }
+\DoxyCodeLine{00674\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regular\ expression\ re\ matches\ the\ entire\ str.}}
+\DoxyCodeLine{00675\ \textcolor{keywordtype}{bool}\ RE::FullMatch(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ RE\&\ re)\ \{}
+\DoxyCodeLine{00676\ \ \ \textcolor{keywordflow}{if}\ (!re.is\_valid\_)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00677\ }
+\DoxyCodeLine{00678\ \ \ regmatch\_t\ match;}
+\DoxyCodeLine{00679\ \ \ \textcolor{keywordflow}{return}\ regexec(\&re.full\_regex\_,\ str,\ 1,\ \&match,\ 0)\ ==\ 0;}
+\DoxyCodeLine{00680\ \}}
+\DoxyCodeLine{00681\ }
+\DoxyCodeLine{00682\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regular\ expression\ re\ matches\ a\ substring\ of}}
+\DoxyCodeLine{00683\ \textcolor{comment}{//\ str\ (including\ str\ itself).}}
+\DoxyCodeLine{00684\ \textcolor{keywordtype}{bool}\ RE::PartialMatch(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ RE\&\ re)\ \{}
+\DoxyCodeLine{00685\ \ \ \textcolor{keywordflow}{if}\ (!re.is\_valid\_)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00686\ }
+\DoxyCodeLine{00687\ \ \ regmatch\_t\ match;}
+\DoxyCodeLine{00688\ \ \ \textcolor{keywordflow}{return}\ regexec(\&re.partial\_regex\_,\ str,\ 1,\ \&match,\ 0)\ ==\ 0;}
+\DoxyCodeLine{00689\ \}}
+\DoxyCodeLine{00690\ }
+\DoxyCodeLine{00691\ \textcolor{comment}{//\ Initializes\ an\ RE\ from\ its\ string\ representation.}}
+\DoxyCodeLine{00692\ \textcolor{keywordtype}{void}\ RE::Init(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex)\ \{}
+\DoxyCodeLine{00693\ \ \ pattern\_\ =\ posix::StrDup(regex);}
+\DoxyCodeLine{00694\ }
+\DoxyCodeLine{00695\ \ \ \textcolor{comment}{//\ Reserves\ enough\ bytes\ to\ hold\ the\ regular\ expression\ used\ for\ a}}
+\DoxyCodeLine{00696\ \ \ \textcolor{comment}{//\ full\ match.}}
+\DoxyCodeLine{00697\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ full\_regex\_len\ =\ strlen(regex)\ +\ 10;}
+\DoxyCodeLine{00698\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ full\_pattern\ =\ \textcolor{keyword}{new}\ \textcolor{keywordtype}{char}[full\_regex\_len];}
+\DoxyCodeLine{00699\ }
+\DoxyCodeLine{00700\ \ \ snprintf(full\_pattern,\ full\_regex\_len,\ \textcolor{stringliteral}{"{}\string^(\%s)\$"{}},\ regex);}
+\DoxyCodeLine{00701\ \ \ is\_valid\_\ =\ regcomp(\&full\_regex\_,\ full\_pattern,\ REG\_EXTENDED)\ ==\ 0;}
+\DoxyCodeLine{00702\ \ \ \textcolor{comment}{//\ We\ want\ to\ call\ regcomp(\&partial\_regex\_,\ ...)\ even\ if\ the}}
+\DoxyCodeLine{00703\ \ \ \textcolor{comment}{//\ previous\ expression\ returns\ false.\ \ Otherwise\ partial\_regex\_\ may}}
+\DoxyCodeLine{00704\ \ \ \textcolor{comment}{//\ not\ be\ properly\ initialized\ can\ may\ cause\ trouble\ when\ it's}}
+\DoxyCodeLine{00705\ \ \ \textcolor{comment}{//\ freed.}}
+\DoxyCodeLine{00706\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00707\ \ \ \textcolor{comment}{//\ Some\ implementation\ of\ POSIX\ regex\ (e.g.\ on\ at\ least\ some}}
+\DoxyCodeLine{00708\ \ \ \textcolor{comment}{//\ versions\ of\ Cygwin)\ doesn't\ accept\ the\ empty\ string\ as\ a\ valid}}
+\DoxyCodeLine{00709\ \ \ \textcolor{comment}{//\ regex.\ \ We\ change\ it\ to\ an\ equivalent\ form\ "{}()"{}\ to\ be\ safe.}}
+\DoxyCodeLine{00710\ \ \ \textcolor{keywordflow}{if}\ (is\_valid\_)\ \{}
+\DoxyCodeLine{00711\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ partial\_regex\ =\ (*regex\ ==\ \textcolor{charliteral}{'\(\backslash\)0'})\ ?\ \textcolor{stringliteral}{"{}()"{}}\ :\ regex;}
+\DoxyCodeLine{00712\ \ \ \ \ is\_valid\_\ =\ regcomp(\&partial\_regex\_,\ partial\_regex,\ REG\_EXTENDED)\ ==\ 0;}
+\DoxyCodeLine{00713\ \ \ \}}
+\DoxyCodeLine{00714\ \ \ EXPECT\_TRUE(is\_valid\_)}
+\DoxyCodeLine{00715\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Regular\ expression\ \(\backslash\)"{}"{}}\ <<\ regex}
+\DoxyCodeLine{00716\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}\ is\ not\ a\ valid\ POSIX\ Extended\ regular\ expression."{}};}
+\DoxyCodeLine{00717\ }
+\DoxyCodeLine{00718\ \ \ \textcolor{keyword}{delete}[]\ full\_pattern;}
+\DoxyCodeLine{00719\ \}}
+\DoxyCodeLine{00720\ }
+\DoxyCodeLine{00721\ \textcolor{preprocessor}{\#elif\ GTEST\_USES\_SIMPLE\_RE}}
+\DoxyCodeLine{00722\ }
+\DoxyCodeLine{00723\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ ch\ appears\ anywhere\ in\ str\ (excluding\ the}}
+\DoxyCodeLine{00724\ \textcolor{comment}{//\ terminating\ '\(\backslash\)0'\ character).}}
+\DoxyCodeLine{00725\ \textcolor{keywordtype}{bool}\ IsInSet(\textcolor{keywordtype}{char}\ ch,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00726\ \ \ \textcolor{keywordflow}{return}\ ch\ !=\ \textcolor{charliteral}{'\(\backslash\)0'}\ \&\&\ strchr(str,\ ch)\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00727\ \}}
+\DoxyCodeLine{00728\ }
+\DoxyCodeLine{00729\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ ch\ belongs\ to\ the\ given\ classification.}}
+\DoxyCodeLine{00730\ \textcolor{comment}{//\ Unlike\ similar\ functions\ in\ <ctype.h>,\ these\ aren't\ affected\ by\ the}}
+\DoxyCodeLine{00731\ \textcolor{comment}{//\ current\ locale.}}
+\DoxyCodeLine{00732\ \textcolor{keywordtype}{bool}\ IsAsciiDigit(\textcolor{keywordtype}{char}\ ch)\ \{\ \textcolor{keywordflow}{return}\ \textcolor{charliteral}{'0'}\ <=\ ch\ \&\&\ ch\ <=\ \textcolor{charliteral}{'9'};\ \}}
+\DoxyCodeLine{00733\ \textcolor{keywordtype}{bool}\ IsAsciiPunct(\textcolor{keywordtype}{char}\ ch)\ \{}
+\DoxyCodeLine{00734\ \ \ \textcolor{keywordflow}{return}\ IsInSet(ch,\ \textcolor{stringliteral}{"{}\string^-\/!\(\backslash\)"{}\#\$\%\&'()*+,./:;<=>?@[\(\backslash\)\(\backslash\)]\_`\{|\}\string~"{}});}
+\DoxyCodeLine{00735\ \}}
+\DoxyCodeLine{00736\ \textcolor{keywordtype}{bool}\ IsRepeat(\textcolor{keywordtype}{char}\ ch)\ \{\ \textcolor{keywordflow}{return}\ IsInSet(ch,\ \textcolor{stringliteral}{"{}?*+"{}});\ \}}
+\DoxyCodeLine{00737\ \textcolor{keywordtype}{bool}\ IsAsciiWhiteSpace(\textcolor{keywordtype}{char}\ ch)\ \{\ \textcolor{keywordflow}{return}\ IsInSet(ch,\ \textcolor{stringliteral}{"{}\ \(\backslash\)f\(\backslash\)n\(\backslash\)r\(\backslash\)t\(\backslash\)v"{}});\ \}}
+\DoxyCodeLine{00738\ \textcolor{keywordtype}{bool}\ IsAsciiWordChar(\textcolor{keywordtype}{char}\ ch)\ \{}
+\DoxyCodeLine{00739\ \ \ \textcolor{keywordflow}{return}\ (\textcolor{charliteral}{'a'}\ <=\ ch\ \&\&\ ch\ <=\ \textcolor{charliteral}{'z'})\ ||\ (\textcolor{charliteral}{'A'}\ <=\ ch\ \&\&\ ch\ <=\ \textcolor{charliteral}{'Z'})\ ||}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ \ (\textcolor{charliteral}{'0'}\ <=\ ch\ \&\&\ ch\ <=\ \textcolor{charliteral}{'9'})\ ||\ ch\ ==\ \textcolor{charliteral}{'\_'};}
+\DoxyCodeLine{00741\ \}}
+\DoxyCodeLine{00742\ }
+\DoxyCodeLine{00743\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ "{}\(\backslash\)\(\backslash\)c"{}\ is\ a\ supported\ escape\ sequence.}}
+\DoxyCodeLine{00744\ \textcolor{keywordtype}{bool}\ IsValidEscape(\textcolor{keywordtype}{char}\ c)\ \{}
+\DoxyCodeLine{00745\ \ \ \textcolor{keywordflow}{return}\ (IsAsciiPunct(c)\ ||\ IsInSet(c,\ \textcolor{stringliteral}{"{}dDfnrsStvwW"{}}));}
+\DoxyCodeLine{00746\ \}}
+\DoxyCodeLine{00747\ }
+\DoxyCodeLine{00748\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ given\ atom\ (specified\ by\ escaped\ and}}
+\DoxyCodeLine{00749\ \textcolor{comment}{//\ pattern)\ matches\ ch.\ \ The\ result\ is\ undefined\ if\ the\ atom\ is\ invalid.}}
+\DoxyCodeLine{00750\ \textcolor{keywordtype}{bool}\ AtomMatchesChar(\textcolor{keywordtype}{bool}\ escaped,\ \textcolor{keywordtype}{char}\ pattern\_char,\ \textcolor{keywordtype}{char}\ ch)\ \{}
+\DoxyCodeLine{00751\ \ \ \textcolor{keywordflow}{if}\ (escaped)\ \{\ \ \textcolor{comment}{//\ "{}\(\backslash\)\(\backslash\)p"{}\ where\ p\ is\ pattern\_char.}}
+\DoxyCodeLine{00752\ \ \ \ \ \textcolor{keywordflow}{switch}\ (pattern\_char)\ \{}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'d'}:}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ IsAsciiDigit(ch);}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'D'}:}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !IsAsciiDigit(ch);}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'f'}:}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ch\ ==\ \textcolor{charliteral}{'\(\backslash\)f'};}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'n'}:}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ch\ ==\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'r'}:}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ch\ ==\ \textcolor{charliteral}{'\(\backslash\)r'};}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'s'}:}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ IsAsciiWhiteSpace(ch);}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'S'}:}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !IsAsciiWhiteSpace(ch);}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'t'}:}
+\DoxyCodeLine{00768\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ch\ ==\ \textcolor{charliteral}{'\(\backslash\)t'};}
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'v'}:}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ch\ ==\ \textcolor{charliteral}{'\(\backslash\)v'};}
+\DoxyCodeLine{00771\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'w'}:}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ IsAsciiWordChar(ch);}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'W'}:}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !IsAsciiWordChar(ch);}
+\DoxyCodeLine{00775\ \ \ \ \ \}}
+\DoxyCodeLine{00776\ \ \ \ \ \textcolor{keywordflow}{return}\ IsAsciiPunct(pattern\_char)\ \&\&\ pattern\_char\ ==\ ch;}
+\DoxyCodeLine{00777\ \ \ \}}
+\DoxyCodeLine{00778\ }
+\DoxyCodeLine{00779\ \ \ \textcolor{keywordflow}{return}\ (pattern\_char\ ==\ \textcolor{charliteral}{'.'}\ \&\&\ ch\ !=\ \textcolor{charliteral}{'\(\backslash\)n'})\ ||\ pattern\_char\ ==\ ch;}
+\DoxyCodeLine{00780\ \}}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \textcolor{comment}{//\ Helper\ function\ used\ by\ ValidateRegex()\ to\ format\ error\ messages.}}
+\DoxyCodeLine{00783\ \textcolor{keyword}{static}\ std::string\ FormatRegexSyntaxError(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex,\ \textcolor{keywordtype}{int}\ index)\ \{}
+\DoxyCodeLine{00784\ \ \ \textcolor{keywordflow}{return}\ (Message()\ <<\ \textcolor{stringliteral}{"{}Syntax\ error\ at\ index\ "{}}\ <<\ index}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ in\ simple\ regular\ expression\ \(\backslash\)"{}"{}}\ <<\ regex\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}:\ "{}})}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ .GetString();}
+\DoxyCodeLine{00787\ \}}
+\DoxyCodeLine{00788\ }
+\DoxyCodeLine{00789\ \textcolor{comment}{//\ Generates\ non-\/fatal\ failures\ and\ returns\ false\ if\ regex\ is\ invalid;}}
+\DoxyCodeLine{00790\ \textcolor{comment}{//\ otherwise\ returns\ true.}}
+\DoxyCodeLine{00791\ \textcolor{keywordtype}{bool}\ ValidateRegex(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex)\ \{}
+\DoxyCodeLine{00792\ \ \ \textcolor{keywordflow}{if}\ (regex\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00793\ \ \ \ \ ADD\_FAILURE()\ <<\ \textcolor{stringliteral}{"{}NULL\ is\ not\ a\ valid\ simple\ regular\ expression."{}};}
+\DoxyCodeLine{00794\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00795\ \ \ \}}
+\DoxyCodeLine{00796\ }
+\DoxyCodeLine{00797\ \ \ \textcolor{keywordtype}{bool}\ is\_valid\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00798\ }
+\DoxyCodeLine{00799\ \ \ \textcolor{comment}{//\ True\ if\ and\ only\ if\ ?,\ *,\ or\ +\ can\ follow\ the\ previous\ atom.}}
+\DoxyCodeLine{00800\ \ \ \textcolor{keywordtype}{bool}\ prev\_repeatable\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00801\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ regex[i];\ i++)\ \{}
+\DoxyCodeLine{00802\ \ \ \ \ \textcolor{keywordflow}{if}\ (regex[i]\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'})\ \{\ \ \textcolor{comment}{//\ An\ escape\ sequence}}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ i++;}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (regex[i]\ ==\ \textcolor{charliteral}{'\(\backslash\)0'})\ \{}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i\ -\/\ 1)}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)\(\backslash\)'\ cannot\ appear\ at\ the\ end."{}};}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00809\ }
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!IsValidEscape(regex[i]))\ \{}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i\ -\/\ 1)}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}invalid\ escape\ sequence\ \(\backslash\)"{}\(\backslash\)\(\backslash\)"{}}\ <<\ regex[i]\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}."{}};}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ is\_valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ prev\_repeatable\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00816\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\ \ \textcolor{comment}{//\ Not\ an\ escape\ sequence.}}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ ch\ =\ regex[i];}
+\DoxyCodeLine{00818\ }
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ch\ ==\ \textcolor{charliteral}{'\string^'}\ \&\&\ i\ >\ 0)\ \{}
+\DoxyCodeLine{00820\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i)}
+\DoxyCodeLine{00821\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}'\string^'\ can\ only\ appear\ at\ the\ beginning."{}};}
+\DoxyCodeLine{00822\ \ \ \ \ \ \ \ \ is\_valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (ch\ ==\ \textcolor{charliteral}{'\$'}\ \&\&\ regex[i\ +\ 1]\ !=\ \textcolor{charliteral}{'\(\backslash\)0'})\ \{}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i)}
+\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}'\$'\ can\ only\ appear\ at\ the\ end."{}};}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ is\_valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00827\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (IsInSet(ch,\ \textcolor{stringliteral}{"{}()[]\{\}|"{}}))\ \{}
+\DoxyCodeLine{00828\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i)\ <<\ \textcolor{stringliteral}{"{}'"{}}\ <<\ ch}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}'\ is\ unsupported."{}};}
+\DoxyCodeLine{00830\ \ \ \ \ \ \ \ \ is\_valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (IsRepeat(ch)\ \&\&\ !prev\_repeatable)\ \{}
+\DoxyCodeLine{00832\ \ \ \ \ \ \ \ \ ADD\_FAILURE()\ <<\ FormatRegexSyntaxError(regex,\ i)\ <<\ \textcolor{stringliteral}{"{}'"{}}\ <<\ ch}
+\DoxyCodeLine{00833\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}'\ can\ only\ follow\ a\ repeatable\ token."{}};}
+\DoxyCodeLine{00834\ \ \ \ \ \ \ \ \ is\_valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00835\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00836\ }
+\DoxyCodeLine{00837\ \ \ \ \ \ \ prev\_repeatable\ =\ !IsInSet(ch,\ \textcolor{stringliteral}{"{}\string^\$?*+"{}});}
+\DoxyCodeLine{00838\ \ \ \ \ \}}
+\DoxyCodeLine{00839\ \ \ \}}
+\DoxyCodeLine{00840\ }
+\DoxyCodeLine{00841\ \ \ \textcolor{keywordflow}{return}\ is\_valid;}
+\DoxyCodeLine{00842\ \}}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00844\ \textcolor{comment}{//\ Matches\ a\ repeated\ regex\ atom\ followed\ by\ a\ valid\ simple\ regular}}
+\DoxyCodeLine{00845\ \textcolor{comment}{//\ expression.\ \ The\ regex\ atom\ is\ defined\ as\ c\ if\ escaped\ is\ false,}}
+\DoxyCodeLine{00846\ \textcolor{comment}{//\ or\ \(\backslash\)c\ otherwise.\ \ repeat\ is\ the\ repetition\ meta\ character\ (?,\ *,}}
+\DoxyCodeLine{00847\ \textcolor{comment}{//\ or\ +).\ \ The\ behavior\ is\ undefined\ if\ str\ contains\ too\ many}}
+\DoxyCodeLine{00848\ \textcolor{comment}{//\ characters\ to\ be\ indexable\ by\ size\_t,\ in\ which\ case\ the\ test\ will}}
+\DoxyCodeLine{00849\ \textcolor{comment}{//\ probably\ time\ out\ anyway.\ \ We\ are\ fine\ with\ this\ limitation\ as}}
+\DoxyCodeLine{00850\ \textcolor{comment}{//\ std::string\ has\ it\ too.}}
+\DoxyCodeLine{00851\ \textcolor{keywordtype}{bool}\ MatchRepetitionAndRegexAtHead(\textcolor{keywordtype}{bool}\ escaped,\ \textcolor{keywordtype}{char}\ c,\ \textcolor{keywordtype}{char}\ repeat,}
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00853\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ min\_count\ =\ (repeat\ ==\ \textcolor{charliteral}{'+'})\ ?\ 1\ :\ 0;}
+\DoxyCodeLine{00854\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ max\_count\ =\ (repeat\ ==\ \textcolor{charliteral}{'?'})\ ?\ 1\ :\ static\_cast<size\_t>(-\/1)\ -\/\ 1;}
+\DoxyCodeLine{00855\ \ \ \textcolor{comment}{//\ We\ cannot\ call\ numeric\_limits::max()\ as\ it\ conflicts\ with\ the}}
+\DoxyCodeLine{00856\ \ \ \textcolor{comment}{//\ max()\ macro\ on\ Windows.}}
+\DoxyCodeLine{00857\ }
+\DoxyCodeLine{00858\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <=\ max\_count;\ ++i)\ \{}
+\DoxyCodeLine{00859\ \ \ \ \ \textcolor{comment}{//\ We\ know\ that\ the\ atom\ matches\ each\ of\ the\ first\ i\ characters\ in\ str.}}
+\DoxyCodeLine{00860\ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ >=\ min\_count\ \&\&\ MatchRegexAtHead(regex,\ str\ +\ i))\ \{}
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \textcolor{comment}{//\ We\ have\ enough\ matches\ at\ the\ head,\ and\ the\ tail\ matches\ too.}}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \textcolor{comment}{//\ Since\ we\ only\ care\ about\ *whether*\ the\ pattern\ matches\ str}}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \textcolor{comment}{//\ (as\ opposed\ to\ *how*\ it\ matches),\ there\ is\ no\ need\ to\ find\ a}}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \textcolor{comment}{//\ greedy\ match.}}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00866\ \ \ \ \ \}}
+\DoxyCodeLine{00867\ \ \ \ \ \textcolor{keywordflow}{if}\ (str[i]\ ==\ \textcolor{charliteral}{'\(\backslash\)0'}\ ||\ !AtomMatchesChar(escaped,\ c,\ str[i]))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00868\ \ \ \}}
+\DoxyCodeLine{00869\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00870\ \}}
+\DoxyCodeLine{00871\ }
+\DoxyCodeLine{00872\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regex\ matches\ a\ prefix\ of\ str.\ regex\ must}}
+\DoxyCodeLine{00873\ \textcolor{comment}{//\ be\ a\ valid\ simple\ regular\ expression\ and\ not\ start\ with\ "{}\string^"{},\ or\ the}}
+\DoxyCodeLine{00874\ \textcolor{comment}{//\ result\ is\ undefined.}}
+\DoxyCodeLine{00875\ \textcolor{keywordtype}{bool}\ MatchRegexAtHead(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00876\ \ \ \textcolor{keywordflow}{if}\ (*regex\ ==\ \textcolor{charliteral}{'\(\backslash\)0'})\ \ \textcolor{comment}{//\ An\ empty\ regex\ matches\ a\ prefix\ of\ anything.}}
+\DoxyCodeLine{00877\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00878\ }
+\DoxyCodeLine{00879\ \ \ \textcolor{comment}{//\ "{}\$"{}\ only\ matches\ the\ end\ of\ a\ string.\ \ Note\ that\ regex\ being}}
+\DoxyCodeLine{00880\ \ \ \textcolor{comment}{//\ valid\ guarantees\ that\ there's\ nothing\ after\ "{}\$"{}\ in\ it.}}
+\DoxyCodeLine{00881\ \ \ \textcolor{keywordflow}{if}\ (*regex\ ==\ \textcolor{charliteral}{'\$'})\ \textcolor{keywordflow}{return}\ *str\ ==\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00882\ }
+\DoxyCodeLine{00883\ \ \ \textcolor{comment}{//\ Is\ the\ first\ thing\ in\ regex\ an\ escape\ sequence?}}
+\DoxyCodeLine{00884\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ escaped\ =\ *regex\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{00885\ \ \ \textcolor{keywordflow}{if}\ (escaped)\ ++regex;}
+\DoxyCodeLine{00886\ \ \ \textcolor{keywordflow}{if}\ (IsRepeat(regex[1]))\ \{}
+\DoxyCodeLine{00887\ \ \ \ \ \textcolor{comment}{//\ MatchRepetitionAndRegexAtHead()\ calls\ MatchRegexAtHead(),\ so}}
+\DoxyCodeLine{00888\ \ \ \ \ \textcolor{comment}{//\ here's\ an\ indirect\ recursion.\ \ It\ terminates\ as\ the\ regex\ gets}}
+\DoxyCodeLine{00889\ \ \ \ \ \textcolor{comment}{//\ shorter\ in\ each\ recursion.}}
+\DoxyCodeLine{00890\ \ \ \ \ \textcolor{keywordflow}{return}\ MatchRepetitionAndRegexAtHead(escaped,\ regex[0],\ regex[1],\ regex\ +\ 2,}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ str);}
+\DoxyCodeLine{00892\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00893\ \ \ \ \ \textcolor{comment}{//\ regex\ isn't\ empty,\ isn't\ "{}\$"{},\ and\ doesn't\ start\ with\ a}}
+\DoxyCodeLine{00894\ \ \ \ \ \textcolor{comment}{//\ repetition.\ \ We\ match\ the\ first\ atom\ of\ regex\ with\ the\ first}}
+\DoxyCodeLine{00895\ \ \ \ \ \textcolor{comment}{//\ character\ of\ str\ and\ recurse.}}
+\DoxyCodeLine{00896\ \ \ \ \ \textcolor{keywordflow}{return}\ (*str\ !=\ \textcolor{charliteral}{'\(\backslash\)0'})\ \&\&\ AtomMatchesChar(escaped,\ *regex,\ *str)\ \&\&}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \ \ \ MatchRegexAtHead(regex\ +\ 1,\ str\ +\ 1);}
+\DoxyCodeLine{00898\ \ \ \}}
+\DoxyCodeLine{00899\ \}}
+\DoxyCodeLine{00900\ }
+\DoxyCodeLine{00901\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regex\ matches\ any\ substring\ of\ str.\ \ regex\ must}}
+\DoxyCodeLine{00902\ \textcolor{comment}{//\ be\ a\ valid\ simple\ regular\ expression,\ or\ the\ result\ is\ undefined.}}
+\DoxyCodeLine{00903\ \textcolor{comment}{//}}
+\DoxyCodeLine{00904\ \textcolor{comment}{//\ The\ algorithm\ is\ recursive,\ but\ the\ recursion\ depth\ doesn't\ exceed}}
+\DoxyCodeLine{00905\ \textcolor{comment}{//\ the\ regex\ length,\ so\ we\ won't\ need\ to\ worry\ about\ running\ out\ of}}
+\DoxyCodeLine{00906\ \textcolor{comment}{//\ stack\ space\ normally.\ \ In\ rare\ cases\ the\ time\ complexity\ can\ be}}
+\DoxyCodeLine{00907\ \textcolor{comment}{//\ exponential\ with\ respect\ to\ the\ regex\ length\ +\ the\ string\ length,}}
+\DoxyCodeLine{00908\ \textcolor{comment}{//\ but\ usually\ it's\ must\ faster\ (often\ close\ to\ linear).}}
+\DoxyCodeLine{00909\ \textcolor{keywordtype}{bool}\ MatchRegexAnywhere(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00910\ \ \ \textcolor{keywordflow}{if}\ (regex\ ==\ \textcolor{keyword}{nullptr}\ ||\ str\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00911\ }
+\DoxyCodeLine{00912\ \ \ \textcolor{keywordflow}{if}\ (*regex\ ==\ \textcolor{charliteral}{'\string^'})\ \textcolor{keywordflow}{return}\ MatchRegexAtHead(regex\ +\ 1,\ str);}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00914\ \ \ \textcolor{comment}{//\ A\ successful\ match\ can\ be\ anywhere\ in\ str.}}
+\DoxyCodeLine{00915\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00916\ \ \ \ \ \textcolor{keywordflow}{if}\ (MatchRegexAtHead(regex,\ str))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00917\ \ \ \}\ \textcolor{keywordflow}{while}\ (*str++\ !=\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00918\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00919\ \}}
+\DoxyCodeLine{00920\ }
+\DoxyCodeLine{00921\ \textcolor{comment}{//\ Implements\ the\ RE\ class.}}
+\DoxyCodeLine{00922\ }
+\DoxyCodeLine{00923\ RE::\string~RE()\ \{}
+\DoxyCodeLine{00924\ \ \ free(\textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(pattern\_));}
+\DoxyCodeLine{00925\ \ \ free(\textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(full\_pattern\_));}
+\DoxyCodeLine{00926\ \}}
+\DoxyCodeLine{00927\ }
+\DoxyCodeLine{00928\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regular\ expression\ re\ matches\ the\ entire\ str.}}
+\DoxyCodeLine{00929\ \textcolor{keywordtype}{bool}\ RE::FullMatch(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ RE\&\ re)\ \{}
+\DoxyCodeLine{00930\ \ \ \textcolor{keywordflow}{return}\ re.is\_valid\_\ \&\&\ MatchRegexAnywhere(re.full\_pattern\_,\ str);}
+\DoxyCodeLine{00931\ \}}
+\DoxyCodeLine{00932\ }
+\DoxyCodeLine{00933\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ regular\ expression\ re\ matches\ a\ substring\ of}}
+\DoxyCodeLine{00934\ \textcolor{comment}{//\ str\ (including\ str\ itself).}}
+\DoxyCodeLine{00935\ \textcolor{keywordtype}{bool}\ RE::PartialMatch(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ RE\&\ re)\ \{}
+\DoxyCodeLine{00936\ \ \ \textcolor{keywordflow}{return}\ re.is\_valid\_\ \&\&\ MatchRegexAnywhere(re.pattern\_,\ str);}
+\DoxyCodeLine{00937\ \}}
+\DoxyCodeLine{00938\ }
+\DoxyCodeLine{00939\ \textcolor{comment}{//\ Initializes\ an\ RE\ from\ its\ string\ representation.}}
+\DoxyCodeLine{00940\ \textcolor{keywordtype}{void}\ RE::Init(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex)\ \{}
+\DoxyCodeLine{00941\ \ \ pattern\_\ =\ full\_pattern\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00942\ \ \ \textcolor{keywordflow}{if}\ (regex\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00943\ \ \ \ \ pattern\_\ =\ posix::StrDup(regex);}
+\DoxyCodeLine{00944\ \ \ \}}
+\DoxyCodeLine{00945\ }
+\DoxyCodeLine{00946\ \ \ is\_valid\_\ =\ ValidateRegex(regex);}
+\DoxyCodeLine{00947\ \ \ \textcolor{keywordflow}{if}\ (!is\_valid\_)\ \{}
+\DoxyCodeLine{00948\ \ \ \ \ \textcolor{comment}{//\ No\ need\ to\ calculate\ the\ full\ pattern\ when\ the\ regex\ is\ invalid.}}
+\DoxyCodeLine{00949\ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00950\ \ \ \}}
+\DoxyCodeLine{00951\ }
+\DoxyCodeLine{00952\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ len\ =\ strlen(regex);}
+\DoxyCodeLine{00953\ \ \ \textcolor{comment}{//\ Reserves\ enough\ bytes\ to\ hold\ the\ regular\ expression\ used\ for\ a}}
+\DoxyCodeLine{00954\ \ \ \textcolor{comment}{//\ full\ match:\ we\ need\ space\ to\ prepend\ a\ '\string^',\ append\ a\ '\$',\ and}}
+\DoxyCodeLine{00955\ \ \ \textcolor{comment}{//\ terminate\ the\ string\ with\ '\(\backslash\)0'.}}
+\DoxyCodeLine{00956\ \ \ \textcolor{keywordtype}{char}*\ buffer\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(malloc(len\ +\ 3));}
+\DoxyCodeLine{00957\ \ \ full\_pattern\_\ =\ buffer;}
+\DoxyCodeLine{00958\ }
+\DoxyCodeLine{00959\ \ \ \textcolor{keywordflow}{if}\ (*regex\ !=\ \textcolor{charliteral}{'\string^'})}
+\DoxyCodeLine{00960\ \ \ \ \ *buffer++\ =\ \textcolor{charliteral}{'\string^'};\ \ \textcolor{comment}{//\ Makes\ sure\ full\_pattern\_\ starts\ with\ '\string^'.}}
+\DoxyCodeLine{00961\ }
+\DoxyCodeLine{00962\ \ \ \textcolor{comment}{//\ We\ don't\ use\ snprintf\ or\ strncpy,\ as\ they\ trigger\ a\ warning\ when}}
+\DoxyCodeLine{00963\ \ \ \textcolor{comment}{//\ compiled\ with\ VC++\ 8.0.}}
+\DoxyCodeLine{00964\ \ \ memcpy(buffer,\ regex,\ len);}
+\DoxyCodeLine{00965\ \ \ buffer\ +=\ len;}
+\DoxyCodeLine{00966\ }
+\DoxyCodeLine{00967\ \ \ \textcolor{keywordflow}{if}\ (len\ ==\ 0\ ||\ regex[len\ -\/\ 1]\ !=\ \textcolor{charliteral}{'\$'})}
+\DoxyCodeLine{00968\ \ \ \ \ *buffer++\ =\ \textcolor{charliteral}{'\$'};\ \ \textcolor{comment}{//\ Makes\ sure\ full\_pattern\_\ ends\ with\ '\$'.}}
+\DoxyCodeLine{00969\ }
+\DoxyCodeLine{00970\ \ \ *buffer\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00971\ \}}
+\DoxyCodeLine{00972\ }
+\DoxyCodeLine{00973\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{00974\ }
+\DoxyCodeLine{00975\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kUnknownFile[]\ =\ \textcolor{stringliteral}{"{}unknown\ file"{}};}
+\DoxyCodeLine{00976\ }
+\DoxyCodeLine{00977\ \textcolor{comment}{//\ Formats\ a\ source\ file\ path\ and\ a\ line\ number\ as\ they\ would\ appear}}
+\DoxyCodeLine{00978\ \textcolor{comment}{//\ in\ an\ error\ message\ from\ the\ compiler\ used\ to\ compile\ this\ code.}}
+\DoxyCodeLine{00979\ GTEST\_API\_\ ::std::string\ FormatFileLocation(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)\ \{}
+\DoxyCodeLine{00980\ \ \ \textcolor{keyword}{const}\ std::string\ file\_name(file\ ==\ \textcolor{keyword}{nullptr}\ ?\ kUnknownFile\ :\ file);}
+\DoxyCodeLine{00981\ }
+\DoxyCodeLine{00982\ \ \ \textcolor{keywordflow}{if}\ (line\ <\ 0)\ \{}
+\DoxyCodeLine{00983\ \ \ \ \ \textcolor{keywordflow}{return}\ file\_name\ +\ \textcolor{stringliteral}{"{}:"{}};}
+\DoxyCodeLine{00984\ \ \ \}}
+\DoxyCodeLine{00985\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00986\ \ \ \textcolor{keywordflow}{return}\ file\_name\ +\ \textcolor{stringliteral}{"{}("{}}\ +\ StreamableToString(line)\ +\ \textcolor{stringliteral}{"{}):"{}};}
+\DoxyCodeLine{00987\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00988\ \ \ \textcolor{keywordflow}{return}\ file\_name\ +\ \textcolor{stringliteral}{"{}:"{}}\ +\ StreamableToString(line)\ +\ \textcolor{stringliteral}{"{}:"{}};}
+\DoxyCodeLine{00989\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00990\ \}}
+\DoxyCodeLine{00991\ }
+\DoxyCodeLine{00992\ \textcolor{comment}{//\ Formats\ a\ file\ location\ for\ compiler-\/independent\ XML\ output.}}
+\DoxyCodeLine{00993\ \textcolor{comment}{//\ Although\ this\ function\ is\ not\ platform\ dependent,\ we\ put\ it\ next\ to}}
+\DoxyCodeLine{00994\ \textcolor{comment}{//\ FormatFileLocation\ in\ order\ to\ contrast\ the\ two\ functions.}}
+\DoxyCodeLine{00995\ \textcolor{comment}{//\ Note\ that\ FormatCompilerIndependentFileLocation()\ does\ NOT\ append\ colon}}
+\DoxyCodeLine{00996\ \textcolor{comment}{//\ to\ the\ file\ location\ it\ produces,\ unlike\ FormatFileLocation().}}
+\DoxyCodeLine{00997\ GTEST\_API\_\ ::std::string\ FormatCompilerIndependentFileLocation(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ line)\ \{}
+\DoxyCodeLine{00999\ \ \ \textcolor{keyword}{const}\ std::string\ file\_name(file\ ==\ \textcolor{keyword}{nullptr}\ ?\ kUnknownFile\ :\ file);}
+\DoxyCodeLine{01000\ }
+\DoxyCodeLine{01001\ \ \ \textcolor{keywordflow}{if}\ (line\ <\ 0)}
+\DoxyCodeLine{01002\ \ \ \ \ \textcolor{keywordflow}{return}\ file\_name;}
+\DoxyCodeLine{01003\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01004\ \ \ \ \ \textcolor{keywordflow}{return}\ file\_name\ +\ \textcolor{stringliteral}{"{}:"{}}\ +\ StreamableToString(line);}
+\DoxyCodeLine{01005\ \}}
+\DoxyCodeLine{01006\ }
+\DoxyCodeLine{01007\ GTestLog::GTestLog(GTestLogSeverity\ severity,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)}
+\DoxyCodeLine{01008\ \ \ \ \ :\ severity\_(severity)\ \{}
+\DoxyCodeLine{01009\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ marker\ =\ severity\ ==\ GTEST\_INFO\ \ \ \ \ \ ?\ \textcolor{stringliteral}{"{}[\ \ INFO\ ]"{}}}
+\DoxyCodeLine{01010\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ severity\ ==\ GTEST\_WARNING\ ?\ \textcolor{stringliteral}{"{}[WARNING]"{}}}
+\DoxyCodeLine{01011\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ severity\ ==\ GTEST\_ERROR\ \ \ ?\ \textcolor{stringliteral}{"{}[\ ERROR\ ]"{}}}
+\DoxyCodeLine{01012\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}[\ FATAL\ ]"{}};}
+\DoxyCodeLine{01013\ \ \ GetStream()\ <<\ ::std::endl}
+\DoxyCodeLine{01014\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ marker\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ FormatFileLocation(file,\ line).c\_str()}
+\DoxyCodeLine{01015\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}:\ "{}};}
+\DoxyCodeLine{01016\ \}}
+\DoxyCodeLine{01017\ }
+\DoxyCodeLine{01018\ \textcolor{comment}{//\ Flushes\ the\ buffers\ and,\ if\ severity\ is\ GTEST\_FATAL,\ aborts\ the\ program.}}
+\DoxyCodeLine{01019\ GTestLog::\string~GTestLog()\ \{}
+\DoxyCodeLine{01020\ \ \ GetStream()\ <<\ ::std::endl;}
+\DoxyCodeLine{01021\ \ \ \textcolor{keywordflow}{if}\ (severity\_\ ==\ GTEST\_FATAL)\ \{}
+\DoxyCodeLine{01022\ \ \ \ \ fflush(stderr);}
+\DoxyCodeLine{01023\ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{01024\ \ \ \}}
+\DoxyCodeLine{01025\ \}}
+\DoxyCodeLine{01026\ }
+\DoxyCodeLine{01027\ \textcolor{comment}{//\ Disable\ Microsoft\ deprecation\ warnings\ for\ POSIX\ functions\ called\ from}}
+\DoxyCodeLine{01028\ \textcolor{comment}{//\ this\ class\ (creat,\ dup,\ dup2,\ and\ close)}}
+\DoxyCodeLine{01029\ GTEST\_DISABLE\_MSC\_DEPRECATED\_PUSH\_()}
+\DoxyCodeLine{01030\ }
+\DoxyCodeLine{01031\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{01032\ }
+\DoxyCodeLine{01033\ \textcolor{comment}{//\ Object\ that\ captures\ an\ output\ stream\ (stdout/stderr).}}
+\DoxyCodeLine{01034\ \textcolor{keyword}{class\ }CapturedStream\ \{}
+\DoxyCodeLine{01035\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01036\ \ \ \textcolor{comment}{//\ The\ ctor\ redirects\ the\ stream\ to\ a\ temporary\ file.}}
+\DoxyCodeLine{01037\ \ \ \textcolor{keyword}{explicit}\ CapturedStream(\textcolor{keywordtype}{int}\ fd)\ :\ fd\_(fd),\ uncaptured\_fd\_(dup(fd))\ \{}
+\DoxyCodeLine{01038\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01039\ \ \ \ \ \textcolor{keywordtype}{char}\ temp\_dir\_path[MAX\_PATH\ +\ 1]\ =\ \{\textcolor{charliteral}{'\(\backslash\)0'}\};\ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01040\ \ \ \ \ \textcolor{keywordtype}{char}\ temp\_file\_path[MAX\_PATH\ +\ 1]\ =\ \{\textcolor{charliteral}{'\(\backslash\)0'}\};\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01041\ }
+\DoxyCodeLine{01042\ \ \ \ \ ::GetTempPathA(\textcolor{keyword}{sizeof}(temp\_dir\_path),\ temp\_dir\_path);}
+\DoxyCodeLine{01043\ \ \ \ \ \textcolor{keyword}{const}\ UINT\ success\ =\ ::GetTempFileNameA(temp\_dir\_path,\ \textcolor{stringliteral}{"{}gtest\_redir"{}},}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ \ \textcolor{comment}{//\ Generate\ unique\ file\ name.}}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ temp\_file\_path);}
+\DoxyCodeLine{01046\ \ \ \ \ GTEST\_CHECK\_(success\ !=\ 0)}
+\DoxyCodeLine{01047\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Unable\ to\ create\ a\ temporary\ file\ in\ "{}}\ <<\ temp\_dir\_path;}
+\DoxyCodeLine{01048\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ captured\_fd\ =\ creat(temp\_file\_path,\ \_S\_IREAD\ |\ \_S\_IWRITE);}
+\DoxyCodeLine{01049\ \ \ \ \ GTEST\_CHECK\_(captured\_fd\ !=\ -\/1)}
+\DoxyCodeLine{01050\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Unable\ to\ open\ temporary\ file\ "{}}\ <<\ temp\_file\_path;}
+\DoxyCodeLine{01051\ \ \ \ \ filename\_\ =\ temp\_file\_path;}
+\DoxyCodeLine{01052\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01053\ \ \ \ \ \textcolor{comment}{//\ There's\ no\ guarantee\ that\ a\ test\ has\ write\ access\ to\ the\ current}}
+\DoxyCodeLine{01054\ \ \ \ \ \textcolor{comment}{//\ directory,\ so\ we\ create\ the\ temporary\ file\ in\ a\ temporary\ directory.}}
+\DoxyCodeLine{01055\ \ \ \ \ std::string\ name\_template;}
+\DoxyCodeLine{01056\ }
+\DoxyCodeLine{01057\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX\_ANDROID}}
+\DoxyCodeLine{01058\ \ \ \ \ \textcolor{comment}{//\ Note:\ Android\ applications\ are\ expected\ to\ call\ the\ framework's}}
+\DoxyCodeLine{01059\ \ \ \ \ \textcolor{comment}{//\ Context.getExternalStorageDirectory()\ method\ through\ JNI\ to\ get}}
+\DoxyCodeLine{01060\ \ \ \ \ \textcolor{comment}{//\ the\ location\ of\ the\ world-\/writable\ SD\ Card\ directory.\ However,}}
+\DoxyCodeLine{01061\ \ \ \ \ \textcolor{comment}{//\ this\ requires\ a\ Context\ handle,\ which\ cannot\ be\ retrieved}}
+\DoxyCodeLine{01062\ \ \ \ \ \textcolor{comment}{//\ globally\ from\ native\ code.\ Doing\ so\ also\ precludes\ running\ the}}
+\DoxyCodeLine{01063\ \ \ \ \ \textcolor{comment}{//\ code\ as\ part\ of\ a\ regular\ standalone\ executable,\ which\ doesn't}}
+\DoxyCodeLine{01064\ \ \ \ \ \textcolor{comment}{//\ run\ in\ a\ Dalvik\ process\ (e.g.\ when\ running\ it\ through\ 'adb\ shell').}}
+\DoxyCodeLine{01065\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{01066\ \ \ \ \ \textcolor{comment}{//\ The\ location\ /data/local/tmp\ is\ directly\ accessible\ from\ native\ code.}}
+\DoxyCodeLine{01067\ \ \ \ \ \textcolor{comment}{//\ '/sdcard'\ and\ other\ variants\ cannot\ be\ relied\ on,\ as\ they\ are\ not}}
+\DoxyCodeLine{01068\ \ \ \ \ \textcolor{comment}{//\ guaranteed\ to\ be\ mounted,\ or\ may\ have\ a\ delay\ in\ mounting.}}
+\DoxyCodeLine{01069\ \ \ \ \ name\_template\ =\ \textcolor{stringliteral}{"{}/data/local/tmp/"{}};}
+\DoxyCodeLine{01070\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_IOS}}
+\DoxyCodeLine{01071\ \ \ \ \ \textcolor{keywordtype}{char}\ user\_temp\_dir[PATH\_MAX\ +\ 1];}
+\DoxyCodeLine{01072\ }
+\DoxyCodeLine{01073\ \ \ \ \ \textcolor{comment}{//\ Documented\ alternative\ to\ NSTemporaryDirectory()\ (for\ obtaining\ creating}}
+\DoxyCodeLine{01074\ \ \ \ \ \textcolor{comment}{//\ a\ temporary\ directory)\ at}}
+\DoxyCodeLine{01075\ \ \ \ \ \textcolor{comment}{//\ https://developer.apple.com/library/archive/documentation/Security/Conceptual/SecureCodingGuide/Articles/RaceConditions.html\#//apple\_ref/doc/uid/TP40002585-\/SW10}}
+\DoxyCodeLine{01076\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{01077\ \ \ \ \ \textcolor{comment}{//\ \_CS\_DARWIN\_USER\_TEMP\_DIR\ (as\ well\ as\ \_CS\_DARWIN\_USER\_CACHE\_DIR)\ is\ not}}
+\DoxyCodeLine{01078\ \ \ \ \ \textcolor{comment}{//\ documented\ in\ the\ confstr()\ man\ page\ at}}
+\DoxyCodeLine{01079\ \ \ \ \ \textcolor{comment}{//\ https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages\_iPhoneOS/man3/confstr.3.html\#//apple\_ref/doc/man/3/confstr}}
+\DoxyCodeLine{01080\ \ \ \ \ \textcolor{comment}{//\ but\ are\ still\ available,\ according\ to\ the\ WebKit\ patches\ at}}
+\DoxyCodeLine{01081\ \ \ \ \ \textcolor{comment}{//\ https://trac.webkit.org/changeset/262004/webkit}}
+\DoxyCodeLine{01082\ \ \ \ \ \textcolor{comment}{//\ https://trac.webkit.org/changeset/263705/webkit}}
+\DoxyCodeLine{01083\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{01084\ \ \ \ \ \textcolor{comment}{//\ The\ confstr()\ implementation\ falls\ back\ to\ getenv("{}TMPDIR"{}).\ See}}
+\DoxyCodeLine{01085\ \ \ \ \ \textcolor{comment}{//\ https://opensource.apple.com/source/Libc/Libc-\/1439.100.3/gen/confstr.c.auto.html}}
+\DoxyCodeLine{01086\ \ \ \ \ ::confstr(\_CS\_DARWIN\_USER\_TEMP\_DIR,\ user\_temp\_dir,\ \textcolor{keyword}{sizeof}(user\_temp\_dir));}
+\DoxyCodeLine{01087\ }
+\DoxyCodeLine{01088\ \ \ \ \ name\_template\ =\ user\_temp\_dir;}
+\DoxyCodeLine{01089\ \ \ \ \ \textcolor{keywordflow}{if}\ (name\_template.back()\ !=\ GTEST\_PATH\_SEP\_[0])}
+\DoxyCodeLine{01090\ \ \ \ \ \ \ name\_template.push\_back(GTEST\_PATH\_SEP\_[0]);}
+\DoxyCodeLine{01091\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01092\ \ \ \ \ name\_template\ =\ \textcolor{stringliteral}{"{}/tmp/"{}};}
+\DoxyCodeLine{01093\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01094\ \ \ \ \ name\_template.append(\textcolor{stringliteral}{"{}gtest\_captured\_stream.XXXXXX"{}});}
+\DoxyCodeLine{01095\ }
+\DoxyCodeLine{01096\ \ \ \ \ \textcolor{comment}{//\ mkstemp()\ modifies\ the\ string\ bytes\ in\ place,\ and\ does\ not\ go\ beyond\ the}}
+\DoxyCodeLine{01097\ \ \ \ \ \textcolor{comment}{//\ string's\ length.\ This\ results\ in\ well-\/defined\ behavior\ in\ C++17.}}
+\DoxyCodeLine{01098\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{01099\ \ \ \ \ \textcolor{comment}{//\ The\ const\_cast\ is\ needed\ below\ C++17.\ The\ constraints\ on\ std::string}}
+\DoxyCodeLine{01100\ \ \ \ \ \textcolor{comment}{//\ implementations\ in\ C++11\ and\ above\ make\ assumption\ behind\ the\ const\_cast}}
+\DoxyCodeLine{01101\ \ \ \ \ \textcolor{comment}{//\ fairly\ safe.}}
+\DoxyCodeLine{01102\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ captured\_fd\ =\ ::mkstemp(\textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(name\_template.data()));}
+\DoxyCodeLine{01103\ \ \ \ \ \textcolor{keywordflow}{if}\ (captured\_fd\ ==\ -\/1)\ \{}
+\DoxyCodeLine{01104\ \ \ \ \ \ \ GTEST\_LOG\_(WARNING)}
+\DoxyCodeLine{01105\ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Failed\ to\ create\ tmp\ file\ "{}}\ <<\ name\_template}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ for\ test;\ does\ the\ test\ have\ access\ to\ the\ /tmp\ directory?"{}};}
+\DoxyCodeLine{01107\ \ \ \ \ \}}
+\DoxyCodeLine{01108\ \ \ \ \ filename\_\ =\ std::move(name\_template);}
+\DoxyCodeLine{01109\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01110\ \ \ \ \ fflush(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{01111\ \ \ \ \ dup2(captured\_fd,\ fd\_);}
+\DoxyCodeLine{01112\ \ \ \ \ close(captured\_fd);}
+\DoxyCodeLine{01113\ \ \ \}}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01115\ \ \ \string~CapturedStream()\ \{\ remove(filename\_.c\_str());\ \}}
+\DoxyCodeLine{01116\ }
+\DoxyCodeLine{01117\ \ \ std::string\ GetCapturedString()\ \{}
+\DoxyCodeLine{01118\ \ \ \ \ \textcolor{keywordflow}{if}\ (uncaptured\_fd\_\ !=\ -\/1)\ \{}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \textcolor{comment}{//\ Restores\ the\ original\ stream.}}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ fflush(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{01121\ \ \ \ \ \ \ dup2(uncaptured\_fd\_,\ fd\_);}
+\DoxyCodeLine{01122\ \ \ \ \ \ \ close(uncaptured\_fd\_);}
+\DoxyCodeLine{01123\ \ \ \ \ \ \ uncaptured\_fd\_\ =\ -\/1;}
+\DoxyCodeLine{01124\ \ \ \ \ \}}
+\DoxyCodeLine{01125\ }
+\DoxyCodeLine{01126\ \ \ \ \ FILE*\ \textcolor{keyword}{const}\ file\ =\ posix::FOpen(filename\_.c\_str(),\ \textcolor{stringliteral}{"{}r"{}});}
+\DoxyCodeLine{01127\ \ \ \ \ \textcolor{keywordflow}{if}\ (file\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01128\ \ \ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ tmp\ file\ "{}}\ <<\ filename\_}
+\DoxyCodeLine{01129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ for\ capturing\ stream."{}};}
+\DoxyCodeLine{01130\ \ \ \ \ \}}
+\DoxyCodeLine{01131\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ content\ =\ ReadEntireFile(file);}
+\DoxyCodeLine{01132\ \ \ \ \ posix::FClose(file);}
+\DoxyCodeLine{01133\ \ \ \ \ \textcolor{keywordflow}{return}\ content;}
+\DoxyCodeLine{01134\ \ \ \}}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01137\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ fd\_;\ \ \textcolor{comment}{//\ A\ stream\ to\ capture.}}
+\DoxyCodeLine{01138\ \ \ \textcolor{keywordtype}{int}\ uncaptured\_fd\_;}
+\DoxyCodeLine{01139\ \ \ \textcolor{comment}{//\ Name\ of\ the\ temporary\ file\ holding\ the\ stderr\ output.}}
+\DoxyCodeLine{01140\ \ \ ::std::string\ filename\_;}
+\DoxyCodeLine{01141\ }
+\DoxyCodeLine{01142\ \ \ CapturedStream(\textcolor{keyword}{const}\ CapturedStream\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01143\ \ \ CapturedStream\&\ operator=(\textcolor{keyword}{const}\ CapturedStream\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01144\ \};}
+\DoxyCodeLine{01145\ }
+\DoxyCodeLine{01146\ GTEST\_DISABLE\_MSC\_DEPRECATED\_POP\_()}
+\DoxyCodeLine{01147\ }
+\DoxyCodeLine{01148\ static\ CapturedStream*\ g\_captured\_stderr\ =\ \textcolor{keywordtype}{nullptr};}
+\DoxyCodeLine{01149\ static\ CapturedStream*\ g\_captured\_stdout\ =\ \textcolor{keywordtype}{nullptr};}
+\DoxyCodeLine{01150\ }
+\DoxyCodeLine{01151\ \textcolor{comment}{//\ Starts\ capturing\ an\ output\ stream\ (stdout/stderr).}}
+\DoxyCodeLine{01152\ static\ \textcolor{keywordtype}{void}\ CaptureStream(\textcolor{keywordtype}{int}\ fd,\ const\ \textcolor{keywordtype}{char}*\ stream\_name,}
+\DoxyCodeLine{01153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ CapturedStream**\ stream)\ \{}
+\DoxyCodeLine{01154\ \ \ \textcolor{keywordflow}{if}\ (*stream\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01155\ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ \textcolor{stringliteral}{"{}Only\ one\ "{}}\ <<\ stream\_name}
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ capturer\ can\ exist\ at\ a\ time."{}};}
+\DoxyCodeLine{01157\ \ \ \}}
+\DoxyCodeLine{01158\ \ \ *stream\ =\ \textcolor{keyword}{new}\ CapturedStream(fd);}
+\DoxyCodeLine{01159\ \}}
+\DoxyCodeLine{01160\ }
+\DoxyCodeLine{01161\ \textcolor{comment}{//\ Stops\ capturing\ the\ output\ stream\ and\ returns\ the\ captured\ string.}}
+\DoxyCodeLine{01162\ \textcolor{keyword}{static}\ std::string\ GetCapturedStream(CapturedStream**\ captured\_stream)\ \{}
+\DoxyCodeLine{01163\ \ \ \textcolor{keyword}{const}\ std::string\ content\ =\ (*captured\_stream)-\/>GetCapturedString();}
+\DoxyCodeLine{01164\ }
+\DoxyCodeLine{01165\ \ \ \textcolor{keyword}{delete}\ *captured\_stream;}
+\DoxyCodeLine{01166\ \ \ *captured\_stream\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01167\ }
+\DoxyCodeLine{01168\ \ \ \textcolor{keywordflow}{return}\ content;}
+\DoxyCodeLine{01169\ \}}
+\DoxyCodeLine{01170\ }
+\DoxyCodeLine{01171\ \textcolor{preprocessor}{\#if\ defined(\_MSC\_VER)\ ||\ defined(\_\_BORLANDC\_\_)}}
+\DoxyCodeLine{01172\ \textcolor{comment}{//\ MSVC\ and\ C++Builder\ do\ not\ provide\ a\ definition\ of\ STDERR\_FILENO.}}
+\DoxyCodeLine{01173\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kStdOutFileno\ =\ 1;}
+\DoxyCodeLine{01174\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kStdErrFileno\ =\ 2;}
+\DoxyCodeLine{01175\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01176\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kStdOutFileno\ =\ STDOUT\_FILENO;}
+\DoxyCodeLine{01177\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kStdErrFileno\ =\ STDERR\_FILENO;}
+\DoxyCodeLine{01178\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(\_MSC\_VER)\ ||\ defined(\_\_BORLANDC\_\_)}}
+\DoxyCodeLine{01179\ }
+\DoxyCodeLine{01180\ \textcolor{comment}{//\ Starts\ capturing\ stdout.}}
+\DoxyCodeLine{01181\ \textcolor{keywordtype}{void}\ CaptureStdout()\ \{}
+\DoxyCodeLine{01182\ \ \ CaptureStream(kStdOutFileno,\ \textcolor{stringliteral}{"{}stdout"{}},\ \&g\_captured\_stdout);}
+\DoxyCodeLine{01183\ \}}
+\DoxyCodeLine{01184\ }
+\DoxyCodeLine{01185\ \textcolor{comment}{//\ Starts\ capturing\ stderr.}}
+\DoxyCodeLine{01186\ \textcolor{keywordtype}{void}\ CaptureStderr()\ \{}
+\DoxyCodeLine{01187\ \ \ CaptureStream(kStdErrFileno,\ \textcolor{stringliteral}{"{}stderr"{}},\ \&g\_captured\_stderr);}
+\DoxyCodeLine{01188\ \}}
+\DoxyCodeLine{01189\ }
+\DoxyCodeLine{01190\ \textcolor{comment}{//\ Stops\ capturing\ stdout\ and\ returns\ the\ captured\ string.}}
+\DoxyCodeLine{01191\ std::string\ GetCapturedStdout()\ \{}
+\DoxyCodeLine{01192\ \ \ \textcolor{keywordflow}{return}\ GetCapturedStream(\&g\_captured\_stdout);}
+\DoxyCodeLine{01193\ \}}
+\DoxyCodeLine{01194\ }
+\DoxyCodeLine{01195\ \textcolor{comment}{//\ Stops\ capturing\ stderr\ and\ returns\ the\ captured\ string.}}
+\DoxyCodeLine{01196\ std::string\ GetCapturedStderr()\ \{}
+\DoxyCodeLine{01197\ \ \ \textcolor{keywordflow}{return}\ GetCapturedStream(\&g\_captured\_stderr);}
+\DoxyCodeLine{01198\ \}}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01200\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{01201\ }
+\DoxyCodeLine{01202\ \textcolor{keywordtype}{size\_t}\ GetFileSize(FILE*\ file)\ \{}
+\DoxyCodeLine{01203\ \ \ fseek(file,\ 0,\ SEEK\_END);}
+\DoxyCodeLine{01204\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(ftell(file));}
+\DoxyCodeLine{01205\ \}}
+\DoxyCodeLine{01206\ }
+\DoxyCodeLine{01207\ std::string\ ReadEntireFile(FILE*\ file)\ \{}
+\DoxyCodeLine{01208\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ file\_size\ =\ GetFileSize(file);}
+\DoxyCodeLine{01209\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ buffer\ =\ \textcolor{keyword}{new}\ \textcolor{keywordtype}{char}[file\_size];}
+\DoxyCodeLine{01210\ }
+\DoxyCodeLine{01211\ \ \ \textcolor{keywordtype}{size\_t}\ bytes\_last\_read\ =\ 0;\ \ \textcolor{comment}{//\ \#\ of\ bytes\ read\ in\ the\ last\ fread()}}
+\DoxyCodeLine{01212\ \ \ \textcolor{keywordtype}{size\_t}\ bytes\_read\ =\ 0;\ \ \ \ \ \ \ \textcolor{comment}{//\ \#\ of\ bytes\ read\ so\ far}}
+\DoxyCodeLine{01213\ }
+\DoxyCodeLine{01214\ \ \ fseek(file,\ 0,\ SEEK\_SET);}
+\DoxyCodeLine{01215\ }
+\DoxyCodeLine{01216\ \ \ \textcolor{comment}{//\ Keeps\ reading\ the\ file\ until\ we\ cannot\ read\ further\ or\ the}}
+\DoxyCodeLine{01217\ \ \ \textcolor{comment}{//\ pre-\/determined\ file\ size\ is\ reached.}}
+\DoxyCodeLine{01218\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{01219\ \ \ \ \ bytes\_last\_read\ =}
+\DoxyCodeLine{01220\ \ \ \ \ \ \ \ \ fread(buffer\ +\ bytes\_read,\ 1,\ file\_size\ -\/\ bytes\_read,\ file);}
+\DoxyCodeLine{01221\ \ \ \ \ bytes\_read\ +=\ bytes\_last\_read;}
+\DoxyCodeLine{01222\ \ \ \}\ \textcolor{keywordflow}{while}\ (bytes\_last\_read\ >\ 0\ \&\&\ bytes\_read\ <\ file\_size);}
+\DoxyCodeLine{01223\ }
+\DoxyCodeLine{01224\ \ \ \textcolor{keyword}{const}\ std::string\ content(buffer,\ bytes\_read);}
+\DoxyCodeLine{01225\ \ \ \textcolor{keyword}{delete}[]\ buffer;}
+\DoxyCodeLine{01226\ }
+\DoxyCodeLine{01227\ \ \ \textcolor{keywordflow}{return}\ content;}
+\DoxyCodeLine{01228\ \}}
+\DoxyCodeLine{01229\ }
+\DoxyCodeLine{01230\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{01231\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::vector<std::string>*\ g\_injected\_test\_argvs\ =}
+\DoxyCodeLine{01232\ \ \ \ \ \textcolor{keyword}{nullptr};\ \ \textcolor{comment}{//\ Owned.}}
+\DoxyCodeLine{01233\ }
+\DoxyCodeLine{01234\ std::vector<std::string>\ GetInjectableArgvs()\ \{}
+\DoxyCodeLine{01235\ \ \ \textcolor{keywordflow}{if}\ (g\_injected\_test\_argvs\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01236\ \ \ \ \ \textcolor{keywordflow}{return}\ *g\_injected\_test\_argvs;}
+\DoxyCodeLine{01237\ \ \ \}}
+\DoxyCodeLine{01238\ \ \ \textcolor{keywordflow}{return}\ GetArgvs();}
+\DoxyCodeLine{01239\ \}}
+\DoxyCodeLine{01240\ }
+\DoxyCodeLine{01241\ \textcolor{keywordtype}{void}\ SetInjectableArgvs(\textcolor{keyword}{const}\ std::vector<std::string>*\ new\_argvs)\ \{}
+\DoxyCodeLine{01242\ \ \ \textcolor{keywordflow}{if}\ (g\_injected\_test\_argvs\ !=\ new\_argvs)\ \textcolor{keyword}{delete}\ g\_injected\_test\_argvs;}
+\DoxyCodeLine{01243\ \ \ g\_injected\_test\_argvs\ =\ new\_argvs;}
+\DoxyCodeLine{01244\ \}}
+\DoxyCodeLine{01245\ }
+\DoxyCodeLine{01246\ \textcolor{keywordtype}{void}\ SetInjectableArgvs(\textcolor{keyword}{const}\ std::vector<std::string>\&\ new\_argvs)\ \{}
+\DoxyCodeLine{01247\ \ \ SetInjectableArgvs(}
+\DoxyCodeLine{01248\ \ \ \ \ \ \ \textcolor{keyword}{new}\ std::vector<std::string>(new\_argvs.begin(),\ new\_argvs.end()));}
+\DoxyCodeLine{01249\ \}}
+\DoxyCodeLine{01250\ }
+\DoxyCodeLine{01251\ \textcolor{keywordtype}{void}\ ClearInjectableArgvs()\ \{}
+\DoxyCodeLine{01252\ \ \ \textcolor{keyword}{delete}\ g\_injected\_test\_argvs;}
+\DoxyCodeLine{01253\ \ \ g\_injected\_test\_argvs\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01254\ \}}
+\DoxyCodeLine{01255\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{01256\ }
+\DoxyCodeLine{01257\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{01258\ \textcolor{keyword}{namespace\ }posix\ \{}
+\DoxyCodeLine{01259\ \textcolor{keywordtype}{void}\ Abort()\ \{}
+\DoxyCodeLine{01260\ \ \ DebugBreak();}
+\DoxyCodeLine{01261\ \ \ TerminateProcess(GetCurrentProcess(),\ 1);}
+\DoxyCodeLine{01262\ \}}
+\DoxyCodeLine{01263\ \}\ \ \textcolor{comment}{//\ namespace\ posix}}
+\DoxyCodeLine{01264\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{01265\ }
+\DoxyCodeLine{01266\ \textcolor{comment}{//\ Returns\ the\ name\ of\ the\ environment\ variable\ corresponding\ to\ the}}
+\DoxyCodeLine{01267\ \textcolor{comment}{//\ given\ flag.\ \ For\ example,\ FlagToEnvVar("{}foo"{})\ will\ return}}
+\DoxyCodeLine{01268\ \textcolor{comment}{//\ "{}GTEST\_FOO"{}\ in\ the\ open-\/source\ version.}}
+\DoxyCodeLine{01269\ \textcolor{keyword}{static}\ std::string\ FlagToEnvVar(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag)\ \{}
+\DoxyCodeLine{01270\ \ \ \textcolor{keyword}{const}\ std::string\ full\_flag\ =}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ (Message()\ <<\ GTEST\_FLAG\_PREFIX\_\ <<\ flag).GetString();}
+\DoxyCodeLine{01272\ }
+\DoxyCodeLine{01273\ \ \ Message\ env\_var;}
+\DoxyCodeLine{01274\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ full\_flag.length();\ i++)\ \{}
+\DoxyCodeLine{01275\ \ \ \ \ env\_var\ <<\ ToUpper(full\_flag.c\_str()[i]);}
+\DoxyCodeLine{01276\ \ \ \}}
+\DoxyCodeLine{01277\ }
+\DoxyCodeLine{01278\ \ \ \textcolor{keywordflow}{return}\ env\_var.GetString();}
+\DoxyCodeLine{01279\ \}}
+\DoxyCodeLine{01280\ }
+\DoxyCodeLine{01281\ \textcolor{comment}{//\ Parses\ 'str'\ for\ a\ 32-\/bit\ signed\ integer.\ \ If\ successful,\ writes}}
+\DoxyCodeLine{01282\ \textcolor{comment}{//\ the\ result\ to\ *value\ and\ returns\ true;\ otherwise\ leaves\ *value}}
+\DoxyCodeLine{01283\ \textcolor{comment}{//\ unchanged\ and\ returns\ false.}}
+\DoxyCodeLine{01284\ \textcolor{keywordtype}{bool}\ ParseInt32(\textcolor{keyword}{const}\ Message\&\ src\_text,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ int32\_t*\ value)\ \{}
+\DoxyCodeLine{01285\ \ \ \textcolor{comment}{//\ Parses\ the\ environment\ variable\ as\ a\ decimal\ integer.}}
+\DoxyCodeLine{01286\ \ \ \textcolor{keywordtype}{char}*\ end\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01287\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{long}\ long\_value\ =\ strtol(str,\ \&end,\ 10);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01288\ }
+\DoxyCodeLine{01289\ \ \ \textcolor{comment}{//\ Has\ strtol()\ consumed\ all\ characters\ in\ the\ string?}}
+\DoxyCodeLine{01290\ \ \ \textcolor{keywordflow}{if}\ (*end\ !=\ \textcolor{charliteral}{'\(\backslash\)0'})\ \{}
+\DoxyCodeLine{01291\ \ \ \ \ \textcolor{comment}{//\ No\ -\/\ an\ invalid\ character\ was\ encountered.}}
+\DoxyCodeLine{01292\ \ \ \ \ Message\ msg;}
+\DoxyCodeLine{01293\ \ \ \ \ msg\ <<\ \textcolor{stringliteral}{"{}WARNING:\ "{}}\ <<\ src\_text}
+\DoxyCodeLine{01294\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ a\ 32-\/bit\ integer,\ but\ actually"{}}}
+\DoxyCodeLine{01295\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ has\ value\ \(\backslash\)"{}"{}}\ <<\ str\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}.\(\backslash\)n"{}};}
+\DoxyCodeLine{01296\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%s"{}},\ msg.GetString().c\_str());}
+\DoxyCodeLine{01297\ \ \ \ \ fflush(stdout);}
+\DoxyCodeLine{01298\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01299\ \ \ \}}
+\DoxyCodeLine{01300\ }
+\DoxyCodeLine{01301\ \ \ \textcolor{comment}{//\ Is\ the\ parsed\ value\ in\ the\ range\ of\ an\ int32\_t?}}
+\DoxyCodeLine{01302\ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ result\ =\ \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>}(long\_value);}
+\DoxyCodeLine{01303\ \ \ \textcolor{keywordflow}{if}\ (long\_value\ ==\ LONG\_MAX\ ||\ long\_value\ ==\ LONG\_MIN\ ||}
+\DoxyCodeLine{01304\ \ \ \ \ \ \ \textcolor{comment}{//\ The\ parsed\ value\ overflows\ as\ a\ long.\ \ (strtol()\ returns}}
+\DoxyCodeLine{01305\ \ \ \ \ \ \ \textcolor{comment}{//\ LONG\_MAX\ or\ LONG\_MIN\ when\ the\ input\ overflows.)}}
+\DoxyCodeLine{01306\ \ \ \ \ \ \ result\ !=\ long\_value}
+\DoxyCodeLine{01307\ \ \ \ \ \ \ \textcolor{comment}{//\ The\ parsed\ value\ overflows\ as\ an\ int32\_t.}}
+\DoxyCodeLine{01308\ \ \ )\ \{}
+\DoxyCodeLine{01309\ \ \ \ \ Message\ msg;}
+\DoxyCodeLine{01310\ \ \ \ \ msg\ <<\ \textcolor{stringliteral}{"{}WARNING:\ "{}}\ <<\ src\_text}
+\DoxyCodeLine{01311\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ a\ 32-\/bit\ integer,\ but\ actually"{}}}
+\DoxyCodeLine{01312\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ has\ value\ "{}}\ <<\ str\ <<\ \textcolor{stringliteral}{"{},\ which\ overflows.\(\backslash\)n"{}};}
+\DoxyCodeLine{01313\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%s"{}},\ msg.GetString().c\_str());}
+\DoxyCodeLine{01314\ \ \ \ \ fflush(stdout);}
+\DoxyCodeLine{01315\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01316\ \ \ \}}
+\DoxyCodeLine{01317\ }
+\DoxyCodeLine{01318\ \ \ *value\ =\ result;}
+\DoxyCodeLine{01319\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01320\ \}}
+\DoxyCodeLine{01321\ }
+\DoxyCodeLine{01322\ \textcolor{comment}{//\ Reads\ and\ returns\ the\ Boolean\ environment\ variable\ corresponding\ to}}
+\DoxyCodeLine{01323\ \textcolor{comment}{//\ the\ given\ flag;\ if\ it's\ not\ set,\ returns\ default\_value.}}
+\DoxyCodeLine{01324\ \textcolor{comment}{//}}
+\DoxyCodeLine{01325\ \textcolor{comment}{//\ The\ value\ is\ considered\ true\ if\ and\ only\ if\ it's\ not\ "{}0"{}.}}
+\DoxyCodeLine{01326\ \textcolor{keywordtype}{bool}\ BoolFromGTestEnv(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,\ \textcolor{keywordtype}{bool}\ default\_value)\ \{}
+\DoxyCodeLine{01327\ \textcolor{preprocessor}{\#if\ defined(GTEST\_GET\_BOOL\_FROM\_ENV\_)}}
+\DoxyCodeLine{01328\ \ \ \textcolor{keywordflow}{return}\ GTEST\_GET\_BOOL\_FROM\_ENV\_(flag,\ default\_value);}
+\DoxyCodeLine{01329\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01330\ \ \ \textcolor{keyword}{const}\ std::string\ env\_var\ =\ FlagToEnvVar(flag);}
+\DoxyCodeLine{01331\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ string\_value\ =\ posix::GetEnv(env\_var.c\_str());}
+\DoxyCodeLine{01332\ \ \ \textcolor{keywordflow}{return}\ string\_value\ ==\ \textcolor{keyword}{nullptr}\ ?\ default\_value}
+\DoxyCodeLine{01333\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ strcmp(string\_value,\ \textcolor{stringliteral}{"{}0"{}})\ !=\ 0;}
+\DoxyCodeLine{01334\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(GTEST\_GET\_BOOL\_FROM\_ENV\_)}}
+\DoxyCodeLine{01335\ \}}
+\DoxyCodeLine{01336\ }
+\DoxyCodeLine{01337\ \textcolor{comment}{//\ Reads\ and\ returns\ a\ 32-\/bit\ integer\ stored\ in\ the\ environment}}
+\DoxyCodeLine{01338\ \textcolor{comment}{//\ variable\ corresponding\ to\ the\ given\ flag;\ if\ it\ isn't\ set\ or}}
+\DoxyCodeLine{01339\ \textcolor{comment}{//\ doesn't\ represent\ a\ valid\ 32-\/bit\ integer,\ returns\ default\_value.}}
+\DoxyCodeLine{01340\ int32\_t\ Int32FromGTestEnv(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,\ int32\_t\ default\_value)\ \{}
+\DoxyCodeLine{01341\ \textcolor{preprocessor}{\#if\ defined(GTEST\_GET\_INT32\_FROM\_ENV\_)}}
+\DoxyCodeLine{01342\ \ \ \textcolor{keywordflow}{return}\ GTEST\_GET\_INT32\_FROM\_ENV\_(flag,\ default\_value);}
+\DoxyCodeLine{01343\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01344\ \ \ \textcolor{keyword}{const}\ std::string\ env\_var\ =\ FlagToEnvVar(flag);}
+\DoxyCodeLine{01345\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ string\_value\ =\ posix::GetEnv(env\_var.c\_str());}
+\DoxyCodeLine{01346\ \ \ \textcolor{keywordflow}{if}\ (string\_value\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01347\ \ \ \ \ \textcolor{comment}{//\ The\ environment\ variable\ is\ not\ set.}}
+\DoxyCodeLine{01348\ \ \ \ \ \textcolor{keywordflow}{return}\ default\_value;}
+\DoxyCodeLine{01349\ \ \ \}}
+\DoxyCodeLine{01350\ }
+\DoxyCodeLine{01351\ \ \ int32\_t\ result\ =\ default\_value;}
+\DoxyCodeLine{01352\ \ \ \textcolor{keywordflow}{if}\ (!ParseInt32(Message()\ <<\ \textcolor{stringliteral}{"{}Environment\ variable\ "{}}\ <<\ env\_var,\ string\_value,}
+\DoxyCodeLine{01353\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&result))\ \{}
+\DoxyCodeLine{01354\ \ \ \ \ printf(\textcolor{stringliteral}{"{}The\ default\ value\ \%s\ is\ used.\(\backslash\)n"{}},}
+\DoxyCodeLine{01355\ \ \ \ \ \ \ \ \ \ \ \ (Message()\ <<\ default\_value).GetString().c\_str());}
+\DoxyCodeLine{01356\ \ \ \ \ fflush(stdout);}
+\DoxyCodeLine{01357\ \ \ \ \ \textcolor{keywordflow}{return}\ default\_value;}
+\DoxyCodeLine{01358\ \ \ \}}
+\DoxyCodeLine{01359\ }
+\DoxyCodeLine{01360\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{01361\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(GTEST\_GET\_INT32\_FROM\_ENV\_)}}
+\DoxyCodeLine{01362\ \}}
+\DoxyCodeLine{01363\ }
+\DoxyCodeLine{01364\ \textcolor{comment}{//\ As\ a\ special\ case\ for\ the\ 'output'\ flag,\ if\ GTEST\_OUTPUT\ is\ not}}
+\DoxyCodeLine{01365\ \textcolor{comment}{//\ set,\ we\ look\ for\ XML\_OUTPUT\_FILE,\ which\ is\ set\ by\ the\ Bazel\ build}}
+\DoxyCodeLine{01366\ \textcolor{comment}{//\ system.\ \ The\ value\ of\ XML\_OUTPUT\_FILE\ is\ a\ filename\ without\ the}}
+\DoxyCodeLine{01367\ \textcolor{comment}{//\ "{}xml:"{}\ prefix\ of\ GTEST\_OUTPUT.}}
+\DoxyCodeLine{01368\ \textcolor{comment}{//\ Note\ that\ this\ is\ meant\ to\ be\ called\ at\ the\ call\ site\ so\ it\ does}}
+\DoxyCodeLine{01369\ \textcolor{comment}{//\ not\ check\ that\ the\ flag\ is\ 'output'}}
+\DoxyCodeLine{01370\ \textcolor{comment}{//\ In\ essence\ this\ checks\ an\ env\ variable\ called\ XML\_OUTPUT\_FILE}}
+\DoxyCodeLine{01371\ \textcolor{comment}{//\ and\ if\ it\ is\ set\ we\ prepend\ "{}xml:"{}\ to\ its\ value,\ if\ it\ not\ set\ we\ return\ "{}"{}}}
+\DoxyCodeLine{01372\ std::string\ OutputFlagAlsoCheckEnvVar()\ \{}
+\DoxyCodeLine{01373\ \ \ std::string\ default\_value\_for\_output\_flag\ =\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{01374\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ xml\_output\_file\_env\ =\ posix::GetEnv(\textcolor{stringliteral}{"{}XML\_OUTPUT\_FILE"{}});}
+\DoxyCodeLine{01375\ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{nullptr}\ !=\ xml\_output\_file\_env)\ \{}
+\DoxyCodeLine{01376\ \ \ \ \ default\_value\_for\_output\_flag\ =\ std::string(\textcolor{stringliteral}{"{}xml:"{}})\ +\ xml\_output\_file\_env;}
+\DoxyCodeLine{01377\ \ \ \}}
+\DoxyCodeLine{01378\ \ \ \textcolor{keywordflow}{return}\ default\_value\_for\_output\_flag;}
+\DoxyCodeLine{01379\ \}}
+\DoxyCodeLine{01380\ }
+\DoxyCodeLine{01381\ \textcolor{comment}{//\ Reads\ and\ returns\ the\ string\ environment\ variable\ corresponding\ to}}
+\DoxyCodeLine{01382\ \textcolor{comment}{//\ the\ given\ flag;\ if\ it's\ not\ set,\ returns\ default\_value.}}
+\DoxyCodeLine{01383\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ StringFromGTestEnv(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ default\_value)\ \{}
+\DoxyCodeLine{01384\ \textcolor{preprocessor}{\#if\ defined(GTEST\_GET\_STRING\_FROM\_ENV\_)}}
+\DoxyCodeLine{01385\ \ \ \textcolor{keywordflow}{return}\ GTEST\_GET\_STRING\_FROM\_ENV\_(flag,\ default\_value);}
+\DoxyCodeLine{01386\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01387\ \ \ \textcolor{keyword}{const}\ std::string\ env\_var\ =\ FlagToEnvVar(flag);}
+\DoxyCodeLine{01388\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ value\ =\ posix::GetEnv(env\_var.c\_str());}
+\DoxyCodeLine{01389\ \ \ \textcolor{keywordflow}{return}\ value\ ==\ \textcolor{keyword}{nullptr}\ ?\ default\_value\ :\ value;}
+\DoxyCodeLine{01390\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(GTEST\_GET\_STRING\_FROM\_ENV\_)}}
+\DoxyCodeLine{01391\ \}}
+\DoxyCodeLine{01392\ }
+\DoxyCodeLine{01393\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01394\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

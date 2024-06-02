@@ -1,0 +1,254 @@
+\doxysection{gtest-\/spi.h}
+\hypertarget{gtest-spi_8h_source}{}\label{gtest-spi_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/spi.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/spi.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Utilities\ for\ testing\ Google\ Test\ itself\ and\ code\ that\ uses\ Google\ Test}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ (e.g.\ frameworks\ built\ on\ top\ of\ Google\ Test).}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_SPI\_H\_}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_SPI\_H\_}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4251\ \(\backslash\)}
+\DoxyCodeLine{00039\ \textcolor{comment}{/*\ class\ A\ needs\ to\ have\ dll-\/interface\ to\ be\ used\ by\ clients\ of\ class\ B\ */})}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ namespace\ testing\ \{}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ This\ helper\ class\ can\ be\ used\ to\ mock\ out\ Google\ Test\ failure\ reporting}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ so\ that\ we\ can\ test\ Google\ Test\ or\ code\ that\ builds\ on\ Google\ Test.}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ An\ object\ of\ this\ class\ appends\ a\ TestPartResult\ object\ to\ the}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ TestPartResultArray\ object\ given\ in\ the\ constructor\ whenever\ a\ Google\ Test}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ failure\ is\ reported.\ It\ can\ either\ intercept\ only\ failures\ that\ are}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ generated\ in\ the\ same\ thread\ that\ created\ this\ object\ or\ it\ can\ intercept}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ all\ generated\ failures.\ The\ scope\ of\ this\ mock\ object\ can\ be\ controlled\ with}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ the\ second\ argument\ to\ the\ two\ arguments\ constructor.}}
+\DoxyCodeLine{00052\ \textcolor{keyword}{class\ }GTEST\_API\_\ ScopedFakeTestPartResultReporter}
+\DoxyCodeLine{00053\ \ \ \ \ :\ \textcolor{keyword}{public}\ TestPartResultReporterInterface\ \{}
+\DoxyCodeLine{00054\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00055\ \ \ \textcolor{comment}{//\ The\ two\ possible\ mocking\ modes\ of\ this\ object.}}
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{enum}\ InterceptMode\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ INTERCEPT\_ONLY\_CURRENT\_THREAD,\ \ \textcolor{comment}{//\ Intercepts\ only\ thread\ local\ failures.}}
+\DoxyCodeLine{00058\ \ \ \ \ INTERCEPT\_ALL\_THREADS\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Intercepts\ all\ failures.}}
+\DoxyCodeLine{00059\ \ \ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \textcolor{comment}{//\ The\ c'tor\ sets\ this\ object\ as\ the\ test\ part\ result\ reporter\ used}}
+\DoxyCodeLine{00062\ \ \ \textcolor{comment}{//\ by\ Google\ Test.\ \ The\ 'result'\ parameter\ specifies\ where\ to\ report\ the}}
+\DoxyCodeLine{00063\ \ \ \textcolor{comment}{//\ results.\ This\ reporter\ will\ only\ catch\ failures\ generated\ in\ the\ current}}
+\DoxyCodeLine{00064\ \ \ \textcolor{comment}{//\ thread.\ DEPRECATED}}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{explicit}\ ScopedFakeTestPartResultReporter(TestPartResultArray*\ result);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{comment}{//\ Same\ as\ above,\ but\ you\ can\ choose\ the\ interception\ scope\ of\ this\ object.}}
+\DoxyCodeLine{00068\ \ \ ScopedFakeTestPartResultReporter(InterceptMode\ intercept\_mode,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ TestPartResultArray*\ result);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ The\ d'tor\ restores\ the\ previous\ test\ part\ result\ reporter.}}
+\DoxyCodeLine{00072\ \ \ \string~ScopedFakeTestPartResultReporter()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{comment}{//\ Appends\ the\ TestPartResult\ object\ to\ the\ TestPartResultArray}}
+\DoxyCodeLine{00075\ \ \ \textcolor{comment}{//\ received\ in\ the\ constructor.}}
+\DoxyCodeLine{00076\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00077\ \ \ \textcolor{comment}{//\ This\ method\ is\ from\ the\ TestPartResultReporterInterface}}
+\DoxyCodeLine{00078\ \ \ \textcolor{comment}{//\ interface.}}
+\DoxyCodeLine{00079\ \ \ \textcolor{keywordtype}{void}\ ReportTestPartResult(\textcolor{keyword}{const}\ TestPartResult\&\ result)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00082\ \ \ \textcolor{keywordtype}{void}\ Init();}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{const}\ InterceptMode\ intercept\_mode\_;}
+\DoxyCodeLine{00085\ \ \ TestPartResultReporterInterface*\ old\_reporter\_;}
+\DoxyCodeLine{00086\ \ \ TestPartResultArray*\ \textcolor{keyword}{const}\ result\_;}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ ScopedFakeTestPartResultReporter(\textcolor{keyword}{const}\ ScopedFakeTestPartResultReporter\&)\ =}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00090\ \ \ ScopedFakeTestPartResultReporter\&\ operator=(}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \textcolor{keyword}{const}\ ScopedFakeTestPartResultReporter\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00092\ \};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ A\ helper\ class\ for\ implementing\ EXPECT\_FATAL\_FAILURE()\ and}}
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ EXPECT\_NONFATAL\_FAILURE().\ \ Its\ destructor\ verifies\ that\ the\ given}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ TestPartResultArray\ contains\ exactly\ one\ failure\ that\ has\ the\ given}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ type\ and\ contains\ the\ given\ substring.\ \ If\ that's\ not\ the\ case,\ a}}
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ non-\/fatal\ failure\ will\ be\ generated.}}
+\DoxyCodeLine{00101\ \textcolor{keyword}{class\ }GTEST\_API\_\ SingleFailureChecker\ \{}
+\DoxyCodeLine{00102\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00103\ \ \ \textcolor{comment}{//\ The\ constructor\ remembers\ the\ arguments.}}
+\DoxyCodeLine{00104\ \ \ SingleFailureChecker(\textcolor{keyword}{const}\ TestPartResultArray*\ results,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ TestPartResult::Type\ type,\ \textcolor{keyword}{const}\ std::string\&\ substr);}
+\DoxyCodeLine{00106\ \ \ \string~SingleFailureChecker();}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00109\ \ \ \textcolor{keyword}{const}\ TestPartResultArray*\ \textcolor{keyword}{const}\ results\_;}
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{const}\ TestPartResult::Type\ type\_;}
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{const}\ std::string\ substr\_;}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ SingleFailureChecker(\textcolor{keyword}{const}\ SingleFailureChecker\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00114\ \ \ SingleFailureChecker\&\ operator=(\textcolor{keyword}{const}\ SingleFailureChecker\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00115\ \};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4251}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{comment}{//\ A\ set\ of\ macros\ for\ testing\ Google\ Test\ assertions\ or\ code\ that's\ expected}}
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ to\ generate\ Google\ Test\ fatal\ failures\ (e.g.\ a\ failure\ from\ an\ ASSERT\_EQ,\ but}}
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ not\ a\ non-\/fatal\ failure,\ as\ from\ EXPECT\_EQ).\ \ It\ verifies\ that\ the\ given}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ statement\ will\ cause\ exactly\ one\ fatal\ Google\ Test\ failure\ with\ 'substr'}}
+\DoxyCodeLine{00127\ \textcolor{comment}{//\ being\ part\ of\ the\ failure\ message.}}
+\DoxyCodeLine{00128\ \textcolor{comment}{//}}
+\DoxyCodeLine{00129\ \textcolor{comment}{//\ There\ are\ two\ different\ versions\ of\ this\ macro.\ EXPECT\_FATAL\_FAILURE\ only}}
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ affects\ and\ considers\ failures\ generated\ in\ the\ current\ thread\ and}}
+\DoxyCodeLine{00131\ \textcolor{comment}{//\ EXPECT\_FATAL\_FAILURE\_ON\_ALL\_THREADS\ does\ the\ same\ but\ for\ all\ threads.}}
+\DoxyCodeLine{00132\ \textcolor{comment}{//}}
+\DoxyCodeLine{00133\ \textcolor{comment}{//\ The\ verification\ of\ the\ assertion\ is\ done\ correctly\ even\ when\ the\ statement}}
+\DoxyCodeLine{00134\ \textcolor{comment}{//\ throws\ an\ exception\ or\ aborts\ the\ current\ function.}}
+\DoxyCodeLine{00135\ \textcolor{comment}{//}}
+\DoxyCodeLine{00136\ \textcolor{comment}{//\ Known\ restrictions:}}
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ \ \ -\/\ 'statement'\ cannot\ reference\ local\ non-\/static\ variables\ or}}
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ \ \ \ \ non-\/static\ members\ of\ the\ current\ object.}}
+\DoxyCodeLine{00139\ \textcolor{comment}{//\ \ \ -\/\ 'statement'\ cannot\ return\ a\ value.}}
+\DoxyCodeLine{00140\ \textcolor{comment}{//\ \ \ -\/\ You\ cannot\ stream\ a\ failure\ message\ to\ this\ macro.}}
+\DoxyCodeLine{00141\ \textcolor{comment}{//}}
+\DoxyCodeLine{00142\ \textcolor{comment}{//\ Note\ that\ even\ though\ the\ implementations\ of\ the\ following\ two}}
+\DoxyCodeLine{00143\ \textcolor{comment}{//\ macros\ are\ much\ alike,\ we\ cannot\ refactor\ them\ to\ use\ a\ common}}
+\DoxyCodeLine{00144\ \textcolor{comment}{//\ helper\ macro,\ due\ to\ some\ peculiarity\ in\ how\ the\ preprocessor}}
+\DoxyCodeLine{00145\ \textcolor{comment}{//\ works.\ \ The\ AcceptsMacroThatExpandsToUnprotectedComma\ test\ in}}
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ gtest\_unittest.cc\ will\ fail\ to\ compile\ if\ we\ do\ that.}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#define\ EXPECT\_FATAL\_FAILURE(statement,\ substr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\ \ \ \ class\ GTestExpectFatalFailureHelper\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\ \ \ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\ \ \ \ \ \ static\ void\ Execute()\ \{\ statement;\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\ \ \ \ ::testing::TestPartResultArray\ gtest\_failures;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::SingleFailureChecker\ gtest\_checker(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \&gtest\_failures,\ ::testing::TestPartResult::kFatalFailure,\ (substr));\ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter\ gtest\_reporter(\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter::\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ INTERCEPT\_ONLY\_CURRENT\_THREAD,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00160\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \&gtest\_failures);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\ \ \ \ \ \ GTestExpectFatalFailureHelper::Execute();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\#define\ EXPECT\_FATAL\_FAILURE\_ON\_ALL\_THREADS(statement,\ substr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\ \ \ \ class\ GTestExpectFatalFailureHelper\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\ \ \ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\ \ \ \ \ \ static\ void\ Execute()\ \{\ statement;\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\ \ \ \ ::testing::TestPartResultArray\ gtest\_failures;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::SingleFailureChecker\ gtest\_checker(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \&gtest\_failures,\ ::testing::TestPartResult::kFatalFailure,\ (substr));\ \(\backslash\)}}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter\ gtest\_reporter(\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter::INTERCEPT\_ALL\_THREADS,\ \(\backslash\)}}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \&gtest\_failures);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\ \ \ \ \ \ GTestExpectFatalFailureHelper::Execute();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \textcolor{comment}{//\ A\ macro\ for\ testing\ Google\ Test\ assertions\ or\ code\ that's\ expected\ to}}
+\DoxyCodeLine{00183\ \textcolor{comment}{//\ generate\ Google\ Test\ non-\/fatal\ failures\ (e.g.\ a\ failure\ from\ an\ EXPECT\_EQ,}}
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ but\ not\ from\ an\ ASSERT\_EQ).\ It\ asserts\ that\ the\ given\ statement\ will\ cause}}
+\DoxyCodeLine{00185\ \textcolor{comment}{//\ exactly\ one\ non-\/fatal\ Google\ Test\ failure\ with\ 'substr'\ being\ part\ of\ the}}
+\DoxyCodeLine{00186\ \textcolor{comment}{//\ failure\ message.}}
+\DoxyCodeLine{00187\ \textcolor{comment}{//}}
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ There\ are\ two\ different\ versions\ of\ this\ macro.\ EXPECT\_NONFATAL\_FAILURE\ only}}
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ affects\ and\ considers\ failures\ generated\ in\ the\ current\ thread\ and}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ EXPECT\_NONFATAL\_FAILURE\_ON\_ALL\_THREADS\ does\ the\ same\ but\ for\ all\ threads.}}
+\DoxyCodeLine{00191\ \textcolor{comment}{//}}
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ 'statement'\ is\ allowed\ to\ reference\ local\ variables\ and\ members\ of}}
+\DoxyCodeLine{00193\ \textcolor{comment}{//\ the\ current\ object.}}
+\DoxyCodeLine{00194\ \textcolor{comment}{//}}
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ The\ verification\ of\ the\ assertion\ is\ done\ correctly\ even\ when\ the\ statement}}
+\DoxyCodeLine{00196\ \textcolor{comment}{//\ throws\ an\ exception\ or\ aborts\ the\ current\ function.}}
+\DoxyCodeLine{00197\ \textcolor{comment}{//}}
+\DoxyCodeLine{00198\ \textcolor{comment}{//\ Known\ restrictions:}}
+\DoxyCodeLine{00199\ \textcolor{comment}{//\ \ \ -\/\ You\ cannot\ stream\ a\ failure\ message\ to\ this\ macro.}}
+\DoxyCodeLine{00200\ \textcolor{comment}{//}}
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ Note\ that\ even\ though\ the\ implementations\ of\ the\ following\ two}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ macros\ are\ much\ alike,\ we\ cannot\ refactor\ them\ to\ use\ a\ common}}
+\DoxyCodeLine{00203\ \textcolor{comment}{//\ helper\ macro,\ due\ to\ some\ peculiarity\ in\ how\ the\ preprocessor}}
+\DoxyCodeLine{00204\ \textcolor{comment}{//\ works.\ \ If\ we\ do\ that,\ the\ code\ won't\ compile\ when\ the\ user\ gives}}
+\DoxyCodeLine{00205\ \textcolor{comment}{//\ EXPECT\_NONFATAL\_FAILURE()\ a\ statement\ that\ contains\ a\ macro\ that}}
+\DoxyCodeLine{00206\ \textcolor{comment}{//\ expands\ to\ code\ containing\ an\ unprotected\ comma.\ \ The}}
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ AcceptsMacroThatExpandsToUnprotectedComma\ test\ in\ gtest\_unittest.cc}}
+\DoxyCodeLine{00208\ \textcolor{comment}{//\ catches\ that.}}
+\DoxyCodeLine{00209\ \textcolor{comment}{//}}
+\DoxyCodeLine{00210\ \textcolor{comment}{//\ For\ the\ same\ reason,\ we\ have\ to\ write}}
+\DoxyCodeLine{00211\ \textcolor{comment}{//\ \ \ if\ (::testing::internal::AlwaysTrue())\ \{\ statement;\ \}}}
+\DoxyCodeLine{00212\ \textcolor{comment}{//\ instead\ of}}
+\DoxyCodeLine{00213\ \textcolor{comment}{//\ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement)}}
+\DoxyCodeLine{00214\ \textcolor{comment}{//\ to\ avoid\ an\ MSVC\ warning\ on\ unreachable\ code.}}
+\DoxyCodeLine{00215\ \textcolor{preprocessor}{\#define\ EXPECT\_NONFATAL\_FAILURE(statement,\ substr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\ \ \ \ ::testing::TestPartResultArray\ gtest\_failures;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::SingleFailureChecker\ gtest\_checker(\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00219\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \&gtest\_failures,\ ::testing::TestPartResult::kNonFatalFailure,\ \(\backslash\)}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ (substr));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter\ gtest\_reporter(\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter::\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ INTERCEPT\_ONLY\_CURRENT\_THREAD,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \&gtest\_failures);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ statement;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\#define\ EXPECT\_NONFATAL\_FAILURE\_ON\_ALL\_THREADS(statement,\ substr)\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00234\ \textcolor{preprocessor}{\ \ \ \ ::testing::TestPartResultArray\ gtest\_failures;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::SingleFailureChecker\ gtest\_checker(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \&gtest\_failures,\ ::testing::TestPartResult::kNonFatalFailure,\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00237\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ (substr));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00238\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00239\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter\ gtest\_reporter(\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter::INTERCEPT\_ALL\_THREADS,\ \(\backslash\)}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \&gtest\_failures);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\ \ \ \ \ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00243\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ statement;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00244\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00245\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_GTEST\_SPI\_H\_}}
+
+\end{DoxyCode}

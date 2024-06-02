@@ -1,0 +1,226 @@
+\doxysection{googletest-\/options-\/test.cc}
+\hypertarget{googletest-options-test_8cc_source}{}\label{googletest-options-test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/googletest-\/options-\/test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/googletest-\/options-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Test\ UnitTestOptions\ tests}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ tests\ classes\ and\ functions\ used\ internally\ by}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Google\ Test.\ \ They\ are\ subject\ to\ change\ without\ notice.}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ This\ file\ is\ \#included\ from\ gtest.cc,\ to\ avoid\ changing\ build\ or}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ make-\/files\ on\ Windows\ and\ other\ platforms.\ Do\ not\ \#include\ this\ file}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ anywhere\ else!}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <direct.h>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_OS2}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ For\ strcasecmp\ on\ OS/2}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <strings.h>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00053\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00054\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ Turns\ the\ given\ relative\ path\ into\ an\ absolute\ path.}}
+\DoxyCodeLine{00057\ FilePath\ GetAbsolutePathOf(\textcolor{keyword}{const}\ FilePath\&\ relative\_path)\ \{}
+\DoxyCodeLine{00058\ \ \ \textcolor{keywordflow}{return}\ FilePath::ConcatPaths(FilePath::GetCurrentDir(),\ relative\_path);}
+\DoxyCodeLine{00059\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ Testing\ UnitTestOptions::GetOutputFormat/GetOutputFile.}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ TEST(XmlOutputTest,\ GetOutputFormatDefault)\ \{}
+\DoxyCodeLine{00064\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00065\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ UnitTestOptions::GetOutputFormat().c\_str());}
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ TEST(XmlOutputTest,\ GetOutputFormat)\ \{}
+\DoxyCodeLine{00069\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:filename"{}});}
+\DoxyCodeLine{00070\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}xml"{}},\ UnitTestOptions::GetOutputFormat().c\_str());}
+\DoxyCodeLine{00071\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ TEST(XmlOutputTest,\ GetOutputFileDefault)\ \{}
+\DoxyCodeLine{00074\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00075\ \ \ EXPECT\_EQ(GetAbsolutePathOf(FilePath(\textcolor{stringliteral}{"{}test\_detail.xml"{}})).\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00077\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ TEST(XmlOutputTest,\ GetOutputFileSingleFile)\ \{}
+\DoxyCodeLine{00080\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:filename.abc"{}});}
+\DoxyCodeLine{00081\ \ \ EXPECT\_EQ(GetAbsolutePathOf(FilePath(\textcolor{stringliteral}{"{}filename.abc"{}})).\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00083\ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ TEST(XmlOutputTest,\ GetOutputFileFromDirectoryPath)\ \{}
+\DoxyCodeLine{00086\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:path"{}}\ GTEST\_PATH\_SEP\_);}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{const}\ std::string\ expected\_output\_file\ =}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ GetAbsolutePathOf(FilePath(std::string(\textcolor{stringliteral}{"{}path"{}})\ +\ GTEST\_PATH\_SEP\_\ +}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GetCurrentExecutableName().\textcolor{keywordtype}{string}()\ +\ \textcolor{stringliteral}{"{}.xml"{}}))}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ .string();}
+\DoxyCodeLine{00091\ \ \ \textcolor{keyword}{const}\ std::string\&\ output\_file\ =}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile();}
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00094\ \ \ EXPECT\_STRCASEEQ(expected\_output\_file.c\_str(),\ output\_file.c\_str());}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00096\ \ \ EXPECT\_EQ(expected\_output\_file,\ output\_file.c\_str());}
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00098\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ TEST(OutputFileHelpersTest,\ GetCurrentExecutableName)\ \{}
+\DoxyCodeLine{00101\ \ \ \textcolor{keyword}{const}\ std::string\ exe\_str\ =\ GetCurrentExecutableName().string();}
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ success\ =}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \_strcmpi(\textcolor{stringliteral}{"{}googletest-\/options-\/test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \_strcmpi(\textcolor{stringliteral}{"{}gtest-\/options-\/ex\_test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \_strcmpi(\textcolor{stringliteral}{"{}gtest\_all\_test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \_strcmpi(\textcolor{stringliteral}{"{}gtest\_dll\_test"{}},\ exe\_str.c\_str())\ ==\ 0;}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_OS2}}
+\DoxyCodeLine{00109\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ success\ =}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ strcasecmp(\textcolor{stringliteral}{"{}googletest-\/options-\/test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ strcasecmp(\textcolor{stringliteral}{"{}gtest-\/options-\/ex\_test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ strcasecmp(\textcolor{stringliteral}{"{}gtest\_all\_test"{}},\ exe\_str.c\_str())\ ==\ 0\ ||}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ strcasecmp(\textcolor{stringliteral}{"{}gtest\_dll\_test"{}},\ exe\_str.c\_str())\ ==\ 0;}
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ success\ =\ exe\_str\ ==\ \textcolor{stringliteral}{"{}app"{}};}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00117\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ success\ =}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ exe\_str\ ==\ \textcolor{stringliteral}{"{}googletest-\/options-\/test"{}}\ ||\ exe\_str\ ==\ \textcolor{stringliteral}{"{}gtest\_all\_test"{}}\ ||}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ exe\_str\ ==\ \textcolor{stringliteral}{"{}lt-\/gtest\_all\_test"{}}\ ||\ exe\_str\ ==\ \textcolor{stringliteral}{"{}gtest\_dll\_test"{}};}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00121\ \ \ \textcolor{keywordflow}{if}\ (!success)\ FAIL()\ <<\ \textcolor{stringliteral}{"{}GetCurrentExecutableName()\ returns\ "{}}\ <<\ exe\_str;}
+\DoxyCodeLine{00122\ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{keyword}{class\ }XmlOutputChangeDirTest\ :\ \textcolor{keyword}{public}\ Test\ \{}
+\DoxyCodeLine{00127\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00128\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00129\ \ \ \ \ original\_working\_dir\_\ =\ FilePath::GetCurrentDir();}
+\DoxyCodeLine{00130\ \ \ \ \ posix::ChDir(\textcolor{stringliteral}{"{}.."{}});}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{comment}{//\ This\ will\ make\ the\ test\ fail\ if\ run\ from\ the\ root\ directory.}}
+\DoxyCodeLine{00132\ \ \ \ \ EXPECT\_NE(original\_working\_dir\_.string(),}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath::GetCurrentDir().string());}
+\DoxyCodeLine{00134\ \ \ \}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00137\ \ \ \ \ posix::ChDir(original\_working\_dir\_.string().c\_str());}
+\DoxyCodeLine{00138\ \ \ \}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ FilePath\ original\_working\_dir\_;}
+\DoxyCodeLine{00141\ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithDefault)\ \{}
+\DoxyCodeLine{00144\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00145\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ FilePath::ConcatPaths(original\_working\_dir\_,\ FilePath(\textcolor{stringliteral}{"{}test\_detail.xml"{}}))}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00149\ \}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithDefaultXML)\ \{}
+\DoxyCodeLine{00152\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00153\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ FilePath::ConcatPaths(original\_working\_dir\_,\ FilePath(\textcolor{stringliteral}{"{}test\_detail.xml"{}}))}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00157\ \}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithRelativeFile)\ \{}
+\DoxyCodeLine{00160\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:filename.abc"{}});}
+\DoxyCodeLine{00161\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ FilePath::ConcatPaths(original\_working\_dir\_,\ FilePath(\textcolor{stringliteral}{"{}filename.abc"{}}))}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00165\ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithRelativePath)\ \{}
+\DoxyCodeLine{00168\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:path"{}}\ GTEST\_PATH\_SEP\_);}
+\DoxyCodeLine{00169\ \ \ \textcolor{keyword}{const}\ std::string\ expected\_output\_file\ =}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ FilePath::ConcatPaths(}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ original\_working\_dir\_,}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ FilePath(std::string(\textcolor{stringliteral}{"{}path"{}})\ +\ GTEST\_PATH\_SEP\_\ +}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GetCurrentExecutableName().\textcolor{keywordtype}{string}()\ +\ \textcolor{stringliteral}{"{}.xml"{}}))}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ .string();}
+\DoxyCodeLine{00175\ \ \ \textcolor{keyword}{const}\ std::string\&\ output\_file\ =}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile();}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00178\ \ \ EXPECT\_STRCASEEQ(expected\_output\_file.c\_str(),\ output\_file.c\_str());}
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00180\ \ \ EXPECT\_EQ(expected\_output\_file,\ output\_file.c\_str());}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00182\ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithAbsoluteFile)\ \{}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00186\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:c:\(\backslash\)\(\backslash\)tmp\(\backslash\)\(\backslash\)filename.abc"{}});}
+\DoxyCodeLine{00187\ \ \ EXPECT\_EQ(FilePath(\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)tmp\(\backslash\)\(\backslash\)filename.abc"{}}).\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00190\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:/tmp/filename.abc"{}});}
+\DoxyCodeLine{00191\ \ \ EXPECT\_EQ(FilePath(\textcolor{stringliteral}{"{}/tmp/filename.abc"{}}).\textcolor{keywordtype}{string}(),}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile());}
+\DoxyCodeLine{00193\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00194\ \}}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ TEST\_F(XmlOutputChangeDirTest,\ PreserveOriginalWorkingDirWithAbsolutePath)\ \{}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00198\ \ \ \textcolor{keyword}{const}\ std::string\ path\ =\ \textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)tmp\(\backslash\)\(\backslash\)"{}};}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00200\ \ \ \textcolor{keyword}{const}\ std::string\ path\ =\ \textcolor{stringliteral}{"{}/tmp/"{}};}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ GTEST\_FLAG\_SET(output,\ \textcolor{stringliteral}{"{}xml:"{}}\ +\ path);}
+\DoxyCodeLine{00204\ \ \ \textcolor{keyword}{const}\ std::string\ expected\_output\_file\ =}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ path\ +\ GetCurrentExecutableName().string()\ +\ \textcolor{stringliteral}{"{}.xml"{}};}
+\DoxyCodeLine{00206\ \ \ \textcolor{keyword}{const}\ std::string\&\ output\_file\ =}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ UnitTestOptions::GetAbsolutePathToOutputFile();}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00210\ \ \ EXPECT\_STRCASEEQ(expected\_output\_file.c\_str(),\ output\_file.c\_str());}
+\DoxyCodeLine{00211\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00212\ \ \ EXPECT\_EQ(expected\_output\_file,\ output\_file.c\_str());}
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00214\ \}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00219\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00220\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

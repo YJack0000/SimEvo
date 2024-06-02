@@ -1,0 +1,45 @@
+\doxysection{Bar\+Environment Class Reference}
+\hypertarget{class_bar_environment}{}\label{class_bar_environment}\index{BarEnvironment@{BarEnvironment}}
+
+
+Inheritance diagram for Bar\+Environment\+:
+% FIG 0
+
+
+Collaboration diagram for Bar\+Environment\+:
+% FIG 1
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_bar_environment_a8c525317fe8067f5000475cf4689da09}{Set\+Up}} () override
+\item 
+void \mbox{\hyperlink{class_bar_environment_ac02b15d5b27e33232c578f0340442bbb}{Tear\+Down}} () override
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_bar_environment_a8c525317fe8067f5000475cf4689da09}\index{BarEnvironment@{BarEnvironment}!SetUp@{SetUp}}
+\index{SetUp@{SetUp}!BarEnvironment@{BarEnvironment}}
+\doxysubsubsection{\texorpdfstring{SetUp()}{SetUp()}}
+{\footnotesize\ttfamily \label{class_bar_environment_a8c525317fe8067f5000475cf4689da09} 
+void Bar\+Environment\+::\+Set\+Up (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_environment}{testing\+::\+Environment}}.
+
+\Hypertarget{class_bar_environment_ac02b15d5b27e33232c578f0340442bbb}\index{BarEnvironment@{BarEnvironment}!TearDown@{TearDown}}
+\index{TearDown@{TearDown}!BarEnvironment@{BarEnvironment}}
+\doxysubsubsection{\texorpdfstring{TearDown()}{TearDown()}}
+{\footnotesize\ttfamily \label{class_bar_environment_ac02b15d5b27e33232c578f0340442bbb} 
+void Bar\+Environment\+::\+Tear\+Down (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_environment}{testing\+::\+Environment}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/test/googletest-\/output-\/test\+\_\+.\+cc\end{DoxyCompactItemize}

@@ -1,0 +1,107 @@
+\chapter{Sim\+Evo\+: A Simple Python Library for Simulations of Natural Selection}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e}{}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e}\index{SimEvo: A Simple Python Library for Simulations of Natural Selection@{SimEvo: A Simple Python Library for Simulations of Natural Selection}}
+\href{https://pypi.org/project/simevopy/}{\texttt{ }} \href{https://www.codefactor.io/repository/github/yjack0000/simevo}{\texttt{ }}  \hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md417}{}\doxysection{\texorpdfstring{Basic Information}{Basic Information}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md417}
+\begin{quote}
+{\bfseries{Project Overview\+:}} Simulating Natural Selection in Ecosystems using C++ and Python \end{quote}
+
+
+Sim\+Sel leverages the computational efficiency of C++ for the core simulation engine and offers an intuitive Python interface for ease of use and accessibility. It models ecosystems composed of organisms with genetically determined traits, interacting within an environment that includes resources like food. The simulation observes the principles of natural selection, with organism survival and reproduction influenced by their traits and environmental factors.
+
+
+\begin{DoxyItemize}
+\item 📂 {\bfseries{Git\+Hub Repository}}\+: \href{https://github.com/YJack0000/SimEvo}{\texttt{ https\+://github.\+com/\+YJack0000/\+Sim\+Evo}}
+\item 💻 {\bfseries{Implemented In}}\+:
+\begin{DoxyItemize}
+\item {\bfseries{Core Library}}\+: C++
+\item {\bfseries{Bindings \& \doxylink{class_interface}{Interface}}}\+: Python
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md418}{}\doxysection{\texorpdfstring{Problem to Solve}{Problem to Solve}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md418}
+Understanding the dynamics of natural selection and ecosystem evolution involves complex interactions among organisms and their environments. Sim\+Sel aims to provide a simplified yet powerful simulation environment where users can define various organisms, their genetic makeup, and environmental factors, to observe how natural selection unfolds over generations. In this context, the implementation of spatial indexing algorithms plays a critical role. Efficient spatial indexing is essential for managing the simulation\textquotesingle{}s computational complexity, enabling the simulation to handle large numbers of organisms and their interactions within the environment accurately and swiftly.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md419}{}\doxysection{\texorpdfstring{Prospective Users}{Prospective Users}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md419}
+Sim\+Sel is aimed at a broad audience interested in evolutionary biology, including\+:
+\begin{DoxyItemize}
+\item {\bfseries{Educators and Students}}\+: For teaching and learning evolutionary concepts through interactive simulations.
+\item {\bfseries{Researchers}}\+: For conducting experiments on evolutionary strategies and hypotheses.
+\item {\bfseries{Hobbyists}}\+: For exploring the principles of evolution in a virtual environment.
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md420}{}\doxysection{\texorpdfstring{System Architecture}{System Architecture}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md420}
+Sim\+Sel comprises a high-\/performance simulation engine written in C++ for handling the complex computations of natural selection dynamics efficiently. Python bindings, created using pybind11, make this engine accessible to users who can interact with the simulation using a simple Python API.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md421}{}\doxysubsection{\texorpdfstring{Components\+:}{Components\+:}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md421}
+
+\begin{DoxyItemize}
+\item {\bfseries{Genetic Traits and \doxylink{class_organism}{Organism} Definition (C++)}}\+: Models organisms with specific genetic traits that affect their survival and reproduction.
+\item {\bfseries{Environmental Model (C++)}}\+: A dynamic model of the environment, including resources like food, which organisms interact with.
+\item {\bfseries{Simulation Engine (C++)}}\+: The core component that runs the simulation, applying rules of natural selection and tracking the evolution of populations over time.
+\item {\bfseries{Python API (C++ and Python via pybind11)}}\+: Provides a user-\/friendly interface for defining simulations, including organisms, their genes, and environmental settings.
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md422}{}\doxysubsection{\texorpdfstring{Spatial Indexing Data Structure}{Spatial Indexing Data Structure}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md422}
+Spatial indexing is critical in simulations of natural environments, where the efficient querying of organism positions and interactions can drastically reduce computational overhead. By indexing the spatial data, Sim\+Sel can quickly perform operations such as locating nearby food sources for organisms or detecting potential mates within a specified radius.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md423}{}\doxysubsubsection{\texorpdfstring{Abstraction Layer}{Abstraction Layer}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md423}
+Sim\+Sel introduces an abstraction layer for spatial indexing, encapsulated by the interfaces {\ttfamily \doxylink{class_i_spatial_index}{ISpatial\+Index}} and {\ttfamily ISpatial\+Object}. This design allows for future expansions or modifications to the underlying spatial data structures without necessitating changes in the core simulation logic.
+
+{\bfseries{\doxylink{class_i_spatial_index}{ISpatial\+Index} \doxylink{class_interface}{Interface}}}\+: Defines the methods for adding, removing, and querying spatial objects. This interface is pivotal for integrating different spatial data structures according to the simulation\textquotesingle{}s needs.
+
+{\bfseries{ISpatial\+Object \doxylink{class_interface}{Interface}}}\+: Represents any entity within the simulation environment that occupies space, such as organisms and food items. This interface ensures that the spatial index can manage a variety of object types, making the simulation more versatile.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md424}{}\doxysubsection{\texorpdfstring{Default and Optimized Implementations}{Default and Optimized Implementations}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md424}
+{\bfseries{Default Implementation}}\+: In the initial stages or in simulations where the density of entities is low, a brute-\/force approach is employed. This method involves calculating the distances between all pairs of objects to determine proximity-\/based interactions. While straightforward, this approach is computationally intensive as the number of entities increases.
+
+{\bfseries{Optimized Implementation}}\+: For more complex simulations with a higher density of entities, Sim\+Sel utilizes a Quadtree data structure for spatial indexing. Quadtrees are highly efficient for 2D spatial data, allowing for rapid queries of objects within specific areas. This optimization significantly reduces the computational cost of distance calculations and interaction determinations, making the simulation more scalable and performant.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md425}{}\doxysection{\texorpdfstring{API Description}{API Description}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md425}
+The Sim\+Sel library offers a Python API designed for simplicity and ease of use, enabling users to simulate and study natural selection dynamics within virtual ecosystems. Here\textquotesingle{}s an overview of the key components and functionalities provided by the API\+:\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md426}{}\doxysubsection{\texorpdfstring{Environment Class}{Environment Class}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md426}
+
+\begin{DoxyItemize}
+\item {\bfseries{Purpose}}\+: Represents the simulation\textquotesingle{}s environment, including dimensions and conditions.
+\item {\bfseries{Initialization}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_environment}{Environment}(width, height, type="{}default"{})}\+: Creates a new environment with specified dimensions. The {\ttfamily type} parameter can be set to "{}optimize"{} for enhanced performance using advanced spatial indexing.
+\end{DoxyItemize}
+\item {\bfseries{Methods}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily add\+\_\+organism(organism, x, y)}\+: Places an organism at specified coordinates within the environment.
+\item {\ttfamily add\+\_\+food(x, y)}\+: Adds a food resource at specified coordinates.
+\item {\ttfamily simulate\+\_\+iteration(steps)}\+: Advances the simulation by a given number of steps, allowing organisms to interact, consume food, and potentially reproduce.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md427}{}\doxysubsection{\texorpdfstring{Organism Class}{Organism Class}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md427}
+
+\begin{DoxyItemize}
+\item {\bfseries{Purpose}}\+: Models an individual organism within the ecosystem, including its genetic makeup.
+\item {\bfseries{Initialization}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_organism}{Organism(genes)}}\+: Creates a new organism with the specified {\ttfamily \doxylink{class_genes}{Genes}} object.
+\end{DoxyItemize}
+\item {\bfseries{Attributes}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily genes}\+: The genetic makeup of the organism, influencing its traits and behaviors.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md428}{}\doxysubsection{\texorpdfstring{Genes Class}{Genes Class}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md428}
+
+\begin{DoxyItemize}
+\item {\bfseries{Purpose}}\+: Encapsulates the genetic information of organisms, dictating their characteristics and adaptability.
+\item {\bfseries{Initialization}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_genes}{Genes(sequence)}}\+: Constructs a {\ttfamily \doxylink{class_genes}{Genes}} object with a genetic sequence represented as a string (e.\+g., "{}\+ABCD"{}).
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md429}{}\doxysubsection{\texorpdfstring{Python Script Examples}{Python Script Examples}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2_r_e_a_d_m_e_autotoc_md429}
+The script sets up a Sim\+Sel simulation in a 500x500 space, initializing 10 "{}\+ABCD"{} gene organisms and distributing food to model resource scarcity. Operating in an "{}optimize"{} mode for efficiency, it cycles through 100 generations, each time scattering food and advancing the simulation to observe natural selection as organisms interact, feed, and reproduce based on genetic traits.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{from}\ SimEvo.core\ \textcolor{keyword}{import}\ Environment,\ Organism,\ Genes}
+\DoxyCodeLine{\textcolor{keyword}{import}\ random}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{def\ }setup\_base\_organism(env,\ count=10):}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ \_\ \textcolor{keywordflow}{in}\ range(count):}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ x\ =\ random.randint(0,\ env.width\ -\/\ 1)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ y\ =\ random.randint(0,\ env.height\ -\/\ 1)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ env.add\_organism(\mbox{\hyperlink{class_organism}{Organism}}(\mbox{\hyperlink{class_genes}{Genes}}(\textcolor{stringliteral}{"{}ABCD"{}})),\ x,\ y)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{def\ }distribute\_food\_randomly(env,\ food\_count=50):}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ \_\ \textcolor{keywordflow}{in}\ range(food\_count):}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ x\ =\ random.randint(0,\ env.width\ -\/\ 1)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ y\ =\ random.randint(0,\ env.height\ -\/\ 1)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ env.add\_food(x,\ y)}
+\DoxyCodeLine{}
+\DoxyCodeLine{env\ =\ \mbox{\hyperlink{class_environment}{Environment}}(500,\ 500,\ type=\textcolor{stringliteral}{"{}optimize"{}})}
+\DoxyCodeLine{}
+\DoxyCodeLine{setup\_base\_organism(env)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordflow}{for}\ i\ \textcolor{keywordflow}{in}\ range(100):}
+\DoxyCodeLine{\ \ \ \ print(f\textcolor{stringliteral}{"{}Gen\ \{i\}\ th"{}})}
+\DoxyCodeLine{\ \ \ \ distribute\_food\_randomly(env,\ 100)}
+\DoxyCodeLine{\ \ \ \ env.simulate\_iteration(50)}
+
+\end{DoxyCode}
+ 

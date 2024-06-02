@@ -1,0 +1,255 @@
+\doxysection{Environment Class Reference}
+\hypertarget{class_environment}{}\label{class_environment}\index{Environment@{Environment}}
+
+
+{\ttfamily \#include $<$Environment.\+hpp$>$}
+
+
+
+Collaboration diagram for Environment\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_environment__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_environment_a426acd939a6f6e95ade8539e645a300e}{Environment}} (int \mbox{\hyperlink{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}{width}}, int \mbox{\hyperlink{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}{height}}, std\+::string \mbox{\hyperlink{class_environment_a889eecb04b11de265373ad4664e101cb}{type}}="{}default"{})
+\item 
+int \mbox{\hyperlink{class_environment_a053f882f4ecec6e9ade99fba3317001c}{get\+Width}} () const
+\item 
+int \mbox{\hyperlink{class_environment_ad17660db40711861f8416d3ea641cd4f}{get\+Height}} () const
+\item 
+void \mbox{\hyperlink{class_environment_a0e420275f5e4e3e9e32538cf5cf19e8c}{add}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ \&organism, float x, float y)
+\item 
+void \mbox{\hyperlink{class_environment_a73d2ff9838b137f27e5ca83e20ef185e}{add}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ \&food, float x, float y)
+\item 
+void \mbox{\hyperlink{class_environment_a516c1935213b47ee3b0f94d3a7e8ae00}{remove}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ \&organism)
+\item 
+void \mbox{\hyperlink{class_environment_a378d80f7f3ba805982bfdfb146e7d953}{remove}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ \&food)
+\item 
+void \mbox{\hyperlink{class_environment_a9bf96c5e6b817be1595b24992cde8e82}{reset}} ()
+\item 
+void \mbox{\hyperlink{class_environment_a6e245f732d1e4403966331f2be4e0306}{simulate\+Iteration}} (int, std\+::function$<$ void(const \mbox{\hyperlink{class_environment}{Environment}} \&)$>$ on\+\_\+each\+\_\+iteration=nullptr)
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ $>$ \mbox{\hyperlink{class_environment_a61f624199a086a8ea566ac4340245de8}{get\+All\+Organisms}} () const
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ $>$ \mbox{\hyperlink{class_environment_aaa73b7da6afb6bd5a1aa8faae6cf3822}{get\+All\+Foods}} () const
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \mbox{\hyperlink{class_environment_a50a86cbd652f76b83c620eac6de18097}{get\+All\+Objects}} () const
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ $>$ \mbox{\hyperlink{class_environment_a8aa89044d6e6ce85602d31403d396bb2}{get\+Dead\+Organisms}} () const
+\item 
+unsigned long \mbox{\hyperlink{class_environment_acb5b04884d3a908d9bbf72c558c49ef4}{get\+Food\+Consumption\+In\+Iteration}} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_environment_a07cc07f303da4cda59639fd0377269e6}{check\+Bounds}} (float x, float y) const
+\item 
+void \mbox{\hyperlink{class_environment_ab654c51d613ce7506b3ac2afc4a47b63}{update\+Positions\+In\+Spatial\+Index}} ()
+\item 
+void \mbox{\hyperlink{class_environment_a616a99db1b6292e2f266d88035e216a6}{handle\+Interactions}} ()
+\item 
+void \mbox{\hyperlink{class_environment_a521141e9b076a2ba9f6e8d3c755f9cea}{post\+Iteration}} ()
+\item 
+void \mbox{\hyperlink{class_environment_a62a2d51804bef307861b65e64b383485}{clean\+Up}} ()
+\item 
+void \mbox{\hyperlink{class_environment_a2dd4ca29447bb2957a01c769ce20781f}{remove\+Dead\+Organisms}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}{width}}
+\item 
+int \mbox{\hyperlink{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}{height}}
+\item 
+std\+::string \mbox{\hyperlink{class_environment_a889eecb04b11de265373ad4664e101cb}{type}}
+\item 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_i_spatial_index}{ISpatial\+Index}}$<$ boost\+::uuids\+::uuid $>$ $>$ \mbox{\hyperlink{class_environment_a29482a429c457a864ca07e7cb6b6ac2e}{spatial\+Index}}
+\item 
+std\+::unordered\+\_\+map$<$ boost\+::uuids\+::uuid, std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \mbox{\hyperlink{class_environment_a9c44fa62c4c7f5424b32ea6c274e8925}{objects\+Mapper}}
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ $>$ \mbox{\hyperlink{class_environment_a19f9284d372a42eeaf8f69d6397d4d48}{dead\+Organisms}}
+\item 
+unsigned long \mbox{\hyperlink{class_environment_a30ab1b088afb620f7da16f1be40eba7d}{food\+Consumption}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_environment_a426acd939a6f6e95ade8539e645a300e}\index{Environment@{Environment}!Environment@{Environment}}
+\index{Environment@{Environment}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{Environment()}{Environment()}}
+{\footnotesize\ttfamily \label{class_environment_a426acd939a6f6e95ade8539e645a300e} 
+Environment\+::\+Environment (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{, }\item[{std\+::string}]{type}{ = {\ttfamily "{}default"{}}}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_environment_a73d2ff9838b137f27e5ca83e20ef185e}\index{Environment@{Environment}!add@{add}}
+\index{add@{add}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_environment_a73d2ff9838b137f27e5ca83e20ef185e} 
+void Environment\+::add (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ \&}]{food}{, }\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_a0e420275f5e4e3e9e32538cf5cf19e8c}\index{Environment@{Environment}!add@{add}}
+\index{add@{add}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_environment_a0e420275f5e4e3e9e32538cf5cf19e8c} 
+void Environment\+::add (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ \&}]{organism}{, }\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_a07cc07f303da4cda59639fd0377269e6}\index{Environment@{Environment}!checkBounds@{checkBounds}}
+\index{checkBounds@{checkBounds}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{checkBounds()}{checkBounds()}}
+{\footnotesize\ttfamily \label{class_environment_a07cc07f303da4cda59639fd0377269e6} 
+void Environment\+::check\+Bounds (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a62a2d51804bef307861b65e64b383485}\index{Environment@{Environment}!cleanUp@{cleanUp}}
+\index{cleanUp@{cleanUp}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{cleanUp()}{cleanUp()}}
+{\footnotesize\ttfamily \label{class_environment_a62a2d51804bef307861b65e64b383485} 
+void Environment\+::clean\+Up (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_aaa73b7da6afb6bd5a1aa8faae6cf3822}\index{Environment@{Environment}!getAllFoods@{getAllFoods}}
+\index{getAllFoods@{getAllFoods}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getAllFoods()}{getAllFoods()}}
+{\footnotesize\ttfamily \label{class_environment_aaa73b7da6afb6bd5a1aa8faae6cf3822} 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ $>$ Environment\+::get\+All\+Foods (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_environment_a50a86cbd652f76b83c620eac6de18097}\index{Environment@{Environment}!getAllObjects@{getAllObjects}}
+\index{getAllObjects@{getAllObjects}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getAllObjects()}{getAllObjects()}}
+{\footnotesize\ttfamily \label{class_environment_a50a86cbd652f76b83c620eac6de18097} 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ Environment\+::get\+All\+Objects (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_environment_a61f624199a086a8ea566ac4340245de8}\index{Environment@{Environment}!getAllOrganisms@{getAllOrganisms}}
+\index{getAllOrganisms@{getAllOrganisms}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getAllOrganisms()}{getAllOrganisms()}}
+{\footnotesize\ttfamily \label{class_environment_a61f624199a086a8ea566ac4340245de8} 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ $>$ Environment\+::get\+All\+Organisms (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_environment_a8aa89044d6e6ce85602d31403d396bb2}\index{Environment@{Environment}!getDeadOrganisms@{getDeadOrganisms}}
+\index{getDeadOrganisms@{getDeadOrganisms}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getDeadOrganisms()}{getDeadOrganisms()}}
+{\footnotesize\ttfamily \label{class_environment_a8aa89044d6e6ce85602d31403d396bb2} 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ $>$ Environment\+::get\+Dead\+Organisms (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_environment_acb5b04884d3a908d9bbf72c558c49ef4}\index{Environment@{Environment}!getFoodConsumptionInIteration@{getFoodConsumptionInIteration}}
+\index{getFoodConsumptionInIteration@{getFoodConsumptionInIteration}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getFoodConsumptionInIteration()}{getFoodConsumptionInIteration()}}
+{\footnotesize\ttfamily \label{class_environment_acb5b04884d3a908d9bbf72c558c49ef4} 
+unsigned long Environment\+::get\+Food\+Consumption\+In\+Iteration (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_environment_ad17660db40711861f8416d3ea641cd4f}\index{Environment@{Environment}!getHeight@{getHeight}}
+\index{getHeight@{getHeight}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getHeight()}{getHeight()}}
+{\footnotesize\ttfamily \label{class_environment_ad17660db40711861f8416d3ea641cd4f} 
+int Environment\+::get\+Height (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_environment_a053f882f4ecec6e9ade99fba3317001c}\index{Environment@{Environment}!getWidth@{getWidth}}
+\index{getWidth@{getWidth}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getWidth()}{getWidth()}}
+{\footnotesize\ttfamily \label{class_environment_a053f882f4ecec6e9ade99fba3317001c} 
+int Environment\+::get\+Width (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_environment_a616a99db1b6292e2f266d88035e216a6}\index{Environment@{Environment}!handleInteractions@{handleInteractions}}
+\index{handleInteractions@{handleInteractions}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{handleInteractions()}{handleInteractions()}}
+{\footnotesize\ttfamily \label{class_environment_a616a99db1b6292e2f266d88035e216a6} 
+void Environment\+::handle\+Interactions (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a521141e9b076a2ba9f6e8d3c755f9cea}\index{Environment@{Environment}!postIteration@{postIteration}}
+\index{postIteration@{postIteration}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{postIteration()}{postIteration()}}
+{\footnotesize\ttfamily \label{class_environment_a521141e9b076a2ba9f6e8d3c755f9cea} 
+void Environment\+::post\+Iteration (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a378d80f7f3ba805982bfdfb146e7d953}\index{Environment@{Environment}!remove@{remove}}
+\index{remove@{remove}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_environment_a378d80f7f3ba805982bfdfb146e7d953} 
+void Environment\+::remove (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_food}{Food}} $>$ \&}]{food}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_a516c1935213b47ee3b0f94d3a7e8ae00}\index{Environment@{Environment}!remove@{remove}}
+\index{remove@{remove}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_environment_a516c1935213b47ee3b0f94d3a7e8ae00} 
+void Environment\+::remove (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ \&}]{organism}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_a2dd4ca29447bb2957a01c769ce20781f}\index{Environment@{Environment}!removeDeadOrganisms@{removeDeadOrganisms}}
+\index{removeDeadOrganisms@{removeDeadOrganisms}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{removeDeadOrganisms()}{removeDeadOrganisms()}}
+{\footnotesize\ttfamily \label{class_environment_a2dd4ca29447bb2957a01c769ce20781f} 
+void Environment\+::remove\+Dead\+Organisms (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a9bf96c5e6b817be1595b24992cde8e82}\index{Environment@{Environment}!reset@{reset}}
+\index{reset@{reset}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily \label{class_environment_a9bf96c5e6b817be1595b24992cde8e82} 
+void Environment\+::reset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_a6e245f732d1e4403966331f2be4e0306}\index{Environment@{Environment}!simulateIteration@{simulateIteration}}
+\index{simulateIteration@{simulateIteration}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{simulateIteration()}{simulateIteration()}}
+{\footnotesize\ttfamily \label{class_environment_a6e245f732d1e4403966331f2be4e0306} 
+void Environment\+::simulate\+Iteration (\begin{DoxyParamCaption}\item[{int}]{}{, }\item[{std\+::function$<$ void(const \mbox{\hyperlink{class_environment}{Environment}} \&)$>$}]{on\+\_\+each\+\_\+iteration}{ = {\ttfamily nullptr}}\end{DoxyParamCaption})}
+
+\Hypertarget{class_environment_ab654c51d613ce7506b3ac2afc4a47b63}\index{Environment@{Environment}!updatePositionsInSpatialIndex@{updatePositionsInSpatialIndex}}
+\index{updatePositionsInSpatialIndex@{updatePositionsInSpatialIndex}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{updatePositionsInSpatialIndex()}{updatePositionsInSpatialIndex()}}
+{\footnotesize\ttfamily \label{class_environment_ab654c51d613ce7506b3ac2afc4a47b63} 
+void Environment\+::update\+Positions\+In\+Spatial\+Index (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_environment_a19f9284d372a42eeaf8f69d6397d4d48}\index{Environment@{Environment}!deadOrganisms@{deadOrganisms}}
+\index{deadOrganisms@{deadOrganisms}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{deadOrganisms}{deadOrganisms}}
+{\footnotesize\ttfamily \label{class_environment_a19f9284d372a42eeaf8f69d6397d4d48} 
+std\+::vector$<$std\+::shared\+\_\+ptr$<$\mbox{\hyperlink{class_organism}{Organism}}$>$ $>$ Environment\+::dead\+Organisms\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a30ab1b088afb620f7da16f1be40eba7d}\index{Environment@{Environment}!foodConsumption@{foodConsumption}}
+\index{foodConsumption@{foodConsumption}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{foodConsumption}{foodConsumption}}
+{\footnotesize\ttfamily \label{class_environment_a30ab1b088afb620f7da16f1be40eba7d} 
+unsigned long Environment\+::food\+Consumption\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}\index{Environment@{Environment}!height@{height}}
+\index{height@{height}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{height}{height}}
+{\footnotesize\ttfamily \label{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a} 
+int Environment\+::height\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a9c44fa62c4c7f5424b32ea6c274e8925}\index{Environment@{Environment}!objectsMapper@{objectsMapper}}
+\index{objectsMapper@{objectsMapper}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{objectsMapper}{objectsMapper}}
+{\footnotesize\ttfamily \label{class_environment_a9c44fa62c4c7f5424b32ea6c274e8925} 
+std\+::unordered\+\_\+map$<$boost\+::uuids\+::uuid, std\+::shared\+\_\+ptr$<$\mbox{\hyperlink{class_environment_object}{Environment\+Object}}$>$ $>$ Environment\+::objects\+Mapper\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a29482a429c457a864ca07e7cb6b6ac2e}\index{Environment@{Environment}!spatialIndex@{spatialIndex}}
+\index{spatialIndex@{spatialIndex}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{spatialIndex}{spatialIndex}}
+{\footnotesize\ttfamily \label{class_environment_a29482a429c457a864ca07e7cb6b6ac2e} 
+std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{class_i_spatial_index}{ISpatial\+Index}}$<$boost\+::uuids\+::uuid$>$ $>$ Environment\+::spatial\+Index\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_a889eecb04b11de265373ad4664e101cb}\index{Environment@{Environment}!type@{type}}
+\index{type@{type}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily \label{class_environment_a889eecb04b11de265373ad4664e101cb} 
+std\+::string Environment\+::type\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}\index{Environment@{Environment}!width@{width}}
+\index{width@{width}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{width}{width}}
+{\footnotesize\ttfamily \label{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea} 
+int Environment\+::width\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/core/\mbox{\hyperlink{_environment_8hpp}{Environment.\+hpp}}\end{DoxyCompactItemize}

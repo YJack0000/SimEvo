@@ -1,0 +1,285 @@
+\doxysection{gmock-\/pp.h}
+\hypertarget{gmock-pp_8h_source}{}\label{gmock-pp_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/pp.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/pp.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PP\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PP\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Expands\ and\ concatenates\ the\ arguments.\ Constructed\ macros\ reevaluate.}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_CAT(\_1,\ \_2)\ GMOCK\_PP\_INTERNAL\_CAT(\_1,\ \_2)}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ Expands\ and\ stringifies\ the\ only\ argument.}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_STRINGIZE(...)\ GMOCK\_PP\_INTERNAL\_STRINGIZE(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ Returns\ empty.\ Given\ a\ variadic\ number\ of\ arguments.}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_EMPTY(...)}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ Returns\ a\ comma.\ Given\ a\ variadic\ number\ of\ arguments.}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_COMMA(...)\ ,}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ Returns\ the\ only\ argument.}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_IDENTITY(\_1)\ \_1}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ Evaluates\ to\ the\ number\ of\ arguments\ after\ expansion.}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ \ \ \#define\ PAIR\ x,\ y}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG()\ =>\ 1}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG(x)\ =>\ 1}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG(x,\ y)\ =>\ 2}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG(PAIR)\ =>\ 2}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ Requires:\ the\ number\ of\ arguments\ after\ expansion\ is\ at\ most\ 15.}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_NARG(...)\ \(\backslash\)}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_16TH(\ \ \(\backslash\)}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\ \ \ \ \ \ (\_\_VA\_ARGS\_\_,\ 15,\ 14,\ 13,\ 12,\ 11,\ 10,\ 9,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2,\ 1,\ 0))}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Returns\ 1\ if\ the\ expansion\ of\ arguments\ has\ an\ unprotected\ comma.\ Otherwise}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ returns\ 0.\ Requires\ no\ more\ than\ 15\ unprotected\ commas.}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_HAS\_COMMA(...)\ \(\backslash\)}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_16TH(\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\ \ \ \ \ \ (\_\_VA\_ARGS\_\_,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 0,\ 0))}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ Returns\ the\ first\ argument.}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_HEAD(...)\ GMOCK\_PP\_INTERNAL\_HEAD((\_\_VA\_ARGS\_\_,\ unusedArg))}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ Returns\ the\ tail.\ A\ variadic\ list\ of\ all\ arguments\ minus\ the\ first.\ Requires}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ at\ least\ one\ argument.}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_TAIL(...)\ GMOCK\_PP\_INTERNAL\_TAIL((\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ Calls\ CAT(\_Macro,\ NARG(\_\_VA\_ARGS\_\_))(\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_VARIADIC\_CALL(\_Macro,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IDENTITY(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_PP\_CAT(\_Macro,\ GMOCK\_PP\_NARG(\_\_VA\_ARGS\_\_))(\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ If\ the\ arguments\ after\ expansion\ have\ no\ tokens,\ evaluates\ to\ \`{}1`.\ Otherwise}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ evaluates\ to\ \`{}0`.}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ Requires:\ *\ the\ number\ of\ arguments\ after\ expansion\ is\ at\ most\ 15.}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ *\ If\ the\ argument\ is\ a\ macro,\ it\ must\ be\ able\ to\ be\ called\ with\ one}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ argument.}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ Implementation\ details:}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ There\ is\ one\ case\ when\ it\ generates\ a\ compile\ error:\ if\ the\ argument\ is\ macro}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ that\ cannot\ be\ called\ with\ one\ argument.}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\ \ \ \#define\ M(a,\ b)\ \ //\ it\ doesn't\ matter\ what\ it\ expands\ to}}
+\DoxyCodeLine{00064\ \textcolor{comment}{//}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//\ \ \ //\ Expected:\ expands\ to\ \`{}0`.}}
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ \ \ //\ Actual:\ compile\ error.}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_IS\_EMPTY(M)}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ There\ are\ 4\ cases\ tested:}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ *\ \_\_VA\_ARGS\_\_\ possible\ expansion\ has\ no\ unparen'd\ commas.\ Expected\ 0.}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ *\ \_\_VA\_ARGS\_\_\ possible\ expansion\ is\ not\ enclosed\ in\ parenthesis.\ Expected\ 0.}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ *\ \_\_VA\_ARGS\_\_\ possible\ expansion\ is\ not\ a\ macro\ that\ ()-\/evaluates\ to\ a\ comma.}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ \ \ Expected\ 0}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ *\ \_\_VA\_ARGS\_\_\ is\ empty,\ or\ has\ unparen'd\ commas,\ or\ is\ enclosed\ in}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ \ \ parenthesis,\ or\ is\ a\ macro\ that\ ()-\/evaluates\ to\ comma.\ Expected\ 1.}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ We\ trigger\ detection\ on\ '0001',\ i.e.\ on\ empty.}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_IS\_EMPTY(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_IS\_EMPTY(GMOCK\_PP\_HAS\_COMMA(\_\_VA\_ARGS\_\_),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_PP\_COMMA\ \_\_VA\_ARGS\_\_),\ \(\backslash\)}}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(\_\_VA\_ARGS\_\_()),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_PP\_COMMA\ \_\_VA\_ARGS\_\_()))}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ Evaluates\ to\ \_Then\ if\ \_Cond\ is\ 1\ and\ \_Else\ if\ \_Cond\ is\ 0.}}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_IF(\_Cond,\ \_Then,\ \_Else)\ \(\backslash\)}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_IF\_,\ \_Cond)(\_Then,\ \_Else)}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ Similar\ to\ GMOCK\_PP\_IF\ but\ takes\ \_Then\ and\ \_Else\ in\ parentheses.}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ GMOCK\_PP\_GENERIC\_IF(1,\ (a,\ b,\ c),\ (d,\ e,\ f))\ =>\ a,\ b,\ c}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ GMOCK\_PP\_GENERIC\_IF(0,\ (a,\ b,\ c),\ (d,\ e,\ f))\ =>\ d,\ e,\ f}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//}}
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_GENERIC\_IF(\_Cond,\ \_Then,\ \_Else)\ \(\backslash\)}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_REMOVE\_PARENS(GMOCK\_PP\_IF(\_Cond,\ \_Then,\ \_Else))}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ Evaluates\ to\ the\ number\ of\ arguments\ after\ expansion.\ Identifies\ 'empty'\ as}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ 0.}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//}}
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ \ \ \#define\ PAIR\ x,\ y}}
+\DoxyCodeLine{00101\ \textcolor{comment}{//}}
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG0()\ =>\ 0}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG0(x)\ =>\ 1}}
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG0(x,\ y)\ =>\ 2}}
+\DoxyCodeLine{00105\ \textcolor{comment}{//\ \ \ GMOCK\_PP\_NARG0(PAIR)\ =>\ 2}}
+\DoxyCodeLine{00106\ \textcolor{comment}{//}}
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ Requires:\ *\ the\ number\ of\ arguments\ after\ expansion\ is\ at\ most\ 15.}}
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ *\ If\ the\ argument\ is\ a\ macro,\ it\ must\ be\ able\ to\ be\ called\ with\ one}}
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ argument.}}
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_NARG0(...)\ \(\backslash\)}}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(GMOCK\_PP\_IS\_EMPTY(\_\_VA\_ARGS\_\_),\ 0,\ GMOCK\_PP\_NARG(\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ Expands\ to\ 1\ if\ the\ first\ argument\ starts\ with\ something\ in\ parentheses,}}
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ otherwise\ to\ 0.}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_IS\_BEGIN\_PARENS(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_HEAD(GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_R\_,\ \(\backslash\)}}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_C\ \_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \textcolor{comment}{//\ Expands\ to\ 1\ is\ there\ is\ only\ one\ argument\ and\ it\ is\ enclosed\ in\ parentheses.}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_IS\_ENCLOSED\_PARENS(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IF(GMOCK\_PP\_IS\_BEGIN\_PARENS(\_\_VA\_ARGS\_\_),\ \(\backslash\)}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_PP\_IS\_EMPTY(GMOCK\_PP\_EMPTY\ \_\_VA\_ARGS\_\_),\ 0)}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ Remove\ the\ parens,\ requires\ GMOCK\_PP\_IS\_ENCLOSED\_PARENS(args)\ =>\ 1.}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_REMOVE\_PARENS(...)\ GMOCK\_PP\_INTERNAL\_REMOVE\_PARENS\ \_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{comment}{//\ Expands\ to\ \_Macro(0,\ \_Data,\ e1)\ \_Macro(1,\ \_Data,\ e2)\ ...\ \_Macro(K\ -\/1,\ \_Data,}}
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ eK)\ as\ many\ of\ GMOCK\_INTERNAL\_NARG0\ \_Tuple.}}
+\DoxyCodeLine{00129\ \textcolor{comment}{//\ Requires:\ *\ |\_Macro|\ can\ be\ called\ with\ 3\ arguments.}}
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ *\ |\_Tuple|\ expansion\ has\ no\ more\ than\ 15\ elements.}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_FOR\_EACH(\_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_,\ GMOCK\_PP\_NARG0\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ (0,\ \_Macro,\ \_Data,\ \_Tuple)}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{comment}{//\ Expands\ to\ \_Macro(0,\ \_Data,\ )\ \_Macro(1,\ \_Data,\ )\ ...\ \_Macro(K\ -\/\ 1,\ \_Data,\ )}}
+\DoxyCodeLine{00136\ \textcolor{comment}{//\ Empty\ if\ \_K\ =\ 0.}}
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ Requires:\ *\ |\_Macro|\ can\ be\ called\ with\ 3\ arguments.}}
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ *\ |\_K|\ literal\ between\ 0\ and\ 15}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_REPEAT(\_Macro,\ \_Data,\ \_N)\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_,\ \_N)\ \(\backslash\)}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\ \ (0,\ \_Macro,\ \_Data,\ GMOCK\_PP\_INTENRAL\_EMPTY\_TUPLE)}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{comment}{//\ Increments\ the\ argument,\ requires\ the\ argument\ to\ be\ between\ 0\ and\ 15.}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INC(\_i)\ GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_INC\_,\ \_i)}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ Returns\ comma\ if\ \_i\ !=\ 0.\ Requires\ \_i\ to\ be\ between\ 0\ and\ 15.}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_COMMA\_IF(\_i)\ GMOCK\_PP\_CAT(GMOCK\_PP\_INTERNAL\_COMMA\_IF\_,\ \_i)}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{comment}{//\ Internal\ details\ follow.\ Do\ not\ use\ any\ of\ these\ symbols\ outside\ of\ this}}
+\DoxyCodeLine{00150\ \textcolor{comment}{//\ file\ or\ we\ will\ break\ your\ code.}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTENRAL\_EMPTY\_TUPLE\ (,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ ,\ )}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_CAT(\_1,\ \_2)\ \_1\#\#\_2}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_STRINGIZE(...)\ \#\_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_CAT\_5(\_1,\ \_2,\ \_3,\ \_4,\ \_5)\ \_1\#\#\_2\#\#\_3\#\#\_4\#\#\_5}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IS\_EMPTY(\_1,\ \_2,\ \_3,\ \_4)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_HAS\_COMMA(GMOCK\_PP\_INTERNAL\_CAT\_5(GMOCK\_PP\_INTERNAL\_IS\_EMPTY\_CASE\_,\ \(\backslash\)}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_1,\ \_2,\ \_3,\ \_4))}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IS\_EMPTY\_CASE\_0001\ ,}}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IF\_1(\_Then,\ \_Else)\ \_Then}}
+\DoxyCodeLine{00160\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IF\_0(\_Then,\ \_Else)\ \_Else}}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \textcolor{comment}{//\ Because\ of\ MSVC\ treating\ a\ token\ with\ a\ comma\ in\ it\ as\ a\ single\ token\ when}}
+\DoxyCodeLine{00163\ \textcolor{comment}{//\ passed\ to\ another\ macro,\ we\ need\ to\ force\ it\ to\ evaluate\ it\ as\ multiple}}
+\DoxyCodeLine{00164\ \textcolor{comment}{//\ tokens.\ We\ do\ that\ by\ using\ a\ "{}IDENTITY(MACRO\ PARENTHESIZED\_ARGS)"{}\ macro.\ We}}
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ define\ one\ per\ possible\ macro\ that\ relies\ on\ this\ behavior.\ Note\ "{}\_Args"{}\ must}}
+\DoxyCodeLine{00166\ \textcolor{comment}{//\ be\ parenthesized.}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INTERNAL\_16TH(\_1,\ \_2,\ \_3,\ \_4,\ \_5,\ \_6,\ \_7,\ \_8,\ \_9,\ \(\backslash\)}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_10,\ \_11,\ \_12,\ \_13,\ \_14,\ \_15,\ \_16,\ \ \(\backslash\)}}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\ \ \_16}}
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_16TH(\_Args)\ \(\backslash\)}}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IDENTITY(GMOCK\_PP\_INTERNAL\_INTERNAL\_16TH\ \_Args)}}
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INTERNAL\_HEAD(\_1,\ ...)\ \_1}}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_HEAD(\_Args)\ \(\backslash\)}}
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IDENTITY(GMOCK\_PP\_INTERNAL\_INTERNAL\_HEAD\ \_Args)}}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INTERNAL\_TAIL(\_1,\ ...)\ \_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_TAIL(\_Args)\ \(\backslash\)}}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_IDENTITY(GMOCK\_PP\_INTERNAL\_INTERNAL\_TAIL\ \_Args)}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_C(...)\ 1\ \_}}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_R\_1\ 1,}}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_R\_GMOCK\_PP\_INTERNAL\_IBP\_IS\_VARIADIC\_C\ \(\backslash\)}}
+\DoxyCodeLine{00183\ \textcolor{preprocessor}{\ \ 0,}}
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_REMOVE\_PARENS(...)\ \_\_VA\_ARGS\_\_}}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_0\ 1}}
+\DoxyCodeLine{00186\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_1\ 2}}
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_2\ 3}}
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_3\ 4}}
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_4\ 5}}
+\DoxyCodeLine{00190\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_5\ 6}}
+\DoxyCodeLine{00191\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_6\ 7}}
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_7\ 8}}
+\DoxyCodeLine{00193\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_8\ 9}}
+\DoxyCodeLine{00194\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_9\ 10}}
+\DoxyCodeLine{00195\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_10\ 11}}
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_11\ 12}}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_12\ 13}}
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_13\ 14}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_14\ 15}}
+\DoxyCodeLine{00200\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_INC\_15\ 16}}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_0}}
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_1\ ,}}
+\DoxyCodeLine{00203\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_2\ ,}}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_3\ ,}}
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_4\ ,}}
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_5\ ,}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_6\ ,}}
+\DoxyCodeLine{00208\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_7\ ,}}
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_8\ ,}}
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_9\ ,}}
+\DoxyCodeLine{00211\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_10\ ,}}
+\DoxyCodeLine{00212\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_11\ ,}}
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_12\ ,}}
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_13\ ,}}
+\DoxyCodeLine{00215\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_14\ ,}}
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_COMMA\_IF\_15\ ,}}
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ \_element)\ \(\backslash\)}}
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\ \ \_Macro(\_i,\ \_Data,\ \_element)}}
+\DoxyCodeLine{00219\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_0(\_i,\ \_Macro,\ \_Data,\ \_Tuple)}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_1(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)}}
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_2(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_1(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_3(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_2(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_4(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_3(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00234\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_5(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_4(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00237\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00238\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_6(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00239\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_5(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_7(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00243\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00244\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_6(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00245\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_8(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00247\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_7(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_9(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00251\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_8(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00253\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_10(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00255\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00256\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_9(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00258\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_11(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00260\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_10(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00261\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00262\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_12(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00263\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00264\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_11(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_13(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00267\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00268\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_12(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00269\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00270\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_14(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00271\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00272\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_13(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00273\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00274\ \textcolor{preprocessor}{\#define\ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_15(\_i,\ \_Macro,\ \_Data,\ \_Tuple)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00275\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_CALL\_MACRO(\_Macro,\ \_i,\ \_Data,\ GMOCK\_PP\_HEAD\ \_Tuple)\ \(\backslash\)}}
+\DoxyCodeLine{00276\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_INTERNAL\_FOR\_EACH\_IMPL\_14(GMOCK\_PP\_INC(\_i),\ \_Macro,\ \_Data,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00277\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (GMOCK\_PP\_TAIL\ \_Tuple))}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PP\_H\_}}
+
+\end{DoxyCode}

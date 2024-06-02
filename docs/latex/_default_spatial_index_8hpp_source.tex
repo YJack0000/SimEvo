@@ -1,0 +1,27 @@
+\doxysection{Default\+Spatial\+Index.\+hpp}
+\hypertarget{_default_spatial_index_8hpp_source}{}\label{_default_spatial_index_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/index/DefaultSpatialIndex.hpp@{/Users/yjack/GitHub/SimEvo/include/index/DefaultSpatialIndex.hpp}}
+\mbox{\hyperlink{_default_spatial_index_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ DEFAULT\_SPATIAL\_INDEX\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ DEFAULT\_SPATIAL\_INDEX\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_i_spatial_index_8hpp}{ISpatialIndex.hpp}}"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_default_spatial_index}{DefaultSpatialIndex}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_i_spatial_index}{ISpatialIndex}}<T>\ \{}
+\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{class_default_spatial_index_a4881a674462fc59f664295f0589aa8d3}{DefaultSpatialIndex}}();}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_default_spatial_index_a6689e1d330b88842f6a08fe649b11e4f}{insert}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00011\ \ \ \ \ std::vector<T>\ \mbox{\hyperlink{class_default_spatial_index_a46defc74702da7db316fae88885c2e82}{query}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ range)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_default_spatial_index_a4034bbc1c7da22da401452646b644c5b}{update}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{float}\ newX,\ \textcolor{keywordtype}{float}\ newY)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_default_spatial_index_a1adbd25aef4e9072b2f0e41b2ff57446}{remove}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object})\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_default_spatial_index_a74fce9ee824064d4547a613197626423}{clear}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00017\ \ \ \ \ std::vector<SpatialObject<T>>\ \mbox{\hyperlink{class_default_spatial_index_a55003174b6ed0cce5c74eafb2108f6f1}{spatialObjects}};}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{typename}\ std::vector<SpatialObject<T>>::iterator\ \mbox{\hyperlink{class_default_spatial_index_a2f3cb4a012e5c3bbf2169ebfcbff32cd}{findObject}}(\textcolor{keyword}{const}\ T\&\ \textcolor{keywordtype}{object});}
+\DoxyCodeLine{00019\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

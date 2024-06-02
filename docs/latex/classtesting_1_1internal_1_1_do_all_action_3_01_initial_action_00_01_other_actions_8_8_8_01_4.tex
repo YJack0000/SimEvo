@@ -1,0 +1,32 @@
+\doxysection{testing\+::internal\+::Do\+All\+Action\texorpdfstring{$<$}{<} Initial\+Action, Other\+Actions... \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4}{}\label{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4}\index{testing::internal::DoAllAction$<$ InitialAction, OtherActions... $>$@{testing::internal::DoAllAction$<$ InitialAction, OtherActions... $>$}}
+
+
+Inheritance diagram for testing\+::internal\+::Do\+All\+Action\texorpdfstring{$<$}{<} Initial\+Action, Other\+Actions... \texorpdfstring{$>$}{>}\+:
+% FIG 0
+
+
+Collaboration diagram for testing\+::internal\+::Do\+All\+Action\texorpdfstring{$<$}{<} Initial\+Action, Other\+Actions... \texorpdfstring{$>$}{>}\+:
+% FIG 1
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_1_1_user_constructor_tag}{User\+Constructor\+Tag}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a726288a771d93b49da88125f2499d067}\label{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a726288a771d93b49da88125f2499d067} 
+{\footnotesize template$<$typename T , typename... U$>$ }\\{\bfseries Do\+All\+Action} (\mbox{\hyperlink{structtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_1_1_user_constructor_tag}{User\+Constructor\+Tag}}, T \&\&initial\+\_\+action, U \&\&... other\+\_\+actions)
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a38629b382b845e636276b41c6df8c2e1}\label{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a38629b382b845e636276b41c6df8c2e1} 
+{\footnotesize template$<$typename R , typename... Args, typename std\+::enable\+\_\+if$<$ \mbox{\hyperlink{structtesting_1_1internal_1_1conjunction}{conjunction}}$<$ std\+::is\+\_\+convertible$<$ Initial\+Action, \mbox{\hyperlink{classtesting_1_1_once_action}{Once\+Action}}$<$ void(Initial\+Action\+Arg\+Type$<$ Args $>$...)$>$ $>$, std\+::is\+\_\+convertible$<$ \mbox{\hyperlink{classtesting_1_1internal_1_1_do_all_action}{Base}}, \mbox{\hyperlink{classtesting_1_1_once_action}{Once\+Action}}$<$ R(Args...)$>$ $>$ $>$\+::value , int , \+::type  = 0$>$ }\\{\bfseries operator Once\+Action$<$ R} (Args...)$>$() \&\&
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a04f8b373d07f4319cc99d35a4c7ec4a1}\label{classtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_a04f8b373d07f4319cc99d35a4c7ec4a1} 
+{\footnotesize template$<$typename R , typename... Args, typename std\+::enable\+\_\+if$<$ \mbox{\hyperlink{structtesting_1_1internal_1_1conjunction}{conjunction}}$<$ std\+::is\+\_\+convertible$<$ const Initial\+Action \&, \mbox{\hyperlink{classtesting_1_1_action}{Action}}$<$ void(Initial\+Action\+Arg\+Type$<$ Args $>$...)$>$ $>$, std\+::is\+\_\+convertible$<$ const \mbox{\hyperlink{classtesting_1_1internal_1_1_do_all_action}{Base}} \&, \mbox{\hyperlink{classtesting_1_1_action}{Action}}$<$ R(Args...)$>$ $>$ $>$\+::value , int , \+::type  = 0$>$ }\\{\bfseries operator Action$<$ R} (Args...)$>$() const
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googlemock/include/gmock/gmock-\/actions.\+h\end{DoxyCompactItemize}

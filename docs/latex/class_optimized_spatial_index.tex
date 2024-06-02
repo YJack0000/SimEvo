@@ -1,0 +1,296 @@
+\doxysection{Optimized\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_optimized_spatial_index}{}\label{class_optimized_spatial_index}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Optimized\+Spatial\+Index.\+hpp$>$}
+
+
+
+Inheritance diagram for Optimized\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_optimized_spatial_index__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Optimized\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_optimized_spatial_index__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_optimized_spatial_index_a97a725470b4be2004e674bc2cd62bd3a}{Optimized\+Spatial\+Index}} (float \mbox{\hyperlink{class_optimized_spatial_index_a7a0cb84121658ade7cfe02ff89f94d50}{size}})
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a838dcb11edf5effcee7252f1f11d952d}{insert}} (const T \&object, float x, float y) override
+\item 
+std\+::vector$<$ T $>$ \mbox{\hyperlink{class_optimized_spatial_index_a8ef431beb7b527bec246d3db4e4db695}{query}} (float x, float y, float range) override
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a2c87ef5776eea59388b9c0c03484ca1e}{update}} (const T \&object, float newX, float newY) override
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_ac64e6d4ed86191633dae278522d149a6}{remove}} (const T \&object) override
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_ab55840a20093434ead85b089a4620df5}{clear}} () override
+\item 
+\mbox{\hyperlink{class_optimized_spatial_index_acc017c78abdaad83138fbdb2b7895fcc}{\texorpdfstring{$\sim$}{\string~}\+Optimized\+Spatial\+Index}} () override=default
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_i_spatial_index}{ISpatial\+Index$<$ T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_i_spatial_index_af9d2bc7d59b524ac2f036f7b9685526d}{\texorpdfstring{$\sim$}{\string~}\+ISpatial\+Index}} ()=default
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$ T $>$ $>$ $>$ \mbox{\hyperlink{class_optimized_spatial_index_afebe92ca820f355291fff104a1d777ea}{spatial\+Objects}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a441d7ab54119dd38a13ca50c23fa8b1f}{\+\_\+query}} (float x, float y, float range, std\+::vector$<$ T $>$ \&result)
+\item 
+bool \mbox{\hyperlink{class_optimized_spatial_index_a25d591c52832eb4334856290c51b2165}{in\+Bounds}} (const std\+::pair$<$ float, float $>$ \&pos) const
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a3cc91267bbf2c22b89ff51a98b6d3760}{set\+Offset}} (float offsetX, float offsetY)
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a68933c41688f5ffddeb8f4756ba987d6}{subdivide}} ()
+\item 
+bool \mbox{\hyperlink{class_optimized_spatial_index_a3e143246853e986897283cac4e817303}{can\+Merge}} () const
+\item 
+void \mbox{\hyperlink{class_optimized_spatial_index_a3c2be4290929d694e42232cf672bc0e4}{merge}} ()
+\item 
+bool \mbox{\hyperlink{class_optimized_spatial_index_ad1e24e50b5ca1e9e195a3a107f5dadbb}{is\+Empty}} () const
+\item 
+bool \mbox{\hyperlink{class_optimized_spatial_index_ab7f5f8e63f75152ec044e2ec2a0d0dd9}{intersects\+Range}} (float min\+\_\+x, float max\+\_\+x, float min\+\_\+y, float max\+\_\+y) const
+\item 
+int \mbox{\hyperlink{class_optimized_spatial_index_ac6720cbd932f200a9cbd56bdcb5c5740}{get\+Child\+Index}} (float x, float y) const
+\item 
+float \mbox{\hyperlink{class_optimized_spatial_index_a28abd8a3e2c54534d532c50efe154b18}{get\+Distance}} (float x1, float y1, float x2, float y2) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{class_optimized_spatial_index_a7a0cb84121658ade7cfe02ff89f94d50}{size}}
+\item 
+bool \mbox{\hyperlink{class_optimized_spatial_index_a13fad47de11778fff15c7d8ee17b9759}{is\+Subdivided}}
+\item 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$ $>$ \mbox{\hyperlink{class_optimized_spatial_index_a041bc1083d8696e7e30e9341ccef386b}{children}} \mbox{[}4\mbox{]}
+\item 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_optimized_spatial_index_a0eba675082ee335acfaee9d6e38b091a}{offset}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const int \mbox{\hyperlink{class_optimized_spatial_index_a41db57e0383408660ff963a1d35f90f1}{MAX\+\_\+\+OBJECTS}}
+\item 
+static const int \mbox{\hyperlink{class_optimized_spatial_index_ac0f10d5e1cdce9118c738156f6e7619b}{MIN\+\_\+\+SIZE}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_optimized_spatial_index_a97a725470b4be2004e674bc2cd62bd3a}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!OptimizedSpatialIndex@{OptimizedSpatialIndex}}
+\index{OptimizedSpatialIndex@{OptimizedSpatialIndex}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{OptimizedSpatialIndex()}{OptimizedSpatialIndex()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a97a725470b4be2004e674bc2cd62bd3a} 
+template$<$typename T $>$ \\
+\mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\mbox{\hyperlink{class_optimized_spatial_index}{\+::\+Optimized\+Spatial\+Index}} (\begin{DoxyParamCaption}\item[{float}]{size}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_optimized_spatial_index_acc017c78abdaad83138fbdb2b7895fcc}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!````~OptimizedSpatialIndex@{\texorpdfstring{$\sim$}{\string~}OptimizedSpatialIndex}}
+\index{````~OptimizedSpatialIndex@{\texorpdfstring{$\sim$}{\string~}OptimizedSpatialIndex}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}OptimizedSpatialIndex()}{\string~OptimizedSpatialIndex()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_acc017c78abdaad83138fbdb2b7895fcc} 
+template$<$typename T $>$ \\
+\mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::\texorpdfstring{$\sim$}{\string~}\mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [default]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_optimized_spatial_index_a441d7ab54119dd38a13ca50c23fa8b1f}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!\_query@{\_query}}
+\index{\_query@{\_query}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{\_query()}{\_query()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a441d7ab54119dd38a13ca50c23fa8b1f} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::\+\_\+query (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{range}{, }\item[{std\+::vector$<$ T $>$ \&}]{result}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a3e143246853e986897283cac4e817303}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!canMerge@{canMerge}}
+\index{canMerge@{canMerge}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{canMerge()}{canMerge()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a3e143246853e986897283cac4e817303} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::can\+Merge (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_ab55840a20093434ead85b089a4620df5}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!clear@{clear}}
+\index{clear@{clear}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ab55840a20093434ead85b089a4620df5} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::clear (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a9ebdbdd6bb38235f38533997a2bbc6b8}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_optimized_spatial_index_ac6720cbd932f200a9cbd56bdcb5c5740}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!getChildIndex@{getChildIndex}}
+\index{getChildIndex@{getChildIndex}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getChildIndex()}{getChildIndex()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ac6720cbd932f200a9cbd56bdcb5c5740} 
+template$<$typename T $>$ \\
+int \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::get\+Child\+Index (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a28abd8a3e2c54534d532c50efe154b18}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!getDistance@{getDistance}}
+\index{getDistance@{getDistance}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getDistance()}{getDistance()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a28abd8a3e2c54534d532c50efe154b18} 
+template$<$typename T $>$ \\
+float \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::get\+Distance (\begin{DoxyParamCaption}\item[{float}]{x1}{, }\item[{float}]{y1}{, }\item[{float}]{x2}{, }\item[{float}]{y2}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a25d591c52832eb4334856290c51b2165}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!inBounds@{inBounds}}
+\index{inBounds@{inBounds}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{inBounds()}{inBounds()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a25d591c52832eb4334856290c51b2165} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::in\+Bounds (\begin{DoxyParamCaption}\item[{const std\+::pair$<$ float, float $>$ \&}]{pos}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a838dcb11edf5effcee7252f1f11d952d}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!insert@{insert}}
+\index{insert@{insert}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a838dcb11edf5effcee7252f1f11d952d} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::insert (\begin{DoxyParamCaption}\item[{const T \&}]{object}{, }\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_ae48d225f9a5785e28f5fd796a3132549}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_optimized_spatial_index_ab7f5f8e63f75152ec044e2ec2a0d0dd9}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!intersectsRange@{intersectsRange}}
+\index{intersectsRange@{intersectsRange}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{intersectsRange()}{intersectsRange()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ab7f5f8e63f75152ec044e2ec2a0d0dd9} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::intersects\+Range (\begin{DoxyParamCaption}\item[{float}]{min\+\_\+x}{, }\item[{float}]{max\+\_\+x}{, }\item[{float}]{min\+\_\+y}{, }\item[{float}]{max\+\_\+y}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_ad1e24e50b5ca1e9e195a3a107f5dadbb}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!isEmpty@{isEmpty}}
+\index{isEmpty@{isEmpty}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{isEmpty()}{isEmpty()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ad1e24e50b5ca1e9e195a3a107f5dadbb} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::is\+Empty (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a3c2be4290929d694e42232cf672bc0e4}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!merge@{merge}}
+\index{merge@{merge}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{merge()}{merge()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a3c2be4290929d694e42232cf672bc0e4} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::merge (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a8ef431beb7b527bec246d3db4e4db695}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!query@{query}}
+\index{query@{query}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{query()}{query()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a8ef431beb7b527bec246d3db4e4db695} 
+template$<$typename T $>$ \\
+std\+::vector$<$ T $>$ \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::query (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{range}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a15c59b62cd45173873f37317fa571b61}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_optimized_spatial_index_ac64e6d4ed86191633dae278522d149a6}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!remove@{remove}}
+\index{remove@{remove}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ac64e6d4ed86191633dae278522d149a6} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::remove (\begin{DoxyParamCaption}\item[{const T \&}]{object}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a2c6a2a9e9af19ebaf9be97367d12705a}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_optimized_spatial_index_a3cc91267bbf2c22b89ff51a98b6d3760}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!setOffset@{setOffset}}
+\index{setOffset@{setOffset}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setOffset()}{setOffset()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a3cc91267bbf2c22b89ff51a98b6d3760} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::set\+Offset (\begin{DoxyParamCaption}\item[{float}]{offsetX}{, }\item[{float}]{offsetY}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a68933c41688f5ffddeb8f4756ba987d6}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!subdivide@{subdivide}}
+\index{subdivide@{subdivide}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{subdivide()}{subdivide()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a68933c41688f5ffddeb8f4756ba987d6} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::subdivide (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a2c87ef5776eea59388b9c0c03484ca1e}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!update@{update}}
+\index{update@{update}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a2c87ef5776eea59388b9c0c03484ca1e} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::update (\begin{DoxyParamCaption}\item[{const T \&}]{object}{, }\item[{float}]{newX}{, }\item[{float}]{newY}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a585d34008ccc15001f65592e3250e95a}{ISpatial\+Index$<$ T $>$}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_optimized_spatial_index_a041bc1083d8696e7e30e9341ccef386b}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!children@{children}}
+\index{children@{children}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{children}{children}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a041bc1083d8696e7e30e9341ccef386b} 
+template$<$typename T $>$ \\
+std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$T$>$ $>$ \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::children\mbox{[}4\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a13fad47de11778fff15c7d8ee17b9759}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!isSubdivided@{isSubdivided}}
+\index{isSubdivided@{isSubdivided}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{isSubdivided}{isSubdivided}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a13fad47de11778fff15c7d8ee17b9759} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::is\+Subdivided\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a41db57e0383408660ff963a1d35f90f1}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!MAX\_OBJECTS@{MAX\_OBJECTS}}
+\index{MAX\_OBJECTS@{MAX\_OBJECTS}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{MAX\_OBJECTS}{MAX\_OBJECTS}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a41db57e0383408660ff963a1d35f90f1} 
+template$<$typename T $>$ \\
+const int \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::\+MAX\+\_\+\+OBJECTS\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_ac0f10d5e1cdce9118c738156f6e7619b}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!MIN\_SIZE@{MIN\_SIZE}}
+\index{MIN\_SIZE@{MIN\_SIZE}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{MIN\_SIZE}{MIN\_SIZE}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_ac0f10d5e1cdce9118c738156f6e7619b} 
+template$<$typename T $>$ \\
+const int \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::\+MIN\+\_\+\+SIZE\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a0eba675082ee335acfaee9d6e38b091a}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!offset@{offset}}
+\index{offset@{offset}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{offset}{offset}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a0eba675082ee335acfaee9d6e38b091a} 
+template$<$typename T $>$ \\
+std\+::pair$<$float, float$>$ \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::offset\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_a7a0cb84121658ade7cfe02ff89f94d50}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!size@{size}}
+\index{size@{size}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{size}{size}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_a7a0cb84121658ade7cfe02ff89f94d50} 
+template$<$typename T $>$ \\
+float \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::size\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_optimized_spatial_index_afebe92ca820f355291fff104a1d777ea}\index{OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}!spatialObjects@{spatialObjects}}
+\index{spatialObjects@{spatialObjects}!OptimizedSpatialIndex$<$ T $>$@{OptimizedSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{spatialObjects}{spatialObjects}}
+{\footnotesize\ttfamily \label{class_optimized_spatial_index_afebe92ca820f355291fff104a1d777ea} 
+template$<$typename T $>$ \\
+std\+::vector$<$std\+::shared\+\_\+ptr$<$\mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$T$>$ $>$ $>$ \mbox{\hyperlink{class_optimized_spatial_index}{Optimized\+Spatial\+Index}}$<$ T $>$\+::spatial\+Objects}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/index/\mbox{\hyperlink{_optimized_spatial_index_8hpp}{Optimized\+Spatial\+Index.\+hpp}}\end{DoxyCompactItemize}

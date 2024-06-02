@@ -1,0 +1,1811 @@
+\doxysection{gmock-\/matchers-\/misc\+\_\+test.cc}
+\hypertarget{gmock-matchers-misc__test_8cc_source}{}\label{gmock-matchers-misc__test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock-\/matchers-\/misc\_test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock-\/matchers-\/misc\_test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ tests\ some\ commonly\ used\ argument\ matchers.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ Silence\ warning\ C4244:\ 'initializing':\ conversion\ from\ 'int'\ to\ 'short',}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ possible\ loss\ of\ data\ and\ C4100,\ unreferenced\ local\ parameter}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#pragma\ warning(push)}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#pragma\ warning(disable\ :\ 4244)}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#pragma\ warning(disable\ :\ 4100)}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ "{}test/gmock-\/matchers\_test.h"{}}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00045\ \textcolor{keyword}{namespace\ }gmock\_matchers\_test\ \{}
+\DoxyCodeLine{00046\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ TEST(AddressTest,\ NonConst)\ \{}
+\DoxyCodeLine{00049\ \ \ \textcolor{keywordtype}{int}\ n\ =\ 1;}
+\DoxyCodeLine{00050\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m\ =\ Address(Eq(\&n));}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ EXPECT\_TRUE(m.Matches(n));}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keywordtype}{int}\ other\ =\ 5;}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ EXPECT\_FALSE(m.Matches(other));}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \textcolor{keywordtype}{int}\&\ n\_ref\ =\ n;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ EXPECT\_TRUE(m.Matches(n\_ref));}
+\DoxyCodeLine{00061\ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ TEST(AddressTest,\ Const)\ \{}
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ n\ =\ 1;}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m\ =\ Address(Eq(\&n));}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ EXPECT\_TRUE(m.Matches(n));}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \textcolor{keywordtype}{int}\ other\ =\ 5;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ EXPECT\_FALSE(m.Matches(other));}
+\DoxyCodeLine{00072\ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ TEST(AddressTest,\ MatcherDoesntCopy)\ \{}
+\DoxyCodeLine{00075\ \ \ std::unique\_ptr<int>\ n(\textcolor{keyword}{new}\ \textcolor{keywordtype}{int}(1));}
+\DoxyCodeLine{00076\ \ \ \textcolor{keyword}{const}\ Matcher<std::unique\_ptr<int>>\ m\ =\ Address(Eq(\&n));}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ EXPECT\_TRUE(m.Matches(n));}
+\DoxyCodeLine{00079\ \}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ TEST(AddressTest,\ Describe)\ \{}
+\DoxyCodeLine{00082\ \ \ Matcher<int>\ matcher\ =\ Address(\_);}
+\DoxyCodeLine{00083\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}has\ address\ that\ is\ anything"{}},\ Describe(matcher));}
+\DoxyCodeLine{00084\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}does\ not\ have\ address\ that\ is\ anything"{}},}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ DescribeNegation(matcher));}
+\DoxyCodeLine{00086\ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{comment}{//\ The\ following\ two\ tests\ verify\ that\ values\ without\ a\ public\ copy}}
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ ctor\ can\ be\ used\ as\ arguments\ to\ matchers\ like\ Eq(),\ Ge(),\ and\ etc}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ with\ the\ help\ of\ ByRef().}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{class\ }NotCopyable\ \{}
+\DoxyCodeLine{00093\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{explicit}\ NotCopyable(\textcolor{keywordtype}{int}\ a\_value)\ :\ value\_(a\_value)\ \{\}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \textcolor{keywordtype}{int}\ value()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ NotCopyable\&\ rhs)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordflow}{return}\ value()\ ==\ rhs.value();}
+\DoxyCodeLine{00100\ \ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \textcolor{keywordtype}{bool}\ operator>=(\textcolor{keyword}{const}\ NotCopyable\&\ rhs)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordflow}{return}\ value()\ >=\ rhs.value();}
+\DoxyCodeLine{00104\ \ \ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00107\ \ \ \textcolor{keywordtype}{int}\ value\_;}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ NotCopyable(\textcolor{keyword}{const}\ NotCopyable\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00110\ \ \ NotCopyable\&\ operator=(\textcolor{keyword}{const}\ NotCopyable\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00111\ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ TEST(ByRefTest,\ AllowsNotCopyableConstValueInMatchers)\ \{}
+\DoxyCodeLine{00114\ \ \ \textcolor{keyword}{const}\ NotCopyable\ const\_value1(1);}
+\DoxyCodeLine{00115\ \ \ \textcolor{keyword}{const}\ Matcher<const\ NotCopyable\&>\ m\ =\ Eq(ByRef(const\_value1));}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \textcolor{keyword}{const}\ NotCopyable\ n1(1),\ n2(2);}
+\DoxyCodeLine{00118\ \ \ EXPECT\_TRUE(m.Matches(n1));}
+\DoxyCodeLine{00119\ \ \ EXPECT\_FALSE(m.Matches(n2));}
+\DoxyCodeLine{00120\ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ TEST(ByRefTest,\ AllowsNotCopyableValueInMatchers)\ \{}
+\DoxyCodeLine{00123\ \ \ NotCopyable\ value2(2);}
+\DoxyCodeLine{00124\ \ \ \textcolor{keyword}{const}\ Matcher<NotCopyable\&>\ m\ =\ Ge(ByRef(value2));}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ NotCopyable\ n1(1),\ n2(2);}
+\DoxyCodeLine{00127\ \ \ EXPECT\_FALSE(m.Matches(n1));}
+\DoxyCodeLine{00128\ \ \ EXPECT\_TRUE(m.Matches(n2));}
+\DoxyCodeLine{00129\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ TEST(IsEmptyTest,\ ImplementsIsEmpty)\ \{}
+\DoxyCodeLine{00132\ \ \ vector<int>\ container;}
+\DoxyCodeLine{00133\ \ \ EXPECT\_THAT(container,\ IsEmpty());}
+\DoxyCodeLine{00134\ \ \ container.push\_back(0);}
+\DoxyCodeLine{00135\ \ \ EXPECT\_THAT(container,\ Not(IsEmpty()));}
+\DoxyCodeLine{00136\ \ \ container.push\_back(1);}
+\DoxyCodeLine{00137\ \ \ EXPECT\_THAT(container,\ Not(IsEmpty()));}
+\DoxyCodeLine{00138\ \}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ TEST(IsEmptyTest,\ WorksWithString)\ \{}
+\DoxyCodeLine{00141\ \ \ std::string\ text;}
+\DoxyCodeLine{00142\ \ \ EXPECT\_THAT(text,\ IsEmpty());}
+\DoxyCodeLine{00143\ \ \ text\ =\ \textcolor{stringliteral}{"{}foo"{}};}
+\DoxyCodeLine{00144\ \ \ EXPECT\_THAT(text,\ Not(IsEmpty()));}
+\DoxyCodeLine{00145\ \ \ text\ =\ std::string(\textcolor{stringliteral}{"{}\(\backslash\)0"{}},\ 1);}
+\DoxyCodeLine{00146\ \ \ EXPECT\_THAT(text,\ Not(IsEmpty()));}
+\DoxyCodeLine{00147\ \}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ TEST(IsEmptyTest,\ CanDescribeSelf)\ \{}
+\DoxyCodeLine{00150\ \ \ Matcher<vector<int>>\ m\ =\ IsEmpty();}
+\DoxyCodeLine{00151\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ empty"{}},\ Describe(m));}
+\DoxyCodeLine{00152\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}isn't\ empty"{}},\ DescribeNegation(m));}
+\DoxyCodeLine{00153\ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ TEST(IsEmptyTest,\ ExplainsResult)\ \{}
+\DoxyCodeLine{00156\ \ \ Matcher<vector<int>>\ m\ =\ IsEmpty();}
+\DoxyCodeLine{00157\ \ \ vector<int>\ container;}
+\DoxyCodeLine{00158\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ container));}
+\DoxyCodeLine{00159\ \ \ container.push\_back(0);}
+\DoxyCodeLine{00160\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ size\ is\ 1"{}},\ Explain(m,\ container));}
+\DoxyCodeLine{00161\ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ TEST(IsEmptyTest,\ WorksWithMoveOnly)\ \{}
+\DoxyCodeLine{00164\ \ \ ContainerHelper\ helper;}
+\DoxyCodeLine{00165\ \ \ EXPECT\_CALL(helper,\ Call(IsEmpty()));}
+\DoxyCodeLine{00166\ \ \ helper.Call(\{\});}
+\DoxyCodeLine{00167\ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ TEST(IsTrueTest,\ IsTrueIsFalse)\ \{}
+\DoxyCodeLine{00170\ \ \ EXPECT\_THAT(\textcolor{keyword}{true},\ IsTrue());}
+\DoxyCodeLine{00171\ \ \ EXPECT\_THAT(\textcolor{keyword}{false},\ IsFalse());}
+\DoxyCodeLine{00172\ \ \ EXPECT\_THAT(\textcolor{keyword}{true},\ Not(IsFalse()));}
+\DoxyCodeLine{00173\ \ \ EXPECT\_THAT(\textcolor{keyword}{false},\ Not(IsTrue()));}
+\DoxyCodeLine{00174\ \ \ EXPECT\_THAT(0,\ Not(IsTrue()));}
+\DoxyCodeLine{00175\ \ \ EXPECT\_THAT(0,\ IsFalse());}
+\DoxyCodeLine{00176\ \ \ EXPECT\_THAT(\textcolor{keyword}{nullptr},\ Not(IsTrue()));}
+\DoxyCodeLine{00177\ \ \ EXPECT\_THAT(\textcolor{keyword}{nullptr},\ IsFalse());}
+\DoxyCodeLine{00178\ \ \ EXPECT\_THAT(-\/1,\ IsTrue());}
+\DoxyCodeLine{00179\ \ \ EXPECT\_THAT(-\/1,\ Not(IsFalse()));}
+\DoxyCodeLine{00180\ \ \ EXPECT\_THAT(1,\ IsTrue());}
+\DoxyCodeLine{00181\ \ \ EXPECT\_THAT(1,\ Not(IsFalse()));}
+\DoxyCodeLine{00182\ \ \ EXPECT\_THAT(2,\ IsTrue());}
+\DoxyCodeLine{00183\ \ \ EXPECT\_THAT(2,\ Not(IsFalse()));}
+\DoxyCodeLine{00184\ \ \ \textcolor{keywordtype}{int}\ a\ =\ 42;}
+\DoxyCodeLine{00185\ \ \ EXPECT\_THAT(a,\ IsTrue());}
+\DoxyCodeLine{00186\ \ \ EXPECT\_THAT(a,\ Not(IsFalse()));}
+\DoxyCodeLine{00187\ \ \ EXPECT\_THAT(\&a,\ IsTrue());}
+\DoxyCodeLine{00188\ \ \ EXPECT\_THAT(\&a,\ Not(IsFalse()));}
+\DoxyCodeLine{00189\ \ \ EXPECT\_THAT(\textcolor{keyword}{false},\ Not(IsTrue()));}
+\DoxyCodeLine{00190\ \ \ EXPECT\_THAT(\textcolor{keyword}{true},\ Not(IsFalse()));}
+\DoxyCodeLine{00191\ \ \ EXPECT\_THAT(std::true\_type(),\ IsTrue());}
+\DoxyCodeLine{00192\ \ \ EXPECT\_THAT(std::true\_type(),\ Not(IsFalse()));}
+\DoxyCodeLine{00193\ \ \ EXPECT\_THAT(std::false\_type(),\ IsFalse());}
+\DoxyCodeLine{00194\ \ \ EXPECT\_THAT(std::false\_type(),\ Not(IsTrue()));}
+\DoxyCodeLine{00195\ \ \ EXPECT\_THAT(\textcolor{keyword}{nullptr},\ Not(IsTrue()));}
+\DoxyCodeLine{00196\ \ \ EXPECT\_THAT(\textcolor{keyword}{nullptr},\ IsFalse());}
+\DoxyCodeLine{00197\ \ \ std::unique\_ptr<int>\ null\_unique;}
+\DoxyCodeLine{00198\ \ \ std::unique\_ptr<int>\ nonnull\_unique(\textcolor{keyword}{new}\ \textcolor{keywordtype}{int}(0));}
+\DoxyCodeLine{00199\ \ \ EXPECT\_THAT(null\_unique,\ Not(IsTrue()));}
+\DoxyCodeLine{00200\ \ \ EXPECT\_THAT(null\_unique,\ IsFalse());}
+\DoxyCodeLine{00201\ \ \ EXPECT\_THAT(nonnull\_unique,\ IsTrue());}
+\DoxyCodeLine{00202\ \ \ EXPECT\_THAT(nonnull\_unique,\ Not(IsFalse()));}
+\DoxyCodeLine{00203\ \}}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_TYPED\_TEST}}
+\DoxyCodeLine{00206\ \textcolor{comment}{//\ Tests\ ContainerEq\ with\ different\ container\ types,\ and}}
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ different\ element\ types.}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00210\ \textcolor{keyword}{class\ }ContainerEqTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{\};}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{testing::Types<set<int>}},\ vector<size\_t>,\ multiset<size\_t>,\ list<int>>}
+\DoxyCodeLine{00213\ \ \ \ \ ContainerEqTestTypes;}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ TYPED\_TEST\_SUITE(ContainerEqTest,\ ContainerEqTestTypes);}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \textcolor{comment}{//\ Tests\ that\ the\ filled\ container\ is\ equal\ to\ itself.}}
+\DoxyCodeLine{00218\ TYPED\_TEST(ContainerEqTest,\ EqualsSelf)\ \{}
+\DoxyCodeLine{00219\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00220\ \ \ TypeParam\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00221\ \ \ \textcolor{keyword}{const}\ Matcher<TypeParam>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00222\ \ \ EXPECT\_TRUE(m.Matches(my\_set));}
+\DoxyCodeLine{00223\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ my\_set));}
+\DoxyCodeLine{00224\ \}}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{comment}{//\ Tests\ that\ missing\ values\ are\ reported.}}
+\DoxyCodeLine{00227\ TYPED\_TEST(ContainerEqTest,\ ValueMissing)\ \{}
+\DoxyCodeLine{00228\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00229\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{2,\ 1,\ 8,\ 5\};}
+\DoxyCodeLine{00230\ \ \ TypeParam\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00231\ \ \ TypeParam\ test\_set(test\_vals,\ test\_vals\ +\ 4);}
+\DoxyCodeLine{00232\ \ \ \textcolor{keyword}{const}\ Matcher<TypeParam>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00233\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00234\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ doesn't\ have\ these\ expected\ elements:\ 3"{}},}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ test\_set));}
+\DoxyCodeLine{00236\ \}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \textcolor{comment}{//\ Tests\ that\ added\ values\ are\ reported.}}
+\DoxyCodeLine{00239\ TYPED\_TEST(ContainerEqTest,\ ValueAdded)\ \{}
+\DoxyCodeLine{00240\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00241\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 3,\ 5,\ 8,\ 46\};}
+\DoxyCodeLine{00242\ \ \ TypeParam\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00243\ \ \ TypeParam\ test\_set(test\_vals,\ test\_vals\ +\ 6);}
+\DoxyCodeLine{00244\ \ \ \textcolor{keyword}{const}\ Matcher<const\ TypeParam\&>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00245\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00246\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ has\ these\ unexpected\ elements:\ 46"{}},\ Explain(m,\ test\_set));}
+\DoxyCodeLine{00247\ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \textcolor{comment}{//\ Tests\ that\ added\ and\ missing\ values\ are\ reported\ together.}}
+\DoxyCodeLine{00250\ TYPED\_TEST(ContainerEqTest,\ ValueAddedAndRemoved)\ \{}
+\DoxyCodeLine{00251\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00252\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 3,\ 8,\ 46\};}
+\DoxyCodeLine{00253\ \ \ TypeParam\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00254\ \ \ TypeParam\ test\_set(test\_vals,\ test\_vals\ +\ 5);}
+\DoxyCodeLine{00255\ \ \ \textcolor{keyword}{const}\ Matcher<TypeParam>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00256\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00257\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}which\ has\ these\ unexpected\ elements:\ 46,\(\backslash\)n"{}}}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ doesn't\ have\ these\ expected\ elements:\ 5"{}},}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ Explain(m,\ test\_set));}
+\DoxyCodeLine{00261\ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \textcolor{comment}{//\ Tests\ duplicated\ value\ -\/-\/\ expect\ no\ explanation.}}
+\DoxyCodeLine{00264\ TYPED\_TEST(ContainerEqTest,\ DuplicateDifference)\ \{}
+\DoxyCodeLine{00265\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00266\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00267\ \ \ TypeParam\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00268\ \ \ TypeParam\ test\_set(test\_vals,\ test\_vals\ +\ 5);}
+\DoxyCodeLine{00269\ \ \ \textcolor{keyword}{const}\ Matcher<const\ TypeParam\&>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00270\ \ \ \textcolor{comment}{//\ Depending\ on\ the\ container,\ match\ may\ be\ true\ or\ false}}
+\DoxyCodeLine{00271\ \ \ \textcolor{comment}{//\ But\ in\ any\ case\ there\ should\ be\ no\ explanation.}}
+\DoxyCodeLine{00272\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ test\_set));}
+\DoxyCodeLine{00273\ \}}
+\DoxyCodeLine{00274\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_TYPED\_TEST}}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \textcolor{comment}{//\ Tests\ that\ multiple\ missing\ values\ are\ reported.}}
+\DoxyCodeLine{00277\ \textcolor{comment}{//\ Using\ just\ vector\ here,\ so\ order\ is\ predictable.}}
+\DoxyCodeLine{00278\ TEST(ContainerEqExtraTest,\ MultipleValuesMissing)\ \{}
+\DoxyCodeLine{00279\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00280\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{2,\ 1,\ 5\};}
+\DoxyCodeLine{00281\ \ \ vector<int>\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00282\ \ \ vector<int>\ test\_set(test\_vals,\ test\_vals\ +\ 3);}
+\DoxyCodeLine{00283\ \ \ \textcolor{keyword}{const}\ Matcher<vector<int>>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00284\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00285\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ doesn't\ have\ these\ expected\ elements:\ 3,\ 8"{}},}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ test\_set));}
+\DoxyCodeLine{00287\ \}}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \textcolor{comment}{//\ Tests\ that\ added\ values\ are\ reported.}}
+\DoxyCodeLine{00290\ \textcolor{comment}{//\ Using\ just\ vector\ here,\ so\ order\ is\ predictable.}}
+\DoxyCodeLine{00291\ TEST(ContainerEqExtraTest,\ MultipleValuesAdded)\ \{}
+\DoxyCodeLine{00292\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00293\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 92,\ 3,\ 5,\ 8,\ 46\};}
+\DoxyCodeLine{00294\ \ \ list<size\_t>\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00295\ \ \ list<size\_t>\ test\_set(test\_vals,\ test\_vals\ +\ 7);}
+\DoxyCodeLine{00296\ \ \ \textcolor{keyword}{const}\ Matcher<const\ list<size\_t>\&>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00297\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00298\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ has\ these\ unexpected\ elements:\ 92,\ 46"{}},}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ test\_set));}
+\DoxyCodeLine{00300\ \}}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \textcolor{comment}{//\ Tests\ that\ added\ and\ missing\ values\ are\ reported\ together.}}
+\DoxyCodeLine{00303\ TEST(ContainerEqExtraTest,\ MultipleValuesAddedAndRemoved)\ \{}
+\DoxyCodeLine{00304\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00305\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 3,\ 92,\ 46\};}
+\DoxyCodeLine{00306\ \ \ list<size\_t>\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00307\ \ \ list<size\_t>\ test\_set(test\_vals,\ test\_vals\ +\ 5);}
+\DoxyCodeLine{00308\ \ \ \textcolor{keyword}{const}\ Matcher<const\ list<size\_t>>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00309\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00310\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}which\ has\ these\ unexpected\ elements:\ 92,\ 46,\(\backslash\)n"{}}}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ doesn't\ have\ these\ expected\ elements:\ 5,\ 8"{}},}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ Explain(m,\ test\_set));}
+\DoxyCodeLine{00314\ \}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \textcolor{comment}{//\ Tests\ to\ see\ that\ duplicate\ elements\ are\ detected,}}
+\DoxyCodeLine{00317\ \textcolor{comment}{//\ but\ (as\ above)\ not\ reported\ in\ the\ explanation.}}
+\DoxyCodeLine{00318\ TEST(ContainerEqExtraTest,\ MultiSetOfIntDuplicateDifference)\ \{}
+\DoxyCodeLine{00319\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ vals[]\ =\ \{1,\ 1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00320\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ test\_vals[]\ =\ \{1,\ 2,\ 3,\ 5,\ 8\};}
+\DoxyCodeLine{00321\ \ \ vector<int>\ my\_set(vals,\ vals\ +\ 6);}
+\DoxyCodeLine{00322\ \ \ vector<int>\ test\_set(test\_vals,\ test\_vals\ +\ 5);}
+\DoxyCodeLine{00323\ \ \ \textcolor{keyword}{const}\ Matcher<vector<int>>\ m\ =\ ContainerEq(my\_set);}
+\DoxyCodeLine{00324\ \ \ EXPECT\_TRUE(m.Matches(my\_set));}
+\DoxyCodeLine{00325\ \ \ EXPECT\_FALSE(m.Matches(test\_set));}
+\DoxyCodeLine{00326\ \ \ \textcolor{comment}{//\ There\ is\ nothing\ to\ report\ when\ both\ sets\ contain\ all\ the\ same\ values.}}
+\DoxyCodeLine{00327\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ test\_set));}
+\DoxyCodeLine{00328\ \}}
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00330\ \textcolor{comment}{//\ Tests\ that\ ContainerEq\ works\ for\ non-\/trivial\ associative\ containers,}}
+\DoxyCodeLine{00331\ \textcolor{comment}{//\ like\ maps.}}
+\DoxyCodeLine{00332\ TEST(ContainerEqExtraTest,\ WorksForMaps)\ \{}
+\DoxyCodeLine{00333\ \ \ map<int,\ std::string>\ my\_map;}
+\DoxyCodeLine{00334\ \ \ my\_map[0]\ =\ \textcolor{stringliteral}{"{}a"{}};}
+\DoxyCodeLine{00335\ \ \ my\_map[1]\ =\ \textcolor{stringliteral}{"{}b"{}};}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \ \ map<int,\ std::string>\ test\_map;}
+\DoxyCodeLine{00338\ \ \ test\_map[0]\ =\ \textcolor{stringliteral}{"{}aa"{}};}
+\DoxyCodeLine{00339\ \ \ test\_map[1]\ =\ \textcolor{stringliteral}{"{}b"{}};}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ \textcolor{keyword}{const}\ Matcher<const\ map<int,\ std::string>\&>\ m\ =\ ContainerEq(my\_map);}
+\DoxyCodeLine{00342\ \ \ EXPECT\_TRUE(m.Matches(my\_map));}
+\DoxyCodeLine{00343\ \ \ EXPECT\_FALSE(m.Matches(test\_map));}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}which\ has\ these\ unexpected\ elements:\ (0,\ \(\backslash\)"{}aa\(\backslash\)"{}),\(\backslash\)n"{}}}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ doesn't\ have\ these\ expected\ elements:\ (0,\ \(\backslash\)"{}a\(\backslash\)"{})"{}},}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ Explain(m,\ test\_map));}
+\DoxyCodeLine{00349\ \}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ TEST(ContainerEqExtraTest,\ WorksForNativeArray)\ \{}
+\DoxyCodeLine{00352\ \ \ \textcolor{keywordtype}{int}\ a1[]\ =\ \{1,\ 2,\ 3\};}
+\DoxyCodeLine{00353\ \ \ \textcolor{keywordtype}{int}\ a2[]\ =\ \{1,\ 2,\ 3\};}
+\DoxyCodeLine{00354\ \ \ \textcolor{keywordtype}{int}\ b[]\ =\ \{1,\ 2,\ 4\};}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \ \ EXPECT\_THAT(a1,\ ContainerEq(a2));}
+\DoxyCodeLine{00357\ \ \ EXPECT\_THAT(a1,\ Not(ContainerEq(b)));}
+\DoxyCodeLine{00358\ \}}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ TEST(ContainerEqExtraTest,\ WorksForTwoDimensionalNativeArray)\ \{}
+\DoxyCodeLine{00361\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ a1[][3]\ =\ \{\textcolor{stringliteral}{"{}hi"{}},\ \textcolor{stringliteral}{"{}lo"{}}\};}
+\DoxyCodeLine{00362\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ a2[][3]\ =\ \{\textcolor{stringliteral}{"{}hi"{}},\ \textcolor{stringliteral}{"{}lo"{}}\};}
+\DoxyCodeLine{00363\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ b[][3]\ =\ \{\textcolor{stringliteral}{"{}lo"{}},\ \textcolor{stringliteral}{"{}hi"{}}\};}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \ \ \textcolor{comment}{//\ Tests\ using\ ContainerEq()\ in\ the\ first\ dimension.}}
+\DoxyCodeLine{00366\ \ \ EXPECT\_THAT(a1,\ ContainerEq(a2));}
+\DoxyCodeLine{00367\ \ \ EXPECT\_THAT(a1,\ Not(ContainerEq(b)));}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \ \ \textcolor{comment}{//\ Tests\ using\ ContainerEq()\ in\ the\ second\ dimension.}}
+\DoxyCodeLine{00370\ \ \ EXPECT\_THAT(a1,\ ElementsAre(ContainerEq(a2[0]),\ ContainerEq(a2[1])));}
+\DoxyCodeLine{00371\ \ \ EXPECT\_THAT(a1,\ ElementsAre(Not(ContainerEq(b[0])),\ ContainerEq(a2[1])));}
+\DoxyCodeLine{00372\ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ TEST(ContainerEqExtraTest,\ WorksForNativeArrayAsTuple)\ \{}
+\DoxyCodeLine{00375\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ a1[]\ =\ \{1,\ 2,\ 3\};}
+\DoxyCodeLine{00376\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ a2[]\ =\ \{1,\ 2,\ 3\};}
+\DoxyCodeLine{00377\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ b[]\ =\ \{1,\ 2,\ 3,\ 4\};}
+\DoxyCodeLine{00378\ }
+\DoxyCodeLine{00379\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}*\ \textcolor{keyword}{const}\ p1\ =\ a1;}
+\DoxyCodeLine{00380\ \ \ EXPECT\_THAT(std::make\_tuple(p1,\ 3),\ ContainerEq(a2));}
+\DoxyCodeLine{00381\ \ \ EXPECT\_THAT(std::make\_tuple(p1,\ 3),\ Not(ContainerEq(b)));}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ c[]\ =\ \{1,\ 3,\ 2\};}
+\DoxyCodeLine{00384\ \ \ EXPECT\_THAT(std::make\_tuple(p1,\ 3),\ Not(ContainerEq(c)));}
+\DoxyCodeLine{00385\ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ TEST(ContainerEqExtraTest,\ CopiesNativeArrayParameter)\ \{}
+\DoxyCodeLine{00388\ \ \ std::string\ a1[][3]\ =\ \{\{\textcolor{stringliteral}{"{}hi"{}},\ \textcolor{stringliteral}{"{}hello"{}},\ \textcolor{stringliteral}{"{}ciao"{}}\},\ \{\textcolor{stringliteral}{"{}bye"{}},\ \textcolor{stringliteral}{"{}see\ you"{}},\ \textcolor{stringliteral}{"{}ciao"{}}\}\};}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00390\ \ \ std::string\ a2[][3]\ =\ \{\{\textcolor{stringliteral}{"{}hi"{}},\ \textcolor{stringliteral}{"{}hello"{}},\ \textcolor{stringliteral}{"{}ciao"{}}\},\ \{\textcolor{stringliteral}{"{}bye"{}},\ \textcolor{stringliteral}{"{}see\ you"{}},\ \textcolor{stringliteral}{"{}ciao"{}}\}\};}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \textcolor{keyword}{const}\ Matcher<\textcolor{keyword}{const}\ std::string(\&)[2][3]>\ m\ =\ ContainerEq(a2);}
+\DoxyCodeLine{00393\ \ \ EXPECT\_THAT(a1,\ m);}
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00395\ \ \ a2[0][0]\ =\ \textcolor{stringliteral}{"{}ha"{}};}
+\DoxyCodeLine{00396\ \ \ EXPECT\_THAT(a1,\ m);}
+\DoxyCodeLine{00397\ \}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00400\ }
+\DoxyCodeLine{00401\ \textcolor{comment}{//\ Used\ as\ a\ check\ on\ the\ more\ complex\ max\ flow\ method\ used\ in\ the}}
+\DoxyCodeLine{00402\ \textcolor{comment}{//\ real\ testing::internal::FindMaxBipartiteMatching.\ This\ method\ is}}
+\DoxyCodeLine{00403\ \textcolor{comment}{//\ compatible\ but\ runs\ in\ worst-\/case\ factorial\ time,\ so\ we\ only}}
+\DoxyCodeLine{00404\ \textcolor{comment}{//\ use\ it\ in\ testing\ for\ small\ problem\ sizes.}}
+\DoxyCodeLine{00405\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Graph>}
+\DoxyCodeLine{00406\ \textcolor{keyword}{class\ }BacktrackingMaxBPMState\ \{}
+\DoxyCodeLine{00407\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00408\ \ \ \textcolor{comment}{//\ Does\ not\ take\ ownership\ of\ 'g'.}}
+\DoxyCodeLine{00409\ \ \ \textcolor{keyword}{explicit}\ BacktrackingMaxBPMState(\textcolor{keyword}{const}\ Graph*\ g)\ :\ graph\_(g)\ \{\}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \ \ ElementMatcherPairs\ Compute()\ \{}
+\DoxyCodeLine{00412\ \ \ \ \ \textcolor{keywordflow}{if}\ (graph\_-\/>LhsSize()\ ==\ 0\ ||\ graph\_-\/>RhsSize()\ ==\ 0)\ \{}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ best\_so\_far\_;}
+\DoxyCodeLine{00414\ \ \ \ \ \}}
+\DoxyCodeLine{00415\ \ \ \ \ lhs\_used\_.assign(graph\_-\/>LhsSize(),\ kUnused);}
+\DoxyCodeLine{00416\ \ \ \ \ rhs\_used\_.assign(graph\_-\/>RhsSize(),\ kUnused);}
+\DoxyCodeLine{00417\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ irhs\ =\ 0;\ irhs\ <\ graph\_-\/>RhsSize();\ ++irhs)\ \{}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ matches\_.clear();}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ RecurseInto(irhs);}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (best\_so\_far\_.size()\ ==\ graph\_-\/>RhsSize())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00421\ \ \ \ \ \}}
+\DoxyCodeLine{00422\ \ \ \ \ \textcolor{keywordflow}{return}\ best\_so\_far\_;}
+\DoxyCodeLine{00423\ \ \ \}}
+\DoxyCodeLine{00424\ }
+\DoxyCodeLine{00425\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00426\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kUnused\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(-\/1);}
+\DoxyCodeLine{00427\ }
+\DoxyCodeLine{00428\ \ \ \textcolor{keywordtype}{void}\ PushMatch(\textcolor{keywordtype}{size\_t}\ lhs,\ \textcolor{keywordtype}{size\_t}\ rhs)\ \{}
+\DoxyCodeLine{00429\ \ \ \ \ matches\_.push\_back(ElementMatcherPair(lhs,\ rhs));}
+\DoxyCodeLine{00430\ \ \ \ \ lhs\_used\_[lhs]\ =\ rhs;}
+\DoxyCodeLine{00431\ \ \ \ \ rhs\_used\_[rhs]\ =\ lhs;}
+\DoxyCodeLine{00432\ \ \ \ \ \textcolor{keywordflow}{if}\ (matches\_.size()\ >\ best\_so\_far\_.size())\ \{}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ best\_so\_far\_\ =\ matches\_;}
+\DoxyCodeLine{00434\ \ \ \ \ \}}
+\DoxyCodeLine{00435\ \ \ \}}
+\DoxyCodeLine{00436\ }
+\DoxyCodeLine{00437\ \ \ \textcolor{keywordtype}{void}\ PopMatch()\ \{}
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{keyword}{const}\ ElementMatcherPair\&\ back\ =\ matches\_.back();}
+\DoxyCodeLine{00439\ \ \ \ \ lhs\_used\_[back.first]\ =\ kUnused;}
+\DoxyCodeLine{00440\ \ \ \ \ rhs\_used\_[back.second]\ =\ kUnused;}
+\DoxyCodeLine{00441\ \ \ \ \ matches\_.pop\_back();}
+\DoxyCodeLine{00442\ \ \ \}}
+\DoxyCodeLine{00443\ }
+\DoxyCodeLine{00444\ \ \ \textcolor{keywordtype}{bool}\ RecurseInto(\textcolor{keywordtype}{size\_t}\ irhs)\ \{}
+\DoxyCodeLine{00445\ \ \ \ \ \textcolor{keywordflow}{if}\ (rhs\_used\_[irhs]\ !=\ kUnused)\ \{}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00447\ \ \ \ \ \}}
+\DoxyCodeLine{00448\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ ilhs\ =\ 0;\ ilhs\ <\ graph\_-\/>LhsSize();\ ++ilhs)\ \{}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (lhs\_used\_[ilhs]\ !=\ kUnused)\ \{}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!graph\_-\/>HasEdge(ilhs,\ irhs))\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ PushMatch(ilhs,\ irhs);}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (best\_so\_far\_.size()\ ==\ graph\_-\/>RhsSize())\ \{}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ mi\ =\ irhs\ +\ 1;\ mi\ <\ graph\_-\/>RhsSize();\ ++mi)\ \{}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!RecurseInto(mi))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ PopMatch();}
+\DoxyCodeLine{00463\ \ \ \ \ \}}
+\DoxyCodeLine{00464\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00465\ \ \ \}}
+\DoxyCodeLine{00466\ }
+\DoxyCodeLine{00467\ \ \ \textcolor{keyword}{const}\ Graph*\ graph\_;\ \ \textcolor{comment}{//\ not\ owned}}
+\DoxyCodeLine{00468\ \ \ std::vector<size\_t>\ lhs\_used\_;}
+\DoxyCodeLine{00469\ \ \ std::vector<size\_t>\ rhs\_used\_;}
+\DoxyCodeLine{00470\ \ \ ElementMatcherPairs\ matches\_;}
+\DoxyCodeLine{00471\ \ \ ElementMatcherPairs\ best\_so\_far\_;}
+\DoxyCodeLine{00472\ \};}
+\DoxyCodeLine{00473\ }
+\DoxyCodeLine{00474\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Graph>}
+\DoxyCodeLine{00475\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ BacktrackingMaxBPMState<Graph>::kUnused;}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00478\ }
+\DoxyCodeLine{00479\ \textcolor{comment}{//\ Implement\ a\ simple\ backtracking\ algorithm\ to\ determine\ if\ it\ is\ possible}}
+\DoxyCodeLine{00480\ \textcolor{comment}{//\ to\ find\ one\ element\ per\ matcher,\ without\ reusing\ elements.}}
+\DoxyCodeLine{00481\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Graph>}
+\DoxyCodeLine{00482\ ElementMatcherPairs\ FindBacktrackingMaxBPM(\textcolor{keyword}{const}\ Graph\&\ g)\ \{}
+\DoxyCodeLine{00483\ \ \ \textcolor{keywordflow}{return}\ BacktrackingMaxBPMState<Graph>(\&g).Compute();}
+\DoxyCodeLine{00484\ \}}
+\DoxyCodeLine{00485\ }
+\DoxyCodeLine{00486\ \textcolor{keyword}{class\ }BacktrackingBPMTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}\ \{\};}
+\DoxyCodeLine{00487\ }
+\DoxyCodeLine{00488\ \textcolor{comment}{//\ Tests\ the\ MaxBipartiteMatching\ algorithm\ with\ square\ matrices.}}
+\DoxyCodeLine{00489\ \textcolor{comment}{//\ The\ single\ int\ param\ is\ the\ \#\ of\ nodes\ on\ each\ of\ the\ left\ and\ right\ sides.}}
+\DoxyCodeLine{00490\ \textcolor{keyword}{class\ }BipartiteTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test_with_param}{::testing::TestWithParam}}<size\_t>\ \{\};}
+\DoxyCodeLine{00491\ }
+\DoxyCodeLine{00492\ \textcolor{comment}{//\ Verify\ all\ match\ graphs\ up\ to\ some\ moderate\ number\ of\ edges.}}
+\DoxyCodeLine{00493\ TEST\_P(BipartiteTest,\ Exhaustive)\ \{}
+\DoxyCodeLine{00494\ \ \ \textcolor{keywordtype}{size\_t}\ nodes\ =\ GetParam();}
+\DoxyCodeLine{00495\ \ \ MatchMatrix\ graph(nodes,\ nodes);}
+\DoxyCodeLine{00496\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00497\ \ \ \ \ ElementMatcherPairs\ matches\ =\ internal::FindMaxBipartiteMatching(graph);}
+\DoxyCodeLine{00498\ \ \ \ \ EXPECT\_EQ(FindBacktrackingMaxBPM(graph).size(),\ matches.size())}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}graph:\ "{}}\ <<\ graph.DebugString();}
+\DoxyCodeLine{00500\ \ \ \ \ \textcolor{comment}{//\ Check\ that\ all\ elements\ of\ matches\ are\ in\ the\ graph.}}
+\DoxyCodeLine{00501\ \ \ \ \ \textcolor{comment}{//\ Check\ that\ elements\ of\ first\ and\ second\ are\ unique.}}
+\DoxyCodeLine{00502\ \ \ \ \ std::vector<bool>\ seen\_element(graph.LhsSize());}
+\DoxyCodeLine{00503\ \ \ \ \ std::vector<bool>\ seen\_matcher(graph.RhsSize());}
+\DoxyCodeLine{00504\ \ \ \ \ SCOPED\_TRACE(PrintToString(matches));}
+\DoxyCodeLine{00505\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ matches.size();\ ++i)\ \{}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ilhs\ =\ matches[i].first;}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ irhs\ =\ matches[i].second;}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ EXPECT\_TRUE(graph.HasEdge(ilhs,\ irhs));}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ EXPECT\_FALSE(seen\_element[ilhs]);}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ EXPECT\_FALSE(seen\_matcher[irhs]);}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ seen\_element[ilhs]\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ seen\_matcher[irhs]\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00513\ \ \ \ \ \}}
+\DoxyCodeLine{00514\ \ \ \}\ \textcolor{keywordflow}{while}\ (graph.NextGraph());}
+\DoxyCodeLine{00515\ \}}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ INSTANTIATE\_TEST\_SUITE\_P(AllGraphs,\ BipartiteTest,}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::testing::Range(\textcolor{keywordtype}{size\_t}\{0\},\ \textcolor{keywordtype}{size\_t}\{5\}));}
+\DoxyCodeLine{00519\ }
+\DoxyCodeLine{00520\ \textcolor{comment}{//\ Parameterized\ by\ a\ pair\ interpreted\ as\ (LhsSize,\ RhsSize).}}
+\DoxyCodeLine{00521\ \textcolor{keyword}{class\ }BipartiteNonSquareTest}
+\DoxyCodeLine{00522\ \ \ \ \ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test_with_param}{::testing::TestWithParam}}<std::pair<size\_t,\ size\_t>>\ \{\};}
+\DoxyCodeLine{00523\ }
+\DoxyCodeLine{00524\ TEST\_F(BipartiteNonSquareTest,\ SimpleBacktracking)\ \{}
+\DoxyCodeLine{00525\ \ \ \textcolor{comment}{//\ \ \ .......}}
+\DoxyCodeLine{00526\ \ \ \textcolor{comment}{//\ 0:-\/-\/-\/-\/-\/\(\backslash\)\ :}}
+\DoxyCodeLine{00527\ \ \ \textcolor{comment}{//\ 1:-\/-\/-\/\(\backslash\)\ |\ :}}
+\DoxyCodeLine{00528\ \ \ \textcolor{comment}{//\ 2:-\/-\/-\/\(\backslash\)\ |\ :}}
+\DoxyCodeLine{00529\ \ \ \textcolor{comment}{//\ 3:-\/\(\backslash\)\ |\ |\ :}}
+\DoxyCodeLine{00530\ \ \ \textcolor{comment}{//\ \ :.......:}}
+\DoxyCodeLine{00531\ \ \ \textcolor{comment}{//\ \ \ \ 0\ 1\ 2}}
+\DoxyCodeLine{00532\ \ \ MatchMatrix\ g(4,\ 3);}
+\DoxyCodeLine{00533\ \ \ \textcolor{keyword}{constexpr}\ std::array<std::array<size\_t,\ 2>,\ 4>\ kEdges\ =\ \{}
+\DoxyCodeLine{00534\ \ \ \ \ \ \ \{\{\{0,\ 2\}\},\ \{\{1,\ 1\}\},\ \{\{2,\ 1\}\},\ \{\{3,\ 0\}\}\}\};}
+\DoxyCodeLine{00535\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ kEdges.size();\ ++i)\ \{}
+\DoxyCodeLine{00536\ \ \ \ \ g.SetEdge(kEdges[i][0],\ kEdges[i][1],\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00537\ \ \ \}}
+\DoxyCodeLine{00538\ \ \ EXPECT\_THAT(FindBacktrackingMaxBPM(g),}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ElementsAre(Pair(3,\ 0),\ Pair(AnyOf(1,\ 2),\ 1),\ Pair(0,\ 2)))}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ <<\ g.DebugString();}
+\DoxyCodeLine{00541\ \}}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ \textcolor{comment}{//\ Verify\ a\ few\ nonsquare\ matrices.}}
+\DoxyCodeLine{00544\ TEST\_P(BipartiteNonSquareTest,\ Exhaustive)\ \{}
+\DoxyCodeLine{00545\ \ \ \textcolor{keywordtype}{size\_t}\ nlhs\ =\ GetParam().first;}
+\DoxyCodeLine{00546\ \ \ \textcolor{keywordtype}{size\_t}\ nrhs\ =\ GetParam().second;}
+\DoxyCodeLine{00547\ \ \ MatchMatrix\ graph(nlhs,\ nrhs);}
+\DoxyCodeLine{00548\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00549\ \ \ \ \ EXPECT\_EQ(FindBacktrackingMaxBPM(graph).size(),}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ internal::FindMaxBipartiteMatching(graph).size())}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}graph:\ "{}}\ <<\ graph.DebugString()}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\(\backslash\)nbacktracking:\ "{}}\ <<\ PrintToString(FindBacktrackingMaxBPM(graph))}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\(\backslash\)nmax\ flow:\ "{}}}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ <<\ PrintToString(internal::FindMaxBipartiteMatching(graph));}
+\DoxyCodeLine{00555\ \ \ \}\ \textcolor{keywordflow}{while}\ (graph.NextGraph());}
+\DoxyCodeLine{00556\ \}}
+\DoxyCodeLine{00557\ }
+\DoxyCodeLine{00558\ INSTANTIATE\_TEST\_SUITE\_P(}
+\DoxyCodeLine{00559\ \ \ \ \ AllGraphs,\ BipartiteNonSquareTest,}
+\DoxyCodeLine{00560\ \ \ \ \ testing::Values(std::make\_pair(1,\ 2),\ std::make\_pair(2,\ 1),}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(3,\ 2),\ std::make\_pair(2,\ 3),}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(4,\ 1),\ std::make\_pair(1,\ 4),}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(4,\ 3),\ std::make\_pair(3,\ 4)));}
+\DoxyCodeLine{00564\ }
+\DoxyCodeLine{00565\ \textcolor{keyword}{class\ }BipartiteRandomTest}
+\DoxyCodeLine{00566\ \ \ \ \ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test_with_param}{::testing::TestWithParam}}<std::pair<int,\ int>>\ \{\};}
+\DoxyCodeLine{00567\ }
+\DoxyCodeLine{00568\ \textcolor{comment}{//\ Verifies\ a\ large\ sample\ of\ larger\ graphs.}}
+\DoxyCodeLine{00569\ TEST\_P(BipartiteRandomTest,\ LargerNets)\ \{}
+\DoxyCodeLine{00570\ \ \ \textcolor{keywordtype}{int}\ nodes\ =\ GetParam().first;}
+\DoxyCodeLine{00571\ \ \ \textcolor{keywordtype}{int}\ iters\ =\ GetParam().second;}
+\DoxyCodeLine{00572\ \ \ MatchMatrix\ graph(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(nodes),\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(nodes));}
+\DoxyCodeLine{00573\ }
+\DoxyCodeLine{00574\ \ \ \textcolor{keyword}{auto}\ seed\ =\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(GTEST\_FLAG\_GET(random\_seed));}
+\DoxyCodeLine{00575\ \ \ \textcolor{keywordflow}{if}\ (seed\ ==\ 0)\ \{}
+\DoxyCodeLine{00576\ \ \ \ \ seed\ =\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(time(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00577\ \ \ \}}
+\DoxyCodeLine{00578\ }
+\DoxyCodeLine{00579\ \ \ \textcolor{keywordflow}{for}\ (;\ iters\ >\ 0;\ -\/-\/iters,\ ++seed)\ \{}
+\DoxyCodeLine{00580\ \ \ \ \ srand(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\textcolor{keyword}{>}(seed));}
+\DoxyCodeLine{00581\ \ \ \ \ graph.Randomize();}
+\DoxyCodeLine{00582\ \ \ \ \ EXPECT\_EQ(FindBacktrackingMaxBPM(graph).size(),}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ internal::FindMaxBipartiteMatching(graph).size())}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ graph:\ "{}}\ <<\ graph.DebugString()}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\(\backslash\)nTo\ reproduce\ the\ failure,\ rerun\ the\ test\ with\ the\ flag"{}}}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ -\/-\/"{}}}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ <<\ GTEST\_FLAG\_PREFIX\_\ <<\ \textcolor{stringliteral}{"{}random\_seed="{}}\ <<\ seed;}
+\DoxyCodeLine{00588\ \ \ \}}
+\DoxyCodeLine{00589\ \}}
+\DoxyCodeLine{00590\ }
+\DoxyCodeLine{00591\ \textcolor{comment}{//\ Test\ argument\ is\ a\ std::pair<int,\ int>\ representing\ (nodes,\ iters).}}
+\DoxyCodeLine{00592\ INSTANTIATE\_TEST\_SUITE\_P(Samples,\ BipartiteRandomTest,}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ testing::Values(std::make\_pair(5,\ 10000),}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(6,\ 5000),}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(7,\ 2000),}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(8,\ 500),}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::make\_pair(9,\ 100)));}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \textcolor{comment}{//\ Tests\ IsReadableTypeName().}}
+\DoxyCodeLine{00600\ }
+\DoxyCodeLine{00601\ TEST(IsReadableTypeNameTest,\ ReturnsTrueForShortNames)\ \{}
+\DoxyCodeLine{00602\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}int"{}}));}
+\DoxyCodeLine{00603\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}const\ unsigned\ char*"{}}));}
+\DoxyCodeLine{00604\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}MyMap<int,\ void*>"{}}));}
+\DoxyCodeLine{00605\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}void\ (*)(int,\ bool)"{}}));}
+\DoxyCodeLine{00606\ \}}
+\DoxyCodeLine{00607\ }
+\DoxyCodeLine{00608\ TEST(IsReadableTypeNameTest,\ ReturnsTrueForLongNonTemplateNonFunctionNames)\ \{}
+\DoxyCodeLine{00609\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}my\_long\_namespace::MyClassName"{}}));}
+\DoxyCodeLine{00610\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}int\ [5][6][7][8][9][10][11]"{}}));}
+\DoxyCodeLine{00611\ \ \ EXPECT\_TRUE(IsReadableTypeName(\textcolor{stringliteral}{"{}my\_namespace::MyOuterClass::MyInnerClass"{}}));}
+\DoxyCodeLine{00612\ \}}
+\DoxyCodeLine{00613\ }
+\DoxyCodeLine{00614\ TEST(IsReadableTypeNameTest,\ ReturnsFalseForLongTemplateNames)\ \{}
+\DoxyCodeLine{00615\ \ \ EXPECT\_FALSE(}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ IsReadableTypeName(\textcolor{stringliteral}{"{}basic\_string<char,\ std::char\_traits<char>\ >"{}}));}
+\DoxyCodeLine{00617\ \ \ EXPECT\_FALSE(IsReadableTypeName(\textcolor{stringliteral}{"{}std::vector<int,\ std::alloc\_traits<int>\ >"{}}));}
+\DoxyCodeLine{00618\ \}}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00620\ TEST(IsReadableTypeNameTest,\ ReturnsFalseForLongFunctionTypeNames)\ \{}
+\DoxyCodeLine{00621\ \ \ EXPECT\_FALSE(IsReadableTypeName(\textcolor{stringliteral}{"{}void\ (\&)(int,\ bool,\ char,\ float)"{}}));}
+\DoxyCodeLine{00622\ \}}
+\DoxyCodeLine{00623\ }
+\DoxyCodeLine{00624\ \textcolor{comment}{//\ Tests\ FormatMatcherDescription().}}
+\DoxyCodeLine{00625\ }
+\DoxyCodeLine{00626\ TEST(FormatMatcherDescriptionTest,\ WorksForEmptyDescription)\ \{}
+\DoxyCodeLine{00627\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ even"{}},}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \ \ \ \ FormatMatcherDescription(\textcolor{keyword}{false},\ \textcolor{stringliteral}{"{}IsEven"{}},\ \{\},\ Strings()));}
+\DoxyCodeLine{00629\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}not\ (is\ even)"{}},}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ \ \ \ \ FormatMatcherDescription(\textcolor{keyword}{true},\ \textcolor{stringliteral}{"{}IsEven"{}},\ \{\},\ Strings()));}
+\DoxyCodeLine{00631\ }
+\DoxyCodeLine{00632\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}equals\ (a:\ 5)"{}},}
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ \ \ \ \ FormatMatcherDescription(\textcolor{keyword}{false},\ \textcolor{stringliteral}{"{}Equals"{}},\ \{\textcolor{stringliteral}{"{}a"{}}\},\ \{\textcolor{stringliteral}{"{}5"{}}\}));}
+\DoxyCodeLine{00634\ }
+\DoxyCodeLine{00635\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}is\ in\ range\ (a:\ 5,\ b:\ 8)"{}},}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ FormatMatcherDescription(\textcolor{keyword}{false},\ \textcolor{stringliteral}{"{}IsInRange"{}},\ \{\textcolor{stringliteral}{"{}a"{}},\ \textcolor{stringliteral}{"{}b"{}}\},\ \{\textcolor{stringliteral}{"{}5"{}},\ \textcolor{stringliteral}{"{}8"{}}\}));}
+\DoxyCodeLine{00638\ \}}
+\DoxyCodeLine{00639\ }
+\DoxyCodeLine{00640\ INSTANTIATE\_GTEST\_MATCHER\_TEST\_P(MatcherTupleTest);}
+\DoxyCodeLine{00641\ }
+\DoxyCodeLine{00642\ TEST\_P(MatcherTupleTestP,\ ExplainsMatchFailure)\ \{}
+\DoxyCodeLine{00643\ \ \ stringstream\ ss1;}
+\DoxyCodeLine{00644\ \ \ ExplainMatchFailureTupleTo(}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ std::make\_tuple(Matcher<char>(Eq(\textcolor{charliteral}{'a'})),\ GreaterThan(5)),}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ std::make\_tuple(\textcolor{charliteral}{'a'},\ 10),\ \&ss1);}
+\DoxyCodeLine{00647\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ ss1.str());\ \ \textcolor{comment}{//\ Successful\ match.}}
+\DoxyCodeLine{00648\ }
+\DoxyCodeLine{00649\ \ \ stringstream\ ss2;}
+\DoxyCodeLine{00650\ \ \ ExplainMatchFailureTupleTo(}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ std::make\_tuple(GreaterThan(5),\ Matcher<char>(Eq(\textcolor{charliteral}{'a'}))),}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ std::make\_tuple(2,\ \textcolor{charliteral}{'b'}),\ \&ss2);}
+\DoxyCodeLine{00653\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ >\ 5\(\backslash\)n"{}}}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2,\ which\ is\ 3\ less\ than\ 5\(\backslash\)n"{}}}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#1:\ is\ equal\ to\ 'a'\ (97,\ 0x61)\(\backslash\)n"{}}}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 'b'\ (98,\ 0x62)\(\backslash\)n"{}},}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ ss2.str());\ \ \textcolor{comment}{//\ Failed\ match\ where\ both\ arguments\ need\ explanation.}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00660\ \ \ stringstream\ ss3;}
+\DoxyCodeLine{00661\ \ \ ExplainMatchFailureTupleTo(}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ std::make\_tuple(GreaterThan(5),\ Matcher<char>(Eq(\textcolor{charliteral}{'a'}))),}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ std::make\_tuple(2,\ \textcolor{charliteral}{'a'}),\ \&ss3);}
+\DoxyCodeLine{00664\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ >\ 5\(\backslash\)n"{}}}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2,\ which\ is\ 3\ less\ than\ 5\(\backslash\)n"{}},}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ ss3.str());\ \ \textcolor{comment}{//\ Failed\ match\ where\ only\ one\ argument\ needs}}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ explanation.}}
+\DoxyCodeLine{00669\ \}}
+\DoxyCodeLine{00670\ }
+\DoxyCodeLine{00671\ \textcolor{comment}{//\ Sample\ optional\ type\ implementation\ with\ minimal\ requirements\ for\ use\ with}}
+\DoxyCodeLine{00672\ \textcolor{comment}{//\ Optional\ matcher.}}
+\DoxyCodeLine{00673\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00674\ \textcolor{keyword}{class\ }SampleOptional\ \{}
+\DoxyCodeLine{00675\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00676\ \ \ \textcolor{keyword}{using\ }value\_type\ =\ T;}
+\DoxyCodeLine{00677\ \ \ \textcolor{keyword}{explicit}\ SampleOptional(T\ value)}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ :\ value\_(std::move(value)),\ has\_value\_(true)\ \{\}}
+\DoxyCodeLine{00679\ \ \ SampleOptional()\ :\ value\_(),\ has\_value\_(false)\ \{\}}
+\DoxyCodeLine{00680\ \ \ \textcolor{keyword}{operator}\ bool()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ has\_value\_;\ \}}
+\DoxyCodeLine{00681\ \ \ \textcolor{keyword}{const}\ T\&\ operator*()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00682\ }
+\DoxyCodeLine{00683\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00684\ \ \ T\ value\_;}
+\DoxyCodeLine{00685\ \ \ \textcolor{keywordtype}{bool}\ has\_value\_;}
+\DoxyCodeLine{00686\ \};}
+\DoxyCodeLine{00687\ }
+\DoxyCodeLine{00688\ TEST(OptionalTest,\ DescribesSelf)\ \{}
+\DoxyCodeLine{00689\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m\ =\ Optional(Eq(1));}
+\DoxyCodeLine{00690\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}value\ is\ equal\ to\ 1"{}},\ Describe(m));}
+\DoxyCodeLine{00691\ \}}
+\DoxyCodeLine{00692\ }
+\DoxyCodeLine{00693\ TEST(OptionalTest,\ ExplainsSelf)\ \{}
+\DoxyCodeLine{00694\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m\ =\ Optional(Eq(1));}
+\DoxyCodeLine{00695\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ value\ 1\ matches"{}},\ Explain(m,\ SampleOptional<int>(1)));}
+\DoxyCodeLine{00696\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ value\ 2\ doesn't\ match"{}},\ Explain(m,\ SampleOptional<int>(2)));}
+\DoxyCodeLine{00697\ \}}
+\DoxyCodeLine{00698\ }
+\DoxyCodeLine{00699\ TEST(OptionalTest,\ MatchesNonEmptyOptional)\ \{}
+\DoxyCodeLine{00700\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m1\ =\ Optional(1);}
+\DoxyCodeLine{00701\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m2\ =\ Optional(Eq(2));}
+\DoxyCodeLine{00702\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m3\ =\ Optional(Lt(3));}
+\DoxyCodeLine{00703\ \ \ SampleOptional<int>\ opt(1);}
+\DoxyCodeLine{00704\ \ \ EXPECT\_TRUE(m1.Matches(opt));}
+\DoxyCodeLine{00705\ \ \ EXPECT\_FALSE(m2.Matches(opt));}
+\DoxyCodeLine{00706\ \ \ EXPECT\_TRUE(m3.Matches(opt));}
+\DoxyCodeLine{00707\ \}}
+\DoxyCodeLine{00708\ }
+\DoxyCodeLine{00709\ TEST(OptionalTest,\ DoesNotMatchNullopt)\ \{}
+\DoxyCodeLine{00710\ \ \ \textcolor{keyword}{const}\ Matcher<SampleOptional<int>>\ m\ =\ Optional(1);}
+\DoxyCodeLine{00711\ \ \ SampleOptional<int>\ empty;}
+\DoxyCodeLine{00712\ \ \ EXPECT\_FALSE(m.Matches(empty));}
+\DoxyCodeLine{00713\ \}}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00715\ TEST(OptionalTest,\ WorksWithMoveOnly)\ \{}
+\DoxyCodeLine{00716\ \ \ Matcher<SampleOptional<std::unique\_ptr<int>>>\ m\ =\ Optional(Eq(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00717\ \ \ EXPECT\_TRUE(m.Matches(SampleOptional<std::unique\_ptr<int>>(\textcolor{keyword}{nullptr})));}
+\DoxyCodeLine{00718\ \}}
+\DoxyCodeLine{00719\ }
+\DoxyCodeLine{00720\ \textcolor{keyword}{class\ }SampleVariantIntString\ \{}
+\DoxyCodeLine{00721\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00722\ \ \ SampleVariantIntString(\textcolor{keywordtype}{int}\ i)\ :\ i\_(i),\ has\_int\_(true)\ \{\}}
+\DoxyCodeLine{00723\ \ \ SampleVariantIntString(\textcolor{keyword}{const}\ std::string\&\ s)\ :\ s\_(s),\ has\_int\_(false)\ \{\}}
+\DoxyCodeLine{00724\ }
+\DoxyCodeLine{00725\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00726\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ holds\_alternative(\textcolor{keyword}{const}\ SampleVariantIntString\&\ value)\ \{}
+\DoxyCodeLine{00727\ \ \ \ \ \textcolor{keywordflow}{return}\ value.has\_int\_\ ==\ std::is\_same<T,\ int>::value;}
+\DoxyCodeLine{00728\ \ \ \}}
+\DoxyCodeLine{00729\ }
+\DoxyCodeLine{00730\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00731\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{const}\ T\&\ get(\textcolor{keyword}{const}\ SampleVariantIntString\&\ value)\ \{}
+\DoxyCodeLine{00732\ \ \ \ \ \textcolor{keywordflow}{return}\ value.get\_impl(\textcolor{keyword}{static\_cast<}T*\textcolor{keyword}{>}(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00733\ \ \ \}}
+\DoxyCodeLine{00734\ }
+\DoxyCodeLine{00735\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00736\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ get\_impl(\textcolor{keywordtype}{int}*)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ i\_;\ \}}
+\DoxyCodeLine{00737\ \ \ \textcolor{keyword}{const}\ std::string\&\ get\_impl(std::string*)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ s\_;\ \}}
+\DoxyCodeLine{00738\ }
+\DoxyCodeLine{00739\ \ \ \textcolor{keywordtype}{int}\ i\_;}
+\DoxyCodeLine{00740\ \ \ std::string\ s\_;}
+\DoxyCodeLine{00741\ \ \ \textcolor{keywordtype}{bool}\ has\_int\_;}
+\DoxyCodeLine{00742\ \};}
+\DoxyCodeLine{00743\ }
+\DoxyCodeLine{00744\ TEST(VariantTest,\ DescribesSelf)\ \{}
+\DoxyCodeLine{00745\ \ \ \textcolor{keyword}{const}\ Matcher<SampleVariantIntString>\ m\ =\ VariantWith<int>(Eq(1));}
+\DoxyCodeLine{00746\ \ \ EXPECT\_THAT(Describe(m),\ ContainsRegex(\textcolor{stringliteral}{"{}is\ a\ variant<>\ with\ value\ of\ type\ "{}}}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'.*'\ and\ the\ value\ is\ equal\ to\ 1"{}}));}
+\DoxyCodeLine{00748\ \}}
+\DoxyCodeLine{00749\ }
+\DoxyCodeLine{00750\ TEST(VariantTest,\ ExplainsSelf)\ \{}
+\DoxyCodeLine{00751\ \ \ \textcolor{keyword}{const}\ Matcher<SampleVariantIntString>\ m\ =\ VariantWith<int>(Eq(1));}
+\DoxyCodeLine{00752\ \ \ EXPECT\_THAT(Explain(m,\ SampleVariantIntString(1)),}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ContainsRegex(\textcolor{stringliteral}{"{}whose\ value\ 1"{}}));}
+\DoxyCodeLine{00754\ \ \ EXPECT\_THAT(Explain(m,\ SampleVariantIntString(\textcolor{stringliteral}{"{}A"{}})),}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}whose\ value\ is\ not\ of\ type\ '"{}}));}
+\DoxyCodeLine{00756\ \ \ EXPECT\_THAT(Explain(m,\ SampleVariantIntString(2)),}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ value\ 2\ doesn't\ match"{}});}
+\DoxyCodeLine{00758\ \}}
+\DoxyCodeLine{00759\ }
+\DoxyCodeLine{00760\ TEST(VariantTest,\ FullMatch)\ \{}
+\DoxyCodeLine{00761\ \ \ Matcher<SampleVariantIntString>\ m\ =\ VariantWith<int>(Eq(1));}
+\DoxyCodeLine{00762\ \ \ EXPECT\_TRUE(m.Matches(SampleVariantIntString(1)));}
+\DoxyCodeLine{00763\ }
+\DoxyCodeLine{00764\ \ \ m\ =\ VariantWith<std::string>(Eq(\textcolor{stringliteral}{"{}1"{}}));}
+\DoxyCodeLine{00765\ \ \ EXPECT\_TRUE(m.Matches(SampleVariantIntString(\textcolor{stringliteral}{"{}1"{}})));}
+\DoxyCodeLine{00766\ \}}
+\DoxyCodeLine{00767\ }
+\DoxyCodeLine{00768\ TEST(VariantTest,\ TypeDoesNotMatch)\ \{}
+\DoxyCodeLine{00769\ \ \ Matcher<SampleVariantIntString>\ m\ =\ VariantWith<int>(Eq(1));}
+\DoxyCodeLine{00770\ \ \ EXPECT\_FALSE(m.Matches(SampleVariantIntString(\textcolor{stringliteral}{"{}1"{}})));}
+\DoxyCodeLine{00771\ }
+\DoxyCodeLine{00772\ \ \ m\ =\ VariantWith<std::string>(Eq(\textcolor{stringliteral}{"{}1"{}}));}
+\DoxyCodeLine{00773\ \ \ EXPECT\_FALSE(m.Matches(SampleVariantIntString(1)));}
+\DoxyCodeLine{00774\ \}}
+\DoxyCodeLine{00775\ }
+\DoxyCodeLine{00776\ TEST(VariantTest,\ InnerDoesNotMatch)\ \{}
+\DoxyCodeLine{00777\ \ \ Matcher<SampleVariantIntString>\ m\ =\ VariantWith<int>(Eq(1));}
+\DoxyCodeLine{00778\ \ \ EXPECT\_FALSE(m.Matches(SampleVariantIntString(2)));}
+\DoxyCodeLine{00779\ }
+\DoxyCodeLine{00780\ \ \ m\ =\ VariantWith<std::string>(Eq(\textcolor{stringliteral}{"{}1"{}}));}
+\DoxyCodeLine{00781\ \ \ EXPECT\_FALSE(m.Matches(SampleVariantIntString(\textcolor{stringliteral}{"{}2"{}})));}
+\DoxyCodeLine{00782\ \}}
+\DoxyCodeLine{00783\ }
+\DoxyCodeLine{00784\ \textcolor{keyword}{class\ }SampleAnyType\ \{}
+\DoxyCodeLine{00785\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00786\ \ \ \textcolor{keyword}{explicit}\ SampleAnyType(\textcolor{keywordtype}{int}\ i)\ :\ index\_(0),\ i\_(i)\ \{\}}
+\DoxyCodeLine{00787\ \ \ \textcolor{keyword}{explicit}\ SampleAnyType(\textcolor{keyword}{const}\ std::string\&\ s)\ :\ index\_(1),\ s\_(s)\ \{\}}
+\DoxyCodeLine{00788\ }
+\DoxyCodeLine{00789\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00790\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{const}\ T*\ any\_cast(\textcolor{keyword}{const}\ SampleAnyType*\ any)\ \{}
+\DoxyCodeLine{00791\ \ \ \ \ \textcolor{keywordflow}{return}\ any-\/>get\_impl(\textcolor{keyword}{static\_cast<}T*\textcolor{keyword}{>}(\textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00792\ \ \ \}}
+\DoxyCodeLine{00793\ }
+\DoxyCodeLine{00794\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00795\ \ \ \textcolor{keywordtype}{int}\ index\_;}
+\DoxyCodeLine{00796\ \ \ \textcolor{keywordtype}{int}\ i\_;}
+\DoxyCodeLine{00797\ \ \ std::string\ s\_;}
+\DoxyCodeLine{00798\ }
+\DoxyCodeLine{00799\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}*\ get\_impl(\textcolor{keywordtype}{int}*)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ index\_\ ==\ 0\ ?\ \&i\_\ :\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00800\ \ \ \textcolor{keyword}{const}\ std::string*\ get\_impl(std::string*)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00801\ \ \ \ \ \textcolor{keywordflow}{return}\ index\_\ ==\ 1\ ?\ \&s\_\ :\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00802\ \ \ \}}
+\DoxyCodeLine{00803\ \};}
+\DoxyCodeLine{00804\ }
+\DoxyCodeLine{00805\ TEST(AnyWithTest,\ FullMatch)\ \{}
+\DoxyCodeLine{00806\ \ \ Matcher<SampleAnyType>\ m\ =\ AnyWith<int>(Eq(1));}
+\DoxyCodeLine{00807\ \ \ EXPECT\_TRUE(m.Matches(SampleAnyType(1)));}
+\DoxyCodeLine{00808\ \}}
+\DoxyCodeLine{00809\ }
+\DoxyCodeLine{00810\ TEST(AnyWithTest,\ TestBadCastType)\ \{}
+\DoxyCodeLine{00811\ \ \ Matcher<SampleAnyType>\ m\ =\ AnyWith<std::string>(Eq(\textcolor{stringliteral}{"{}fail"{}}));}
+\DoxyCodeLine{00812\ \ \ EXPECT\_FALSE(m.Matches(SampleAnyType(1)));}
+\DoxyCodeLine{00813\ \}}
+\DoxyCodeLine{00814\ }
+\DoxyCodeLine{00815\ TEST(AnyWithTest,\ TestUseInContainers)\ \{}
+\DoxyCodeLine{00816\ \ \ std::vector<SampleAnyType>\ a;}
+\DoxyCodeLine{00817\ \ \ a.emplace\_back(1);}
+\DoxyCodeLine{00818\ \ \ a.emplace\_back(2);}
+\DoxyCodeLine{00819\ \ \ a.emplace\_back(3);}
+\DoxyCodeLine{00820\ \ \ EXPECT\_THAT(}
+\DoxyCodeLine{00821\ \ \ \ \ \ \ a,\ ElementsAreArray(\{AnyWith<int>(1),\ AnyWith<int>(2),\ AnyWith<int>(3)\}));}
+\DoxyCodeLine{00822\ }
+\DoxyCodeLine{00823\ \ \ std::vector<SampleAnyType>\ b;}
+\DoxyCodeLine{00824\ \ \ b.emplace\_back(\textcolor{stringliteral}{"{}hello"{}});}
+\DoxyCodeLine{00825\ \ \ b.emplace\_back(\textcolor{stringliteral}{"{}merhaba"{}});}
+\DoxyCodeLine{00826\ \ \ b.emplace\_back(\textcolor{stringliteral}{"{}salut"{}});}
+\DoxyCodeLine{00827\ \ \ EXPECT\_THAT(b,\ ElementsAreArray(\{AnyWith<std::string>(\textcolor{stringliteral}{"{}hello"{}}),}
+\DoxyCodeLine{00828\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ AnyWith<std::string>(\textcolor{stringliteral}{"{}merhaba"{}}),}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ AnyWith<std::string>(\textcolor{stringliteral}{"{}salut"{}})\}));}
+\DoxyCodeLine{00830\ \}}
+\DoxyCodeLine{00831\ TEST(AnyWithTest,\ TestCompare)\ \{}
+\DoxyCodeLine{00832\ \ \ EXPECT\_THAT(SampleAnyType(1),\ AnyWith<int>(Gt(0)));}
+\DoxyCodeLine{00833\ \}}
+\DoxyCodeLine{00834\ }
+\DoxyCodeLine{00835\ TEST(AnyWithTest,\ DescribesSelf)\ \{}
+\DoxyCodeLine{00836\ \ \ \textcolor{keyword}{const}\ Matcher<const\ SampleAnyType\&>\ m\ =\ AnyWith<int>(Eq(1));}
+\DoxyCodeLine{00837\ \ \ EXPECT\_THAT(Describe(m),\ ContainsRegex(\textcolor{stringliteral}{"{}is\ an\ 'any'\ type\ with\ value\ of\ type\ "{}}}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'.*'\ and\ the\ value\ is\ equal\ to\ 1"{}}));}
+\DoxyCodeLine{00839\ \}}
+\DoxyCodeLine{00840\ }
+\DoxyCodeLine{00841\ TEST(AnyWithTest,\ ExplainsSelf)\ \{}
+\DoxyCodeLine{00842\ \ \ \textcolor{keyword}{const}\ Matcher<const\ SampleAnyType\&>\ m\ =\ AnyWith<int>(Eq(1));}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00844\ \ \ EXPECT\_THAT(Explain(m,\ SampleAnyType(1)),\ ContainsRegex(\textcolor{stringliteral}{"{}whose\ value\ 1"{}}));}
+\DoxyCodeLine{00845\ \ \ EXPECT\_THAT(Explain(m,\ SampleAnyType(\textcolor{stringliteral}{"{}A"{}})),}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}whose\ value\ is\ not\ of\ type\ '"{}}));}
+\DoxyCodeLine{00847\ \ \ EXPECT\_THAT(Explain(m,\ SampleAnyType(2)),\ \textcolor{stringliteral}{"{}whose\ value\ 2\ doesn't\ match"{}});}
+\DoxyCodeLine{00848\ \}}
+\DoxyCodeLine{00849\ }
+\DoxyCodeLine{00850\ \textcolor{comment}{//\ Tests\ Args<k0,\ ...,\ kn>(m).}}
+\DoxyCodeLine{00851\ }
+\DoxyCodeLine{00852\ TEST(ArgsTest,\ AcceptsZeroTemplateArg)\ \{}
+\DoxyCodeLine{00853\ \ \ \textcolor{keyword}{const}\ std::tuple<int,\ bool>\ t(5,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00854\ \ \ EXPECT\_THAT(t,\ Args<>(Eq(std::tuple<>())));}
+\DoxyCodeLine{00855\ \ \ EXPECT\_THAT(t,\ Not(Args<>(Ne(std::tuple<>()))));}
+\DoxyCodeLine{00856\ \}}
+\DoxyCodeLine{00857\ }
+\DoxyCodeLine{00858\ TEST(ArgsTest,\ AcceptsOneTemplateArg)\ \{}
+\DoxyCodeLine{00859\ \ \ \textcolor{keyword}{const}\ std::tuple<int,\ bool>\ t(5,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00860\ \ \ EXPECT\_THAT(t,\ Args<0>(Eq(std::make\_tuple(5))));}
+\DoxyCodeLine{00861\ \ \ EXPECT\_THAT(t,\ Args<1>(Eq(std::make\_tuple(\textcolor{keyword}{true}))));}
+\DoxyCodeLine{00862\ \ \ EXPECT\_THAT(t,\ Not(Args<1>(Eq(std::make\_tuple(\textcolor{keyword}{false})))));}
+\DoxyCodeLine{00863\ \}}
+\DoxyCodeLine{00864\ }
+\DoxyCodeLine{00865\ TEST(ArgsTest,\ AcceptsTwoTemplateArgs)\ \{}
+\DoxyCodeLine{00866\ \ \ \textcolor{keyword}{const}\ std::tuple<short,\ int,\ long>\ t(4,\ 5,\ 6L);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00867\ }
+\DoxyCodeLine{00868\ \ \ EXPECT\_THAT(t,\ (Args<0,\ 1>(Lt())));}
+\DoxyCodeLine{00869\ \ \ EXPECT\_THAT(t,\ (Args<1,\ 2>(Lt())));}
+\DoxyCodeLine{00870\ \ \ EXPECT\_THAT(t,\ Not(Args<0,\ 2>(Gt())));}
+\DoxyCodeLine{00871\ \}}
+\DoxyCodeLine{00872\ }
+\DoxyCodeLine{00873\ TEST(ArgsTest,\ AcceptsRepeatedTemplateArgs)\ \{}
+\DoxyCodeLine{00874\ \ \ \textcolor{keyword}{const}\ std::tuple<short,\ int,\ long>\ t(4,\ 5,\ 6L);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00875\ \ \ EXPECT\_THAT(t,\ (Args<0,\ 0>(Eq())));}
+\DoxyCodeLine{00876\ \ \ EXPECT\_THAT(t,\ Not(Args<1,\ 1>(Ne())));}
+\DoxyCodeLine{00877\ \}}
+\DoxyCodeLine{00878\ }
+\DoxyCodeLine{00879\ TEST(ArgsTest,\ AcceptsDecreasingTemplateArgs)\ \{}
+\DoxyCodeLine{00880\ \ \ \textcolor{keyword}{const}\ std::tuple<short,\ int,\ long>\ t(4,\ 5,\ 6L);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00881\ \ \ EXPECT\_THAT(t,\ (Args<2,\ 0>(Gt())));}
+\DoxyCodeLine{00882\ \ \ EXPECT\_THAT(t,\ Not(Args<2,\ 1>(Lt())));}
+\DoxyCodeLine{00883\ \}}
+\DoxyCodeLine{00884\ }
+\DoxyCodeLine{00885\ MATCHER(SumIsZero,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{00886\ \ \ \textcolor{keywordflow}{return}\ std::get<0>(arg)\ +\ std::get<1>(arg)\ +\ std::get<2>(arg)\ ==\ 0;}
+\DoxyCodeLine{00887\ \}}
+\DoxyCodeLine{00888\ }
+\DoxyCodeLine{00889\ TEST(ArgsTest,\ AcceptsMoreTemplateArgsThanArityOfOriginalTuple)\ \{}
+\DoxyCodeLine{00890\ \ \ EXPECT\_THAT(std::make\_tuple(-\/1,\ 2),\ (Args<0,\ 0,\ 1>(SumIsZero())));}
+\DoxyCodeLine{00891\ \ \ EXPECT\_THAT(std::make\_tuple(1,\ 2),\ Not(Args<0,\ 0,\ 1>(SumIsZero())));}
+\DoxyCodeLine{00892\ \}}
+\DoxyCodeLine{00893\ }
+\DoxyCodeLine{00894\ TEST(ArgsTest,\ CanBeNested)\ \{}
+\DoxyCodeLine{00895\ \ \ \textcolor{keyword}{const}\ std::tuple<short,\ int,\ long,\ int>\ t(4,\ 5,\ 6L,\ 6);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00896\ \ \ EXPECT\_THAT(t,\ (Args<1,\ 2,\ 3>(Args<1,\ 2>(Eq()))));}
+\DoxyCodeLine{00897\ \ \ EXPECT\_THAT(t,\ (Args<0,\ 1,\ 3>(Args<0,\ 2>(Lt()))));}
+\DoxyCodeLine{00898\ \}}
+\DoxyCodeLine{00899\ }
+\DoxyCodeLine{00900\ TEST(ArgsTest,\ CanMatchTupleByValue)\ \{}
+\DoxyCodeLine{00901\ \ \ \textcolor{keyword}{typedef}\ std::tuple<char,\ int,\ int>\ Tuple3;}
+\DoxyCodeLine{00902\ \ \ \textcolor{keyword}{const}\ Matcher<Tuple3>\ m\ =\ Args<1,\ 2>(Lt());}
+\DoxyCodeLine{00903\ \ \ EXPECT\_TRUE(m.Matches(Tuple3(\textcolor{charliteral}{'a'},\ 1,\ 2)));}
+\DoxyCodeLine{00904\ \ \ EXPECT\_FALSE(m.Matches(Tuple3(\textcolor{charliteral}{'b'},\ 2,\ 2)));}
+\DoxyCodeLine{00905\ \}}
+\DoxyCodeLine{00906\ }
+\DoxyCodeLine{00907\ TEST(ArgsTest,\ CanMatchTupleByReference)\ \{}
+\DoxyCodeLine{00908\ \ \ \textcolor{keyword}{typedef}\ std::tuple<char,\ char,\ int>\ Tuple3;}
+\DoxyCodeLine{00909\ \ \ \textcolor{keyword}{const}\ Matcher<const\ Tuple3\&>\ m\ =\ Args<0,\ 1>(Lt());}
+\DoxyCodeLine{00910\ \ \ EXPECT\_TRUE(m.Matches(Tuple3(\textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'b'},\ 2)));}
+\DoxyCodeLine{00911\ \ \ EXPECT\_FALSE(m.Matches(Tuple3(\textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'b'},\ 2)));}
+\DoxyCodeLine{00912\ \}}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00914\ \textcolor{comment}{//\ Validates\ that\ arg\ is\ printed\ as\ str.}}
+\DoxyCodeLine{00915\ MATCHER\_P(PrintsAs,\ str,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ testing::PrintToString(arg)\ ==\ str;\ \}}
+\DoxyCodeLine{00916\ }
+\DoxyCodeLine{00917\ TEST(ArgsTest,\ AcceptsTenTemplateArgs)\ \{}
+\DoxyCodeLine{00918\ \ \ EXPECT\_THAT(std::make\_tuple(0,\ 1L,\ 2,\ 3L,\ 4,\ 5,\ 6,\ 7,\ 8,\ 9),}
+\DoxyCodeLine{00919\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (Args<9,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2,\ 1,\ 0>(}
+\DoxyCodeLine{00920\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PrintsAs(\textcolor{stringliteral}{"{}(9,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2,\ 1,\ 0)"{}}))));}
+\DoxyCodeLine{00921\ \ \ EXPECT\_THAT(std::make\_tuple(0,\ 1L,\ 2,\ 3L,\ 4,\ 5,\ 6,\ 7,\ 8,\ 9),}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Not(Args<9,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2,\ 1,\ 0>(}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PrintsAs(\textcolor{stringliteral}{"{}(0,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2,\ 1,\ 0)"{}}))));}
+\DoxyCodeLine{00924\ \}}
+\DoxyCodeLine{00925\ }
+\DoxyCodeLine{00926\ TEST(ArgsTest,\ DescirbesSelfCorrectly)\ \{}
+\DoxyCodeLine{00927\ \ \ \textcolor{keyword}{const}\ Matcher<std::tuple<int,\ bool,\ char>>\ m\ =\ Args<2,\ 0>(Lt());}
+\DoxyCodeLine{00928\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}are\ a\ tuple\ whose\ fields\ (\#2,\ \#0)\ are\ a\ pair\ where\ "{}}}
+\DoxyCodeLine{00930\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}the\ first\ <\ the\ second"{}},}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ Describe(m));}
+\DoxyCodeLine{00932\ \}}
+\DoxyCodeLine{00933\ }
+\DoxyCodeLine{00934\ TEST(ArgsTest,\ DescirbesNestedArgsCorrectly)\ \{}
+\DoxyCodeLine{00935\ \ \ \textcolor{keyword}{const}\ Matcher<const\ std::tuple<int,\ bool,\ char,\ int>\&>\ m\ =}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ Args<0,\ 2,\ 3>(Args<2,\ 0>(Lt()));}
+\DoxyCodeLine{00937\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00938\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}are\ a\ tuple\ whose\ fields\ (\#0,\ \#2,\ \#3)\ are\ a\ tuple\ "{}}}
+\DoxyCodeLine{00939\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ fields\ (\#2,\ \#0)\ are\ a\ pair\ where\ the\ first\ <\ the\ second"{}},}
+\DoxyCodeLine{00940\ \ \ \ \ \ \ Describe(m));}
+\DoxyCodeLine{00941\ \}}
+\DoxyCodeLine{00942\ }
+\DoxyCodeLine{00943\ TEST(ArgsTest,\ DescribesNegationCorrectly)\ \{}
+\DoxyCodeLine{00944\ \ \ \textcolor{keyword}{const}\ Matcher<std::tuple<int,\ char>>\ m\ =\ Args<1,\ 0>(Gt());}
+\DoxyCodeLine{00945\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}are\ a\ tuple\ whose\ fields\ (\#1,\ \#0)\ aren't\ a\ pair\ "{}}}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}where\ the\ first\ >\ the\ second"{}},}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ DescribeNegation(m));}
+\DoxyCodeLine{00949\ \}}
+\DoxyCodeLine{00950\ }
+\DoxyCodeLine{00951\ TEST(ArgsTest,\ ExplainsMatchResultWithoutInnerExplanation)\ \{}
+\DoxyCodeLine{00952\ \ \ \textcolor{keyword}{const}\ Matcher<std::tuple<bool,\ int,\ int>>\ m\ =\ Args<1,\ 2>(Eq());}
+\DoxyCodeLine{00953\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ fields\ (\#1,\ \#2)\ are\ (42,\ 42)"{}},}
+\DoxyCodeLine{00954\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ std::make\_tuple(\textcolor{keyword}{false},\ 42,\ 42)));}
+\DoxyCodeLine{00955\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ fields\ (\#1,\ \#2)\ are\ (42,\ 43)"{}},}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ std::make\_tuple(\textcolor{keyword}{false},\ 42,\ 43)));}
+\DoxyCodeLine{00957\ \}}
+\DoxyCodeLine{00958\ }
+\DoxyCodeLine{00959\ \textcolor{comment}{//\ For\ testing\ Args<>'s\ explanation.}}
+\DoxyCodeLine{00960\ \textcolor{keyword}{class\ }LessThanMatcher\ :\ \textcolor{keyword}{public}\ MatcherInterface<std::tuple<char,\ int>>\ \{}
+\DoxyCodeLine{00961\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00962\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ \textcolor{comment}{/*os*/})\textcolor{keyword}{\ const\ override\ }\{\}}
+\DoxyCodeLine{00963\ }
+\DoxyCodeLine{00964\ \ \ \textcolor{keywordtype}{bool}\ MatchAndExplain(std::tuple<char,\ int>\ value,}
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MatchResultListener*\ listener)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00966\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ diff\ =\ std::get<0>(value)\ -\/\ std::get<1>(value);}
+\DoxyCodeLine{00967\ \ \ \ \ \textcolor{keywordflow}{if}\ (diff\ >\ 0)\ \{}
+\DoxyCodeLine{00968\ \ \ \ \ \ \ *listener\ <<\ \textcolor{stringliteral}{"{}where\ the\ first\ value\ is\ "{}}\ <<\ diff}
+\DoxyCodeLine{00969\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ more\ than\ the\ second"{}};}
+\DoxyCodeLine{00970\ \ \ \ \ \}}
+\DoxyCodeLine{00971\ \ \ \ \ \textcolor{keywordflow}{return}\ diff\ <\ 0;}
+\DoxyCodeLine{00972\ \ \ \}}
+\DoxyCodeLine{00973\ \};}
+\DoxyCodeLine{00974\ }
+\DoxyCodeLine{00975\ Matcher<std::tuple<char,\ int>>\ LessThan()\ \{}
+\DoxyCodeLine{00976\ \ \ \textcolor{keywordflow}{return}\ MakeMatcher(\textcolor{keyword}{new}\ LessThanMatcher);}
+\DoxyCodeLine{00977\ \}}
+\DoxyCodeLine{00978\ }
+\DoxyCodeLine{00979\ TEST(ArgsTest,\ ExplainsMatchResultWithInnerExplanation)\ \{}
+\DoxyCodeLine{00980\ \ \ \textcolor{keyword}{const}\ Matcher<std::tuple<char,\ int,\ int>>\ m\ =\ Args<0,\ 2>(LessThan());}
+\DoxyCodeLine{00981\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ fields\ (\#0,\ \#2)\ are\ ('a'\ (97,\ 0x61),\ 42),\ "{}}}
+\DoxyCodeLine{00983\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}where\ the\ first\ value\ is\ 55\ more\ than\ the\ second"{}},}
+\DoxyCodeLine{00984\ \ \ \ \ \ \ Explain(m,\ std::make\_tuple(\textcolor{charliteral}{'a'},\ 42,\ 42)));}
+\DoxyCodeLine{00985\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ fields\ (\#0,\ \#2)\ are\ ('\(\backslash\)\(\backslash\)0',\ 43)"{}},}
+\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ std::make\_tuple(\textcolor{charliteral}{'\(\backslash\)0'},\ 42,\ 43)));}
+\DoxyCodeLine{00987\ \}}
+\DoxyCodeLine{00988\ }
+\DoxyCodeLine{00989\ \textcolor{comment}{//\ Tests\ for\ the\ MATCHER*()\ macro\ family.}}
+\DoxyCodeLine{00990\ }
+\DoxyCodeLine{00991\ \textcolor{comment}{//\ Tests\ that\ a\ simple\ MATCHER()\ definition\ works.}}
+\DoxyCodeLine{00992\ }
+\DoxyCodeLine{00993\ MATCHER(IsEven,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ (arg\ \%\ 2)\ ==\ 0;\ \}}
+\DoxyCodeLine{00994\ }
+\DoxyCodeLine{00995\ TEST(MatcherMacroTest,\ Works)\ \{}
+\DoxyCodeLine{00996\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m\ =\ IsEven();}
+\DoxyCodeLine{00997\ \ \ EXPECT\_TRUE(m.Matches(6));}
+\DoxyCodeLine{00998\ \ \ EXPECT\_FALSE(m.Matches(7));}
+\DoxyCodeLine{00999\ }
+\DoxyCodeLine{01000\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ even"{}},\ Describe(m));}
+\DoxyCodeLine{01001\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}not\ (is\ even)"{}},\ DescribeNegation(m));}
+\DoxyCodeLine{01002\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 6));}
+\DoxyCodeLine{01003\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 7));}
+\DoxyCodeLine{01004\ \}}
+\DoxyCodeLine{01005\ }
+\DoxyCodeLine{01006\ \textcolor{comment}{//\ This\ also\ tests\ that\ the\ description\ string\ can\ reference\ 'negation'.}}
+\DoxyCodeLine{01007\ MATCHER(IsEven2,\ negation\ ?\ \textcolor{stringliteral}{"{}is\ odd"{}}\ :\ \textcolor{stringliteral}{"{}is\ even"{}})\ \{}
+\DoxyCodeLine{01008\ \ \ \textcolor{keywordflow}{if}\ ((arg\ \%\ 2)\ ==\ 0)\ \{}
+\DoxyCodeLine{01009\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ we\ can\ stream\ to\ result\_listener,\ a\ listener}}
+\DoxyCodeLine{01010\ \ \ \ \ \textcolor{comment}{//\ supplied\ by\ the\ MATCHER\ macro\ implicitly.}}
+\DoxyCodeLine{01011\ \ \ \ \ *result\_listener\ <<\ \textcolor{stringliteral}{"{}OK"{}};}
+\DoxyCodeLine{01012\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01013\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01014\ \ \ \ \ *result\_listener\ <<\ \textcolor{stringliteral}{"{}\%\ 2\ ==\ "{}}\ <<\ (arg\ \%\ 2);}
+\DoxyCodeLine{01015\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01016\ \ \ \}}
+\DoxyCodeLine{01017\ \}}
+\DoxyCodeLine{01018\ }
+\DoxyCodeLine{01019\ \textcolor{comment}{//\ This\ also\ tests\ that\ the\ description\ string\ can\ reference\ matcher}}
+\DoxyCodeLine{01020\ \textcolor{comment}{//\ parameters.}}
+\DoxyCodeLine{01021\ MATCHER\_P2(EqSumOf,\ x,\ y,}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ \ \ \ std::string(negation\ ?\ \textcolor{stringliteral}{"{}doesn't\ equal"{}}\ :\ \textcolor{stringliteral}{"{}equals"{}})\ +\ \textcolor{stringliteral}{"{}\ the\ sum\ of\ "{}}\ +}
+\DoxyCodeLine{01023\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PrintToString(x)\ +\ \textcolor{stringliteral}{"{}\ and\ "{}}\ +\ PrintToString(y))\ \{}
+\DoxyCodeLine{01024\ \ \ \textcolor{keywordflow}{if}\ (arg\ ==\ (x\ +\ y))\ \{}
+\DoxyCodeLine{01025\ \ \ \ \ *result\_listener\ <<\ \textcolor{stringliteral}{"{}OK"{}};}
+\DoxyCodeLine{01026\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01027\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01028\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ we\ can\ stream\ to\ the\ underlying\ stream\ of}}
+\DoxyCodeLine{01029\ \ \ \ \ \textcolor{comment}{//\ result\_listener.}}
+\DoxyCodeLine{01030\ \ \ \ \ \textcolor{keywordflow}{if}\ (result\_listener-\/>stream()\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ *result\_listener-\/>stream()\ <<\ \textcolor{stringliteral}{"{}diff\ ==\ "{}}\ <<\ (x\ +\ y\ -\/\ arg);}
+\DoxyCodeLine{01032\ \ \ \ \ \}}
+\DoxyCodeLine{01033\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01034\ \ \ \}}
+\DoxyCodeLine{01035\ \}}
+\DoxyCodeLine{01036\ }
+\DoxyCodeLine{01037\ \textcolor{comment}{//\ Tests\ that\ the\ matcher\ description\ can\ reference\ 'negation'\ and\ the}}
+\DoxyCodeLine{01038\ \textcolor{comment}{//\ matcher\ parameters.}}
+\DoxyCodeLine{01039\ TEST(MatcherMacroTest,\ DescriptionCanReferenceNegationAndParameters)\ \{}
+\DoxyCodeLine{01040\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m1\ =\ IsEven2();}
+\DoxyCodeLine{01041\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ even"{}},\ Describe(m1));}
+\DoxyCodeLine{01042\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ odd"{}},\ DescribeNegation(m1));}
+\DoxyCodeLine{01043\ }
+\DoxyCodeLine{01044\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m2\ =\ EqSumOf(5,\ 9);}
+\DoxyCodeLine{01045\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}equals\ the\ sum\ of\ 5\ and\ 9"{}},\ Describe(m2));}
+\DoxyCodeLine{01046\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}doesn't\ equal\ the\ sum\ of\ 5\ and\ 9"{}},\ DescribeNegation(m2));}
+\DoxyCodeLine{01047\ \}}
+\DoxyCodeLine{01048\ }
+\DoxyCodeLine{01049\ \textcolor{comment}{//\ Tests\ explaining\ match\ result\ in\ a\ MATCHER*\ macro.}}
+\DoxyCodeLine{01050\ TEST(MatcherMacroTest,\ CanExplainMatchResult)\ \{}
+\DoxyCodeLine{01051\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m1\ =\ IsEven2();}
+\DoxyCodeLine{01052\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}OK"{}},\ Explain(m1,\ 4));}
+\DoxyCodeLine{01053\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}\%\ 2\ ==\ 1"{}},\ Explain(m1,\ 5));}
+\DoxyCodeLine{01054\ }
+\DoxyCodeLine{01055\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m2\ =\ EqSumOf(1,\ 2);}
+\DoxyCodeLine{01056\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}OK"{}},\ Explain(m2,\ 3));}
+\DoxyCodeLine{01057\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}diff\ ==\ -\/1"{}},\ Explain(m2,\ 4));}
+\DoxyCodeLine{01058\ \}}
+\DoxyCodeLine{01059\ }
+\DoxyCodeLine{01060\ \textcolor{comment}{//\ Tests\ that\ the\ body\ of\ MATCHER()\ can\ reference\ the\ type\ of\ the}}
+\DoxyCodeLine{01061\ \textcolor{comment}{//\ value\ being\ matched.}}
+\DoxyCodeLine{01062\ }
+\DoxyCodeLine{01063\ MATCHER(IsEmptyString,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01064\ \ \ StaticAssertTypeEq<::std::string,\ arg\_type>();}
+\DoxyCodeLine{01065\ \ \ \textcolor{keywordflow}{return}\ arg.empty();}
+\DoxyCodeLine{01066\ \}}
+\DoxyCodeLine{01067\ }
+\DoxyCodeLine{01068\ MATCHER(IsEmptyStringByRef,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01069\ \ \ StaticAssertTypeEq<const\ ::std::string\&,\ arg\_type>();}
+\DoxyCodeLine{01070\ \ \ \textcolor{keywordflow}{return}\ arg.empty();}
+\DoxyCodeLine{01071\ \}}
+\DoxyCodeLine{01072\ }
+\DoxyCodeLine{01073\ TEST(MatcherMacroTest,\ CanReferenceArgType)\ \{}
+\DoxyCodeLine{01074\ \ \ \textcolor{keyword}{const}\ Matcher<::std::string>\ m1\ =\ IsEmptyString();}
+\DoxyCodeLine{01075\ \ \ EXPECT\_TRUE(m1.Matches(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{01076\ }
+\DoxyCodeLine{01077\ \ \ \textcolor{keyword}{const}\ Matcher<const\ ::std::string\&>\ m2\ =\ IsEmptyStringByRef();}
+\DoxyCodeLine{01078\ \ \ EXPECT\_TRUE(m2.Matches(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{01079\ \}}
+\DoxyCodeLine{01080\ }
+\DoxyCodeLine{01081\ \textcolor{comment}{//\ Tests\ that\ MATCHER()\ can\ be\ used\ in\ a\ namespace.}}
+\DoxyCodeLine{01082\ }
+\DoxyCodeLine{01083\ \textcolor{keyword}{namespace\ }matcher\_test\ \{}
+\DoxyCodeLine{01084\ MATCHER(IsOdd,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ (arg\ \%\ 2)\ !=\ 0;\ \}}
+\DoxyCodeLine{01085\ \}\ \ \textcolor{comment}{//\ namespace\ matcher\_test}}
+\DoxyCodeLine{01086\ }
+\DoxyCodeLine{01087\ TEST(MatcherMacroTest,\ WorksInNamespace)\ \{}
+\DoxyCodeLine{01088\ \ \ Matcher<int>\ m\ =\ matcher\_test::IsOdd();}
+\DoxyCodeLine{01089\ \ \ EXPECT\_FALSE(m.Matches(4));}
+\DoxyCodeLine{01090\ \ \ EXPECT\_TRUE(m.Matches(5));}
+\DoxyCodeLine{01091\ \}}
+\DoxyCodeLine{01092\ }
+\DoxyCodeLine{01093\ \textcolor{comment}{//\ Tests\ that\ Value()\ can\ be\ used\ to\ compose\ matchers.}}
+\DoxyCodeLine{01094\ MATCHER(IsPositiveOdd,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01095\ \ \ \textcolor{keywordflow}{return}\ Value(arg,\ matcher\_test::IsOdd())\ \&\&\ arg\ >\ 0;}
+\DoxyCodeLine{01096\ \}}
+\DoxyCodeLine{01097\ }
+\DoxyCodeLine{01098\ TEST(MatcherMacroTest,\ CanBeComposedUsingValue)\ \{}
+\DoxyCodeLine{01099\ \ \ EXPECT\_THAT(3,\ IsPositiveOdd());}
+\DoxyCodeLine{01100\ \ \ EXPECT\_THAT(4,\ Not(IsPositiveOdd()));}
+\DoxyCodeLine{01101\ \ \ EXPECT\_THAT(-\/1,\ Not(IsPositiveOdd()));}
+\DoxyCodeLine{01102\ \}}
+\DoxyCodeLine{01103\ }
+\DoxyCodeLine{01104\ \textcolor{comment}{//\ Tests\ that\ a\ simple\ MATCHER\_P()\ definition\ works.}}
+\DoxyCodeLine{01105\ }
+\DoxyCodeLine{01106\ MATCHER\_P(IsGreaterThan32And,\ n,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ >\ 32\ \&\&\ arg\ >\ n;\ \}}
+\DoxyCodeLine{01107\ }
+\DoxyCodeLine{01108\ TEST(MatcherPMacroTest,\ Works)\ \{}
+\DoxyCodeLine{01109\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m\ =\ IsGreaterThan32And(5);}
+\DoxyCodeLine{01110\ \ \ EXPECT\_TRUE(m.Matches(36));}
+\DoxyCodeLine{01111\ \ \ EXPECT\_FALSE(m.Matches(5));}
+\DoxyCodeLine{01112\ }
+\DoxyCodeLine{01113\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ greater\ than\ 32\ and\ (n:\ 5)"{}},\ Describe(m));}
+\DoxyCodeLine{01114\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}not\ (is\ greater\ than\ 32\ and\ (n:\ 5))"{}},\ DescribeNegation(m));}
+\DoxyCodeLine{01115\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 36));}
+\DoxyCodeLine{01116\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 5));}
+\DoxyCodeLine{01117\ \}}
+\DoxyCodeLine{01118\ }
+\DoxyCodeLine{01119\ \textcolor{comment}{//\ Tests\ that\ the\ description\ is\ calculated\ correctly\ from\ the\ matcher\ name.}}
+\DoxyCodeLine{01120\ MATCHER\_P(\_is\_Greater\_Than32and\_,\ n,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ >\ 32\ \&\&\ arg\ >\ n;\ \}}
+\DoxyCodeLine{01121\ }
+\DoxyCodeLine{01122\ TEST(MatcherPMacroTest,\ GeneratesCorrectDescription)\ \{}
+\DoxyCodeLine{01123\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m\ =\ \_is\_Greater\_Than32and\_(5);}
+\DoxyCodeLine{01124\ }
+\DoxyCodeLine{01125\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ greater\ than\ 32\ and\ (n:\ 5)"{}},\ Describe(m));}
+\DoxyCodeLine{01126\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}not\ (is\ greater\ than\ 32\ and\ (n:\ 5))"{}},\ DescribeNegation(m));}
+\DoxyCodeLine{01127\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 36));}
+\DoxyCodeLine{01128\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 5));}
+\DoxyCodeLine{01129\ \}}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01131\ \textcolor{comment}{//\ Tests\ that\ a\ MATCHER\_P\ matcher\ can\ be\ explicitly\ instantiated\ with}}
+\DoxyCodeLine{01132\ \textcolor{comment}{//\ a\ reference\ parameter\ type.}}
+\DoxyCodeLine{01133\ }
+\DoxyCodeLine{01134\ \textcolor{keyword}{class\ }UncopyableFoo\ \{}
+\DoxyCodeLine{01135\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01136\ \ \ \textcolor{keyword}{explicit}\ UncopyableFoo(\textcolor{keywordtype}{char}\ value)\ :\ value\_(value)\ \{\ (void)value\_;\ \}}
+\DoxyCodeLine{01137\ }
+\DoxyCodeLine{01138\ \ \ UncopyableFoo(\textcolor{keyword}{const}\ UncopyableFoo\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01139\ \ \ \textcolor{keywordtype}{void}\ operator=(\textcolor{keyword}{const}\ UncopyableFoo\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01140\ }
+\DoxyCodeLine{01141\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01142\ \ \ \textcolor{keywordtype}{char}\ value\_;}
+\DoxyCodeLine{01143\ \};}
+\DoxyCodeLine{01144\ }
+\DoxyCodeLine{01145\ MATCHER\_P(ReferencesUncopyable,\ variable,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ \&arg\ ==\ \&variable;\ \}}
+\DoxyCodeLine{01146\ }
+\DoxyCodeLine{01147\ TEST(MatcherPMacroTest,\ WorksWhenExplicitlyInstantiatedWithReference)\ \{}
+\DoxyCodeLine{01148\ \ \ UncopyableFoo\ foo1(\textcolor{charliteral}{'1'}),\ foo2(\textcolor{charliteral}{'2'});}
+\DoxyCodeLine{01149\ \ \ \textcolor{keyword}{const}\ Matcher<const\ UncopyableFoo\&>\ m\ =}
+\DoxyCodeLine{01150\ \ \ \ \ \ \ ReferencesUncopyable<const\ UncopyableFoo\&>(foo1);}
+\DoxyCodeLine{01151\ }
+\DoxyCodeLine{01152\ \ \ EXPECT\_TRUE(m.Matches(foo1));}
+\DoxyCodeLine{01153\ \ \ EXPECT\_FALSE(m.Matches(foo2));}
+\DoxyCodeLine{01154\ }
+\DoxyCodeLine{01155\ \ \ \textcolor{comment}{//\ We\ don't\ want\ the\ address\ of\ the\ parameter\ printed,\ as\ most}}
+\DoxyCodeLine{01156\ \ \ \textcolor{comment}{//\ likely\ it\ will\ just\ annoy\ the\ user.\ \ If\ the\ address\ is}}
+\DoxyCodeLine{01157\ \ \ \textcolor{comment}{//\ interesting,\ the\ user\ should\ consider\ passing\ the\ parameter\ by}}
+\DoxyCodeLine{01158\ \ \ \textcolor{comment}{//\ pointer\ instead.}}
+\DoxyCodeLine{01159\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}references\ uncopyable\ (variable:\ 1-\/byte\ object\ <31>)"{}},}
+\DoxyCodeLine{01160\ \ \ \ \ \ \ \ \ \ \ \ \ Describe(m));}
+\DoxyCodeLine{01161\ \}}
+\DoxyCodeLine{01162\ }
+\DoxyCodeLine{01163\ \textcolor{comment}{//\ Tests\ that\ the\ body\ of\ MATCHER\_Pn()\ can\ reference\ the\ parameter}}
+\DoxyCodeLine{01164\ \textcolor{comment}{//\ types.}}
+\DoxyCodeLine{01165\ }
+\DoxyCodeLine{01166\ MATCHER\_P3(ParamTypesAreIntLongAndChar,\ foo,\ bar,\ baz,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01167\ \ \ StaticAssertTypeEq<int,\ foo\_type>();}
+\DoxyCodeLine{01168\ \ \ StaticAssertTypeEq<long,\ bar\_type>();\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01169\ \ \ StaticAssertTypeEq<char,\ baz\_type>();}
+\DoxyCodeLine{01170\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ 0;}
+\DoxyCodeLine{01171\ \}}
+\DoxyCodeLine{01172\ }
+\DoxyCodeLine{01173\ TEST(MatcherPnMacroTest,\ CanReferenceParamTypes)\ \{}
+\DoxyCodeLine{01174\ \ \ EXPECT\_THAT(0,\ ParamTypesAreIntLongAndChar(10,\ 20L,\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{01175\ \}}
+\DoxyCodeLine{01176\ }
+\DoxyCodeLine{01177\ \textcolor{comment}{//\ Tests\ that\ a\ MATCHER\_Pn\ matcher\ can\ be\ explicitly\ instantiated\ with}}
+\DoxyCodeLine{01178\ \textcolor{comment}{//\ reference\ parameter\ types.}}
+\DoxyCodeLine{01179\ }
+\DoxyCodeLine{01180\ MATCHER\_P2(ReferencesAnyOf,\ variable1,\ variable2,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01181\ \ \ \textcolor{keywordflow}{return}\ \&arg\ ==\ \&variable1\ ||\ \&arg\ ==\ \&variable2;}
+\DoxyCodeLine{01182\ \}}
+\DoxyCodeLine{01183\ }
+\DoxyCodeLine{01184\ TEST(MatcherPnMacroTest,\ WorksWhenExplicitlyInstantiatedWithReferences)\ \{}
+\DoxyCodeLine{01185\ \ \ UncopyableFoo\ foo1(\textcolor{charliteral}{'1'}),\ foo2(\textcolor{charliteral}{'2'}),\ foo3(\textcolor{charliteral}{'3'});}
+\DoxyCodeLine{01186\ \ \ \textcolor{keyword}{const}\ Matcher<const\ UncopyableFoo\&>\ const\_m\ =}
+\DoxyCodeLine{01187\ \ \ \ \ \ \ ReferencesAnyOf<const\ UncopyableFoo\&,\ const\ UncopyableFoo\&>(foo1,\ foo2);}
+\DoxyCodeLine{01188\ }
+\DoxyCodeLine{01189\ \ \ EXPECT\_TRUE(const\_m.Matches(foo1));}
+\DoxyCodeLine{01190\ \ \ EXPECT\_TRUE(const\_m.Matches(foo2));}
+\DoxyCodeLine{01191\ \ \ EXPECT\_FALSE(const\_m.Matches(foo3));}
+\DoxyCodeLine{01192\ }
+\DoxyCodeLine{01193\ \ \ \textcolor{keyword}{const}\ Matcher<UncopyableFoo\&>\ m\ =}
+\DoxyCodeLine{01194\ \ \ \ \ \ \ ReferencesAnyOf<UncopyableFoo\&,\ UncopyableFoo\&>(foo1,\ foo2);}
+\DoxyCodeLine{01195\ }
+\DoxyCodeLine{01196\ \ \ EXPECT\_TRUE(m.Matches(foo1));}
+\DoxyCodeLine{01197\ \ \ EXPECT\_TRUE(m.Matches(foo2));}
+\DoxyCodeLine{01198\ \ \ EXPECT\_FALSE(m.Matches(foo3));}
+\DoxyCodeLine{01199\ \}}
+\DoxyCodeLine{01200\ }
+\DoxyCodeLine{01201\ TEST(MatcherPnMacroTest,}
+\DoxyCodeLine{01202\ \ \ \ \ \ GeneratesCorretDescriptionWhenExplicitlyInstantiatedWithReferences)\ \{}
+\DoxyCodeLine{01203\ \ \ UncopyableFoo\ foo1(\textcolor{charliteral}{'1'}),\ foo2(\textcolor{charliteral}{'2'});}
+\DoxyCodeLine{01204\ \ \ \textcolor{keyword}{const}\ Matcher<const\ UncopyableFoo\&>\ m\ =}
+\DoxyCodeLine{01205\ \ \ \ \ \ \ ReferencesAnyOf<const\ UncopyableFoo\&,\ const\ UncopyableFoo\&>(foo1,\ foo2);}
+\DoxyCodeLine{01206\ }
+\DoxyCodeLine{01207\ \ \ \textcolor{comment}{//\ We\ don't\ want\ the\ addresses\ of\ the\ parameters\ printed,\ as\ most}}
+\DoxyCodeLine{01208\ \ \ \textcolor{comment}{//\ likely\ they\ will\ just\ annoy\ the\ user.\ \ If\ the\ addresses\ are}}
+\DoxyCodeLine{01209\ \ \ \textcolor{comment}{//\ interesting,\ the\ user\ should\ consider\ passing\ the\ parameters\ by}}
+\DoxyCodeLine{01210\ \ \ \textcolor{comment}{//\ pointers\ instead.}}
+\DoxyCodeLine{01211\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}references\ any\ of\ (variable1:\ 1-\/byte\ object\ <31>,\ variable2:\ 1-\/byte\ "{}}}
+\DoxyCodeLine{01213\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}object\ <32>)"{}},}
+\DoxyCodeLine{01214\ \ \ \ \ \ \ Describe(m));}
+\DoxyCodeLine{01215\ \}}
+\DoxyCodeLine{01216\ }
+\DoxyCodeLine{01217\ \textcolor{comment}{//\ Tests\ that\ a\ simple\ MATCHER\_P2()\ definition\ works.}}
+\DoxyCodeLine{01218\ }
+\DoxyCodeLine{01219\ MATCHER\_P2(IsNotInClosedRange,\ low,\ hi,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ <\ low\ ||\ arg\ >\ hi;\ \}}
+\DoxyCodeLine{01220\ }
+\DoxyCodeLine{01221\ TEST(MatcherPnMacroTest,\ Works)\ \{}
+\DoxyCodeLine{01222\ \ \ \textcolor{keyword}{const}\ Matcher<const\ long\&>\ m\ =\ IsNotInClosedRange(10,\ 20);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01223\ \ \ EXPECT\_TRUE(m.Matches(36L));}
+\DoxyCodeLine{01224\ \ \ EXPECT\_FALSE(m.Matches(15L));}
+\DoxyCodeLine{01225\ }
+\DoxyCodeLine{01226\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}is\ not\ in\ closed\ range\ (low:\ 10,\ hi:\ 20)"{}},\ Describe(m));}
+\DoxyCodeLine{01227\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}not\ (is\ not\ in\ closed\ range\ (low:\ 10,\ hi:\ 20))"{}},}
+\DoxyCodeLine{01228\ \ \ \ \ \ \ \ \ \ \ \ \ DescribeNegation(m));}
+\DoxyCodeLine{01229\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 36L));}
+\DoxyCodeLine{01230\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m,\ 15L));}
+\DoxyCodeLine{01231\ \}}
+\DoxyCodeLine{01232\ }
+\DoxyCodeLine{01233\ \textcolor{comment}{//\ Tests\ that\ MATCHER*()\ definitions\ can\ be\ overloaded\ on\ the\ number}}
+\DoxyCodeLine{01234\ \textcolor{comment}{//\ of\ parameters;\ also\ tests\ MATCHER\_Pn()\ where\ n\ >=\ 3.}}
+\DoxyCodeLine{01235\ }
+\DoxyCodeLine{01236\ MATCHER(EqualsSumOf,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ 0;\ \}}
+\DoxyCodeLine{01237\ MATCHER\_P(EqualsSumOf,\ a,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ a;\ \}}
+\DoxyCodeLine{01238\ MATCHER\_P2(EqualsSumOf,\ a,\ b,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b;\ \}}
+\DoxyCodeLine{01239\ MATCHER\_P3(EqualsSumOf,\ a,\ b,\ c,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c;\ \}}
+\DoxyCodeLine{01240\ MATCHER\_P4(EqualsSumOf,\ a,\ b,\ c,\ d,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d;\ \}}
+\DoxyCodeLine{01241\ MATCHER\_P5(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e;\ \}}
+\DoxyCodeLine{01242\ MATCHER\_P6(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ f,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01243\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f;}
+\DoxyCodeLine{01244\ \}}
+\DoxyCodeLine{01245\ MATCHER\_P7(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ f,\ g,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01246\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g;}
+\DoxyCodeLine{01247\ \}}
+\DoxyCodeLine{01248\ MATCHER\_P8(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ f,\ g,\ h,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01249\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\ +\ h;}
+\DoxyCodeLine{01250\ \}}
+\DoxyCodeLine{01251\ MATCHER\_P9(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ f,\ g,\ h,\ i,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01252\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\ +\ h\ +\ i;}
+\DoxyCodeLine{01253\ \}}
+\DoxyCodeLine{01254\ MATCHER\_P10(EqualsSumOf,\ a,\ b,\ c,\ d,\ e,\ f,\ g,\ h,\ i,\ j,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01255\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ a\ +\ b\ +\ c\ +\ d\ +\ e\ +\ f\ +\ g\ +\ h\ +\ i\ +\ j;}
+\DoxyCodeLine{01256\ \}}
+\DoxyCodeLine{01257\ }
+\DoxyCodeLine{01258\ TEST(MatcherPnMacroTest,\ CanBeOverloadedOnNumberOfParameters)\ \{}
+\DoxyCodeLine{01259\ \ \ EXPECT\_THAT(0,\ EqualsSumOf());}
+\DoxyCodeLine{01260\ \ \ EXPECT\_THAT(1,\ EqualsSumOf(1));}
+\DoxyCodeLine{01261\ \ \ EXPECT\_THAT(12,\ EqualsSumOf(10,\ 2));}
+\DoxyCodeLine{01262\ \ \ EXPECT\_THAT(123,\ EqualsSumOf(100,\ 20,\ 3));}
+\DoxyCodeLine{01263\ \ \ EXPECT\_THAT(1234,\ EqualsSumOf(1000,\ 200,\ 30,\ 4));}
+\DoxyCodeLine{01264\ \ \ EXPECT\_THAT(12345,\ EqualsSumOf(10000,\ 2000,\ 300,\ 40,\ 5));}
+\DoxyCodeLine{01265\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdef"{}},}
+\DoxyCodeLine{01266\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'}));}
+\DoxyCodeLine{01267\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefg"{}},}
+\DoxyCodeLine{01268\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'}));}
+\DoxyCodeLine{01269\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefgh"{}},\ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},}
+\DoxyCodeLine{01270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},\ \textcolor{stringliteral}{"{}h"{}}));}
+\DoxyCodeLine{01271\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefghi"{}},\ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},\ \textcolor{stringliteral}{"{}h"{}},\ \textcolor{charliteral}{'i'}));}
+\DoxyCodeLine{01273\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefghij"{}},}
+\DoxyCodeLine{01274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},\ \textcolor{stringliteral}{"{}h"{}},}
+\DoxyCodeLine{01275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{charliteral}{'i'},\ ::std::string(\textcolor{stringliteral}{"{}j"{}})));}
+\DoxyCodeLine{01276\ }
+\DoxyCodeLine{01277\ \ \ EXPECT\_THAT(1,\ Not(EqualsSumOf()));}
+\DoxyCodeLine{01278\ \ \ EXPECT\_THAT(-\/1,\ Not(EqualsSumOf(1)));}
+\DoxyCodeLine{01279\ \ \ EXPECT\_THAT(-\/12,\ Not(EqualsSumOf(10,\ 2)));}
+\DoxyCodeLine{01280\ \ \ EXPECT\_THAT(-\/123,\ Not(EqualsSumOf(100,\ 20,\ 3)));}
+\DoxyCodeLine{01281\ \ \ EXPECT\_THAT(-\/1234,\ Not(EqualsSumOf(1000,\ 200,\ 30,\ 4)));}
+\DoxyCodeLine{01282\ \ \ EXPECT\_THAT(-\/12345,\ Not(EqualsSumOf(10000,\ 2000,\ 300,\ 40,\ 5)));}
+\DoxyCodeLine{01283\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdef\ "{}},}
+\DoxyCodeLine{01284\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'})));}
+\DoxyCodeLine{01285\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefg\ "{}},\ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},}
+\DoxyCodeLine{01286\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'})));}
+\DoxyCodeLine{01287\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefgh\ "{}},\ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},}
+\DoxyCodeLine{01288\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},\ \textcolor{stringliteral}{"{}h"{}})));}
+\DoxyCodeLine{01289\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefghi\ "{}},\ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},}
+\DoxyCodeLine{01290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},\ \textcolor{stringliteral}{"{}h"{}},\ \textcolor{charliteral}{'i'})));}
+\DoxyCodeLine{01291\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcdefghij\ "{}},}
+\DoxyCodeLine{01292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{charliteral}{'b'},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}},\ \textcolor{stringliteral}{"{}e"{}},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'g'},}
+\DoxyCodeLine{01293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}h"{}},\ \textcolor{charliteral}{'i'},\ ::std::string(\textcolor{stringliteral}{"{}j"{}}))));}
+\DoxyCodeLine{01294\ \}}
+\DoxyCodeLine{01295\ }
+\DoxyCodeLine{01296\ \textcolor{comment}{//\ Tests\ that\ a\ MATCHER\_Pn()\ definition\ can\ be\ instantiated\ with\ any}}
+\DoxyCodeLine{01297\ \textcolor{comment}{//\ compatible\ parameter\ types.}}
+\DoxyCodeLine{01298\ TEST(MatcherPnMacroTest,\ WorksForDifferentParameterTypes)\ \{}
+\DoxyCodeLine{01299\ \ \ EXPECT\_THAT(123,\ EqualsSumOf(100L,\ 20,\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(3)));}
+\DoxyCodeLine{01300\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcd"{}},\ EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}}));}
+\DoxyCodeLine{01301\ }
+\DoxyCodeLine{01302\ \ \ EXPECT\_THAT(124,\ Not(EqualsSumOf(100L,\ 20,\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(3))));}
+\DoxyCodeLine{01303\ \ \ EXPECT\_THAT(\textcolor{stringliteral}{"{}abcde"{}},\ Not(EqualsSumOf(::std::string(\textcolor{stringliteral}{"{}a"{}}),\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}d"{}})));}
+\DoxyCodeLine{01304\ \}}
+\DoxyCodeLine{01305\ }
+\DoxyCodeLine{01306\ \textcolor{comment}{//\ Tests\ that\ the\ matcher\ body\ can\ promote\ the\ parameter\ types.}}
+\DoxyCodeLine{01307\ }
+\DoxyCodeLine{01308\ MATCHER\_P2(EqConcat,\ prefix,\ suffix,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01309\ \ \ \textcolor{comment}{//\ The\ following\ lines\ promote\ the\ two\ parameters\ to\ desired\ types.}}
+\DoxyCodeLine{01310\ \ \ std::string\ prefix\_str(prefix);}
+\DoxyCodeLine{01311\ \ \ \textcolor{keywordtype}{char}\ suffix\_char\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(suffix);}
+\DoxyCodeLine{01312\ \ \ \textcolor{keywordflow}{return}\ arg\ ==\ prefix\_str\ +\ suffix\_char;}
+\DoxyCodeLine{01313\ \}}
+\DoxyCodeLine{01314\ }
+\DoxyCodeLine{01315\ TEST(MatcherPnMacroTest,\ SimpleTypePromotion)\ \{}
+\DoxyCodeLine{01316\ \ \ Matcher<std::string>\ no\_promo\ =\ EqConcat(std::string(\textcolor{stringliteral}{"{}foo"{}}),\ \textcolor{charliteral}{'t'});}
+\DoxyCodeLine{01317\ \ \ Matcher<const\ std::string\&>\ promo\ =\ EqConcat(\textcolor{stringliteral}{"{}foo"{}},\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(\textcolor{charliteral}{'t'}));}
+\DoxyCodeLine{01318\ \ \ EXPECT\_FALSE(no\_promo.Matches(\textcolor{stringliteral}{"{}fool"{}}));}
+\DoxyCodeLine{01319\ \ \ EXPECT\_FALSE(promo.Matches(\textcolor{stringliteral}{"{}fool"{}}));}
+\DoxyCodeLine{01320\ \ \ EXPECT\_TRUE(no\_promo.Matches(\textcolor{stringliteral}{"{}foot"{}}));}
+\DoxyCodeLine{01321\ \ \ EXPECT\_TRUE(promo.Matches(\textcolor{stringliteral}{"{}foot"{}}));}
+\DoxyCodeLine{01322\ \}}
+\DoxyCodeLine{01323\ }
+\DoxyCodeLine{01324\ \textcolor{comment}{//\ Verifies\ the\ type\ of\ a\ MATCHER*.}}
+\DoxyCodeLine{01325\ }
+\DoxyCodeLine{01326\ TEST(MatcherPnMacroTest,\ TypesAreCorrect)\ \{}
+\DoxyCodeLine{01327\ \ \ \textcolor{comment}{//\ EqualsSumOf()\ must\ be\ assignable\ to\ a\ EqualsSumOfMatcher\ variable.}}
+\DoxyCodeLine{01328\ \ \ EqualsSumOfMatcher\ a0\ =\ EqualsSumOf();}
+\DoxyCodeLine{01329\ }
+\DoxyCodeLine{01330\ \ \ \textcolor{comment}{//\ EqualsSumOf(1)\ must\ be\ assignable\ to\ a\ EqualsSumOfMatcherP\ variable.}}
+\DoxyCodeLine{01331\ \ \ EqualsSumOfMatcherP<int>\ a1\ =\ EqualsSumOf(1);}
+\DoxyCodeLine{01332\ }
+\DoxyCodeLine{01333\ \ \ \textcolor{comment}{//\ EqualsSumOf(p1,\ ...,\ pk)\ must\ be\ assignable\ to\ a\ EqualsSumOfMatcherPk}}
+\DoxyCodeLine{01334\ \ \ \textcolor{comment}{//\ variable,\ and\ so\ on.}}
+\DoxyCodeLine{01335\ \ \ EqualsSumOfMatcherP2<int,\ char>\ a2\ =\ EqualsSumOf(1,\ \textcolor{charliteral}{'2'});}
+\DoxyCodeLine{01336\ \ \ EqualsSumOfMatcherP3<int,\ int,\ char>\ a3\ =\ EqualsSumOf(1,\ 2,\ \textcolor{charliteral}{'3'});}
+\DoxyCodeLine{01337\ \ \ EqualsSumOfMatcherP4<int,\ int,\ int,\ char>\ a4\ =\ EqualsSumOf(1,\ 2,\ 3,\ \textcolor{charliteral}{'4'});}
+\DoxyCodeLine{01338\ \ \ EqualsSumOfMatcherP5<int,\ int,\ int,\ int,\ char>\ a5\ =}
+\DoxyCodeLine{01339\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ \textcolor{charliteral}{'5'});}
+\DoxyCodeLine{01340\ \ \ EqualsSumOfMatcherP6<int,\ int,\ int,\ int,\ int,\ char>\ a6\ =}
+\DoxyCodeLine{01341\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ 5,\ \textcolor{charliteral}{'6'});}
+\DoxyCodeLine{01342\ \ \ EqualsSumOfMatcherP7<int,\ int,\ int,\ int,\ int,\ int,\ char>\ a7\ =}
+\DoxyCodeLine{01343\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ 5,\ 6,\ \textcolor{charliteral}{'7'});}
+\DoxyCodeLine{01344\ \ \ EqualsSumOfMatcherP8<int,\ int,\ int,\ int,\ int,\ int,\ int,\ char>\ a8\ =}
+\DoxyCodeLine{01345\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ 5,\ 6,\ 7,\ \textcolor{charliteral}{'8'});}
+\DoxyCodeLine{01346\ \ \ EqualsSumOfMatcherP9<int,\ int,\ int,\ int,\ int,\ int,\ int,\ int,\ char>\ a9\ =}
+\DoxyCodeLine{01347\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ 5,\ 6,\ 7,\ 8,\ \textcolor{charliteral}{'9'});}
+\DoxyCodeLine{01348\ \ \ EqualsSumOfMatcherP10<int,\ int,\ int,\ int,\ int,\ int,\ int,\ int,\ int,\ char>\ a10\ =}
+\DoxyCodeLine{01349\ \ \ \ \ \ \ EqualsSumOf(1,\ 2,\ 3,\ 4,\ 5,\ 6,\ 7,\ 8,\ 9,\ \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{01350\ }
+\DoxyCodeLine{01351\ \ \ \textcolor{comment}{//\ Avoid\ "{}unused\ variable"{}\ warnings.}}
+\DoxyCodeLine{01352\ \ \ (void)a0;}
+\DoxyCodeLine{01353\ \ \ (void)a1;}
+\DoxyCodeLine{01354\ \ \ (void)a2;}
+\DoxyCodeLine{01355\ \ \ (void)a3;}
+\DoxyCodeLine{01356\ \ \ (void)a4;}
+\DoxyCodeLine{01357\ \ \ (void)a5;}
+\DoxyCodeLine{01358\ \ \ (void)a6;}
+\DoxyCodeLine{01359\ \ \ (void)a7;}
+\DoxyCodeLine{01360\ \ \ (void)a8;}
+\DoxyCodeLine{01361\ \ \ (void)a9;}
+\DoxyCodeLine{01362\ \ \ (void)a10;}
+\DoxyCodeLine{01363\ \}}
+\DoxyCodeLine{01364\ }
+\DoxyCodeLine{01365\ \textcolor{comment}{//\ Tests\ that\ matcher-\/typed\ parameters\ can\ be\ used\ in\ Value()\ inside\ a}}
+\DoxyCodeLine{01366\ \textcolor{comment}{//\ MATCHER\_Pn\ definition.}}
+\DoxyCodeLine{01367\ }
+\DoxyCodeLine{01368\ \textcolor{comment}{//\ Succeeds\ if\ arg\ matches\ exactly\ 2\ of\ the\ 3\ matchers.}}
+\DoxyCodeLine{01369\ MATCHER\_P3(TwoOf,\ m1,\ m2,\ m3,\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{01370\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ count\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(Value(arg,\ m1))\ +}
+\DoxyCodeLine{01371\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(Value(arg,\ m2))\ +}
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(Value(arg,\ m3));}
+\DoxyCodeLine{01373\ \ \ \textcolor{keywordflow}{return}\ count\ ==\ 2;}
+\DoxyCodeLine{01374\ \}}
+\DoxyCodeLine{01375\ }
+\DoxyCodeLine{01376\ TEST(MatcherPnMacroTest,\ CanUseMatcherTypedParameterInValue)\ \{}
+\DoxyCodeLine{01377\ \ \ EXPECT\_THAT(42,\ TwoOf(Gt(0),\ Lt(50),\ Eq(10)));}
+\DoxyCodeLine{01378\ \ \ EXPECT\_THAT(0,\ Not(TwoOf(Gt(-\/1),\ Lt(1),\ Eq(0))));}
+\DoxyCodeLine{01379\ \}}
+\DoxyCodeLine{01380\ }
+\DoxyCodeLine{01381\ \textcolor{comment}{//\ Tests\ Contains().Times().}}
+\DoxyCodeLine{01382\ }
+\DoxyCodeLine{01383\ INSTANTIATE\_GTEST\_MATCHER\_TEST\_P(ContainsTimes);}
+\DoxyCodeLine{01384\ }
+\DoxyCodeLine{01385\ TEST(ContainsTimes,\ ListMatchesWhenElementQuantityMatches)\ \{}
+\DoxyCodeLine{01386\ \ \ list<int>\ some\_list;}
+\DoxyCodeLine{01387\ \ \ some\_list.push\_back(3);}
+\DoxyCodeLine{01388\ \ \ some\_list.push\_back(1);}
+\DoxyCodeLine{01389\ \ \ some\_list.push\_back(2);}
+\DoxyCodeLine{01390\ \ \ some\_list.push\_back(3);}
+\DoxyCodeLine{01391\ \ \ EXPECT\_THAT(some\_list,\ Contains(3).Times(2));}
+\DoxyCodeLine{01392\ \ \ EXPECT\_THAT(some\_list,\ Contains(2).Times(1));}
+\DoxyCodeLine{01393\ \ \ EXPECT\_THAT(some\_list,\ Contains(Ge(2)).Times(3));}
+\DoxyCodeLine{01394\ \ \ EXPECT\_THAT(some\_list,\ Contains(Ge(2)).Times(Gt(2)));}
+\DoxyCodeLine{01395\ \ \ EXPECT\_THAT(some\_list,\ Contains(4).Times(0));}
+\DoxyCodeLine{01396\ \ \ EXPECT\_THAT(some\_list,\ Contains(\_).Times(4));}
+\DoxyCodeLine{01397\ \ \ EXPECT\_THAT(some\_list,\ Not(Contains(5).Times(1)));}
+\DoxyCodeLine{01398\ \ \ EXPECT\_THAT(some\_list,\ Contains(5).Times(\_));\ \ \textcolor{comment}{//\ Times(\_)\ always\ matches}}
+\DoxyCodeLine{01399\ \ \ EXPECT\_THAT(some\_list,\ Not(Contains(3).Times(1)));}
+\DoxyCodeLine{01400\ \ \ EXPECT\_THAT(some\_list,\ Contains(3).Times(Not(1)));}
+\DoxyCodeLine{01401\ \ \ EXPECT\_THAT(list<int>\{\},\ Not(Contains(\_)));}
+\DoxyCodeLine{01402\ \}}
+\DoxyCodeLine{01403\ }
+\DoxyCodeLine{01404\ TEST\_P(ContainsTimesP,\ ExplainsMatchResultCorrectly)\ \{}
+\DoxyCodeLine{01405\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ a[2]\ =\ \{1,\ 2\};}
+\DoxyCodeLine{01406\ \ \ Matcher<\textcolor{keyword}{const}\ int(\&)[2]>\ m\ =\ Contains(2).Times(3);}
+\DoxyCodeLine{01407\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01408\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ element\ \#1\ matches\ but\ whose\ match\ quantity\ of\ 1\ does\ not\ match"{}},}
+\DoxyCodeLine{01409\ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01410\ }
+\DoxyCodeLine{01411\ \ \ m\ =\ Contains(3).Times(0);}
+\DoxyCodeLine{01412\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}has\ no\ element\ that\ matches\ and\ whose\ match\ quantity\ of\ 0\ matches"{}},}
+\DoxyCodeLine{01413\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01414\ }
+\DoxyCodeLine{01415\ \ \ m\ =\ Contains(3).Times(4);}
+\DoxyCodeLine{01416\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01417\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}has\ no\ element\ that\ matches\ and\ whose\ match\ quantity\ of\ 0\ does\ not\ "{}}}
+\DoxyCodeLine{01418\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}match"{}},}
+\DoxyCodeLine{01419\ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01420\ }
+\DoxyCodeLine{01421\ \ \ m\ =\ Contains(2).Times(4);}
+\DoxyCodeLine{01422\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01423\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ element\ \#1\ matches\ but\ whose\ match\ quantity\ of\ 1\ does\ not\ "{}}}
+\DoxyCodeLine{01424\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}match"{}},}
+\DoxyCodeLine{01425\ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01426\ }
+\DoxyCodeLine{01427\ \ \ m\ =\ Contains(GreaterThan(0)).Times(2);}
+\DoxyCodeLine{01428\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}whose\ elements\ (0,\ 1)\ match\ and\ whose\ match\ quantity\ of\ 2\ matches"{}},}
+\DoxyCodeLine{01429\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01430\ }
+\DoxyCodeLine{01431\ \ \ m\ =\ Contains(GreaterThan(10)).Times(Gt(1));}
+\DoxyCodeLine{01432\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01433\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}has\ no\ element\ that\ matches\ and\ whose\ match\ quantity\ of\ 0\ does\ not\ "{}}}
+\DoxyCodeLine{01434\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}match"{}},}
+\DoxyCodeLine{01435\ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01436\ }
+\DoxyCodeLine{01437\ \ \ m\ =\ Contains(GreaterThan(0)).Times(GreaterThan<size\_t>(5));}
+\DoxyCodeLine{01438\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{01439\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}whose\ elements\ (0,\ 1)\ match\ but\ whose\ match\ quantity\ of\ 2\ does\ not\ "{}}}
+\DoxyCodeLine{01440\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}match,\ which\ is\ 3\ less\ than\ 5"{}},}
+\DoxyCodeLine{01441\ \ \ \ \ \ \ Explain(m,\ a));}
+\DoxyCodeLine{01442\ \}}
+\DoxyCodeLine{01443\ }
+\DoxyCodeLine{01444\ TEST(ContainsTimes,\ DescribesItselfCorrectly)\ \{}
+\DoxyCodeLine{01445\ \ \ Matcher<vector<int>>\ m\ =\ Contains(1).Times(2);}
+\DoxyCodeLine{01446\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}quantity\ of\ elements\ that\ match\ is\ equal\ to\ 1\ is\ equal\ to\ 2"{}},}
+\DoxyCodeLine{01447\ \ \ \ \ \ \ \ \ \ \ \ \ Describe(m));}
+\DoxyCodeLine{01448\ }
+\DoxyCodeLine{01449\ \ \ Matcher<vector<int>>\ m2\ =\ Not(m);}
+\DoxyCodeLine{01450\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}quantity\ of\ elements\ that\ match\ is\ equal\ to\ 1\ isn't\ equal\ to\ 2"{}},}
+\DoxyCodeLine{01451\ \ \ \ \ \ \ \ \ \ \ \ \ Describe(m2));}
+\DoxyCodeLine{01452\ \}}
+\DoxyCodeLine{01453\ }
+\DoxyCodeLine{01454\ \textcolor{comment}{//\ Tests\ AllOfArray()}}
+\DoxyCodeLine{01455\ }
+\DoxyCodeLine{01456\ TEST(AllOfArrayTest,\ BasicForms)\ \{}
+\DoxyCodeLine{01457\ \ \ \textcolor{comment}{//\ Iterator}}
+\DoxyCodeLine{01458\ \ \ std::vector<int>\ v0\{\};}
+\DoxyCodeLine{01459\ \ \ std::vector<int>\ v1\{1\};}
+\DoxyCodeLine{01460\ \ \ std::vector<int>\ v2\{2,\ 3\};}
+\DoxyCodeLine{01461\ \ \ std::vector<int>\ v3\{4,\ 4,\ 4\};}
+\DoxyCodeLine{01462\ \ \ EXPECT\_THAT(0,\ AllOfArray(v0.begin(),\ v0.end()));}
+\DoxyCodeLine{01463\ \ \ EXPECT\_THAT(1,\ AllOfArray(v1.begin(),\ v1.end()));}
+\DoxyCodeLine{01464\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(v1.begin(),\ v1.end())));}
+\DoxyCodeLine{01465\ \ \ EXPECT\_THAT(3,\ Not(AllOfArray(v2.begin(),\ v2.end())));}
+\DoxyCodeLine{01466\ \ \ EXPECT\_THAT(4,\ AllOfArray(v3.begin(),\ v3.end()));}
+\DoxyCodeLine{01467\ \ \ \textcolor{comment}{//\ Pointer\ +\ \ size}}
+\DoxyCodeLine{01468\ \ \ \textcolor{keywordtype}{int}\ ar[6]\ =\ \{1,\ 2,\ 3,\ 4,\ 4,\ 4\};}
+\DoxyCodeLine{01469\ \ \ EXPECT\_THAT(0,\ AllOfArray(ar,\ 0));}
+\DoxyCodeLine{01470\ \ \ EXPECT\_THAT(1,\ AllOfArray(ar,\ 1));}
+\DoxyCodeLine{01471\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(ar,\ 1)));}
+\DoxyCodeLine{01472\ \ \ EXPECT\_THAT(3,\ Not(AllOfArray(ar\ +\ 1,\ 3)));}
+\DoxyCodeLine{01473\ \ \ EXPECT\_THAT(4,\ AllOfArray(ar\ +\ 3,\ 3));}
+\DoxyCodeLine{01474\ \ \ \textcolor{comment}{//\ Array}}
+\DoxyCodeLine{01475\ \ \ \textcolor{comment}{//\ int\ ar0[0];\ \ Not\ usable}}
+\DoxyCodeLine{01476\ \ \ \textcolor{keywordtype}{int}\ ar1[1]\ =\ \{1\};}
+\DoxyCodeLine{01477\ \ \ \textcolor{keywordtype}{int}\ ar2[2]\ =\ \{2,\ 3\};}
+\DoxyCodeLine{01478\ \ \ \textcolor{keywordtype}{int}\ ar3[3]\ =\ \{4,\ 4,\ 4\};}
+\DoxyCodeLine{01479\ \ \ \textcolor{comment}{//\ EXPECT\_THAT(0,\ Not(AllOfArray(ar0)));\ \ //\ Cannot\ work}}
+\DoxyCodeLine{01480\ \ \ EXPECT\_THAT(1,\ AllOfArray(ar1));}
+\DoxyCodeLine{01481\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(ar1)));}
+\DoxyCodeLine{01482\ \ \ EXPECT\_THAT(3,\ Not(AllOfArray(ar2)));}
+\DoxyCodeLine{01483\ \ \ EXPECT\_THAT(4,\ AllOfArray(ar3));}
+\DoxyCodeLine{01484\ \ \ \textcolor{comment}{//\ Container}}
+\DoxyCodeLine{01485\ \ \ EXPECT\_THAT(0,\ AllOfArray(v0));}
+\DoxyCodeLine{01486\ \ \ EXPECT\_THAT(1,\ AllOfArray(v1));}
+\DoxyCodeLine{01487\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(v1)));}
+\DoxyCodeLine{01488\ \ \ EXPECT\_THAT(3,\ Not(AllOfArray(v2)));}
+\DoxyCodeLine{01489\ \ \ EXPECT\_THAT(4,\ AllOfArray(v3));}
+\DoxyCodeLine{01490\ \ \ \textcolor{comment}{//\ Initializer}}
+\DoxyCodeLine{01491\ \ \ EXPECT\_THAT(0,\ AllOfArray<int>(\{\}));\ \ \textcolor{comment}{//\ Requires\ template\ arg.}}
+\DoxyCodeLine{01492\ \ \ EXPECT\_THAT(1,\ AllOfArray(\{1\}));}
+\DoxyCodeLine{01493\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(\{1\})));}
+\DoxyCodeLine{01494\ \ \ EXPECT\_THAT(3,\ Not(AllOfArray(\{2,\ 3\})));}
+\DoxyCodeLine{01495\ \ \ EXPECT\_THAT(4,\ AllOfArray(\{4,\ 4,\ 4\}));}
+\DoxyCodeLine{01496\ \}}
+\DoxyCodeLine{01497\ }
+\DoxyCodeLine{01498\ TEST(AllOfArrayTest,\ Matchers)\ \{}
+\DoxyCodeLine{01499\ \ \ \textcolor{comment}{//\ vector}}
+\DoxyCodeLine{01500\ \ \ std::vector<Matcher<int>>\ matchers\{Ge(1),\ Lt(2)\};}
+\DoxyCodeLine{01501\ \ \ EXPECT\_THAT(0,\ Not(AllOfArray(matchers)));}
+\DoxyCodeLine{01502\ \ \ EXPECT\_THAT(1,\ AllOfArray(matchers));}
+\DoxyCodeLine{01503\ \ \ EXPECT\_THAT(2,\ Not(AllOfArray(matchers)));}
+\DoxyCodeLine{01504\ \ \ \textcolor{comment}{//\ initializer\_list}}
+\DoxyCodeLine{01505\ \ \ EXPECT\_THAT(0,\ Not(AllOfArray(\{Ge(0),\ Ge(1)\})));}
+\DoxyCodeLine{01506\ \ \ EXPECT\_THAT(1,\ AllOfArray(\{Ge(0),\ Ge(1)\}));}
+\DoxyCodeLine{01507\ \}}
+\DoxyCodeLine{01508\ }
+\DoxyCodeLine{01509\ INSTANTIATE\_GTEST\_MATCHER\_TEST\_P(AnyOfArrayTest);}
+\DoxyCodeLine{01510\ }
+\DoxyCodeLine{01511\ TEST(AnyOfArrayTest,\ BasicForms)\ \{}
+\DoxyCodeLine{01512\ \ \ \textcolor{comment}{//\ Iterator}}
+\DoxyCodeLine{01513\ \ \ std::vector<int>\ v0\{\};}
+\DoxyCodeLine{01514\ \ \ std::vector<int>\ v1\{1\};}
+\DoxyCodeLine{01515\ \ \ std::vector<int>\ v2\{2,\ 3\};}
+\DoxyCodeLine{01516\ \ \ EXPECT\_THAT(0,\ Not(AnyOfArray(v0.begin(),\ v0.end())));}
+\DoxyCodeLine{01517\ \ \ EXPECT\_THAT(1,\ AnyOfArray(v1.begin(),\ v1.end()));}
+\DoxyCodeLine{01518\ \ \ EXPECT\_THAT(2,\ Not(AnyOfArray(v1.begin(),\ v1.end())));}
+\DoxyCodeLine{01519\ \ \ EXPECT\_THAT(3,\ AnyOfArray(v2.begin(),\ v2.end()));}
+\DoxyCodeLine{01520\ \ \ EXPECT\_THAT(4,\ Not(AnyOfArray(v2.begin(),\ v2.end())));}
+\DoxyCodeLine{01521\ \ \ \textcolor{comment}{//\ Pointer\ +\ \ size}}
+\DoxyCodeLine{01522\ \ \ \textcolor{keywordtype}{int}\ ar[3]\ =\ \{1,\ 2,\ 3\};}
+\DoxyCodeLine{01523\ \ \ EXPECT\_THAT(0,\ Not(AnyOfArray(ar,\ 0)));}
+\DoxyCodeLine{01524\ \ \ EXPECT\_THAT(1,\ AnyOfArray(ar,\ 1));}
+\DoxyCodeLine{01525\ \ \ EXPECT\_THAT(2,\ Not(AnyOfArray(ar,\ 1)));}
+\DoxyCodeLine{01526\ \ \ EXPECT\_THAT(3,\ AnyOfArray(ar\ +\ 1,\ 2));}
+\DoxyCodeLine{01527\ \ \ EXPECT\_THAT(4,\ Not(AnyOfArray(ar\ +\ 1,\ 2)));}
+\DoxyCodeLine{01528\ \ \ \textcolor{comment}{//\ Array}}
+\DoxyCodeLine{01529\ \ \ \textcolor{comment}{//\ int\ ar0[0];\ \ Not\ usable}}
+\DoxyCodeLine{01530\ \ \ \textcolor{keywordtype}{int}\ ar1[1]\ =\ \{1\};}
+\DoxyCodeLine{01531\ \ \ \textcolor{keywordtype}{int}\ ar2[2]\ =\ \{2,\ 3\};}
+\DoxyCodeLine{01532\ \ \ \textcolor{comment}{//\ EXPECT\_THAT(0,\ Not(AnyOfArray(ar0)));\ \ //\ Cannot\ work}}
+\DoxyCodeLine{01533\ \ \ EXPECT\_THAT(1,\ AnyOfArray(ar1));}
+\DoxyCodeLine{01534\ \ \ EXPECT\_THAT(2,\ Not(AnyOfArray(ar1)));}
+\DoxyCodeLine{01535\ \ \ EXPECT\_THAT(3,\ AnyOfArray(ar2));}
+\DoxyCodeLine{01536\ \ \ EXPECT\_THAT(4,\ Not(AnyOfArray(ar2)));}
+\DoxyCodeLine{01537\ \ \ \textcolor{comment}{//\ Container}}
+\DoxyCodeLine{01538\ \ \ EXPECT\_THAT(0,\ Not(AnyOfArray(v0)));}
+\DoxyCodeLine{01539\ \ \ EXPECT\_THAT(1,\ AnyOfArray(v1));}
+\DoxyCodeLine{01540\ \ \ EXPECT\_THAT(2,\ Not(AnyOfArray(v1)));}
+\DoxyCodeLine{01541\ \ \ EXPECT\_THAT(3,\ AnyOfArray(v2));}
+\DoxyCodeLine{01542\ \ \ EXPECT\_THAT(4,\ Not(AnyOfArray(v2)));}
+\DoxyCodeLine{01543\ \ \ \textcolor{comment}{//\ Initializer}}
+\DoxyCodeLine{01544\ \ \ EXPECT\_THAT(0,\ Not(AnyOfArray<int>(\{\})));\ \ \textcolor{comment}{//\ Requires\ template\ arg.}}
+\DoxyCodeLine{01545\ \ \ EXPECT\_THAT(1,\ AnyOfArray(\{1\}));}
+\DoxyCodeLine{01546\ \ \ EXPECT\_THAT(2,\ Not(AnyOfArray(\{1\})));}
+\DoxyCodeLine{01547\ \ \ EXPECT\_THAT(3,\ AnyOfArray(\{2,\ 3\}));}
+\DoxyCodeLine{01548\ \ \ EXPECT\_THAT(4,\ Not(AnyOfArray(\{2,\ 3\})));}
+\DoxyCodeLine{01549\ \}}
+\DoxyCodeLine{01550\ }
+\DoxyCodeLine{01551\ TEST(AnyOfArrayTest,\ Matchers)\ \{}
+\DoxyCodeLine{01552\ \ \ \textcolor{comment}{//\ We\ negate\ test\ AllOfArrayTest.Matchers.}}
+\DoxyCodeLine{01553\ \ \ \textcolor{comment}{//\ vector}}
+\DoxyCodeLine{01554\ \ \ std::vector<Matcher<int>>\ matchers\{Lt(1),\ Ge(2)\};}
+\DoxyCodeLine{01555\ \ \ EXPECT\_THAT(0,\ AnyOfArray(matchers));}
+\DoxyCodeLine{01556\ \ \ EXPECT\_THAT(1,\ Not(AnyOfArray(matchers)));}
+\DoxyCodeLine{01557\ \ \ EXPECT\_THAT(2,\ AnyOfArray(matchers));}
+\DoxyCodeLine{01558\ \ \ \textcolor{comment}{//\ initializer\_list}}
+\DoxyCodeLine{01559\ \ \ EXPECT\_THAT(0,\ AnyOfArray(\{Lt(0),\ Lt(1)\}));}
+\DoxyCodeLine{01560\ \ \ EXPECT\_THAT(1,\ Not(AllOfArray(\{Lt(0),\ Lt(1)\})));}
+\DoxyCodeLine{01561\ \}}
+\DoxyCodeLine{01562\ }
+\DoxyCodeLine{01563\ TEST\_P(AnyOfArrayTestP,\ ExplainsMatchResultCorrectly)\ \{}
+\DoxyCodeLine{01564\ \ \ \textcolor{comment}{//\ AnyOfArray\ and\ AllOfArray\ use\ the\ same\ underlying\ template-\/template,}}
+\DoxyCodeLine{01565\ \ \ \textcolor{comment}{//\ thus\ it\ is\ sufficient\ to\ test\ one\ here.}}
+\DoxyCodeLine{01566\ \ \ \textcolor{keyword}{const}\ std::vector<int>\ v0\{\};}
+\DoxyCodeLine{01567\ \ \ \textcolor{keyword}{const}\ std::vector<int>\ v1\{1\};}
+\DoxyCodeLine{01568\ \ \ \textcolor{keyword}{const}\ std::vector<int>\ v2\{2,\ 3\};}
+\DoxyCodeLine{01569\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m0\ =\ AnyOfArray(v0);}
+\DoxyCodeLine{01570\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m1\ =\ AnyOfArray(v1);}
+\DoxyCodeLine{01571\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ m2\ =\ AnyOfArray(v2);}
+\DoxyCodeLine{01572\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m0,\ 0));}
+\DoxyCodeLine{01573\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m1,\ 1));}
+\DoxyCodeLine{01574\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m1,\ 2));}
+\DoxyCodeLine{01575\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m2,\ 3));}
+\DoxyCodeLine{01576\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ Explain(m2,\ 4));}
+\DoxyCodeLine{01577\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}()"{}},\ Describe(m0));}
+\DoxyCodeLine{01578\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}(is\ equal\ to\ 1)"{}},\ Describe(m1));}
+\DoxyCodeLine{01579\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}(is\ equal\ to\ 2)\ or\ (is\ equal\ to\ 3)"{}},\ Describe(m2));}
+\DoxyCodeLine{01580\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}()"{}},\ DescribeNegation(m0));}
+\DoxyCodeLine{01581\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}(isn't\ equal\ to\ 1)"{}},\ DescribeNegation(m1));}
+\DoxyCodeLine{01582\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}(isn't\ equal\ to\ 2)\ and\ (isn't\ equal\ to\ 3)"{}},\ DescribeNegation(m2));}
+\DoxyCodeLine{01583\ \ \ \textcolor{comment}{//\ Explain\ with\ matchers}}
+\DoxyCodeLine{01584\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ g1\ =\ AnyOfArray(\{GreaterThan(1)\});}
+\DoxyCodeLine{01585\ \ \ \textcolor{keyword}{const}\ Matcher<int>\ g2\ =\ AnyOfArray(\{GreaterThan(1),\ GreaterThan(2)\});}
+\DoxyCodeLine{01586\ \ \ \textcolor{comment}{//\ Explains\ the\ first\ positive\ match\ and\ all\ prior\ negative\ matches...}}
+\DoxyCodeLine{01587\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ 1\ less\ than\ 1"{}},\ Explain(g1,\ 0));}
+\DoxyCodeLine{01588\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ the\ same\ as\ 1"{}},\ Explain(g1,\ 1));}
+\DoxyCodeLine{01589\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ 1\ more\ than\ 1"{}},\ Explain(g1,\ 2));}
+\DoxyCodeLine{01590\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ 1\ less\ than\ 1,\ and\ which\ is\ 2\ less\ than\ 2"{}},}
+\DoxyCodeLine{01591\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(g2,\ 0));}
+\DoxyCodeLine{01592\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ the\ same\ as\ 1,\ and\ which\ is\ 1\ less\ than\ 2"{}},}
+\DoxyCodeLine{01593\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(g2,\ 1));}
+\DoxyCodeLine{01594\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}which\ is\ 1\ more\ than\ 1"{}},\ \ \textcolor{comment}{//\ Only\ the\ first}}
+\DoxyCodeLine{01595\ \ \ \ \ \ \ \ \ \ \ \ \ Explain(g2,\ 2));}
+\DoxyCodeLine{01596\ \}}
+\DoxyCodeLine{01597\ }
+\DoxyCodeLine{01598\ MATCHER(IsNotNull,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ arg\ !=\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{01599\ }
+\DoxyCodeLine{01600\ \textcolor{comment}{//\ Verifies\ that\ a\ matcher\ defined\ using\ MATCHER()\ can\ work\ on}}
+\DoxyCodeLine{01601\ \textcolor{comment}{//\ move-\/only\ types.}}
+\DoxyCodeLine{01602\ TEST(MatcherMacroTest,\ WorksOnMoveOnlyType)\ \{}
+\DoxyCodeLine{01603\ \ \ std::unique\_ptr<int>\ p(\textcolor{keyword}{new}\ \textcolor{keywordtype}{int}(3));}
+\DoxyCodeLine{01604\ \ \ EXPECT\_THAT(p,\ IsNotNull());}
+\DoxyCodeLine{01605\ \ \ EXPECT\_THAT(std::unique\_ptr<int>(),\ Not(IsNotNull()));}
+\DoxyCodeLine{01606\ \}}
+\DoxyCodeLine{01607\ }
+\DoxyCodeLine{01608\ MATCHER\_P(UniquePointee,\ pointee,\ \textcolor{stringliteral}{"{}"{}})\ \{\ \textcolor{keywordflow}{return}\ *arg\ ==\ pointee;\ \}}
+\DoxyCodeLine{01609\ }
+\DoxyCodeLine{01610\ \textcolor{comment}{//\ Verifies\ that\ a\ matcher\ defined\ using\ MATCHER\_P*()\ can\ work\ on}}
+\DoxyCodeLine{01611\ \textcolor{comment}{//\ move-\/only\ types.}}
+\DoxyCodeLine{01612\ TEST(MatcherPMacroTest,\ WorksOnMoveOnlyType)\ \{}
+\DoxyCodeLine{01613\ \ \ std::unique\_ptr<int>\ p(\textcolor{keyword}{new}\ \textcolor{keywordtype}{int}(3));}
+\DoxyCodeLine{01614\ \ \ EXPECT\_THAT(p,\ UniquePointee(3));}
+\DoxyCodeLine{01615\ \ \ EXPECT\_THAT(p,\ Not(UniquePointee(2)));}
+\DoxyCodeLine{01616\ \}}
+\DoxyCodeLine{01617\ }
+\DoxyCodeLine{01618\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01619\ }
+\DoxyCodeLine{01620\ \textcolor{comment}{//\ std::function<void()>\ is\ used\ below\ for\ compatibility\ with\ older\ copies\ of}}
+\DoxyCodeLine{01621\ \textcolor{comment}{//\ GCC.\ Normally,\ a\ raw\ lambda\ is\ all\ that\ is\ needed.}}
+\DoxyCodeLine{01622\ }
+\DoxyCodeLine{01623\ \textcolor{comment}{//\ Test\ that\ examples\ from\ documentation\ compile}}
+\DoxyCodeLine{01624\ TEST(ThrowsTest,\ Examples)\ \{}
+\DoxyCodeLine{01625\ \ \ EXPECT\_THAT(}
+\DoxyCodeLine{01626\ \ \ \ \ \ \ std::function<\textcolor{keywordtype}{void}()>([]()\ \{\ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}message"{}});\ \}),}
+\DoxyCodeLine{01627\ \ \ \ \ \ \ Throws<std::runtime\_error>());}
+\DoxyCodeLine{01628\ }
+\DoxyCodeLine{01629\ \ \ EXPECT\_THAT(}
+\DoxyCodeLine{01630\ \ \ \ \ \ \ std::function<\textcolor{keywordtype}{void}()>([]()\ \{\ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}message"{}});\ \}),}
+\DoxyCodeLine{01631\ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(HasSubstr(\textcolor{stringliteral}{"{}message"{}})));}
+\DoxyCodeLine{01632\ \}}
+\DoxyCodeLine{01633\ }
+\DoxyCodeLine{01634\ TEST(ThrowsTest,\ PrintsExceptionWhat)\ \{}
+\DoxyCodeLine{01635\ \ \ EXPECT\_THAT(}
+\DoxyCodeLine{01636\ \ \ \ \ \ \ std::function<\textcolor{keywordtype}{void}()>([]()\ \{\ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}ABC123XYZ"{}});\ \}),}
+\DoxyCodeLine{01637\ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(HasSubstr(\textcolor{stringliteral}{"{}ABC123XYZ"{}})));}
+\DoxyCodeLine{01638\ \}}
+\DoxyCodeLine{01639\ }
+\DoxyCodeLine{01640\ TEST(ThrowsTest,\ DoesNotGenerateDuplicateCatchClauseWarning)\ \{}
+\DoxyCodeLine{01641\ \ \ EXPECT\_THAT(std::function<\textcolor{keywordtype}{void}()>([]()\ \{\ \textcolor{keywordflow}{throw}\ std::exception();\ \}),}
+\DoxyCodeLine{01642\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Throws<std::exception>());}
+\DoxyCodeLine{01643\ \}}
+\DoxyCodeLine{01644\ }
+\DoxyCodeLine{01645\ TEST(ThrowsTest,\ CallableExecutedExactlyOnce)\ \{}
+\DoxyCodeLine{01646\ \ \ \textcolor{keywordtype}{size\_t}\ a\ =\ 0;}
+\DoxyCodeLine{01647\ }
+\DoxyCodeLine{01648\ \ \ EXPECT\_THAT(std::function<\textcolor{keywordtype}{void}()>([\&a]()\ \{}
+\DoxyCodeLine{01649\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a++;}
+\DoxyCodeLine{01650\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ 10;}
+\DoxyCodeLine{01651\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}),}
+\DoxyCodeLine{01652\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Throws<int>());}
+\DoxyCodeLine{01653\ \ \ EXPECT\_EQ(a,\ 1u);}
+\DoxyCodeLine{01654\ }
+\DoxyCodeLine{01655\ \ \ EXPECT\_THAT(std::function<\textcolor{keywordtype}{void}()>([\&a]()\ \{}
+\DoxyCodeLine{01656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a++;}
+\DoxyCodeLine{01657\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{01658\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}),}
+\DoxyCodeLine{01659\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Throws<std::runtime\_error>());}
+\DoxyCodeLine{01660\ \ \ EXPECT\_EQ(a,\ 2u);}
+\DoxyCodeLine{01661\ }
+\DoxyCodeLine{01662\ \ \ EXPECT\_THAT(std::function<\textcolor{keywordtype}{void}()>([\&a]()\ \{}
+\DoxyCodeLine{01663\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a++;}
+\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{01665\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}),}
+\DoxyCodeLine{01666\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(HasSubstr(\textcolor{stringliteral}{"{}message"{}})));}
+\DoxyCodeLine{01667\ \ \ EXPECT\_EQ(a,\ 3u);}
+\DoxyCodeLine{01668\ }
+\DoxyCodeLine{01669\ \ \ EXPECT\_THAT(std::function<\textcolor{keywordtype}{void}()>([\&a]()\ \{}
+\DoxyCodeLine{01670\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a++;}
+\DoxyCodeLine{01671\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{01672\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}),}
+\DoxyCodeLine{01673\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Throws<std::runtime\_error>(}
+\DoxyCodeLine{01674\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Property(\&std::runtime\_error::what,\ HasSubstr(\textcolor{stringliteral}{"{}message"{}}))));}
+\DoxyCodeLine{01675\ \ \ EXPECT\_EQ(a,\ 4u);}
+\DoxyCodeLine{01676\ \}}
+\DoxyCodeLine{01677\ }
+\DoxyCodeLine{01678\ TEST(ThrowsTest,\ Describe)\ \{}
+\DoxyCodeLine{01679\ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<std::runtime\_error>();}
+\DoxyCodeLine{01680\ \ \ std::stringstream\ ss;}
+\DoxyCodeLine{01681\ \ \ matcher.DescribeTo(\&ss);}
+\DoxyCodeLine{01682\ \ \ \textcolor{keyword}{auto}\ explanation\ =\ ss.str();}
+\DoxyCodeLine{01683\ \ \ EXPECT\_THAT(explanation,\ HasSubstr(\textcolor{stringliteral}{"{}std::runtime\_error"{}}));}
+\DoxyCodeLine{01684\ \}}
+\DoxyCodeLine{01685\ }
+\DoxyCodeLine{01686\ TEST(ThrowsTest,\ Success)\ \{}
+\DoxyCodeLine{01687\ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<std::runtime\_error>();}
+\DoxyCodeLine{01688\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01689\ \ \ EXPECT\_TRUE(matcher.MatchAndExplain(}
+\DoxyCodeLine{01690\ \ \ \ \ \ \ []()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \},\ \&listener));}
+\DoxyCodeLine{01691\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}std::runtime\_error"{}}));}
+\DoxyCodeLine{01692\ \}}
+\DoxyCodeLine{01693\ }
+\DoxyCodeLine{01694\ TEST(ThrowsTest,\ FailWrongType)\ \{}
+\DoxyCodeLine{01695\ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<std::runtime\_error>();}
+\DoxyCodeLine{01696\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01697\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain(}
+\DoxyCodeLine{01698\ \ \ \ \ \ \ []()\ \{\ throw\ std::logic\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \},\ \&listener));}
+\DoxyCodeLine{01699\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}std::logic\_error"{}}));}
+\DoxyCodeLine{01700\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}\(\backslash\)"{}error\ message\(\backslash\)"{}"{}}));}
+\DoxyCodeLine{01701\ \}}
+\DoxyCodeLine{01702\ }
+\DoxyCodeLine{01703\ TEST(ThrowsTest,\ FailWrongTypeNonStd)\ \{}
+\DoxyCodeLine{01704\ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<std::runtime\_error>();}
+\DoxyCodeLine{01705\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01706\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain([]()\ \{\ throw\ 10;\ \},\ \&listener));}
+\DoxyCodeLine{01707\ \ \ EXPECT\_THAT(listener.str(),}
+\DoxyCodeLine{01708\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}throws\ an\ exception\ of\ an\ unknown\ type"{}}));}
+\DoxyCodeLine{01709\ \}}
+\DoxyCodeLine{01710\ }
+\DoxyCodeLine{01711\ TEST(ThrowsTest,\ FailNoThrow)\ \{}
+\DoxyCodeLine{01712\ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<std::runtime\_error>();}
+\DoxyCodeLine{01713\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01714\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain([]()\ \{\ (void)0;\ \},\ \&listener));}
+\DoxyCodeLine{01715\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}does\ not\ throw\ any\ exception"{}}));}
+\DoxyCodeLine{01716\ \}}
+\DoxyCodeLine{01717\ }
+\DoxyCodeLine{01718\ \textcolor{keyword}{class\ }ThrowsPredicateTest}
+\DoxyCodeLine{01719\ \ \ \ \ :\ \textcolor{keyword}{public}\ TestWithParam<Matcher<std::function<void()>>>\ \{\};}
+\DoxyCodeLine{01720\ }
+\DoxyCodeLine{01721\ TEST\_P(ThrowsPredicateTest,\ Describe)\ \{}
+\DoxyCodeLine{01722\ \ \ Matcher<std::function<void()>>\ matcher\ =\ GetParam();}
+\DoxyCodeLine{01723\ \ \ std::stringstream\ ss;}
+\DoxyCodeLine{01724\ \ \ matcher.DescribeTo(\&ss);}
+\DoxyCodeLine{01725\ \ \ \textcolor{keyword}{auto}\ explanation\ =\ ss.str();}
+\DoxyCodeLine{01726\ \ \ EXPECT\_THAT(explanation,\ HasSubstr(\textcolor{stringliteral}{"{}std::runtime\_error"{}}));}
+\DoxyCodeLine{01727\ \ \ EXPECT\_THAT(explanation,\ HasSubstr(\textcolor{stringliteral}{"{}error\ message"{}}));}
+\DoxyCodeLine{01728\ \}}
+\DoxyCodeLine{01729\ }
+\DoxyCodeLine{01730\ TEST\_P(ThrowsPredicateTest,\ Success)\ \{}
+\DoxyCodeLine{01731\ \ \ Matcher<std::function<void()>>\ matcher\ =\ GetParam();}
+\DoxyCodeLine{01732\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01733\ \ \ EXPECT\_TRUE(matcher.MatchAndExplain(}
+\DoxyCodeLine{01734\ \ \ \ \ \ \ []()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \},\ \&listener));}
+\DoxyCodeLine{01735\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}std::runtime\_error"{}}));}
+\DoxyCodeLine{01736\ \}}
+\DoxyCodeLine{01737\ }
+\DoxyCodeLine{01738\ TEST\_P(ThrowsPredicateTest,\ FailWrongType)\ \{}
+\DoxyCodeLine{01739\ \ \ Matcher<std::function<void()>>\ matcher\ =\ GetParam();}
+\DoxyCodeLine{01740\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01741\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain(}
+\DoxyCodeLine{01742\ \ \ \ \ \ \ []()\ \{\ throw\ std::logic\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \},\ \&listener));}
+\DoxyCodeLine{01743\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}std::logic\_error"{}}));}
+\DoxyCodeLine{01744\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}\(\backslash\)"{}error\ message\(\backslash\)"{}"{}}));}
+\DoxyCodeLine{01745\ \}}
+\DoxyCodeLine{01746\ }
+\DoxyCodeLine{01747\ TEST\_P(ThrowsPredicateTest,\ FailWrongTypeNonStd)\ \{}
+\DoxyCodeLine{01748\ \ \ Matcher<std::function<void()>>\ matcher\ =\ GetParam();}
+\DoxyCodeLine{01749\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01750\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain([]()\ \{\ throw\ 10;\ \},\ \&listener));}
+\DoxyCodeLine{01751\ \ \ EXPECT\_THAT(listener.str(),}
+\DoxyCodeLine{01752\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}throws\ an\ exception\ of\ an\ unknown\ type"{}}));}
+\DoxyCodeLine{01753\ \}}
+\DoxyCodeLine{01754\ }
+\DoxyCodeLine{01755\ TEST\_P(ThrowsPredicateTest,\ FailNoThrow)\ \{}
+\DoxyCodeLine{01756\ \ \ Matcher<std::function<void()>>\ matcher\ =\ GetParam();}
+\DoxyCodeLine{01757\ \ \ StringMatchResultListener\ listener;}
+\DoxyCodeLine{01758\ \ \ EXPECT\_FALSE(matcher.MatchAndExplain([]()\ \{\},\ \&listener));}
+\DoxyCodeLine{01759\ \ \ EXPECT\_THAT(listener.str(),\ HasSubstr(\textcolor{stringliteral}{"{}does\ not\ throw\ any\ exception"{}}));}
+\DoxyCodeLine{01760\ \}}
+\DoxyCodeLine{01761\ }
+\DoxyCodeLine{01762\ INSTANTIATE\_TEST\_SUITE\_P(}
+\DoxyCodeLine{01763\ \ \ \ \ AllMessagePredicates,\ ThrowsPredicateTest,}
+\DoxyCodeLine{01764\ \ \ \ \ Values(Matcher<std::function<\textcolor{keywordtype}{void}()>>(}
+\DoxyCodeLine{01765\ \ \ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(HasSubstr(\textcolor{stringliteral}{"{}error\ message"{}})))));}
+\DoxyCodeLine{01766\ }
+\DoxyCodeLine{01767\ \textcolor{comment}{//\ Tests\ that\ Throws<E1>(Matcher<E2>\{\})\ compiles\ even\ when\ E2\ !=\ const\ E1\&.}}
+\DoxyCodeLine{01768\ TEST(ThrowsPredicateCompilesTest,\ ExceptionMatcherAcceptsBroadType)\ \{}
+\DoxyCodeLine{01769\ \ \ \{}
+\DoxyCodeLine{01770\ \ \ \ \ Matcher<std::function<void()>>\ matcher\ =}
+\DoxyCodeLine{01771\ \ \ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(HasSubstr(\textcolor{stringliteral}{"{}error\ message"{}}));}
+\DoxyCodeLine{01772\ \ \ \ \ EXPECT\_TRUE(}
+\DoxyCodeLine{01773\ \ \ \ \ \ \ \ \ matcher.Matches([]()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \}));}
+\DoxyCodeLine{01774\ \ \ \ \ EXPECT\_FALSE(}
+\DoxyCodeLine{01775\ \ \ \ \ \ \ \ \ matcher.Matches([]()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}wrong\ message"{}});\ \}));}
+\DoxyCodeLine{01776\ \ \ \}}
+\DoxyCodeLine{01777\ }
+\DoxyCodeLine{01778\ \ \ \{}
+\DoxyCodeLine{01779\ \ \ \ \ Matcher<uint64\_t>\ inner\ =\ Eq(10);}
+\DoxyCodeLine{01780\ \ \ \ \ Matcher<std::function<void()>>\ matcher\ =\ Throws<uint32\_t>(inner);}
+\DoxyCodeLine{01781\ \ \ \ \ EXPECT\_TRUE(matcher.Matches([]()\ \{\ throw(uint32\_t)\ 10;\ \}));}
+\DoxyCodeLine{01782\ \ \ \ \ EXPECT\_FALSE(matcher.Matches([]()\ \{\ throw(uint32\_t)\ 11;\ \}));}
+\DoxyCodeLine{01783\ \ \ \}}
+\DoxyCodeLine{01784\ \}}
+\DoxyCodeLine{01785\ }
+\DoxyCodeLine{01786\ \textcolor{comment}{//\ Tests\ that\ ThrowsMessage("{}message"{})\ is\ equivalent}}
+\DoxyCodeLine{01787\ \textcolor{comment}{//\ to\ ThrowsMessage(Eq<std::string>("{}message"{})).}}
+\DoxyCodeLine{01788\ TEST(ThrowsPredicateCompilesTest,\ MessageMatcherAcceptsNonMatcher)\ \{}
+\DoxyCodeLine{01789\ \ \ Matcher<std::function<void()>>\ matcher\ =}
+\DoxyCodeLine{01790\ \ \ \ \ \ \ ThrowsMessage<std::runtime\_error>(\textcolor{stringliteral}{"{}error\ message"{}});}
+\DoxyCodeLine{01791\ \ \ EXPECT\_TRUE(}
+\DoxyCodeLine{01792\ \ \ \ \ \ \ matcher.Matches([]()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}error\ message"{}});\ \}));}
+\DoxyCodeLine{01793\ \ \ EXPECT\_FALSE(matcher.Matches(}
+\DoxyCodeLine{01794\ \ \ \ \ \ \ []()\ \{\ throw\ std::runtime\_error(\textcolor{stringliteral}{"{}wrong\ error\ message"{}});\ \}));}
+\DoxyCodeLine{01795\ \}}
+\DoxyCodeLine{01796\ }
+\DoxyCodeLine{01797\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01798\ }
+\DoxyCodeLine{01799\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{01800\ \}\ \ \textcolor{comment}{//\ namespace\ gmock\_matchers\_test}}
+\DoxyCodeLine{01801\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{01802\ }
+\DoxyCodeLine{01803\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{01804\ \textcolor{preprocessor}{\#pragma\ warning(pop)}}
+\DoxyCodeLine{01805\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

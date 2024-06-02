@@ -1,0 +1,163 @@
+\doxysection{gmock\+\_\+output\+\_\+test Namespace Reference}
+\hypertarget{namespacegmock__output__test}{}\label{namespacegmock__output__test}\index{gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgmock__output__test_1_1_g_mock_output_test}{GMock\+Output\+Test}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ad1551135ee8755834a46528d836f9e26}{To\+Unix\+Line\+Ending}} (s)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_acb06643e5e0d0eb85a3bc067e09e56f9}{Remove\+Report\+Header\+And\+Footer}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_a59c40167b074a2ef04aecc79a0273f13}{Remove\+Locations}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_aeeb22f52d3bf1ba7dbda8f8847faa103}{Normalize\+Error\+Marker}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ac16c3c4b4875becf250dd73beb381a82}{Remove\+Memory\+Addresses}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ad0a9e9474fb8cb1729c20bc51222c46e}{Remove\+Test\+Names\+Of\+Leaked\+Mocks}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_a771f708605426dc1bb45c4a9be5aff50}{Get\+Leaky\+Tests}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ab651959dfea607ed29d7215488ff8022}{Get\+Normalized\+Output\+And\+Leaky\+Tests}} (output)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ac834577ccc464c386e01ca1d940ac470}{Get\+Shell\+Command\+Output}} (cmd)
+\item 
+\mbox{\hyperlink{namespacegmock__output__test_ae1fc1dce5d5cc9a66997127b146e5616}{Get\+Normalized\+Command\+Output\+And\+Leaky\+Tests}} (cmd)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacegmock__output__test_a9e134c4683d56599acb0c0dba23cb7be}\label{namespacegmock__output__test_a9e134c4683d56599acb0c0dba23cb7be} 
+str {\bfseries GENGOLDEN\+\_\+\+FLAG} = \textquotesingle{}-\/-\/gengolden\textquotesingle{}
+\item 
+\Hypertarget{namespacegmock__output__test_a03aac0fac952a0b3648340f529af7f59}\label{namespacegmock__output__test_a03aac0fac952a0b3648340f529af7f59} 
+{\bfseries PROGRAM\+\_\+\+PATH} = \mbox{\hyperlink{namespacegmock__test__utils_a3965eb0947849f247899f6edff7051f7}{gmock\+\_\+test\+\_\+utils.\+Get\+Test\+Executable\+Path}}(\textquotesingle{}gmock\+\_\+output\+\_\+test\+\_\+\textquotesingle{})
+\item 
+\Hypertarget{namespacegmock__output__test_a33f8ca97d99711e23517962ca4c729af}\label{namespacegmock__output__test_a33f8ca97d99711e23517962ca4c729af} 
+list {\bfseries COMMAND} = \mbox{[}PROGRAM\+\_\+\+PATH, \textquotesingle{}-\/-\/gtest\+\_\+stack\+\_\+trace\+\_\+depth=0\textquotesingle{}, \textquotesingle{}-\/-\/gtest\+\_\+print\+\_\+time=0\textquotesingle{}\mbox{]}
+\item 
+\Hypertarget{namespacegmock__output__test_aa31e25f8ef83e9d1e44929139a08e580}\label{namespacegmock__output__test_aa31e25f8ef83e9d1e44929139a08e580} 
+str {\bfseries GOLDEN\+\_\+\+NAME} = \textquotesingle{}gmock\+\_\+output\+\_\+test\+\_\+golden.\+txt\textquotesingle{}
+\item 
+\Hypertarget{namespacegmock__output__test_a632c0fbf08500e4ed3c0e33f5e2ac771}\label{namespacegmock__output__test_a632c0fbf08500e4ed3c0e33f5e2ac771} 
+{\bfseries GOLDEN\+\_\+\+PATH} = os.\+path.\+join(\mbox{\hyperlink{namespacegmock__test__utils_ae6b4256fed63c744d722ecdf0f217529}{gmock\+\_\+test\+\_\+utils.\+Get\+Source\+Dir}}(), GOLDEN\+\_\+\+NAME)
+\item 
+\Hypertarget{namespacegmock__output__test_a4277f8598ba3835393fe82e82d09375d}\label{namespacegmock__output__test_a4277f8598ba3835393fe82e82d09375d} 
+{\bfseries output}
+\item 
+\Hypertarget{namespacegmock__output__test_acd6befb6031f17f78a4425c90b1f5b19}\label{namespacegmock__output__test_acd6befb6031f17f78a4425c90b1f5b19} 
+{\bfseries \+\_\+}
+\item 
+\Hypertarget{namespacegmock__output__test_aa592d26826a4dabf494fc2dd3c5c8b1e}\label{namespacegmock__output__test_aa592d26826a4dabf494fc2dd3c5c8b1e} 
+{\bfseries golden\+\_\+file} = open(GOLDEN\+\_\+\+PATH, \textquotesingle{}wb\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Tests the text output of Google C++ Mocking Framework.
+
+To update the golden file:
+gmock_output_test.py --build_dir=BUILD/DIR --gengolden
+where BUILD/DIR contains the built gmock_output_test_ file.
+gmock_output_test.py --gengolden
+gmock_output_test.py\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacegmock__output__test_a771f708605426dc1bb45c4a9be5aff50}\index{gmock\_output\_test@{gmock\_output\_test}!GetLeakyTests@{GetLeakyTests}}
+\index{GetLeakyTests@{GetLeakyTests}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{GetLeakyTests()}{GetLeakyTests()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_a771f708605426dc1bb45c4a9be5aff50} 
+gmock\+\_\+output\+\_\+test.\+Get\+Leaky\+Tests (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns a list of test names that leak mock objects.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ae1fc1dce5d5cc9a66997127b146e5616}\index{gmock\_output\_test@{gmock\_output\_test}!GetNormalizedCommandOutputAndLeakyTests@{GetNormalizedCommandOutputAndLeakyTests}}
+\index{GetNormalizedCommandOutputAndLeakyTests@{GetNormalizedCommandOutputAndLeakyTests}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{GetNormalizedCommandOutputAndLeakyTests()}{GetNormalizedCommandOutputAndLeakyTests()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ae1fc1dce5d5cc9a66997127b146e5616} 
+gmock\+\_\+output\+\_\+test.\+Get\+Normalized\+Command\+Output\+And\+Leaky\+Tests (\begin{DoxyParamCaption}\item[{}]{cmd}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Runs a command and returns its normalized output and a list of leaky tests.
+
+Args:
+  cmd:  the shell command.
+\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ab651959dfea607ed29d7215488ff8022}\index{gmock\_output\_test@{gmock\_output\_test}!GetNormalizedOutputAndLeakyTests@{GetNormalizedOutputAndLeakyTests}}
+\index{GetNormalizedOutputAndLeakyTests@{GetNormalizedOutputAndLeakyTests}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{GetNormalizedOutputAndLeakyTests()}{GetNormalizedOutputAndLeakyTests()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ab651959dfea607ed29d7215488ff8022} 
+gmock\+\_\+output\+\_\+test.\+Get\+Normalized\+Output\+And\+Leaky\+Tests (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normalizes the output of gmock_output_test_.
+
+Args:
+  output: The test output.
+
+Returns:
+  A tuple (the normalized test output, the list of test names that have
+  leaked mocks).
+\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ac834577ccc464c386e01ca1d940ac470}\index{gmock\_output\_test@{gmock\_output\_test}!GetShellCommandOutput@{GetShellCommandOutput}}
+\index{GetShellCommandOutput@{GetShellCommandOutput}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{GetShellCommandOutput()}{GetShellCommandOutput()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ac834577ccc464c386e01ca1d940ac470} 
+gmock\+\_\+output\+\_\+test.\+Get\+Shell\+Command\+Output (\begin{DoxyParamCaption}\item[{}]{cmd}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Runs a command in a sub-process, and returns its STDOUT in a string.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_aeeb22f52d3bf1ba7dbda8f8847faa103}\index{gmock\_output\_test@{gmock\_output\_test}!NormalizeErrorMarker@{NormalizeErrorMarker}}
+\index{NormalizeErrorMarker@{NormalizeErrorMarker}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{NormalizeErrorMarker()}{NormalizeErrorMarker()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_aeeb22f52d3bf1ba7dbda8f8847faa103} 
+gmock\+\_\+output\+\_\+test.\+Normalize\+Error\+Marker (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normalizes the error marker, which is different on Windows vs on Linux.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_a59c40167b074a2ef04aecc79a0273f13}\index{gmock\_output\_test@{gmock\_output\_test}!RemoveLocations@{RemoveLocations}}
+\index{RemoveLocations@{RemoveLocations}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{RemoveLocations()}{RemoveLocations()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_a59c40167b074a2ef04aecc79a0273f13} 
+gmock\+\_\+output\+\_\+test.\+Remove\+Locations (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes all file location info from a Google Test program's output.
+
+Args:
+     output:  the output of a Google Test program.
+
+Returns:
+     output with all file location info (in the form of
+     'DIRECTORY/FILE_NAME:LINE_NUMBER: 'or
+     'DIRECTORY\\FILE_NAME(LINE_NUMBER): ') replaced by
+     'FILE:#: '.
+\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ac16c3c4b4875becf250dd73beb381a82}\index{gmock\_output\_test@{gmock\_output\_test}!RemoveMemoryAddresses@{RemoveMemoryAddresses}}
+\index{RemoveMemoryAddresses@{RemoveMemoryAddresses}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{RemoveMemoryAddresses()}{RemoveMemoryAddresses()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ac16c3c4b4875becf250dd73beb381a82} 
+gmock\+\_\+output\+\_\+test.\+Remove\+Memory\+Addresses (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes memory addresses from the test output.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_acb06643e5e0d0eb85a3bc067e09e56f9}\index{gmock\_output\_test@{gmock\_output\_test}!RemoveReportHeaderAndFooter@{RemoveReportHeaderAndFooter}}
+\index{RemoveReportHeaderAndFooter@{RemoveReportHeaderAndFooter}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{RemoveReportHeaderAndFooter()}{RemoveReportHeaderAndFooter()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_acb06643e5e0d0eb85a3bc067e09e56f9} 
+gmock\+\_\+output\+\_\+test.\+Remove\+Report\+Header\+And\+Footer (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes Google Test result report's header and footer from the output.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ad0a9e9474fb8cb1729c20bc51222c46e}\index{gmock\_output\_test@{gmock\_output\_test}!RemoveTestNamesOfLeakedMocks@{RemoveTestNamesOfLeakedMocks}}
+\index{RemoveTestNamesOfLeakedMocks@{RemoveTestNamesOfLeakedMocks}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{RemoveTestNamesOfLeakedMocks()}{RemoveTestNamesOfLeakedMocks()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ad0a9e9474fb8cb1729c20bc51222c46e} 
+gmock\+\_\+output\+\_\+test.\+Remove\+Test\+Names\+Of\+Leaked\+Mocks (\begin{DoxyParamCaption}\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes the test names of leaked mock objects from the test output.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__output__test_ad1551135ee8755834a46528d836f9e26}\index{gmock\_output\_test@{gmock\_output\_test}!ToUnixLineEnding@{ToUnixLineEnding}}
+\index{ToUnixLineEnding@{ToUnixLineEnding}!gmock\_output\_test@{gmock\_output\_test}}
+\doxysubsubsection{\texorpdfstring{ToUnixLineEnding()}{ToUnixLineEnding()}}
+{\footnotesize\ttfamily \label{namespacegmock__output__test_ad1551135ee8755834a46528d836f9e26} 
+gmock\+\_\+output\+\_\+test.\+To\+Unix\+Line\+Ending (\begin{DoxyParamCaption}\item[{}]{s}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Changes all Windows/Mac line endings in s to UNIX line endings.\end{DoxyVerb}
+ 

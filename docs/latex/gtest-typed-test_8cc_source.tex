@@ -1,0 +1,110 @@
+\doxysection{gtest-\/typed-\/test.cc}
+\hypertarget{gtest-typed-test_8cc_source}{}\label{gtest-typed-test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/typed-\/test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/typed-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/typed-\/test.h"{}}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00035\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ Skips\ to\ the\ first\ non-\/space\ char\ in\ str.\ Returns\ an\ empty\ string\ if\ str}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ contains\ only\ whitespace\ characters.}}
+\DoxyCodeLine{00039\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ SkipSpaces(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str)\ \{}
+\DoxyCodeLine{00040\ \ \ \textcolor{keywordflow}{while}\ (IsSpace(*str))\ str++;}
+\DoxyCodeLine{00041\ \ \ \textcolor{keywordflow}{return}\ str;}
+\DoxyCodeLine{00042\ \}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{static}\ std::vector<std::string>\ SplitIntoTestNames(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ src)\ \{}
+\DoxyCodeLine{00045\ \ \ std::vector<std::string>\ name\_vec;}
+\DoxyCodeLine{00046\ \ \ src\ =\ SkipSpaces(src);}
+\DoxyCodeLine{00047\ \ \ \textcolor{keywordflow}{for}\ (;\ src\ !=\ \textcolor{keyword}{nullptr};\ src\ =\ SkipComma(src))\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ name\_vec.push\_back(StripTrailingSpaces(GetPrefixUntilComma(src)));}
+\DoxyCodeLine{00049\ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \textcolor{keywordflow}{return}\ name\_vec;}
+\DoxyCodeLine{00051\ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ Verifies\ that\ registered\_tests\ match\ the\ test\ names\ in}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ registered\_tests\_;\ returns\ registered\_tests\ if\ successful,\ or}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ aborts\ the\ program\ otherwise.}}
+\DoxyCodeLine{00056\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ TypedTestSuitePState::VerifyRegisteredTestNames(}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ test\_suite\_name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ registered\_tests)\ \{}
+\DoxyCodeLine{00059\ \ \ RegisterTypeParameterizedTestSuite(test\_suite\_name,\ CodeLocation(file,\ line));}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \textcolor{keyword}{typedef}\ RegisteredTestsMap::const\_iterator\ RegisteredTestIter;}
+\DoxyCodeLine{00062\ \ \ registered\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ std::vector<std::string>\ name\_vec\ =\ SplitIntoTestNames(registered\_tests);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ Message\ errors;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ std::set<std::string>\ tests;}
+\DoxyCodeLine{00069\ \ \ \textcolor{keywordflow}{for}\ (std::vector<std::string>::const\_iterator\ name\_it\ =\ name\_vec.begin();}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ name\_it\ !=\ name\_vec.end();\ ++name\_it)\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ name\ =\ *name\_it;}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordflow}{if}\ (tests.count(name)\ !=\ 0)\ \{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ errors\ <<\ \textcolor{stringliteral}{"{}Test\ "{}}\ <<\ name\ <<\ \textcolor{stringliteral}{"{}\ is\ listed\ more\ than\ once.\(\backslash\)n"{}};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00075\ \ \ \ \ \}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{if}\ (registered\_tests\_.count(name)\ !=\ 0)\ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ tests.insert(name);}
+\DoxyCodeLine{00079\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ errors\ <<\ \textcolor{stringliteral}{"{}No\ test\ named\ "{}}\ <<\ name}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ can\ be\ found\ in\ this\ test\ suite.\(\backslash\)n"{}};}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keywordflow}{for}\ (RegisteredTestIter\ it\ =\ registered\_tests\_.begin();}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ it\ !=\ registered\_tests\_.end();\ ++it)\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{if}\ (tests.count(it-\/>first)\ ==\ 0)\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ errors\ <<\ \textcolor{stringliteral}{"{}You\ forgot\ to\ list\ test\ "{}}\ <<\ it-\/>first\ <<\ \textcolor{stringliteral}{"{}.\(\backslash\)n"{}};}
+\DoxyCodeLine{00089\ \ \ \ \ \}}
+\DoxyCodeLine{00090\ \ \ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{const}\ std::string\&\ errors\_str\ =\ errors.GetString();}
+\DoxyCodeLine{00093\ \ \ \textcolor{keywordflow}{if}\ (errors\_str\ !=\ \textcolor{stringliteral}{"{}"{}})\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}\%s\ \%s"{}},\ FormatFileLocation(file,\ line).c\_str(),}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ errors\_str.c\_str());}
+\DoxyCodeLine{00096\ \ \ \ \ fflush(stderr);}
+\DoxyCodeLine{00097\ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{00098\ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \textcolor{keywordflow}{return}\ registered\_tests;}
+\DoxyCodeLine{00101\ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00104\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

@@ -1,0 +1,312 @@
+\doxysection{gtest-\/death-\/test-\/internal.h}
+\hypertarget{gtest-death-test-internal_8h_source}{}\label{gtest-death-test-internal_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/death-\/test-\/internal.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/death-\/test-\/internal.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2005,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework\ (Google\ Test)}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ header\ file\ defines\ internal\ utilities\ needed\ for\ implementing}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ death\ tests.\ \ They\ are\ subject\ to\ change\ without\ notice.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_DEATH\_TEST\_INTERNAL\_H\_}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_DEATH\_TEST\_INTERNAL\_H\_}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/matchers.h"{}}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/internal.h"{}}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ GTEST\_DECLARE\_string\_(internal\_run\_death\_test);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ Names\ of\ the\ flags\ (needed\ for\ parsing\ Google\ Test\ flags).}}
+\DoxyCodeLine{00055\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestStyleFlag[]\ =\ \textcolor{stringliteral}{"{}death\_test\_style"{}};}
+\DoxyCodeLine{00056\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestUseFork[]\ =\ \textcolor{stringliteral}{"{}death\_test\_use\_fork"{}};}
+\DoxyCodeLine{00057\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kInternalRunDeathTestFlag[]\ =\ \textcolor{stringliteral}{"{}internal\_run\_death\_test"{}};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4251\ \(\backslash\)}
+\DoxyCodeLine{00062\ \textcolor{comment}{/*\ class\ A\ needs\ to\ have\ dll-\/interface\ to\ be\ used\ by\ clients\ of\ class\ B\ */})}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ DeathTest\ is\ a\ class\ that\ hides\ much\ of\ the\ complexity\ of\ the}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//\ GTEST\_DEATH\_TEST\_\ macro.\ \ It\ is\ abstract;\ its\ static\ Create\ method}}
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ returns\ a\ concrete\ class\ that\ depends\ on\ the\ prevailing\ death\ test}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//\ style,\ as\ defined\ by\ the\ -\/-\/gtest\_death\_test\_style\ and/or}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ -\/-\/gtest\_internal\_run\_death\_test\ flags.}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ In\ describing\ the\ results\ of\ death\ tests,\ these\ terms\ are\ used\ with}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ the\ corresponding\ definitions:}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ exit\ status:\ \ The\ integer\ exit\ information\ in\ the\ format\ specified}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ by\ wait(2)}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ exit\ code:\ \ \ \ The\ integer\ code\ passed\ to\ exit(3),\ \_exit(2),\ or}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ returned\ from\ main()}}
+\DoxyCodeLine{00077\ class\ GTEST\_API\_\ DeathTest\ \{}
+\DoxyCodeLine{00078\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00079\ \ \ \textcolor{comment}{//\ Create\ returns\ false\ if\ there\ was\ an\ error\ determining\ the}}
+\DoxyCodeLine{00080\ \ \ \textcolor{comment}{//\ appropriate\ action\ to\ take\ for\ the\ current\ death\ test;\ for\ example,}}
+\DoxyCodeLine{00081\ \ \ \textcolor{comment}{//\ if\ the\ gtest\_death\_test\_style\ flag\ is\ set\ to\ an\ invalid\ value.}}
+\DoxyCodeLine{00082\ \ \ \textcolor{comment}{//\ The\ LastMessage\ method\ will\ return\ a\ more\ detailed\ message\ in\ that}}
+\DoxyCodeLine{00083\ \ \ \textcolor{comment}{//\ case.\ \ Otherwise,\ the\ DeathTest\ pointer\ pointed\ to\ by\ the\ "{}test"{}}}
+\DoxyCodeLine{00084\ \ \ \textcolor{comment}{//\ argument\ is\ set.\ \ If\ the\ death\ test\ should\ be\ skipped,\ the\ pointer}}
+\DoxyCodeLine{00085\ \ \ \textcolor{comment}{//\ is\ set\ to\ NULL;\ otherwise,\ it\ is\ set\ to\ the\ address\ of\ a\ new\ concrete}}
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ DeathTest\ object\ that\ controls\ the\ execution\ of\ the\ current\ test.}}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Create(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,\ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,\ DeathTest**\ test);}
+\DoxyCodeLine{00089\ \ \ DeathTest();}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{virtual}\ \string~DeathTest()\ \{\}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//\ A\ helper\ class\ that\ aborts\ a\ death\ test\ when\ it's\ deleted.}}
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{class\ }ReturnSentinel\ \{}
+\DoxyCodeLine{00094\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{explicit}\ ReturnSentinel(DeathTest*\ test)\ :\ test\_(test)\ \{\}}
+\DoxyCodeLine{00096\ \ \ \ \ \string~ReturnSentinel()\ \{\ test\_-\/>Abort(TEST\_ENCOUNTERED\_RETURN\_STATEMENT);\ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00099\ \ \ \ \ DeathTest*\ \textcolor{keyword}{const}\ test\_;}
+\DoxyCodeLine{00100\ \ \ \ \ ReturnSentinel(\textcolor{keyword}{const}\ ReturnSentinel\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00101\ \ \ \ \ ReturnSentinel\&\ operator=(\textcolor{keyword}{const}\ ReturnSentinel\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00102\ \ \ \}\ GTEST\_ATTRIBUTE\_UNUSED\_;}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \textcolor{comment}{//\ An\ enumeration\ of\ possible\ roles\ that\ may\ be\ taken\ when\ a\ death}}
+\DoxyCodeLine{00105\ \ \ \textcolor{comment}{//\ test\ is\ encountered.\ \ EXECUTE\ means\ that\ the\ death\ test\ logic\ should}}
+\DoxyCodeLine{00106\ \ \ \textcolor{comment}{//\ be\ executed\ immediately.\ \ OVERSEE\ means\ that\ the\ program\ should\ prepare}}
+\DoxyCodeLine{00107\ \ \ \textcolor{comment}{//\ the\ appropriate\ environment\ for\ a\ child\ process\ to\ execute\ the\ death}}
+\DoxyCodeLine{00108\ \ \ \textcolor{comment}{//\ test,\ then\ wait\ for\ it\ to\ complete.}}
+\DoxyCodeLine{00109\ \ \ \textcolor{keyword}{enum}\ TestRole\ \{\ OVERSEE\_TEST,\ EXECUTE\_TEST\ \};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \textcolor{comment}{//\ An\ enumeration\ of\ the\ three\ reasons\ that\ a\ test\ might\ be\ aborted.}}
+\DoxyCodeLine{00112\ \ \ \textcolor{keyword}{enum}\ AbortReason\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ TEST\_ENCOUNTERED\_RETURN\_STATEMENT,}
+\DoxyCodeLine{00114\ \ \ \ \ TEST\_THREW\_EXCEPTION,}
+\DoxyCodeLine{00115\ \ \ \ \ TEST\_DID\_NOT\_DIE}
+\DoxyCodeLine{00116\ \ \ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//\ Assumes\ one\ of\ the\ above\ roles.}}
+\DoxyCodeLine{00119\ \ \ \textcolor{keyword}{virtual}\ TestRole\ AssumeRole()\ =\ 0;}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ Waits\ for\ the\ death\ test\ to\ finish\ and\ returns\ its\ status.}}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ Wait()\ =\ 0;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ the\ death\ test\ passed;\ that\ is,\ the\ test\ process}}
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//\ exited\ during\ the\ test,\ its\ exit\ status\ matches\ a\ user-\/supplied}}
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//\ predicate,\ and\ its\ stderr\ output\ matches\ a\ user-\/supplied\ regular}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ expression.}}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ The\ user-\/supplied\ predicate\ may\ be\ a\ macro\ expression\ rather}}
+\DoxyCodeLine{00129\ \ \ \textcolor{comment}{//\ than\ a\ function\ pointer\ or\ functor,\ or\ else\ Wait\ and\ Passed\ could}}
+\DoxyCodeLine{00130\ \ \ \textcolor{comment}{//\ be\ combined.}}
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ Passed(\textcolor{keywordtype}{bool}\ exit\_status\_ok)\ =\ 0;}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ Signals\ that\ the\ death\ test\ did\ not\ die\ as\ expected.}}
+\DoxyCodeLine{00134\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ Abort(AbortReason\ reason)\ =\ 0;}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ Returns\ a\ human-\/readable\ outcome\ message\ regarding\ the\ outcome\ of}}
+\DoxyCodeLine{00137\ \ \ \textcolor{comment}{//\ the\ last\ death\ test.}}
+\DoxyCodeLine{00138\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ LastMessage();}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set\_last\_death\_test\_message(\textcolor{keyword}{const}\ std::string\&\ message);}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00143\ \ \ \textcolor{comment}{//\ A\ string\ containing\ a\ description\ of\ the\ outcome\ of\ the\ last\ death\ test.}}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{static}\ std::string\ last\_death\_test\_message\_;}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ DeathTest(\textcolor{keyword}{const}\ DeathTest\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00147\ \ \ DeathTest\&\ operator=(\textcolor{keyword}{const}\ DeathTest\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00148\ \};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4251}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ Factory\ interface\ for\ death\ tests.\ \ May\ be\ mocked\ out\ for\ testing.}}
+\DoxyCodeLine{00153\ class\ DeathTestFactory\ \{}
+\DoxyCodeLine{00154\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{virtual}\ \string~DeathTestFactory()\ \{\}}
+\DoxyCodeLine{00156\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ Create(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Matcher<const\ std::string\&>\ matcher,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ line,\ DeathTest**\ test)\ =\ 0;}
+\DoxyCodeLine{00159\ \};}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{comment}{//\ A\ concrete\ DeathTestFactory\ implementation\ for\ normal\ use.}}
+\DoxyCodeLine{00162\ \textcolor{keyword}{class\ }DefaultDeathTestFactory\ :\ \textcolor{keyword}{public}\ DeathTestFactory\ \{}
+\DoxyCodeLine{00163\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00164\ \ \ \textcolor{keywordtype}{bool}\ Create(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,\ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,\ DeathTest**\ test)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00166\ \};}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{comment}{//\ Returns\ true\ if\ exit\_status\ describes\ a\ process\ that\ was\ terminated}}
+\DoxyCodeLine{00169\ \textcolor{comment}{//\ by\ a\ signal,\ or\ exited\ normally\ with\ a\ nonzero\ exit\ code.}}
+\DoxyCodeLine{00170\ GTEST\_API\_\ \textcolor{keywordtype}{bool}\ ExitedUnsuccessfully(\textcolor{keywordtype}{int}\ exit\_status);}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{comment}{//\ A\ string\ passed\ to\ EXPECT\_DEATH\ (etc.)\ is\ caught\ by\ one\ of\ these\ overloads}}
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ and\ interpreted\ as\ a\ regex\ (rather\ than\ an\ Eq\ matcher)\ for\ legacy}}
+\DoxyCodeLine{00174\ \textcolor{comment}{//\ compatibility.}}
+\DoxyCodeLine{00175\ \textcolor{keyword}{inline}\ Matcher<const\ ::std::string\&>\ MakeDeathTestMatcher(}
+\DoxyCodeLine{00176\ \ \ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_r_e}{::testing::internal::RE}}\ regex)\ \{}
+\DoxyCodeLine{00177\ \ \ \textcolor{keywordflow}{return}\ ContainsRegex(regex.pattern());}
+\DoxyCodeLine{00178\ \}}
+\DoxyCodeLine{00179\ \textcolor{keyword}{inline}\ Matcher<const\ ::std::string\&>\ MakeDeathTestMatcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ regex)\ \{}
+\DoxyCodeLine{00180\ \ \ \textcolor{keywordflow}{return}\ ContainsRegex(regex);}
+\DoxyCodeLine{00181\ \}}
+\DoxyCodeLine{00182\ \textcolor{keyword}{inline}\ Matcher<const\ ::std::string\&>\ MakeDeathTestMatcher(}
+\DoxyCodeLine{00183\ \ \ \ \ const\ ::std::string\&\ regex)\ \{}
+\DoxyCodeLine{00184\ \ \ \textcolor{keywordflow}{return}\ ContainsRegex(regex);}
+\DoxyCodeLine{00185\ \}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ If\ a\ Matcher<const\ ::std::string\&>\ is\ passed\ to\ EXPECT\_DEATH\ (etc.),\ it's}}
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ used\ directly.}}
+\DoxyCodeLine{00189\ \textcolor{keyword}{inline}\ Matcher<const\ ::std::string\&>\ MakeDeathTestMatcher(}
+\DoxyCodeLine{00190\ \ \ \ \ Matcher<const\ ::std::string\&>\ matcher)\ \{}
+\DoxyCodeLine{00191\ \ \ \textcolor{keywordflow}{return}\ matcher;}
+\DoxyCodeLine{00192\ \}}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \textcolor{comment}{//\ Traps\ C++\ exceptions\ escaping\ statement\ and\ reports\ them\ as\ test}}
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ failures.\ Note\ that\ trapping\ SEH\ exceptions\ is\ not\ implemented\ here.}}
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\#define\ GTEST\_EXECUTE\_DEATH\_TEST\_STATEMENT\_(statement,\ death\_test)\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\ \ try\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00200\ \textcolor{preprocessor}{\ \ \}\ catch\ (const\ ::std::exception\&\ gtest\_exception)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\ \ \ \ fprintf(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ stderr,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00203\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ "{}\(\backslash\)n\%s:\ Caught\ std::exception-\/derived\ exception\ escaping\ the\ "{}\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ "{}death\ test\ statement.\ Exception\ message:\ \%s\(\backslash\)n"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ::testing::internal::FormatFileLocation(\_\_FILE\_\_,\ \_\_LINE\_\_).c\_str(),\ \(\backslash\)}}
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ gtest\_exception.what());\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\ \ \ \ fflush(stderr);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00208\ \textcolor{preprocessor}{\ \ \ \ death\_test-\/>Abort(::testing::internal::DeathTest::TEST\_THREW\_EXCEPTION);\ \(\backslash\)}}
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\ \ \}\ catch\ (...)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\ \ \ \ death\_test-\/>Abort(::testing::internal::DeathTest::TEST\_THREW\_EXCEPTION);\ \(\backslash\)}}
+\DoxyCodeLine{00211\ \textcolor{preprocessor}{\ \ \}}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\#define\ GTEST\_EXECUTE\_DEATH\_TEST\_STATEMENT\_(statement,\ death\_test)\ \(\backslash\)}}
+\DoxyCodeLine{00215\ \textcolor{preprocessor}{\ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement)}}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \textcolor{comment}{//\ This\ macro\ is\ for\ implementing\ ASSERT\_DEATH*,\ EXPECT\_DEATH*,}}
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ ASSERT\_EXIT*,\ and\ EXPECT\_EXIT*.}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\#define\ GTEST\_DEATH\_TEST\_(statement,\ predicate,\ regex\_or\_matcher,\ fail)\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::DeathTest*\ gtest\_dt;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\ \ \ \ if\ (!::testing::internal::DeathTest::Create(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#statement,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ::testing::internal::MakeDeathTestMatcher(regex\_or\_matcher),\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \_\_FILE\_\_,\ \_\_LINE\_\_,\ \&gtest\_dt))\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\ \ \ \ if\ (gtest\_dt\ !=\ nullptr)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\ \ \ \ \ \ std::unique\_ptr<\ ::testing::internal::DeathTest>\ gtest\_dt\_ptr(gtest\_dt);\ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ \ \ \ \ switch\ (gtest\_dt-\/>AssumeRole())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00234\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ case\ ::testing::internal::DeathTest::OVERSEE\_TEST:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ if\ (!gtest\_dt-\/>Passed(predicate(gtest\_dt-\/>Wait())))\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ goto\ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_,\ \_\_LINE\_\_);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00237\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00238\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ break;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00239\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ case\ ::testing::internal::DeathTest::EXECUTE\_TEST:\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ ::testing::internal::DeathTest::ReturnSentinel\ gtest\_sentinel(\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ gtest\_dt);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ GTEST\_EXECUTE\_DEATH\_TEST\_STATEMENT\_(statement,\ gtest\_dt);\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00243\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ gtest\_dt-\/>Abort(::testing::internal::DeathTest::TEST\_DID\_NOT\_DIE);\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00244\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ break;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00245\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00247\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\ \ \ \ GTEST\_CONCAT\_TOKEN\_(gtest\_label\_,\ \_\_LINE\_\_)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ fail(::testing::internal::DeathTest::LastMessage())}}
+\DoxyCodeLine{00251\ \textcolor{comment}{//\ The\ symbol\ "{}fail"{}\ here\ expands\ to\ something\ into\ which\ a\ message}}
+\DoxyCodeLine{00252\ \textcolor{comment}{//\ can\ be\ streamed.}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{comment}{//\ This\ macro\ is\ for\ implementing\ ASSERT/EXPECT\_DEBUG\_DEATH\ when\ compiled\ in}}
+\DoxyCodeLine{00255\ \textcolor{comment}{//\ NDEBUG\ mode.\ In\ this\ case\ we\ need\ the\ statements\ to\ be\ executed\ and\ the\ macro}}
+\DoxyCodeLine{00256\ \textcolor{comment}{//\ must\ accept\ a\ streamed\ message\ even\ though\ the\ message\ is\ never\ printed.}}
+\DoxyCodeLine{00257\ \textcolor{comment}{//\ The\ regex\ object\ is\ not\ evaluated,\ but\ it\ is\ used\ to\ prevent\ "{}unused"{}}}
+\DoxyCodeLine{00258\ \textcolor{comment}{//\ warnings\ and\ to\ avoid\ an\ expression\ that\ doesn't\ compile\ in\ debug\ mode.}}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\#define\ GTEST\_EXECUTE\_STATEMENT\_(statement,\ regex\_or\_matcher)\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00260\ \textcolor{preprocessor}{\ \ GTEST\_AMBIGUOUS\_ELSE\_BLOCKER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00261\ \textcolor{preprocessor}{\ \ if\ (::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00262\ \textcolor{preprocessor}{\ \ \ \ GTEST\_SUPPRESS\_UNREACHABLE\_CODE\_WARNING\_BELOW\_(statement);\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00263\ \textcolor{preprocessor}{\ \ \}\ else\ if\ (!::testing::internal::AlwaysTrue())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00264\ \textcolor{preprocessor}{\ \ \ \ ::testing::internal::MakeDeathTestMatcher(regex\_or\_matcher);\ \(\backslash\)}}
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\ \ \}\ else\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\ \ \ \ ::testing::Message()}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ A\ class\ representing\ the\ parsed\ contents\ of\ the}}
+\DoxyCodeLine{00269\ \textcolor{comment}{//\ -\/-\/gtest\_internal\_run\_death\_test\ flag,\ as\ it\ existed\ when}}
+\DoxyCodeLine{00270\ \textcolor{comment}{//\ RUN\_ALL\_TESTS\ was\ called.}}
+\DoxyCodeLine{00271\ \textcolor{keyword}{class\ }InternalRunDeathTestFlag\ \{}
+\DoxyCodeLine{00272\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00273\ \ \ InternalRunDeathTestFlag(\textcolor{keyword}{const}\ std::string\&\ a\_file,\ \textcolor{keywordtype}{int}\ a\_line,\ \textcolor{keywordtype}{int}\ an\_index,}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ a\_write\_fd)}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ :\ file\_(a\_file),\ line\_(a\_line),\ index\_(an\_index),\ write\_fd\_(a\_write\_fd)\ \{\}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \string~InternalRunDeathTestFlag()\ \{}
+\DoxyCodeLine{00278\ \ \ \ \ \textcolor{keywordflow}{if}\ (write\_fd\_\ >=\ 0)\ posix::Close(write\_fd\_);}
+\DoxyCodeLine{00279\ \ \ \}}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ \textcolor{keyword}{const}\ std::string\&\ file()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ file\_;\ \}}
+\DoxyCodeLine{00282\ \ \ \textcolor{keywordtype}{int}\ line()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ line\_;\ \}}
+\DoxyCodeLine{00283\ \ \ \textcolor{keywordtype}{int}\ index()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ index\_;\ \}}
+\DoxyCodeLine{00284\ \ \ \textcolor{keywordtype}{int}\ write\_fd()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ write\_fd\_;\ \}}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00287\ \ \ std::string\ file\_;}
+\DoxyCodeLine{00288\ \ \ \textcolor{keywordtype}{int}\ line\_;}
+\DoxyCodeLine{00289\ \ \ \textcolor{keywordtype}{int}\ index\_;}
+\DoxyCodeLine{00290\ \ \ \textcolor{keywordtype}{int}\ write\_fd\_;}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \ \ InternalRunDeathTestFlag(\textcolor{keyword}{const}\ InternalRunDeathTestFlag\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00293\ \ \ InternalRunDeathTestFlag\&\ operator=(\textcolor{keyword}{const}\ InternalRunDeathTestFlag\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00294\ \};}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \textcolor{comment}{//\ Returns\ a\ newly\ created\ InternalRunDeathTestFlag\ object\ with\ fields}}
+\DoxyCodeLine{00297\ \textcolor{comment}{//\ initialized\ from\ the\ GTEST\_FLAG(internal\_run\_death\_test)\ flag\ if}}
+\DoxyCodeLine{00298\ \textcolor{comment}{//\ the\ flag\ is\ specified;\ otherwise\ returns\ NULL.}}
+\DoxyCodeLine{00299\ InternalRunDeathTestFlag*\ ParseInternalRunDeathTestFlag();}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00304\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_DEATH\_TEST\_INTERNAL\_H\_}}
+
+\end{DoxyCode}

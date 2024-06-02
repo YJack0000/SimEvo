@@ -1,0 +1,146 @@
+\doxysection{Default\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_default_spatial_index}{}\label{class_default_spatial_index}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Default\+Spatial\+Index.\+hpp$>$}
+
+
+
+Inheritance diagram for Default\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=240pt]{class_default_spatial_index__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Default\+Spatial\+Index\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=240pt]{class_default_spatial_index__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_default_spatial_index_a4881a674462fc59f664295f0589aa8d3}{Default\+Spatial\+Index}} ()
+\item 
+void \mbox{\hyperlink{class_default_spatial_index_a6689e1d330b88842f6a08fe649b11e4f}{insert}} (const T \&object, float x, float y) override
+\item 
+std\+::vector$<$ T $>$ \mbox{\hyperlink{class_default_spatial_index_a46defc74702da7db316fae88885c2e82}{query}} (float x, float y, float range) override
+\item 
+void \mbox{\hyperlink{class_default_spatial_index_a4034bbc1c7da22da401452646b644c5b}{update}} (const T \&object, float newX, float newY) override
+\item 
+void \mbox{\hyperlink{class_default_spatial_index_a1adbd25aef4e9072b2f0e41b2ff57446}{remove}} (const T \&object) override
+\item 
+void \mbox{\hyperlink{class_default_spatial_index_a74fce9ee824064d4547a613197626423}{clear}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_i_spatial_index}{ISpatial\+Index$<$ T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_i_spatial_index_af9d2bc7d59b524ac2f036f7b9685526d}{\texorpdfstring{$\sim$}{\string~}\+ISpatial\+Index}} ()=default
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$ T $>$ $>$\+::iterator \mbox{\hyperlink{class_default_spatial_index_a2f3cb4a012e5c3bbf2169ebfcbff32cd}{find\+Object}} (const T \&object)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$ T $>$ $>$ \mbox{\hyperlink{class_default_spatial_index_a55003174b6ed0cce5c74eafb2108f6f1}{spatial\+Objects}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_default_spatial_index_a4881a674462fc59f664295f0589aa8d3}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!DefaultSpatialIndex@{DefaultSpatialIndex}}
+\index{DefaultSpatialIndex@{DefaultSpatialIndex}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{DefaultSpatialIndex()}{DefaultSpatialIndex()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a4881a674462fc59f664295f0589aa8d3} 
+template$<$typename T $>$ \\
+\mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\mbox{\hyperlink{class_default_spatial_index}{\+::\+Default\+Spatial\+Index}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_default_spatial_index_a74fce9ee824064d4547a613197626423}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!clear@{clear}}
+\index{clear@{clear}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a74fce9ee824064d4547a613197626423} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::clear (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a9ebdbdd6bb38235f38533997a2bbc6b8}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_default_spatial_index_a2f3cb4a012e5c3bbf2169ebfcbff32cd}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!findObject@{findObject}}
+\index{findObject@{findObject}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{findObject()}{findObject()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a2f3cb4a012e5c3bbf2169ebfcbff32cd} 
+template$<$typename T $>$ \\
+std\+::vector$<$ \mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$ T $>$ $>$\+::iterator \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::find\+Object (\begin{DoxyParamCaption}\item[{const T \&}]{object}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_default_spatial_index_a6689e1d330b88842f6a08fe649b11e4f}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!insert@{insert}}
+\index{insert@{insert}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a6689e1d330b88842f6a08fe649b11e4f} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::insert (\begin{DoxyParamCaption}\item[{const T \&}]{object}{, }\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_ae48d225f9a5785e28f5fd796a3132549}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_default_spatial_index_a46defc74702da7db316fae88885c2e82}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!query@{query}}
+\index{query@{query}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{query()}{query()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a46defc74702da7db316fae88885c2e82} 
+template$<$typename T $>$ \\
+std\+::vector$<$ T $>$ \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::query (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{range}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a15c59b62cd45173873f37317fa571b61}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_default_spatial_index_a1adbd25aef4e9072b2f0e41b2ff57446}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!remove@{remove}}
+\index{remove@{remove}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a1adbd25aef4e9072b2f0e41b2ff57446} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::remove (\begin{DoxyParamCaption}\item[{const T \&}]{object}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a2c6a2a9e9af19ebaf9be97367d12705a}{ISpatial\+Index$<$ T $>$}}.
+
+\Hypertarget{class_default_spatial_index_a4034bbc1c7da22da401452646b644c5b}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!update@{update}}
+\index{update@{update}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a4034bbc1c7da22da401452646b644c5b} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::update (\begin{DoxyParamCaption}\item[{const T \&}]{object}{, }\item[{float}]{newX}{, }\item[{float}]{newY}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_i_spatial_index_a585d34008ccc15001f65592e3250e95a}{ISpatial\+Index$<$ T $>$}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_default_spatial_index_a55003174b6ed0cce5c74eafb2108f6f1}\index{DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}!spatialObjects@{spatialObjects}}
+\index{spatialObjects@{spatialObjects}!DefaultSpatialIndex$<$ T $>$@{DefaultSpatialIndex$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{spatialObjects}{spatialObjects}}
+{\footnotesize\ttfamily \label{class_default_spatial_index_a55003174b6ed0cce5c74eafb2108f6f1} 
+template$<$typename T $>$ \\
+std\+::vector$<$\mbox{\hyperlink{class_spatial_object}{Spatial\+Object}}$<$T$>$ $>$ \mbox{\hyperlink{class_default_spatial_index}{Default\+Spatial\+Index}}$<$ T $>$\+::spatial\+Objects\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/index/\mbox{\hyperlink{_default_spatial_index_8hpp}{Default\+Spatial\+Index.\+hpp}}\end{DoxyCompactItemize}

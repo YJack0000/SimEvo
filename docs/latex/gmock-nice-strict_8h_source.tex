@@ -1,0 +1,283 @@
+\doxysection{gmock-\/nice-\/strict.h}
+\hypertarget{gmock-nice-strict_8h_source}{}\label{gmock-nice-strict_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/nice-\/strict.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/nice-\/strict.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Implements\ class\ templates\ NiceMock,\ NaggyMock,\ and\ StrictMock.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ Given\ a\ mock\ class\ MockFoo\ that\ is\ created\ using\ Google\ Mock,}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ NiceMock<MockFoo>\ is\ a\ subclass\ of\ MockFoo\ that\ allows}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ uninteresting\ calls\ (i.e.\ calls\ to\ mock\ methods\ that\ have\ no}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ EXPECT\_CALL\ specs),\ NaggyMock<MockFoo>\ is\ a\ subclass\ of\ MockFoo}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ that\ prints\ a\ warning\ when\ an\ uninteresting\ call\ occurs,\ and}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ StrictMock<MockFoo>\ is\ a\ subclass\ of\ MockFoo\ that\ treats\ all}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ uninteresting\ calls\ as\ errors.}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ Currently\ a\ mock\ is\ naggy\ by\ default,\ so\ MockFoo\ and}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ NaggyMock<MockFoo>\ behave\ like\ the\ same.\ \ However,\ we\ will\ soon}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ switch\ the\ default\ behavior\ of\ mocks\ to\ be\ nice,\ as\ that\ in\ general}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ leads\ to\ more\ maintainable\ tests.\ \ When\ that\ happens,\ MockFoo\ will}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ stop\ behaving\ like\ NaggyMock<MockFoo>\ and\ start\ behaving\ like}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//\ NiceMock<MockFoo>.}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ NiceMock,\ NaggyMock,\ and\ StrictMock\ "{}inherit"{}\ the\ constructors\ of}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ their\ respective\ base\ class.\ \ Therefore\ you\ can\ write}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ NiceMock<MockFoo>(5,\ "{}a"{})\ to\ construct\ a\ nice\ mock\ where\ MockFoo}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ has\ a\ constructor\ that\ accepts\ (int,\ const\ char*),\ for\ example.}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ A\ known\ limitation\ is\ that\ NiceMock<MockFoo>,\ NaggyMock<MockFoo>,}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ and\ StrictMock<MockFoo>\ only\ works\ for\ mock\ methods\ defined\ using}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ the\ MOCK\_METHOD*\ family\ of\ macros\ DIRECTLY\ in\ the\ MockFoo\ class.}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ If\ a\ mock\ method\ is\ defined\ in\ a\ base\ class\ of\ MockFoo,\ the\ "{}nice"{}}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ or\ "{}strict"{}\ modifier\ may\ not\ affect\ it,\ depending\ on\ the\ compiler.}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ In\ particular,\ nesting\ NiceMock,\ NaggyMock,\ and\ StrictMock\ is\ NOT}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ supported.}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_NICE\_STRICT\_H\_}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_NICE\_STRICT\_H\_}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/spec-\/builders.h"{}}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00073\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00074\ \textcolor{keyword}{class\ }NiceMock;}
+\DoxyCodeLine{00075\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00076\ \textcolor{keyword}{class\ }NaggyMock;}
+\DoxyCodeLine{00077\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00078\ \textcolor{keyword}{class\ }StrictMock;}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00081\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00082\ std::true\_type\ StrictnessModifierProbe(\textcolor{keyword}{const}\ NiceMock<T>\&);}
+\DoxyCodeLine{00083\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00084\ std::true\_type\ StrictnessModifierProbe(\textcolor{keyword}{const}\ NaggyMock<T>\&);}
+\DoxyCodeLine{00085\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00086\ std::true\_type\ StrictnessModifierProbe(\textcolor{keyword}{const}\ StrictMock<T>\&);}
+\DoxyCodeLine{00087\ std::false\_type\ StrictnessModifierProbe(...);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00090\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ HasStrictnessModifier()\ \{}
+\DoxyCodeLine{00091\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{decltype}(StrictnessModifierProbe(std::declval<const\ T\&>()))::value;}
+\DoxyCodeLine{00092\ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ Base\ classes\ that\ register\ and\ deregister\ with\ testing::Mock\ to\ alter\ the}}
+\DoxyCodeLine{00095\ \textcolor{comment}{//\ default\ behavior\ around\ uninteresting\ calls.\ Inheriting\ from\ one\ of\ these}}
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ classes\ first\ and\ then\ MockClass\ ensures\ the\ MockClass\ constructor\ is\ run}}
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ after\ registration,\ and\ that\ the\ MockClass\ destructor\ runs\ before}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ deregistration.\ This\ guarantees\ that\ MockClass's\ constructor\ and\ destructor}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ run\ with\ the\ same\ level\ of\ strictness\ as\ its\ instance\ methods.}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_WINDOWS\_MINGW\ \&\&\ \(\backslash\)}}
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\ \ \ \ (defined(\_MSC\_VER)\ ||\ defined(\_\_clang\_\_))}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ We\ need\ to\ mark\ these\ classes\ with\ this\ declspec\ to\ ensure\ that}}
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ the\ empty\ base\ class\ optimization\ is\ performed.}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#define\ GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS\ \_\_declspec(empty\_bases)}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#define\ GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Base>}
+\DoxyCodeLine{00111\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_nice_mock_impl}{NiceMockImpl}}\ \{}
+\DoxyCodeLine{00112\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00113\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_nice_mock_impl}{NiceMockImpl}}()\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ ::testing::Mock::AllowUninterestingCalls(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00115\ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_nice_mock_impl}{\string~NiceMockImpl}}()\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ ::testing::Mock::UnregisterCallReaction(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00119\ \ \ \}}
+\DoxyCodeLine{00120\ \};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Base>}
+\DoxyCodeLine{00123\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_naggy_mock_impl}{NaggyMockImpl}}\ \{}
+\DoxyCodeLine{00124\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00125\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_naggy_mock_impl}{NaggyMockImpl}}()\ \{}
+\DoxyCodeLine{00126\ \ \ \ \ ::testing::Mock::WarnUninterestingCalls(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00127\ \ \ \}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_naggy_mock_impl}{\string~NaggyMockImpl}}()\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ ::testing::Mock::UnregisterCallReaction(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00131\ \ \ \}}
+\DoxyCodeLine{00132\ \};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Base>}
+\DoxyCodeLine{00135\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_strict_mock_impl}{StrictMockImpl}}\ \{}
+\DoxyCodeLine{00136\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00137\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_strict_mock_impl}{StrictMockImpl}}()\ \{}
+\DoxyCodeLine{00138\ \ \ \ \ ::testing::Mock::FailUninterestingCalls(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00139\ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_strict_mock_impl}{\string~StrictMockImpl}}()\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ ::testing::Mock::UnregisterCallReaction(\textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(\textcolor{keyword}{this}));}
+\DoxyCodeLine{00143\ \ \ \}}
+\DoxyCodeLine{00144\ \};}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00149\ \textcolor{keyword}{class\ }GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS\ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}}
+\DoxyCodeLine{00150\ \ \ \ \ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_nice_mock_impl}{internal::NiceMockImpl}}<MockClass>,}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \textcolor{keyword}{public}\ MockClass\ \{}
+\DoxyCodeLine{00152\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00153\ \ \ \textcolor{keyword}{static\_assert}(!internal::HasStrictnessModifier<MockClass>(),}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Can't\ apply\ NiceMock\ to\ a\ class\ hierarchy\ that\ already\ has\ a\ "{}}}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}strictness\ modifier.\ See\ "{}}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}https://google.github.io/googletest/"{}}}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}gmock\_cook\_book.html\#NiceStrictNaggy"{}});}
+\DoxyCodeLine{00158\ \ \ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}()\ :\ MockClass()\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00161\ \ \ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//\ Ideally,\ we\ would\ inherit\ base\ class's\ constructors\ through\ a\ using}}
+\DoxyCodeLine{00164\ \ \ \textcolor{comment}{//\ declaration,\ which\ would\ preserve\ their\ visibility.\ However,\ many\ existing}}
+\DoxyCodeLine{00165\ \ \ \textcolor{comment}{//\ tests\ rely\ on\ the\ fact\ that\ current\ implementation\ reexports\ protected}}
+\DoxyCodeLine{00166\ \ \ \textcolor{comment}{//\ constructors\ as\ public.\ These\ tests\ would\ need\ to\ be\ cleaned\ up\ first.}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \textcolor{comment}{//\ Single\ argument\ constructor\ is\ special-\/cased\ so\ that\ it\ can\ be}}
+\DoxyCodeLine{00169\ \ \ \textcolor{comment}{//\ made\ explicit.}}
+\DoxyCodeLine{00170\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A>}
+\DoxyCodeLine{00171\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}(A\&\&\ arg)\ :\ MockClass(std::forward<A>(arg))\ \{}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00174\ \ \ \}}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TArg1,\ \textcolor{keyword}{typename}\ TArg2,\ \textcolor{keyword}{typename}...\ An>}
+\DoxyCodeLine{00177\ \ \ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}(TArg1\&\&\ arg1,\ TArg2\&\&\ arg2,\ An\&\&...\ args)}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ :\ MockClass(std::forward<TArg1>(arg1),\ std::forward<TArg2>(arg2),}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<An>(args)...)\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00182\ \ \ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00185\ \ \ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00186\ \ \ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_nice_mock}{NiceMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00187\ \};}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00190\ \textcolor{keyword}{class\ }GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS\ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}}
+\DoxyCodeLine{00191\ \ \ \ \ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_naggy_mock_impl}{internal::NaggyMockImpl}}<MockClass>,}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \textcolor{keyword}{public}\ MockClass\ \{}
+\DoxyCodeLine{00193\ \ \ \textcolor{keyword}{static\_assert}(!internal::HasStrictnessModifier<MockClass>(),}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Can't\ apply\ NaggyMock\ to\ a\ class\ hierarchy\ that\ already\ has\ a\ "{}}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}strictness\ modifier.\ See\ "{}}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}https://google.github.io/googletest/"{}}}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}gmock\_cook\_book.html\#NiceStrictNaggy"{}});}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00200\ \ \ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}()\ :\ MockClass()\ \{}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00203\ \ \ \}}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \textcolor{comment}{//\ Ideally,\ we\ would\ inherit\ base\ class's\ constructors\ through\ a\ using}}
+\DoxyCodeLine{00206\ \ \ \textcolor{comment}{//\ declaration,\ which\ would\ preserve\ their\ visibility.\ However,\ many\ existing}}
+\DoxyCodeLine{00207\ \ \ \textcolor{comment}{//\ tests\ rely\ on\ the\ fact\ that\ current\ implementation\ reexports\ protected}}
+\DoxyCodeLine{00208\ \ \ \textcolor{comment}{//\ constructors\ as\ public.\ These\ tests\ would\ need\ to\ be\ cleaned\ up\ first.}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \ \ \textcolor{comment}{//\ Single\ argument\ constructor\ is\ special-\/cased\ so\ that\ it\ can\ be}}
+\DoxyCodeLine{00211\ \ \ \textcolor{comment}{//\ made\ explicit.}}
+\DoxyCodeLine{00212\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A>}
+\DoxyCodeLine{00213\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}(A\&\&\ arg)\ :\ MockClass(std::forward<A>(arg))\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00216\ \ \ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TArg1,\ \textcolor{keyword}{typename}\ TArg2,\ \textcolor{keyword}{typename}...\ An>}
+\DoxyCodeLine{00219\ \ \ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}(TArg1\&\&\ arg1,\ TArg2\&\&\ arg2,\ An\&\&...\ args)}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ :\ MockClass(std::forward<TArg1>(arg1),\ std::forward<TArg2>(arg2),}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<An>(args)...)\ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00224\ \ \ \}}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00227\ \ \ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00228\ \ \ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_naggy_mock}{NaggyMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00229\ \};}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ MockClass>}
+\DoxyCodeLine{00232\ \textcolor{keyword}{class\ }GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS\ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}}
+\DoxyCodeLine{00233\ \ \ \ \ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_strict_mock_impl}{internal::StrictMockImpl}}<MockClass>,}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \textcolor{keyword}{public}\ MockClass\ \{}
+\DoxyCodeLine{00235\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00236\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ !internal::HasStrictnessModifier<MockClass>(),}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Can't\ apply\ StrictMock\ to\ a\ class\ hierarchy\ that\ already\ has\ a\ "{}}}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}strictness\ modifier.\ See\ "{}}}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}https://google.github.io/googletest/"{}}}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}gmock\_cook\_book.html\#NiceStrictNaggy"{}});}
+\DoxyCodeLine{00242\ \ \ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}()\ :\ MockClass()\ \{}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00245\ \ \ \}}
+\DoxyCodeLine{00246\ }
+\DoxyCodeLine{00247\ \ \ \textcolor{comment}{//\ Ideally,\ we\ would\ inherit\ base\ class's\ constructors\ through\ a\ using}}
+\DoxyCodeLine{00248\ \ \ \textcolor{comment}{//\ declaration,\ which\ would\ preserve\ their\ visibility.\ However,\ many\ existing}}
+\DoxyCodeLine{00249\ \ \ \textcolor{comment}{//\ tests\ rely\ on\ the\ fact\ that\ current\ implementation\ reexports\ protected}}
+\DoxyCodeLine{00250\ \ \ \textcolor{comment}{//\ constructors\ as\ public.\ These\ tests\ would\ need\ to\ be\ cleaned\ up\ first.}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \textcolor{comment}{//\ Single\ argument\ constructor\ is\ special-\/cased\ so\ that\ it\ can\ be}}
+\DoxyCodeLine{00253\ \ \ \textcolor{comment}{//\ made\ explicit.}}
+\DoxyCodeLine{00254\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A>}
+\DoxyCodeLine{00255\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}(A\&\&\ arg)\ :\ MockClass(std::forward<A>(arg))\ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00258\ \ \ \}}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TArg1,\ \textcolor{keyword}{typename}\ TArg2,\ \textcolor{keyword}{typename}...\ An>}
+\DoxyCodeLine{00261\ \ \ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}(TArg1\&\&\ arg1,\ TArg2\&\&\ arg2,\ An\&\&...\ args)}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ :\ MockClass(std::forward<TArg1>(arg1),\ std::forward<TArg2>(arg2),}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<An>(args)...)\ \{}
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(*this)\ ==\ \textcolor{keyword}{sizeof}(MockClass),}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ impl\ subclass\ shouldn't\ introduce\ any\ padding"{}});}
+\DoxyCodeLine{00266\ \ \ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00269\ \ \ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00270\ \ \ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1_strict_mock}{StrictMock}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00271\ \};}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \textcolor{preprocessor}{\#undef\ GTEST\_INTERNAL\_EMPTY\_BASE\_CLASS}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_NICE\_STRICT\_H\_}}
+
+\end{DoxyCode}

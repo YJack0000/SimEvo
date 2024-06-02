@@ -1,0 +1,675 @@
+\doxysection{googletest-\/filepath-\/test.cc}
+\hypertarget{googletest-filepath-test_8cc_source}{}\label{googletest-filepath-test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/googletest-\/filepath-\/test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/googletest-\/filepath-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Test\ filepath\ utilities}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ tests\ classes\ and\ functions\ used\ internally\ by}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Google\ Test.\ \ They\ are\ subject\ to\ change\ without\ notice.}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ This\ file\ is\ \#included\ from\ gtest-\/internal.h.}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ Do\ not\ \#include\ this\ file\ anywhere\ else!}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/filepath.h"{}}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <windows.h>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <direct.h>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#endif\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00049\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00050\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ Windows\ CE\ doesn't\ have\ the\ remove\ C\ function.}}
+\DoxyCodeLine{00055\ \textcolor{keywordtype}{int}\ remove(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path)\ \{}
+\DoxyCodeLine{00056\ \ \ LPCWSTR\ wpath\ =\ String::AnsiToUtf16(path);}
+\DoxyCodeLine{00057\ \ \ \textcolor{keywordtype}{int}\ ret\ =\ DeleteFile(wpath)\ ?\ 0\ :\ -\/1;}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{delete}[]\ wpath;}
+\DoxyCodeLine{00059\ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00060\ \}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ Windows\ CE\ doesn't\ have\ the\ \_rmdir\ C\ function.}}
+\DoxyCodeLine{00062\ \textcolor{keywordtype}{int}\ \_rmdir(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path)\ \{}
+\DoxyCodeLine{00063\ \ \ FilePath\ filepath(path);}
+\DoxyCodeLine{00064\ \ \ LPCWSTR\ wpath\ =}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ String::AnsiToUtf16(filepath.RemoveTrailingPathSeparator().c\_str());}
+\DoxyCodeLine{00066\ \ \ \textcolor{keywordtype}{int}\ ret\ =\ RemoveDirectory(wpath)\ ?\ 0\ :\ -\/1;}
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{delete}[]\ wpath;}
+\DoxyCodeLine{00068\ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00069\ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ TEST(GetCurrentDirTest,\ ReturnsCurrentDir)\ \{}
+\DoxyCodeLine{00074\ \ \ \textcolor{keyword}{const}\ FilePath\ original\_dir\ =\ FilePath::GetCurrentDir();}
+\DoxyCodeLine{00075\ \ \ EXPECT\_FALSE(original\_dir.IsEmpty());}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ posix::ChDir(GTEST\_PATH\_SEP\_);}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{const}\ FilePath\ cwd\ =\ FilePath::GetCurrentDir();}
+\DoxyCodeLine{00079\ \ \ posix::ChDir(original\_dir.c\_str());}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_OS2}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{comment}{//\ Skips\ the\ "{}:"{}.}}
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ cwd\_without\_drive\ =\ strchr(cwd.c\_str(),\ \textcolor{charliteral}{':'});}
+\DoxyCodeLine{00085\ \ \ ASSERT\_TRUE(cwd\_without\_drive\ !=\ NULL);}
+\DoxyCodeLine{00086\ \ \ EXPECT\_STREQ(GTEST\_PATH\_SEP\_,\ cwd\_without\_drive\ +\ 1);}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_,\ cwd.string());}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00093\ \}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ TEST(IsEmptyTest,\ ReturnsTrueForEmptyPath)\ \{}
+\DoxyCodeLine{00098\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}"{}}).IsEmpty());}
+\DoxyCodeLine{00099\ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ TEST(IsEmptyTest,\ ReturnsFalseForNonEmptyPath)\ \{}
+\DoxyCodeLine{00102\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}a"{}}).IsEmpty());}
+\DoxyCodeLine{00103\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}."{}}).IsEmpty());}
+\DoxyCodeLine{00104\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}a/b"{}}).IsEmpty());}
+\DoxyCodeLine{00105\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}a\(\backslash\)\(\backslash\)b\(\backslash\)\(\backslash\)"{}}).IsEmpty());}
+\DoxyCodeLine{00106\ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}"{}\ -\/>\ "{}"{}}}
+\DoxyCodeLine{00109\ TEST(RemoveDirectoryNameTest,\ WhenEmptyName)\ \{}
+\DoxyCodeLine{00110\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ FilePath(\textcolor{stringliteral}{"{}"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00111\ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}afile"{}\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00114\ TEST(RemoveDirectoryNameTest,\ ButNoDirectory)\ \{}
+\DoxyCodeLine{00115\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},\ FilePath(\textcolor{stringliteral}{"{}afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00116\ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}/afile"{}\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00119\ TEST(RemoveDirectoryNameTest,\ RootFileShouldGiveFileName)\ \{}
+\DoxyCodeLine{00120\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00122\ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}adir/"{}\ -\/>\ "{}"{}}}
+\DoxyCodeLine{00125\ TEST(RemoveDirectoryNameTest,\ WhereThereIsNoFileName)\ \{}
+\DoxyCodeLine{00126\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00128\ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}adir/afile"{}\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00131\ TEST(RemoveDirectoryNameTest,\ ShouldGiveFileName)\ \{}
+\DoxyCodeLine{00132\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}afile"{}},}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00135\ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ RemoveDirectoryName\ "{}adir/subdir/afile"{}\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00138\ TEST(RemoveDirectoryNameTest,\ ShouldAlsoGiveFileName)\ \{}
+\DoxyCodeLine{00139\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}subdir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}})}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .RemoveDirectoryName()}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00143\ \}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ALT\_PATH\_SEP\_}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ Tests\ that\ RemoveDirectoryName()\ works\ with\ the\ alternate\ separator}}
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ on\ Windows.}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{comment}{//\ RemoveDirectoryName("{}/afile"{})\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00151\ TEST(RemoveDirectoryNameTest,\ RootFileShouldGiveFileNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00152\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},\ FilePath(\textcolor{stringliteral}{"{}/afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00153\ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \textcolor{comment}{//\ RemoveDirectoryName("{}adir/"{})\ -\/>\ "{}"{}}}
+\DoxyCodeLine{00156\ TEST(RemoveDirectoryNameTest,\ WhereThereIsNoFileNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00157\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ FilePath(\textcolor{stringliteral}{"{}adir/"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00158\ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \textcolor{comment}{//\ RemoveDirectoryName("{}adir/afile"{})\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00161\ TEST(RemoveDirectoryNameTest,\ ShouldGiveFileNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00162\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},\ FilePath(\textcolor{stringliteral}{"{}adir/afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ RemoveDirectoryName("{}adir/subdir/afile"{})\ -\/>\ "{}afile"{}}}
+\DoxyCodeLine{00166\ TEST(RemoveDirectoryNameTest,\ ShouldAlsoGiveFileNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00167\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}afile"{}},}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir/subdir/afile"{}}).RemoveDirectoryName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00169\ \}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ RemoveFileName\ "{}"{}\ -\/>\ "{}./"{}}}
+\DoxyCodeLine{00174\ TEST(RemoveFileNameTest,\ EmptyName)\ \{}
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00176\ \ \ \textcolor{comment}{//\ On\ Windows\ CE,\ we\ use\ the\ root\ as\ the\ current\ directory.}}
+\DoxyCodeLine{00177\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00179\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}."{}}\ GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00181\ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \textcolor{comment}{//\ RemoveFileName\ "{}adir/"{}\ -\/>\ "{}adir/"{}}}
+\DoxyCodeLine{00184\ TEST(RemoveFileNameTest,\ ButNoFile)\ \{}
+\DoxyCodeLine{00185\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ RemoveFileName\ "{}adir/afile"{}\ -\/>\ "{}adir/"{}}}
+\DoxyCodeLine{00190\ TEST(RemoveFileNameTest,\ GivesDirName)\ \{}
+\DoxyCodeLine{00191\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00193\ \}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ RemoveFileName\ "{}adir/subdir/afile"{}\ -\/>\ "{}adir/subdir/"{}}}
+\DoxyCodeLine{00196\ TEST(RemoveFileNameTest,\ GivesDirAndSubDirName)\ \{}
+\DoxyCodeLine{00197\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}subdir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}subdir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}})}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .RemoveFileName()}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00201\ \}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \textcolor{comment}{//\ RemoveFileName\ "{}/afile"{}\ -\/>\ "{}/"{}}}
+\DoxyCodeLine{00204\ TEST(RemoveFileNameTest,\ GivesRootDir)\ \{}
+\DoxyCodeLine{00205\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}afile"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00207\ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ALT\_PATH\_SEP\_}}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \textcolor{comment}{//\ Tests\ that\ RemoveFileName()\ works\ with\ the\ alternate\ separator\ on}}
+\DoxyCodeLine{00212\ \textcolor{comment}{//\ Windows.}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \textcolor{comment}{//\ RemoveFileName("{}adir/"{})\ -\/>\ "{}adir/"{}}}
+\DoxyCodeLine{00215\ TEST(RemoveFileNameTest,\ ButNoFileForAlternateSeparator)\ \{}
+\DoxyCodeLine{00216\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir/"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00218\ \}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ RemoveFileName("{}adir/afile"{})\ -\/>\ "{}adir/"{}}}
+\DoxyCodeLine{00221\ TEST(RemoveFileNameTest,\ GivesDirNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00222\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir/afile"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00224\ \}}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{comment}{//\ RemoveFileName("{}adir/subdir/afile"{})\ -\/>\ "{}adir/subdir/"{}}}
+\DoxyCodeLine{00227\ TEST(RemoveFileNameTest,\ GivesDirAndSubDirNameForAlternateSeparator)\ \{}
+\DoxyCodeLine{00228\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}adir"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}subdir"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}adir/subdir/afile"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00230\ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ RemoveFileName("{}/afile"{})\ -\/>\ "{}\(\backslash\)"{}}}
+\DoxyCodeLine{00233\ TEST(RemoveFileNameTest,\ GivesRootDirForAlternateSeparator)\ \{}
+\DoxyCodeLine{00234\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}/afile"{}}).RemoveFileName().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00235\ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ TEST(MakeFileNameTest,\ GenerateWhenNumberIsZero)\ \{}
+\DoxyCodeLine{00240\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}foo"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 0,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00242\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00243\ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ TEST(MakeFileNameTest,\ GenerateFileNameNumberGtZero)\ \{}
+\DoxyCodeLine{00246\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}foo"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 12,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00248\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar\_12.xml"{}},\ actual.string());}
+\DoxyCodeLine{00249\ \}}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ TEST(MakeFileNameTest,\ GenerateFileNameWithSlashNumberIsZero)\ \{}
+\DoxyCodeLine{00252\ \ \ FilePath\ actual\ =\ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_),}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 0,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00254\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00255\ \}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ TEST(MakeFileNameTest,\ GenerateFileNameWithSlashNumberGtZero)\ \{}
+\DoxyCodeLine{00258\ \ \ FilePath\ actual\ =\ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_),}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 12,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00260\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar\_12.xml"{}},\ actual.string());}
+\DoxyCodeLine{00261\ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ TEST(MakeFileNameTest,\ GenerateWhenNumberIsZeroAndDirIsEmpty)\ \{}
+\DoxyCodeLine{00264\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 0,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00266\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00267\ \}}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ TEST(MakeFileNameTest,\ GenerateWhenNumberIsNotZeroAndDirIsEmpty)\ \{}
+\DoxyCodeLine{00270\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ FilePath::MakeFileName(FilePath(\textcolor{stringliteral}{"{}"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar"{}}),\ 14,\ \textcolor{stringliteral}{"{}xml"{}});}
+\DoxyCodeLine{00272\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}bar\_14.xml"{}},\ actual.string());}
+\DoxyCodeLine{00273\ \}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ TEST(ConcatPathsTest,\ WorksWhenDirDoesNotEndWithPathSep)\ \{}
+\DoxyCodeLine{00276\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar.xml"{}}));}
+\DoxyCodeLine{00277\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00278\ \}}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ TEST(ConcatPathsTest,\ WorksWhenPath1EndsWithPathSep)\ \{}
+\DoxyCodeLine{00281\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_),}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}bar.xml"{}}));}
+\DoxyCodeLine{00283\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00284\ \}}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ TEST(ConcatPathsTest,\ Path1BeingEmpty)\ \{}
+\DoxyCodeLine{00287\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar.xml"{}}));}
+\DoxyCodeLine{00288\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}bar.xml"{}},\ actual.string());}
+\DoxyCodeLine{00289\ \}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ TEST(ConcatPathsTest,\ Path2BeingEmpty)\ \{}
+\DoxyCodeLine{00292\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}),\ FilePath(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00293\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,\ actual.string());}
+\DoxyCodeLine{00294\ \}}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ TEST(ConcatPathsTest,\ BothPathBeingEmpty)\ \{}
+\DoxyCodeLine{00297\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}"{}}),\ FilePath(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00298\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ actual.string());}
+\DoxyCodeLine{00299\ \}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ TEST(ConcatPathsTest,\ Path1ContainsPathSep)\ \{}
+\DoxyCodeLine{00302\ \ \ FilePath\ actual\ =\ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}),}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foobar.xml"{}}));}
+\DoxyCodeLine{00304\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}foobar.xml"{}},}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ actual.string());}
+\DoxyCodeLine{00306\ \}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ TEST(ConcatPathsTest,\ Path2ContainsPathSep)\ \{}
+\DoxyCodeLine{00309\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_),}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}}));}
+\DoxyCodeLine{00312\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar.xml"{}},}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ actual.string());}
+\DoxyCodeLine{00314\ \}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ TEST(ConcatPathsTest,\ Path2EndsWithPathSep)\ \{}
+\DoxyCodeLine{00317\ \ \ FilePath\ actual\ =}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ FilePath::ConcatPaths(FilePath(\textcolor{stringliteral}{"{}foo"{}}),\ FilePath(\textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_));}
+\DoxyCodeLine{00319\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_,\ actual.string());}
+\DoxyCodeLine{00320\ \}}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{comment}{//\ RemoveTrailingPathSeparator\ "{}"{}\ -\/>\ "{}"{}}}
+\DoxyCodeLine{00323\ TEST(RemoveTrailingPathSeparatorTest,\ EmptyString)\ \{}
+\DoxyCodeLine{00324\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ FilePath(\textcolor{stringliteral}{"{}"{}}).RemoveTrailingPathSeparator().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00325\ \}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \textcolor{comment}{//\ RemoveTrailingPathSeparator\ "{}foo"{}\ -\/>\ "{}foo"{}}}
+\DoxyCodeLine{00328\ TEST(RemoveTrailingPathSeparatorTest,\ FileNoSlashString)\ \{}
+\DoxyCodeLine{00329\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}},\ FilePath(\textcolor{stringliteral}{"{}foo"{}}).RemoveTrailingPathSeparator().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00330\ \}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \textcolor{comment}{//\ RemoveTrailingPathSeparator\ "{}foo/"{}\ -\/>\ "{}foo"{}}}
+\DoxyCodeLine{00333\ TEST(RemoveTrailingPathSeparatorTest,\ ShouldRemoveTrailingSeparator)\ \{}
+\DoxyCodeLine{00334\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}foo"{}},}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_).RemoveTrailingPathSeparator().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00337\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ALT\_PATH\_SEP\_}}
+\DoxyCodeLine{00338\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}},\ FilePath(\textcolor{stringliteral}{"{}foo/"{}}).RemoveTrailingPathSeparator().\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00339\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00340\ \}}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \textcolor{comment}{//\ RemoveTrailingPathSeparator\ "{}foo/bar/"{}\ -\/>\ "{}foo/bar/"{}}}
+\DoxyCodeLine{00343\ TEST(RemoveTrailingPathSeparatorTest,\ ShouldRemoveLastSeparator)\ \{}
+\DoxyCodeLine{00344\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}\ GTEST\_PATH\_SEP\_)}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .RemoveTrailingPathSeparator()}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00348\ \}}
+\DoxyCodeLine{00349\ }
+\DoxyCodeLine{00350\ \textcolor{comment}{//\ RemoveTrailingPathSeparator\ "{}foo/bar"{}\ -\/>\ "{}foo/bar"{}}}
+\DoxyCodeLine{00351\ TEST(RemoveTrailingPathSeparatorTest,\ ShouldReturnUnmodified)\ \{}
+\DoxyCodeLine{00352\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},\ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}})}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .RemoveTrailingPathSeparator()}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00355\ \}}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ TEST(DirectoryTest,\ RootDirectoryExists)\ \{}
+\DoxyCodeLine{00358\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{comment}{//\ We\ are\ on\ Windows.}}
+\DoxyCodeLine{00359\ \ \ \textcolor{keywordtype}{char}\ current\_drive[\_MAX\_PATH];\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00360\ \ \ current\_drive[0]\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(\_getdrive()\ +\ \textcolor{charliteral}{'A'}\ -\/\ 1);}
+\DoxyCodeLine{00361\ \ \ current\_drive[1]\ =\ \textcolor{charliteral}{':'};}
+\DoxyCodeLine{00362\ \ \ current\_drive[2]\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{00363\ \ \ current\_drive[3]\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00364\ \ \ EXPECT\_TRUE(FilePath(current\_drive).DirectoryExists());}
+\DoxyCodeLine{00365\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00366\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}/"{}}).DirectoryExists());}
+\DoxyCodeLine{00367\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00368\ \}}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00371\ TEST(DirectoryTest,\ RootOfWrongDriveDoesNotExists)\ \{}
+\DoxyCodeLine{00372\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ saved\_drive\_\ =\ \_getdrive();}
+\DoxyCodeLine{00373\ \ \ \textcolor{comment}{//\ Find\ a\ drive\ that\ doesn't\ exist.\ Start\ with\ 'Z'\ to\ avoid\ common\ ones.}}
+\DoxyCodeLine{00374\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{char}\ drive\ =\ \textcolor{charliteral}{'Z'};\ drive\ >=\ \textcolor{charliteral}{'A'};\ drive-\/-\/)}
+\DoxyCodeLine{00375\ \ \ \ \ \textcolor{keywordflow}{if}\ (\_chdrive(drive\ -\/\ \textcolor{charliteral}{'A'}\ +\ 1)\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ non\_drive[\_MAX\_PATH];\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ non\_drive[0]\ =\ drive;}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ non\_drive[1]\ =\ \textcolor{charliteral}{':'};}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ non\_drive[2]\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ non\_drive[3]\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ EXPECT\_FALSE(FilePath(non\_drive).DirectoryExists());}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00383\ \ \ \ \ \}}
+\DoxyCodeLine{00384\ \ \ \_chdrive(saved\_drive\_);}
+\DoxyCodeLine{00385\ \}}
+\DoxyCodeLine{00386\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00387\ }
+\DoxyCodeLine{00388\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00389\ \textcolor{comment}{//\ Windows\ CE\ \_does\_\ consider\ an\ empty\ directory\ to\ exist.}}
+\DoxyCodeLine{00390\ TEST(DirectoryTest,\ EmptyPathDirectoryDoesNotExist)\ \{}
+\DoxyCodeLine{00391\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}"{}}).DirectoryExists());}
+\DoxyCodeLine{00392\ \}}
+\DoxyCodeLine{00393\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00395\ TEST(DirectoryTest,\ CurrentDirectoryExists)\ \{}
+\DoxyCodeLine{00396\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ \ }\textcolor{comment}{//\ We\ are\ on\ Windows.}}
+\DoxyCodeLine{00397\ \textcolor{preprocessor}{\#ifndef\ \_WIN32\_CE\ \ \ \ \ }\textcolor{comment}{//\ Windows\ CE\ doesn't\ have\ a\ current\ directory.}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}."{}}).DirectoryExists());}
+\DoxyCodeLine{00400\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}.\(\backslash\)\(\backslash\)"{}}).DirectoryExists());}
+\DoxyCodeLine{00401\ }
+\DoxyCodeLine{00402\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_WIN32\_CE}}
+\DoxyCodeLine{00403\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00404\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}."{}}).DirectoryExists());}
+\DoxyCodeLine{00405\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}./"{}}).DirectoryExists());}
+\DoxyCodeLine{00406\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00407\ \}}
+\DoxyCodeLine{00408\ }
+\DoxyCodeLine{00409\ \textcolor{comment}{//\ "{}foo/bar"{}\ ==\ foo//bar"{}\ ==\ "{}foo///bar"{}}}
+\DoxyCodeLine{00410\ TEST(NormalizeTest,\ MultipleConsecutiveSeparatorsInMidstring)\ \{}
+\DoxyCodeLine{00411\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00413\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00415\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}})}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ .\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00419\ \}}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00421\ \textcolor{comment}{//\ "{}/bar"{}\ ==\ //bar"{}\ ==\ "{}///bar"{}}}
+\DoxyCodeLine{00422\ TEST(NormalizeTest,\ MultipleConsecutiveSeparatorsAtStringStart)\ \{}
+\DoxyCodeLine{00423\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},\ FilePath(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00424\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00425\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00427\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00428\ \ \ EXPECT\_EQ(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00430\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00431\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}},}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ FilePath(GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00434\ \}}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00436\ \textcolor{comment}{//\ "{}foo/"{}\ ==\ foo//"{}\ ==\ "{}foo///"{}}}
+\DoxyCodeLine{00437\ TEST(NormalizeTest,\ MultipleConsecutiveSeparatorsAtStringEnd)\ \{}
+\DoxyCodeLine{00438\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00439\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00441\ \ \ EXPECT\_EQ(}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_\ GTEST\_PATH\_SEP\_).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00444\ \}}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00446\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ALT\_PATH\_SEP\_}}
+\DoxyCodeLine{00447\ }
+\DoxyCodeLine{00448\ \textcolor{comment}{//\ Tests\ that\ separators\ at\ the\ end\ of\ the\ string\ are\ normalized}}
+\DoxyCodeLine{00449\ \textcolor{comment}{//\ regardless\ of\ their\ combination\ (e.g.\ "{}foo\(\backslash\)"{}\ =="{}foo/\(\backslash\)"{}\ ==}}
+\DoxyCodeLine{00450\ \textcolor{comment}{//\ "{}foo\(\backslash\)\(\backslash\)/"{}).}}
+\DoxyCodeLine{00451\ TEST(NormalizeTest,\ MixAlternateSeparatorAtStringEnd)\ \{}
+\DoxyCodeLine{00452\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}foo/"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00453\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}/"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00455\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo"{}}\ GTEST\_PATH\_SEP\_,\ FilePath(\textcolor{stringliteral}{"{}foo//"{}}\ GTEST\_PATH\_SEP\_).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00456\ \}}
+\DoxyCodeLine{00457\ }
+\DoxyCodeLine{00458\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00460\ TEST(AssignmentOperatorTest,\ DefaultAssignedToNonDefault)\ \{}
+\DoxyCodeLine{00461\ \ \ FilePath\ default\_path;}
+\DoxyCodeLine{00462\ \ \ FilePath\ non\_default\_path(\textcolor{stringliteral}{"{}path"{}});}
+\DoxyCodeLine{00463\ \ \ non\_default\_path\ =\ default\_path;}
+\DoxyCodeLine{00464\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ non\_default\_path.string());}
+\DoxyCodeLine{00465\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ default\_path.string());\ \ \textcolor{comment}{//\ RHS\ var\ is\ unchanged.}}
+\DoxyCodeLine{00466\ \}}
+\DoxyCodeLine{00467\ }
+\DoxyCodeLine{00468\ TEST(AssignmentOperatorTest,\ NonDefaultAssignedToDefault)\ \{}
+\DoxyCodeLine{00469\ \ \ FilePath\ non\_default\_path(\textcolor{stringliteral}{"{}path"{}});}
+\DoxyCodeLine{00470\ \ \ FilePath\ default\_path;}
+\DoxyCodeLine{00471\ \ \ default\_path\ =\ non\_default\_path;}
+\DoxyCodeLine{00472\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}path"{}},\ default\_path.string());}
+\DoxyCodeLine{00473\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}path"{}},\ non\_default\_path.string());\ \ \textcolor{comment}{//\ RHS\ var\ is\ unchanged.}}
+\DoxyCodeLine{00474\ \}}
+\DoxyCodeLine{00475\ }
+\DoxyCodeLine{00476\ TEST(AssignmentOperatorTest,\ ConstAssignedToNonConst)\ \{}
+\DoxyCodeLine{00477\ \ \ \textcolor{keyword}{const}\ FilePath\ const\_default\_path(\textcolor{stringliteral}{"{}const\_path"{}});}
+\DoxyCodeLine{00478\ \ \ FilePath\ non\_default\_path(\textcolor{stringliteral}{"{}path"{}});}
+\DoxyCodeLine{00479\ \ \ non\_default\_path\ =\ const\_default\_path;}
+\DoxyCodeLine{00480\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}const\_path"{}},\ non\_default\_path.string());}
+\DoxyCodeLine{00481\ \}}
+\DoxyCodeLine{00482\ }
+\DoxyCodeLine{00483\ \textcolor{keyword}{class\ }DirectoryCreationTest\ :\ \textcolor{keyword}{public}\ Test\ \{}
+\DoxyCodeLine{00484\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00485\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00486\ \ \ \ \ testdata\_path\_.Set(}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ FilePath(TempDir()\ +\ GetCurrentExecutableName().\textcolor{keywordtype}{string}()\ +}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\_directory\_creation"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}test"{}}\ GTEST\_PATH\_SEP\_));}
+\DoxyCodeLine{00489\ \ \ \ \ testdata\_file\_.Set(testdata\_path\_.RemoveTrailingPathSeparator());}
+\DoxyCodeLine{00490\ }
+\DoxyCodeLine{00491\ \ \ \ \ unique\_file0\_.Set(}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ FilePath::MakeFileName(testdata\_path\_,\ FilePath(\textcolor{stringliteral}{"{}unique"{}}),\ 0,\ \textcolor{stringliteral}{"{}txt"{}}));}
+\DoxyCodeLine{00493\ \ \ \ \ unique\_file1\_.Set(}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ FilePath::MakeFileName(testdata\_path\_,\ FilePath(\textcolor{stringliteral}{"{}unique"{}}),\ 1,\ \textcolor{stringliteral}{"{}txt"{}}));}
+\DoxyCodeLine{00495\ }
+\DoxyCodeLine{00496\ \ \ \ \ remove(testdata\_file\_.c\_str());}
+\DoxyCodeLine{00497\ \ \ \ \ remove(unique\_file0\_.c\_str());}
+\DoxyCodeLine{00498\ \ \ \ \ remove(unique\_file1\_.c\_str());}
+\DoxyCodeLine{00499\ \ \ \ \ posix::RmDir(testdata\_path\_.c\_str());}
+\DoxyCodeLine{00500\ \ \ \}}
+\DoxyCodeLine{00501\ }
+\DoxyCodeLine{00502\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00503\ \ \ \ \ remove(testdata\_file\_.c\_str());}
+\DoxyCodeLine{00504\ \ \ \ \ remove(unique\_file0\_.c\_str());}
+\DoxyCodeLine{00505\ \ \ \ \ remove(unique\_file1\_.c\_str());}
+\DoxyCodeLine{00506\ \ \ \ \ posix::RmDir(testdata\_path\_.c\_str());}
+\DoxyCodeLine{00507\ \ \ \}}
+\DoxyCodeLine{00508\ }
+\DoxyCodeLine{00509\ \ \ \textcolor{keywordtype}{void}\ CreateTextFile(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename)\ \{}
+\DoxyCodeLine{00510\ \ \ \ \ FILE*\ f\ =\ posix::FOpen(filename,\ \textcolor{stringliteral}{"{}w"{}});}
+\DoxyCodeLine{00511\ \ \ \ \ fprintf(f,\ \textcolor{stringliteral}{"{}text\(\backslash\)n"{}});}
+\DoxyCodeLine{00512\ \ \ \ \ fclose(f);}
+\DoxyCodeLine{00513\ \ \ \}}
+\DoxyCodeLine{00514\ }
+\DoxyCodeLine{00515\ \ \ \textcolor{comment}{//\ Strings\ representing\ a\ directory\ and\ a\ file,\ with\ identical\ paths}}
+\DoxyCodeLine{00516\ \ \ \textcolor{comment}{//\ except\ for\ the\ trailing\ separator\ character\ that\ distinquishes}}
+\DoxyCodeLine{00517\ \ \ \textcolor{comment}{//\ a\ directory\ named\ 'test'\ from\ a\ file\ named\ 'test'.\ Example\ names:}}
+\DoxyCodeLine{00518\ \ \ FilePath\ testdata\_path\_;\ \ \textcolor{comment}{//\ "{}/tmp/directory\_creation/test/"{}}}
+\DoxyCodeLine{00519\ \ \ FilePath\ testdata\_file\_;\ \ \textcolor{comment}{//\ "{}/tmp/directory\_creation/test"{}}}
+\DoxyCodeLine{00520\ \ \ FilePath\ unique\_file0\_;\ \ \ \textcolor{comment}{//\ "{}/tmp/directory\_creation/test/unique.txt"{}}}
+\DoxyCodeLine{00521\ \ \ FilePath\ unique\_file1\_;\ \ \ \textcolor{comment}{//\ "{}/tmp/directory\_creation/test/unique\_1.txt"{}}}
+\DoxyCodeLine{00522\ \};}
+\DoxyCodeLine{00523\ }
+\DoxyCodeLine{00524\ TEST\_F(DirectoryCreationTest,\ CreateDirectoriesRecursively)\ \{}
+\DoxyCodeLine{00525\ \ \ EXPECT\_FALSE(testdata\_path\_.DirectoryExists())\ <<\ testdata\_path\_.string();}
+\DoxyCodeLine{00526\ \ \ EXPECT\_TRUE(testdata\_path\_.CreateDirectoriesRecursively());}
+\DoxyCodeLine{00527\ \ \ EXPECT\_TRUE(testdata\_path\_.DirectoryExists());}
+\DoxyCodeLine{00528\ \}}
+\DoxyCodeLine{00529\ }
+\DoxyCodeLine{00530\ TEST\_F(DirectoryCreationTest,\ CreateDirectoriesForAlreadyExistingPath)\ \{}
+\DoxyCodeLine{00531\ \ \ EXPECT\_FALSE(testdata\_path\_.DirectoryExists())\ <<\ testdata\_path\_.string();}
+\DoxyCodeLine{00532\ \ \ EXPECT\_TRUE(testdata\_path\_.CreateDirectoriesRecursively());}
+\DoxyCodeLine{00533\ \ \ \textcolor{comment}{//\ Call\ 'create'\ again...\ should\ still\ succeed.}}
+\DoxyCodeLine{00534\ \ \ EXPECT\_TRUE(testdata\_path\_.CreateDirectoriesRecursively());}
+\DoxyCodeLine{00535\ \}}
+\DoxyCodeLine{00536\ }
+\DoxyCodeLine{00537\ TEST\_F(DirectoryCreationTest,\ CreateDirectoriesAndUniqueFilename)\ \{}
+\DoxyCodeLine{00538\ \ \ FilePath\ file\_path(FilePath::GenerateUniqueFileName(}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ testdata\_path\_,\ FilePath(\textcolor{stringliteral}{"{}unique"{}}),\ \textcolor{stringliteral}{"{}txt"{}}));}
+\DoxyCodeLine{00540\ \ \ EXPECT\_EQ(unique\_file0\_.string(),\ file\_path.string());}
+\DoxyCodeLine{00541\ \ \ EXPECT\_FALSE(file\_path.FileOrDirectoryExists());\ \ \textcolor{comment}{//\ file\ not\ there}}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ \ \ testdata\_path\_.CreateDirectoriesRecursively();}
+\DoxyCodeLine{00544\ \ \ EXPECT\_FALSE(file\_path.FileOrDirectoryExists());\ \ \textcolor{comment}{//\ file\ still\ not\ there}}
+\DoxyCodeLine{00545\ \ \ CreateTextFile(file\_path.c\_str());}
+\DoxyCodeLine{00546\ \ \ EXPECT\_TRUE(file\_path.FileOrDirectoryExists());}
+\DoxyCodeLine{00547\ }
+\DoxyCodeLine{00548\ \ \ FilePath\ file\_path2(FilePath::GenerateUniqueFileName(}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ testdata\_path\_,\ FilePath(\textcolor{stringliteral}{"{}unique"{}}),\ \textcolor{stringliteral}{"{}txt"{}}));}
+\DoxyCodeLine{00550\ \ \ EXPECT\_EQ(unique\_file1\_.string(),\ file\_path2.string());}
+\DoxyCodeLine{00551\ \ \ EXPECT\_FALSE(file\_path2.FileOrDirectoryExists());\ \ \textcolor{comment}{//\ file\ not\ there}}
+\DoxyCodeLine{00552\ \ \ CreateTextFile(file\_path2.c\_str());}
+\DoxyCodeLine{00553\ \ \ EXPECT\_TRUE(file\_path2.FileOrDirectoryExists());}
+\DoxyCodeLine{00554\ \}}
+\DoxyCodeLine{00555\ }
+\DoxyCodeLine{00556\ TEST\_F(DirectoryCreationTest,\ CreateDirectoriesFail)\ \{}
+\DoxyCodeLine{00557\ \ \ \textcolor{comment}{//\ force\ a\ failure\ by\ putting\ a\ file\ where\ we\ will\ try\ to\ create\ a\ directory.}}
+\DoxyCodeLine{00558\ \ \ CreateTextFile(testdata\_file\_.c\_str());}
+\DoxyCodeLine{00559\ \ \ EXPECT\_TRUE(testdata\_file\_.FileOrDirectoryExists());}
+\DoxyCodeLine{00560\ \ \ EXPECT\_FALSE(testdata\_file\_.DirectoryExists());}
+\DoxyCodeLine{00561\ \ \ EXPECT\_FALSE(testdata\_file\_.CreateDirectoriesRecursively());}
+\DoxyCodeLine{00562\ \}}
+\DoxyCodeLine{00563\ }
+\DoxyCodeLine{00564\ TEST(NoDirectoryCreationTest,\ CreateNoDirectoriesForDefaultXmlFile)\ \{}
+\DoxyCodeLine{00565\ \ \ \textcolor{keyword}{const}\ FilePath\ test\_detail\_xml(\textcolor{stringliteral}{"{}test\_detail.xml"{}});}
+\DoxyCodeLine{00566\ \ \ EXPECT\_FALSE(test\_detail\_xml.CreateDirectoriesRecursively());}
+\DoxyCodeLine{00567\ \}}
+\DoxyCodeLine{00568\ }
+\DoxyCodeLine{00569\ TEST(FilePathTest,\ DefaultConstructor)\ \{}
+\DoxyCodeLine{00570\ \ \ FilePath\ fp;}
+\DoxyCodeLine{00571\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}"{}},\ fp.string());}
+\DoxyCodeLine{00572\ \}}
+\DoxyCodeLine{00573\ }
+\DoxyCodeLine{00574\ TEST(FilePathTest,\ CharAndCopyConstructors)\ \{}
+\DoxyCodeLine{00575\ \ \ \textcolor{keyword}{const}\ FilePath\ fp(\textcolor{stringliteral}{"{}spicy"{}});}
+\DoxyCodeLine{00576\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}spicy"{}},\ fp.string());}
+\DoxyCodeLine{00577\ }
+\DoxyCodeLine{00578\ \ \ \textcolor{keyword}{const}\ FilePath\ fp\_copy(fp);}
+\DoxyCodeLine{00579\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}spicy"{}},\ fp\_copy.string());}
+\DoxyCodeLine{00580\ \}}
+\DoxyCodeLine{00581\ }
+\DoxyCodeLine{00582\ TEST(FilePathTest,\ StringConstructor)\ \{}
+\DoxyCodeLine{00583\ \ \ \textcolor{keyword}{const}\ FilePath\ fp(std::string(\textcolor{stringliteral}{"{}cider"{}}));}
+\DoxyCodeLine{00584\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}cider"{}},\ fp.string());}
+\DoxyCodeLine{00585\ \}}
+\DoxyCodeLine{00586\ }
+\DoxyCodeLine{00587\ TEST(FilePathTest,\ Set)\ \{}
+\DoxyCodeLine{00588\ \ \ \textcolor{keyword}{const}\ FilePath\ apple(\textcolor{stringliteral}{"{}apple"{}});}
+\DoxyCodeLine{00589\ \ \ FilePath\ mac(\textcolor{stringliteral}{"{}mac"{}});}
+\DoxyCodeLine{00590\ \ \ mac.Set(apple);\ \ \textcolor{comment}{//\ Implement\ Set()\ since\ overloading\ operator=\ is\ forbidden.}}
+\DoxyCodeLine{00591\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}apple"{}},\ mac.string());}
+\DoxyCodeLine{00592\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}apple"{}},\ apple.string());}
+\DoxyCodeLine{00593\ \}}
+\DoxyCodeLine{00594\ }
+\DoxyCodeLine{00595\ TEST(FilePathTest,\ ToString)\ \{}
+\DoxyCodeLine{00596\ \ \ \textcolor{keyword}{const}\ FilePath\ file(\textcolor{stringliteral}{"{}drink"{}});}
+\DoxyCodeLine{00597\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}drink"{}},\ file.string());}
+\DoxyCodeLine{00598\ \}}
+\DoxyCodeLine{00599\ }
+\DoxyCodeLine{00600\ TEST(FilePathTest,\ RemoveExtension)\ \{}
+\DoxyCodeLine{00601\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}app"{}},\ FilePath(\textcolor{stringliteral}{"{}app.cc"{}}).RemoveExtension(\textcolor{stringliteral}{"{}cc"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00602\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}app"{}},\ FilePath(\textcolor{stringliteral}{"{}app.exe"{}}).RemoveExtension(\textcolor{stringliteral}{"{}exe"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00603\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}APP"{}},\ FilePath(\textcolor{stringliteral}{"{}APP.EXE"{}}).RemoveExtension(\textcolor{stringliteral}{"{}exe"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00604\ \}}
+\DoxyCodeLine{00605\ }
+\DoxyCodeLine{00606\ TEST(FilePathTest,\ RemoveExtensionWhenThereIsNoExtension)\ \{}
+\DoxyCodeLine{00607\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}app"{}},\ FilePath(\textcolor{stringliteral}{"{}app"{}}).RemoveExtension(\textcolor{stringliteral}{"{}exe"{}}).\textcolor{keywordtype}{string}());}
+\DoxyCodeLine{00608\ \}}
+\DoxyCodeLine{00609\ }
+\DoxyCodeLine{00610\ TEST(FilePathTest,\ IsDirectory)\ \{}
+\DoxyCodeLine{00611\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}cola"{}}).IsDirectory());}
+\DoxyCodeLine{00612\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}koala"{}}\ GTEST\_PATH\_SEP\_).IsDirectory());}
+\DoxyCodeLine{00613\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_ALT\_PATH\_SEP\_}}
+\DoxyCodeLine{00614\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}koala/"{}}).IsDirectory());}
+\DoxyCodeLine{00615\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00616\ \}}
+\DoxyCodeLine{00617\ }
+\DoxyCodeLine{00618\ TEST(FilePathTest,\ IsAbsolutePath)\ \{}
+\DoxyCodeLine{00619\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}is"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}relative"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00620\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00621\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00622\ \ \ EXPECT\_TRUE(}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}is\_not"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}relative"{}})}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ \ \ .IsAbsolutePath());}
+\DoxyCodeLine{00625\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}c:foo"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}bar"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00626\ \ \ EXPECT\_TRUE(}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ FilePath(\textcolor{stringliteral}{"{}c:/"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}is\_not"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}relative"{}})}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \ \ .IsAbsolutePath());}
+\DoxyCodeLine{00629\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}d:/Windows"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00630\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00631\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share\(\backslash\)\(\backslash\)Folder"{}}).IsAbsolutePath());}
+\DoxyCodeLine{00632\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00633\ \ \ EXPECT\_TRUE(FilePath(GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}is\_not"{}}\ GTEST\_PATH\_SEP\_\ \textcolor{stringliteral}{"{}relative"{}})}
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .IsAbsolutePath());}
+\DoxyCodeLine{00635\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00636\ \}}
+\DoxyCodeLine{00637\ }
+\DoxyCodeLine{00638\ TEST(FilePathTest,\ IsRootDirectory)\ \{}
+\DoxyCodeLine{00639\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00640\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}a:\(\backslash\)\(\backslash\)"{}}).IsRootDirectory());}
+\DoxyCodeLine{00641\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}Z:/"{}}).IsRootDirectory());}
+\DoxyCodeLine{00642\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}e://"{}}).IsRootDirectory());}
+\DoxyCodeLine{00643\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}"{}}).IsRootDirectory());}
+\DoxyCodeLine{00644\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}b:"{}}).IsRootDirectory());}
+\DoxyCodeLine{00645\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}b:a"{}}).IsRootDirectory());}
+\DoxyCodeLine{00646\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}8:/"{}}).IsRootDirectory());}
+\DoxyCodeLine{00647\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}c|/"{}}).IsRootDirectory());}
+\DoxyCodeLine{00648\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}c:/"{}}).IsRootDirectory());}
+\DoxyCodeLine{00649\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}d:/Windows"{}}).IsRootDirectory());}
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00651\ \ \ \textcolor{comment}{//\ This\ is\ for\ backward\ compatibility,\ since\ callers\ (even\ in\ this\ library)}}
+\DoxyCodeLine{00652\ \ \ \textcolor{comment}{//\ have\ assumed\ IsRootDirectory()\ implies\ a\ trailing\ directory\ separator.}}
+\DoxyCodeLine{00653\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share"{}}).IsRootDirectory());}
+\DoxyCodeLine{00654\ }
+\DoxyCodeLine{00655\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share\(\backslash\)\(\backslash\)"{}}).IsRootDirectory());}
+\DoxyCodeLine{00656\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share\(\backslash\)\(\backslash\)."{}}).IsRootDirectory());}
+\DoxyCodeLine{00657\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)Host\(\backslash\)\(\backslash\)Share\(\backslash\)\(\backslash\)C\$\(\backslash\)\(\backslash\)"{}}).IsRootDirectory());}
+\DoxyCodeLine{00658\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00659\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}/"{}}).IsRootDirectory());}
+\DoxyCodeLine{00660\ \ \ EXPECT\_TRUE(FilePath(\textcolor{stringliteral}{"{}//"{}}).IsRootDirectory());}
+\DoxyCodeLine{00661\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}"{}}).IsRootDirectory());}
+\DoxyCodeLine{00662\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)"{}}).IsRootDirectory());}
+\DoxyCodeLine{00663\ \ \ EXPECT\_FALSE(FilePath(\textcolor{stringliteral}{"{}/x"{}}).IsRootDirectory());}
+\DoxyCodeLine{00664\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00665\ \}}
+\DoxyCodeLine{00666\ }
+\DoxyCodeLine{00667\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00668\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00669\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

@@ -1,0 +1,9 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="testing::internal::\lDoAllAction\< InitialAction,\l OtherActions... \>::UserConstructorTag",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structtesting_1_1internal_1_1_do_all_action_3_01_initial_action_00_01_other_actions_8_8_8_01_4_1_1_user_constructor_tag.html",tooltip=" "];
+}

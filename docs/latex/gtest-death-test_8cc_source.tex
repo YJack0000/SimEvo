@@ -1,0 +1,1626 @@
+\doxysection{gtest-\/death-\/test.cc}
+\hypertarget{gtest-death-test_8cc_source}{}\label{gtest-death-test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/death-\/test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/src/gtest-\/death-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2005,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ This\ file\ implements\ death\ tests.}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/death-\/test.h"{}}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/custom/gtest.h"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <crt\_externs.h>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <errno.h>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <fcntl.h>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#include\ <signal.h>}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ <stdarg.h>}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ <sys/mman.h>}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ <sys/wait.h>}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#include\ <spawn.h>}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#include\ <lib/fdio/fd.h>}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#include\ <lib/fdio/io.h>}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#include\ <lib/fdio/spawn.h>}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#include\ <lib/zx/channel.h>}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#include\ <lib/zx/port.h>}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#include\ <lib/zx/process.h>}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#include\ <lib/zx/socket.h>}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#include\ <zircon/processargs.h>}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#include\ <zircon/syscalls.h>}}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#include\ <zircon/syscalls/policy.h>}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#include\ <zircon/syscalls/port.h>}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/message.h"{}}}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/string.h"{}}}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ Constants.}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ The\ default\ death\ test\ style.}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//}}
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ This\ is\ defined\ in\ internal/gtest-\/port.h\ as\ "{}fast"{},\ but\ can\ be\ overridden\ by}}
+\DoxyCodeLine{00095\ \textcolor{comment}{//\ a\ definition\ in\ internal/custom/gtest-\/port.h.\ The\ recommended\ value,\ which\ is}}
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ used\ internally\ at\ Google,\ is\ "{}threadsafe"{}.}}
+\DoxyCodeLine{00097\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDefaultDeathTestStyle[]\ =\ GTEST\_DEFAULT\_DEATH\_TEST\_STYLE;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ GTEST\_DEFINE\_string\_(}
+\DoxyCodeLine{00102\ \ \ \ \ death\_test\_style,}
+\DoxyCodeLine{00103\ \ \ \ \ testing::internal::StringFromGTestEnv(\textcolor{stringliteral}{"{}death\_test\_style"{}},}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ testing::kDefaultDeathTestStyle),}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{stringliteral}{"{}Indicates\ how\ to\ run\ a\ death\ test\ in\ a\ forked\ child\ process:\ "{}}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)"{}threadsafe\(\backslash\)"{}\ (child\ process\ re-\/executes\ the\ test\ binary\ "{}}}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{stringliteral}{"{}from\ the\ beginning,\ running\ only\ the\ specific\ death\ test)\ or\ "{}}}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)"{}fast\(\backslash\)"{}\ (child\ process\ runs\ the\ death\ test\ immediately\ "{}}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{stringliteral}{"{}after\ forking)."{}});}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ GTEST\_DEFINE\_bool\_(}
+\DoxyCodeLine{00112\ \ \ \ \ death\_test\_use\_fork,}
+\DoxyCodeLine{00113\ \ \ \ \ testing::internal::BoolFromGTestEnv(\textcolor{stringliteral}{"{}death\_test\_use\_fork"{}},\ \textcolor{keyword}{false}),}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{stringliteral}{"{}Instructs\ to\ use\ fork()/\_exit()\ instead\ of\ clone()\ in\ death\ tests.\ "{}}}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{stringliteral}{"{}Ignored\ and\ always\ uses\ fork()\ on\ POSIX\ systems\ where\ clone()\ is\ not\ "{}}}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{stringliteral}{"{}implemented.\ Useful\ when\ running\ under\ valgrind\ or\ similar\ tools\ if\ "{}}}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{stringliteral}{"{}those\ do\ not\ support\ clone().\ Valgrind\ 3.3.1\ will\ just\ fail\ if\ "{}}}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{stringliteral}{"{}it\ sees\ an\ unsupported\ combination\ of\ clone()\ flags.\ "{}}}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{stringliteral}{"{}It\ is\ not\ recommended\ to\ use\ this\ flag\ w/o\ valgrind\ though\ it\ will\ "{}}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{stringliteral}{"{}work\ in\ 99\%\ of\ the\ cases.\ Once\ valgrind\ is\ fixed,\ this\ flag\ will\ "{}}}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{stringliteral}{"{}most\ likely\ be\ removed."{}});}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ GTEST\_DEFINE\_string\_(}
+\DoxyCodeLine{00124\ \ \ \ \ internal\_run\_death\_test,\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{stringliteral}{"{}Indicates\ the\ file,\ line\ number,\ temporal\ index\ of\ "{}}}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{stringliteral}{"{}the\ single\ death\ test\ to\ run,\ and\ a\ file\ descriptor\ to\ "{}}}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{stringliteral}{"{}which\ a\ success\ code\ may\ be\ sent,\ all\ separated\ by\ "{}}}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{stringliteral}{"{}the\ '|'\ characters.\ \ This\ flag\ is\ specified\ if\ and\ only\ if\ the\ "{}}}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{stringliteral}{"{}current\ process\ is\ a\ sub-\/process\ launched\ for\ running\ a\ thread-\/safe\ "{}}}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{stringliteral}{"{}death\ test.\ \ FOR\ INTERNAL\ USE\ ONLY."{}});}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ Valid\ only\ for\ fast\ death\ tests.\ Indicates\ the\ code\ is\ running\ in\ the}}
+\DoxyCodeLine{00139\ \textcolor{comment}{//\ child\ process\ of\ a\ fast\ style\ death\ test.}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00141\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ g\_in\_fast\_death\_test\_child\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{comment}{//\ Returns\ a\ Boolean\ value\ indicating\ whether\ the\ caller\ is\ currently}}
+\DoxyCodeLine{00145\ \textcolor{comment}{//\ executing\ in\ the\ context\ of\ the\ death\ test\ child\ process.\ \ Tools\ such\ as}}
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ Valgrind\ heap\ checkers\ may\ need\ this\ to\ modify\ their\ behavior\ in\ death}}
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ tests.\ \ IMPORTANT:\ This\ is\ an\ internal\ utility.\ \ Using\ it\ may\ break\ the}}
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ implementation\ of\ death\ tests.\ \ User\ code\ MUST\ NOT\ use\ it.}}
+\DoxyCodeLine{00149\ \textcolor{keywordtype}{bool}\ InDeathTestChild()\ \{}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \textcolor{comment}{//\ On\ Windows\ and\ Fuchsia,\ death\ tests\ are\ thread-\/safe\ regardless\ of\ the\ value}}
+\DoxyCodeLine{00153\ \ \ \textcolor{comment}{//\ of\ the\ death\_test\_style\ flag.}}
+\DoxyCodeLine{00154\ \ \ \textcolor{keywordflow}{return}\ !GTEST\_FLAG\_GET(internal\_run\_death\_test).empty();}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}threadsafe"{}})}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordflow}{return}\ !GTEST\_FLAG\_GET(internal\_run\_death\_test).empty();}
+\DoxyCodeLine{00160\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keywordflow}{return}\ g\_in\_fast\_death\_test\_child;}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ ExitedWithCode\ constructor.}}
+\DoxyCodeLine{00168\ ExitedWithCode::ExitedWithCode(\textcolor{keywordtype}{int}\ exit\_code)\ :\ exit\_code\_(exit\_code)\ \{\}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{comment}{//\ ExitedWithCode\ function-\/call\ operator.}}
+\DoxyCodeLine{00171\ \textcolor{keywordtype}{bool}\ ExitedWithCode::operator()(\textcolor{keywordtype}{int}\ exit\_status)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \textcolor{keywordflow}{return}\ exit\_status\ ==\ exit\_code\_;}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \textcolor{keywordflow}{return}\ WIFEXITED(exit\_status)\ \&\&\ WEXITSTATUS(exit\_status)\ ==\ exit\_code\_;}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00181\ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ KilledBySignal\ constructor.}}
+\DoxyCodeLine{00185\ KilledBySignal::KilledBySignal(\textcolor{keywordtype}{int}\ signum)\ :\ signum\_(signum)\ \{\}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ KilledBySignal\ function-\/call\ operator.}}
+\DoxyCodeLine{00188\ \textcolor{keywordtype}{bool}\ KilledBySignal::operator()(\textcolor{keywordtype}{int}\ exit\_status)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\#if\ defined(GTEST\_KILLED\_BY\_SIGNAL\_OVERRIDE\_)}}
+\DoxyCodeLine{00190\ \ \ \{}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keywordtype}{bool}\ result;}
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordflow}{if}\ (GTEST\_KILLED\_BY\_SIGNAL\_OVERRIDE\_(signum\_,\ exit\_status,\ \&result))\ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00194\ \ \ \ \ \}}
+\DoxyCodeLine{00195\ \ \ \}}
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(GTEST\_KILLED\_BY\_SIGNAL\_OVERRIDE\_)}}
+\DoxyCodeLine{00197\ \ \ \textcolor{keywordflow}{return}\ WIFSIGNALED(exit\_status)\ \&\&\ WTERMSIG(exit\_status)\ ==\ signum\_;}
+\DoxyCodeLine{00198\ \}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \textcolor{comment}{//\ Utilities\ needed\ for\ death\ tests.}}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \textcolor{comment}{//\ Generates\ a\ textual\ description\ of\ a\ given\ exit\ code,\ in\ the\ format}}
+\DoxyCodeLine{00206\ \textcolor{comment}{//\ specified\ by\ wait(2).}}
+\DoxyCodeLine{00207\ \textcolor{keyword}{static}\ std::string\ ExitSummary(\textcolor{keywordtype}{int}\ exit\_code)\ \{}
+\DoxyCodeLine{00208\ \ \ Message\ m;}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \ \ m\ <<\ \textcolor{stringliteral}{"{}Exited\ with\ exit\ status\ "{}}\ <<\ exit\_code;}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \textcolor{keywordflow}{if}\ (WIFEXITED(exit\_code))\ \{}
+\DoxyCodeLine{00217\ \ \ \ \ m\ <<\ \textcolor{stringliteral}{"{}Exited\ with\ exit\ status\ "{}}\ <<\ WEXITSTATUS(exit\_code);}
+\DoxyCodeLine{00218\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (WIFSIGNALED(exit\_code))\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ m\ <<\ \textcolor{stringliteral}{"{}Terminated\ by\ signal\ "{}}\ <<\ WTERMSIG(exit\_code);}
+\DoxyCodeLine{00220\ \ \ \}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\#ifdef\ WCOREDUMP}}
+\DoxyCodeLine{00222\ \ \ \textcolor{keywordflow}{if}\ (WCOREDUMP(exit\_code))\ \{}
+\DoxyCodeLine{00223\ \ \ \ \ m\ <<\ \textcolor{stringliteral}{"{}\ (core\ dumped)"{}};}
+\DoxyCodeLine{00224\ \ \ \}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \ \ \textcolor{keywordflow}{return}\ m.GetString();}
+\DoxyCodeLine{00229\ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ Returns\ true\ if\ exit\_status\ describes\ a\ process\ that\ was\ terminated}}
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ by\ a\ signal,\ or\ exited\ normally\ with\ a\ nonzero\ exit\ code.}}
+\DoxyCodeLine{00233\ \textcolor{keywordtype}{bool}\ ExitedUnsuccessfully(\textcolor{keywordtype}{int}\ exit\_status)\ \{}
+\DoxyCodeLine{00234\ \ \ \textcolor{keywordflow}{return}\ !ExitedWithCode(0)(exit\_status);}
+\DoxyCodeLine{00235\ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00238\ \textcolor{comment}{//\ Generates\ a\ textual\ failure\ message\ when\ a\ death\ test\ finds\ more\ than}}
+\DoxyCodeLine{00239\ \textcolor{comment}{//\ one\ thread\ running,\ or\ cannot\ determine\ the\ number\ of\ threads,\ prior}}
+\DoxyCodeLine{00240\ \textcolor{comment}{//\ to\ executing\ the\ given\ statement.\ \ It\ is\ the\ responsibility\ of\ the}}
+\DoxyCodeLine{00241\ \textcolor{comment}{//\ caller\ not\ to\ pass\ a\ thread\_count\ of\ 1.}}
+\DoxyCodeLine{00242\ \textcolor{keyword}{static}\ std::string\ DeathTestThreadWarning(\textcolor{keywordtype}{size\_t}\ thread\_count)\ \{}
+\DoxyCodeLine{00243\ \ \ Message\ msg;}
+\DoxyCodeLine{00244\ \ \ msg\ <<\ \textcolor{stringliteral}{"{}Death\ tests\ use\ fork(),\ which\ is\ unsafe\ particularly"{}}}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ in\ a\ threaded\ context.\ For\ this\ test,\ "{}}\ <<\ GTEST\_NAME\_\ <<\ \textcolor{stringliteral}{"{}\ "{}};}
+\DoxyCodeLine{00246\ \ \ \textcolor{keywordflow}{if}\ (thread\_count\ ==\ 0)\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ msg\ <<\ \textcolor{stringliteral}{"{}couldn't\ detect\ the\ number\ of\ threads."{}};}
+\DoxyCodeLine{00248\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00249\ \ \ \ \ msg\ <<\ \textcolor{stringliteral}{"{}detected\ "{}}\ <<\ thread\_count\ <<\ \textcolor{stringliteral}{"{}\ threads."{}};}
+\DoxyCodeLine{00250\ \ \ \}}
+\DoxyCodeLine{00251\ \ \ msg\ <<\ \textcolor{stringliteral}{"{}\ See\ "{}}}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}https://github.com/google/googletest/blob/main/docs/"{}}}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}advanced.md\#death-\/tests-\/and-\/threads"{}}}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ for\ more\ explanation\ and\ suggested\ solutions,\ especially\ if"{}}}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ this\ is\ the\ last\ message\ you\ see\ before\ your\ test\ times\ out."{}};}
+\DoxyCodeLine{00256\ \ \ \textcolor{keywordflow}{return}\ msg.GetString();}
+\DoxyCodeLine{00257\ \}}
+\DoxyCodeLine{00258\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\ \&\&\ !GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00259\ }
+\DoxyCodeLine{00260\ \textcolor{comment}{//\ Flag\ characters\ for\ reporting\ a\ death\ test\ that\ did\ not\ die.}}
+\DoxyCodeLine{00261\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestLived\ =\ \textcolor{charliteral}{'L'};}
+\DoxyCodeLine{00262\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestReturned\ =\ \textcolor{charliteral}{'R'};}
+\DoxyCodeLine{00263\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestThrew\ =\ \textcolor{charliteral}{'T'};}
+\DoxyCodeLine{00264\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kDeathTestInternalError\ =\ \textcolor{charliteral}{'I'};}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ File\ descriptor\ used\ for\ the\ pipe\ in\ the\ child\ process.}}
+\DoxyCodeLine{00269\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kFuchsiaReadPipeFd\ =\ 3;}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \textcolor{comment}{//\ An\ enumeration\ describing\ all\ of\ the\ possible\ ways\ that\ a\ death\ test\ can}}
+\DoxyCodeLine{00274\ \textcolor{comment}{//\ conclude.\ \ DIED\ means\ that\ the\ process\ died\ while\ executing\ the\ test}}
+\DoxyCodeLine{00275\ \textcolor{comment}{//\ code;\ LIVED\ means\ that\ process\ lived\ beyond\ the\ end\ of\ the\ test\ code;}}
+\DoxyCodeLine{00276\ \textcolor{comment}{//\ RETURNED\ means\ that\ the\ test\ statement\ attempted\ to\ execute\ a\ return}}
+\DoxyCodeLine{00277\ \textcolor{comment}{//\ statement,\ which\ is\ not\ allowed;\ THREW\ means\ that\ the\ test\ statement}}
+\DoxyCodeLine{00278\ \textcolor{comment}{//\ returned\ control\ by\ throwing\ an\ exception.\ \ IN\_PROGRESS\ means\ the\ test}}
+\DoxyCodeLine{00279\ \textcolor{comment}{//\ has\ not\ yet\ concluded.}}
+\DoxyCodeLine{00280\ \textcolor{keyword}{enum}\ DeathTestOutcome\ \{\ IN\_PROGRESS,\ DIED,\ LIVED,\ RETURNED,\ THREW\ \};}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \textcolor{comment}{//\ Routine\ for\ aborting\ the\ program\ which\ is\ safe\ to\ call\ from\ an}}
+\DoxyCodeLine{00283\ \textcolor{comment}{//\ exec-\/style\ death\ test\ child\ process,\ in\ which\ case\ the\ error}}
+\DoxyCodeLine{00284\ \textcolor{comment}{//\ message\ is\ propagated\ back\ to\ the\ parent\ process.\ \ Otherwise,\ the}}
+\DoxyCodeLine{00285\ \textcolor{comment}{//\ message\ is\ simply\ printed\ to\ stderr.\ \ In\ either\ case,\ the\ program}}
+\DoxyCodeLine{00286\ \textcolor{comment}{//\ then\ exits\ with\ status\ 1.}}
+\DoxyCodeLine{00287\ [[noreturn]]\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ DeathTestAbort(\textcolor{keyword}{const}\ std::string\&\ message)\ \{}
+\DoxyCodeLine{00288\ \ \ \textcolor{comment}{//\ On\ a\ POSIX\ system,\ this\ function\ may\ be\ called\ from\ a\ threadsafe-\/style}}
+\DoxyCodeLine{00289\ \ \ \textcolor{comment}{//\ death\ test\ child\ process,\ which\ operates\ on\ a\ very\ small\ stack.\ \ Use}}
+\DoxyCodeLine{00290\ \ \ \textcolor{comment}{//\ the\ heap\ for\ any\ additional\ non-\/minuscule\ memory\ requirements.}}
+\DoxyCodeLine{00291\ \ \ \textcolor{keyword}{const}\ InternalRunDeathTestFlag*\ \textcolor{keyword}{const}\ flag\ =}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ GetUnitTestImpl()-\/>internal\_run\_death\_test\_flag();}
+\DoxyCodeLine{00293\ \ \ \textcolor{keywordflow}{if}\ (flag\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00294\ \ \ \ \ FILE*\ parent\ =\ posix::FDOpen(flag-\/>write\_fd(),\ \textcolor{stringliteral}{"{}w"{}});}
+\DoxyCodeLine{00295\ \ \ \ \ fputc(kDeathTestInternalError,\ parent);}
+\DoxyCodeLine{00296\ \ \ \ \ fprintf(parent,\ \textcolor{stringliteral}{"{}\%s"{}},\ message.c\_str());}
+\DoxyCodeLine{00297\ \ \ \ \ fflush(parent);}
+\DoxyCodeLine{00298\ \ \ \ \ \_exit(1);}
+\DoxyCodeLine{00299\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00300\ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}\%s"{}},\ message.c\_str());}
+\DoxyCodeLine{00301\ \ \ \ \ fflush(stderr);}
+\DoxyCodeLine{00302\ \ \ \ \ posix::Abort();}
+\DoxyCodeLine{00303\ \ \ \}}
+\DoxyCodeLine{00304\ \}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \textcolor{comment}{//\ A\ replacement\ for\ CHECK\ that\ calls\ DeathTestAbort\ if\ the\ assertion}}
+\DoxyCodeLine{00307\ \textcolor{comment}{//\ fails.}}
+\DoxyCodeLine{00308\ \textcolor{preprocessor}{\#define\ GTEST\_DEATH\_TEST\_CHECK\_(expression)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00309\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00310\ \textcolor{preprocessor}{\ \ \ \ if\ (!::testing::internal::IsTrue(expression))\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00311\ \textcolor{preprocessor}{\ \ \ \ \ \ DeathTestAbort(::std::string("{}CHECK\ failed:\ File\ "{})\ +\ \_\_FILE\_\_\ +\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00312\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{},\ line\ "{}\ +\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00313\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::testing::internal::StreamableToString(\_\_LINE\_\_)\ +\ \(\backslash\)}}
+\DoxyCodeLine{00314\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}:\ "{}\ +\ \#expression);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00315\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00316\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ \textcolor{comment}{//\ This\ macro\ is\ similar\ to\ GTEST\_DEATH\_TEST\_CHECK\_,\ but\ it\ is\ meant\ for}}
+\DoxyCodeLine{00319\ \textcolor{comment}{//\ evaluating\ any\ system\ call\ that\ fulfills\ two\ conditions:\ it\ must\ return}}
+\DoxyCodeLine{00320\ \textcolor{comment}{//\ -\/1\ on\ failure,\ and\ set\ errno\ to\ EINTR\ when\ it\ is\ interrupted\ and}}
+\DoxyCodeLine{00321\ \textcolor{comment}{//\ should\ be\ tried\ again.\ \ The\ macro\ expands\ to\ a\ loop\ that\ repeatedly}}
+\DoxyCodeLine{00322\ \textcolor{comment}{//\ evaluates\ the\ expression\ as\ long\ as\ it\ evaluates\ to\ -\/1\ and\ sets}}
+\DoxyCodeLine{00323\ \textcolor{comment}{//\ errno\ to\ EINTR.\ \ If\ the\ expression\ evaluates\ to\ -\/1\ but\ errno\ is}}
+\DoxyCodeLine{00324\ \textcolor{comment}{//\ something\ other\ than\ EINTR,\ DeathTestAbort\ is\ called.}}
+\DoxyCodeLine{00325\ \textcolor{preprocessor}{\#define\ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(expression)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00326\ \textcolor{preprocessor}{\ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00327\ \textcolor{preprocessor}{\ \ \ \ int\ gtest\_retval;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00328\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00329\ \textcolor{preprocessor}{\ \ \ \ \ \ gtest\_retval\ =\ (expression);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00330\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (gtest\_retval\ ==\ -\/1\ \&\&\ errno\ ==\ EINTR);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00331\ \textcolor{preprocessor}{\ \ \ \ if\ (gtest\_retval\ ==\ -\/1)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00332\ \textcolor{preprocessor}{\ \ \ \ \ \ DeathTestAbort(::std::string("{}CHECK\ failed:\ File\ "{})\ +\ \_\_FILE\_\_\ +\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00333\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{},\ line\ "{}\ +\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00334\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::testing::internal::StreamableToString(\_\_LINE\_\_)\ +\ \(\backslash\)}}
+\DoxyCodeLine{00335\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}:\ "{}\ +\ \#expression\ +\ "{}\ !=\ -\/1"{});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00336\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00337\ \textcolor{preprocessor}{\ \ \}\ while\ (::testing::internal::AlwaysFalse())}}
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00339\ \textcolor{comment}{//\ Returns\ the\ message\ describing\ the\ last\ system\ error\ in\ errno.}}
+\DoxyCodeLine{00340\ std::string\ GetLastErrnoDescription()\ \{}
+\DoxyCodeLine{00341\ \ \ \textcolor{keywordflow}{return}\ errno\ ==\ 0\ ?\ \textcolor{stringliteral}{"{}"{}}\ :\ posix::StrError(errno);}
+\DoxyCodeLine{00342\ \}}
+\DoxyCodeLine{00343\ }
+\DoxyCodeLine{00344\ \textcolor{comment}{//\ This\ is\ called\ from\ a\ death\ test\ parent\ process\ to\ read\ a\ failure}}
+\DoxyCodeLine{00345\ \textcolor{comment}{//\ message\ from\ the\ death\ test\ child\ process\ and\ log\ it\ with\ the\ FATAL}}
+\DoxyCodeLine{00346\ \textcolor{comment}{//\ severity.\ On\ Windows,\ the\ message\ is\ read\ from\ a\ pipe\ handle.\ On\ other}}
+\DoxyCodeLine{00347\ \textcolor{comment}{//\ platforms,\ it\ is\ read\ from\ a\ file\ descriptor.}}
+\DoxyCodeLine{00348\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ FailFromInternalError(\textcolor{keywordtype}{int}\ fd)\ \{}
+\DoxyCodeLine{00349\ \ \ Message\ error;}
+\DoxyCodeLine{00350\ \ \ \textcolor{keywordtype}{char}\ buffer[256];}
+\DoxyCodeLine{00351\ \ \ \textcolor{keywordtype}{int}\ num\_read;}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00353\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keywordflow}{while}\ ((num\_read\ =\ posix::Read(fd,\ buffer,\ 255))\ >\ 0)\ \{}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ buffer[num\_read]\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ error\ <<\ buffer;}
+\DoxyCodeLine{00357\ \ \ \ \ \}}
+\DoxyCodeLine{00358\ \ \ \}\ \textcolor{keywordflow}{while}\ (num\_read\ ==\ -\/1\ \&\&\ errno\ ==\ EINTR);}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \textcolor{keywordflow}{if}\ (num\_read\ ==\ 0)\ \{}
+\DoxyCodeLine{00361\ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ error.GetString();}
+\DoxyCodeLine{00362\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00363\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ last\_error\ =\ errno;}
+\DoxyCodeLine{00364\ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ \textcolor{stringliteral}{"{}Error\ while\ reading\ death\ test\ internal:\ "{}}}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ GetLastErrnoDescription()\ <<\ \textcolor{stringliteral}{"{}\ ["{}}\ <<\ last\_error\ <<\ \textcolor{stringliteral}{"{}]"{}};}
+\DoxyCodeLine{00366\ \ \ \}}
+\DoxyCodeLine{00367\ \}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \textcolor{comment}{//\ Death\ test\ constructor.\ \ Increments\ the\ running\ death\ test\ count}}
+\DoxyCodeLine{00370\ \textcolor{comment}{//\ for\ the\ current\ test.}}
+\DoxyCodeLine{00371\ DeathTest::DeathTest()\ \{}
+\DoxyCodeLine{00372\ \ \ TestInfo*\ \textcolor{keyword}{const}\ info\ =\ GetUnitTestImpl()-\/>current\_test\_info();}
+\DoxyCodeLine{00373\ \ \ \textcolor{keywordflow}{if}\ (info\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00374\ \ \ \ \ DeathTestAbort(}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Cannot\ run\ a\ death\ test\ outside\ of\ a\ TEST\ or\ "{}}}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}TEST\_F\ construct"{}});}
+\DoxyCodeLine{00377\ \ \ \}}
+\DoxyCodeLine{00378\ \}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00380\ \textcolor{comment}{//\ Creates\ and\ returns\ a\ death\ test\ by\ dispatching\ to\ the\ current}}
+\DoxyCodeLine{00381\ \textcolor{comment}{//\ death\ test\ factory.}}
+\DoxyCodeLine{00382\ \textcolor{keywordtype}{bool}\ DeathTest::Create(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Matcher<const\ std::string\&>\ matcher,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ line,\ DeathTest**\ test)\ \{}
+\DoxyCodeLine{00385\ \ \ \textcolor{keywordflow}{return}\ GetUnitTestImpl()-\/>death\_test\_factory()-\/>Create(}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ statement,\ std::move(matcher),\ file,\ line,\ test);}
+\DoxyCodeLine{00387\ \}}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00389\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ DeathTest::LastMessage()\ \{}
+\DoxyCodeLine{00390\ \ \ \textcolor{keywordflow}{return}\ last\_death\_test\_message\_.c\_str();}
+\DoxyCodeLine{00391\ \}}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00393\ \textcolor{keywordtype}{void}\ DeathTest::set\_last\_death\_test\_message(\textcolor{keyword}{const}\ std::string\&\ message)\ \{}
+\DoxyCodeLine{00394\ \ \ last\_death\_test\_message\_\ =\ message;}
+\DoxyCodeLine{00395\ \}}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ std::string\ DeathTest::last\_death\_test\_message\_;}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \textcolor{comment}{//\ Provides\ cross\ platform\ implementation\ for\ some\ death\ functionality.}}
+\DoxyCodeLine{00400\ \textcolor{keyword}{class\ }DeathTestImpl\ :\ \textcolor{keyword}{public}\ DeathTest\ \{}
+\DoxyCodeLine{00401\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00402\ \ \ DeathTestImpl(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,\ Matcher<const\ std::string\&>\ matcher)}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ :\ statement\_(a\_statement),}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ matcher\_(std::move(matcher)),}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ spawned\_(false),}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ status\_(-\/1),}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ outcome\_(IN\_PROGRESS),}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ read\_fd\_(-\/1),}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ write\_fd\_(-\/1)\ \{\}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \ \ \textcolor{comment}{//\ read\_fd\_\ is\ expected\ to\ be\ closed\ and\ cleared\ by\ a\ derived\ class.}}
+\DoxyCodeLine{00412\ \ \ \string~DeathTestImpl()\textcolor{keyword}{\ override\ }\{\ GTEST\_DEATH\_TEST\_CHECK\_(read\_fd\_\ ==\ -\/1);\ \}}
+\DoxyCodeLine{00413\ }
+\DoxyCodeLine{00414\ \ \ \textcolor{keywordtype}{void}\ Abort(AbortReason\ reason)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00415\ \ \ \textcolor{keywordtype}{bool}\ Passed(\textcolor{keywordtype}{bool}\ status\_ok)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ statement\_;\ \}}
+\DoxyCodeLine{00418\ \ \ \textcolor{keywordtype}{bool}\ spawned()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ spawned\_;\ \}}
+\DoxyCodeLine{00419\ \ \ \textcolor{keywordtype}{void}\ set\_spawned(\textcolor{keywordtype}{bool}\ is\_spawned)\ \{\ spawned\_\ =\ is\_spawned;\ \}}
+\DoxyCodeLine{00420\ \ \ \textcolor{keywordtype}{int}\ status()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ status\_;\ \}}
+\DoxyCodeLine{00421\ \ \ \textcolor{keywordtype}{void}\ set\_status(\textcolor{keywordtype}{int}\ a\_status)\ \{\ status\_\ =\ a\_status;\ \}}
+\DoxyCodeLine{00422\ \ \ DeathTestOutcome\ outcome()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ outcome\_;\ \}}
+\DoxyCodeLine{00423\ \ \ \textcolor{keywordtype}{void}\ set\_outcome(DeathTestOutcome\ an\_outcome)\ \{\ outcome\_\ =\ an\_outcome;\ \}}
+\DoxyCodeLine{00424\ \ \ \textcolor{keywordtype}{int}\ read\_fd()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ read\_fd\_;\ \}}
+\DoxyCodeLine{00425\ \ \ \textcolor{keywordtype}{void}\ set\_read\_fd(\textcolor{keywordtype}{int}\ fd)\ \{\ read\_fd\_\ =\ fd;\ \}}
+\DoxyCodeLine{00426\ \ \ \textcolor{keywordtype}{int}\ write\_fd()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ write\_fd\_;\ \}}
+\DoxyCodeLine{00427\ \ \ \textcolor{keywordtype}{void}\ set\_write\_fd(\textcolor{keywordtype}{int}\ fd)\ \{\ write\_fd\_\ =\ fd;\ \}}
+\DoxyCodeLine{00428\ }
+\DoxyCodeLine{00429\ \ \ \textcolor{comment}{//\ Called\ in\ the\ parent\ process\ only.\ Reads\ the\ result\ code\ of\ the\ death}}
+\DoxyCodeLine{00430\ \ \ \textcolor{comment}{//\ test\ child\ process\ via\ a\ pipe,\ interprets\ it\ to\ set\ the\ outcome\_}}
+\DoxyCodeLine{00431\ \ \ \textcolor{comment}{//\ member,\ and\ closes\ read\_fd\_.\ \ Outputs\ diagnostics\ and\ terminates\ in}}
+\DoxyCodeLine{00432\ \ \ \textcolor{comment}{//\ case\ of\ unexpected\ codes.}}
+\DoxyCodeLine{00433\ \ \ \textcolor{keywordtype}{void}\ ReadAndInterpretStatusByte();}
+\DoxyCodeLine{00434\ }
+\DoxyCodeLine{00435\ \ \ \textcolor{comment}{//\ Returns\ stderr\ output\ from\ the\ child\ process.}}
+\DoxyCodeLine{00436\ \ \ \textcolor{keyword}{virtual}\ std::string\ GetErrorLogs();}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00438\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00439\ \ \ \textcolor{comment}{//\ The\ textual\ content\ of\ the\ code\ this\ object\ is\ testing.\ \ This\ class}}
+\DoxyCodeLine{00440\ \ \ \textcolor{comment}{//\ doesn't\ own\ this\ string\ and\ should\ not\ attempt\ to\ delete\ it.}}
+\DoxyCodeLine{00441\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ statement\_;}
+\DoxyCodeLine{00442\ \ \ \textcolor{comment}{//\ A\ matcher\ that's\ expected\ to\ match\ the\ stderr\ output\ by\ the\ child\ process.}}
+\DoxyCodeLine{00443\ \ \ Matcher<const\ std::string\&>\ matcher\_;}
+\DoxyCodeLine{00444\ \ \ \textcolor{comment}{//\ True\ if\ the\ death\ test\ child\ process\ has\ been\ successfully\ spawned.}}
+\DoxyCodeLine{00445\ \ \ \textcolor{keywordtype}{bool}\ spawned\_;}
+\DoxyCodeLine{00446\ \ \ \textcolor{comment}{//\ The\ exit\ status\ of\ the\ child\ process.}}
+\DoxyCodeLine{00447\ \ \ \textcolor{keywordtype}{int}\ status\_;}
+\DoxyCodeLine{00448\ \ \ \textcolor{comment}{//\ How\ the\ death\ test\ concluded.}}
+\DoxyCodeLine{00449\ \ \ DeathTestOutcome\ outcome\_;}
+\DoxyCodeLine{00450\ \ \ \textcolor{comment}{//\ Descriptor\ to\ the\ read\ end\ of\ the\ pipe\ to\ the\ child\ process.\ \ It\ is}}
+\DoxyCodeLine{00451\ \ \ \textcolor{comment}{//\ always\ -\/1\ in\ the\ child\ process.\ \ The\ child\ keeps\ its\ write\ end\ of\ the}}
+\DoxyCodeLine{00452\ \ \ \textcolor{comment}{//\ pipe\ in\ write\_fd\_.}}
+\DoxyCodeLine{00453\ \ \ \textcolor{keywordtype}{int}\ read\_fd\_;}
+\DoxyCodeLine{00454\ \ \ \textcolor{comment}{//\ Descriptor\ to\ the\ child's\ write\ end\ of\ the\ pipe\ to\ the\ parent\ process.}}
+\DoxyCodeLine{00455\ \ \ \textcolor{comment}{//\ It\ is\ always\ -\/1\ in\ the\ parent\ process.\ \ The\ parent\ keeps\ its\ end\ of\ the}}
+\DoxyCodeLine{00456\ \ \ \textcolor{comment}{//\ pipe\ in\ read\_fd\_.}}
+\DoxyCodeLine{00457\ \ \ \textcolor{keywordtype}{int}\ write\_fd\_;}
+\DoxyCodeLine{00458\ \};}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00460\ \textcolor{comment}{//\ Called\ in\ the\ parent\ process\ only.\ Reads\ the\ result\ code\ of\ the\ death}}
+\DoxyCodeLine{00461\ \textcolor{comment}{//\ test\ child\ process\ via\ a\ pipe,\ interprets\ it\ to\ set\ the\ outcome\_}}
+\DoxyCodeLine{00462\ \textcolor{comment}{//\ member,\ and\ closes\ read\_fd\_.\ \ Outputs\ diagnostics\ and\ terminates\ in}}
+\DoxyCodeLine{00463\ \textcolor{comment}{//\ case\ of\ unexpected\ codes.}}
+\DoxyCodeLine{00464\ \textcolor{keywordtype}{void}\ DeathTestImpl::ReadAndInterpretStatusByte()\ \{}
+\DoxyCodeLine{00465\ \ \ \textcolor{keywordtype}{char}\ flag;}
+\DoxyCodeLine{00466\ \ \ \textcolor{keywordtype}{int}\ bytes\_read;}
+\DoxyCodeLine{00467\ }
+\DoxyCodeLine{00468\ \ \ \textcolor{comment}{//\ The\ read()\ here\ blocks\ until\ data\ is\ available\ (signifying\ the}}
+\DoxyCodeLine{00469\ \ \ \textcolor{comment}{//\ failure\ of\ the\ death\ test)\ or\ until\ the\ pipe\ is\ closed\ (signifying}}
+\DoxyCodeLine{00470\ \ \ \textcolor{comment}{//\ its\ success),\ so\ it's\ okay\ to\ call\ this\ in\ the\ parent\ before}}
+\DoxyCodeLine{00471\ \ \ \textcolor{comment}{//\ the\ child\ process\ has\ exited.}}
+\DoxyCodeLine{00472\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00473\ \ \ \ \ bytes\_read\ =\ posix::Read(read\_fd(),\ \&flag,\ 1);}
+\DoxyCodeLine{00474\ \ \ \}\ \textcolor{keywordflow}{while}\ (bytes\_read\ ==\ -\/1\ \&\&\ errno\ ==\ EINTR);}
+\DoxyCodeLine{00475\ }
+\DoxyCodeLine{00476\ \ \ \textcolor{keywordflow}{if}\ (bytes\_read\ ==\ 0)\ \{}
+\DoxyCodeLine{00477\ \ \ \ \ set\_outcome(DIED);}
+\DoxyCodeLine{00478\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (bytes\_read\ ==\ 1)\ \{}
+\DoxyCodeLine{00479\ \ \ \ \ \textcolor{keywordflow}{switch}\ (flag)\ \{}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kDeathTestReturned:}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ set\_outcome(RETURNED);}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kDeathTestThrew:}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ set\_outcome(THREW);}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kDeathTestLived:}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ set\_outcome(LIVED);}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kDeathTestInternalError:}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ FailFromInternalError(read\_fd());\ \ \textcolor{comment}{//\ Does\ not\ return.}}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ \textcolor{stringliteral}{"{}Death\ test\ child\ process\ reported\ "{}}}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}unexpected\ status\ byte\ ("{}}}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\textcolor{keyword}{>}(flag)\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00496\ \ \ \ \ \}}
+\DoxyCodeLine{00497\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00498\ \ \ \ \ GTEST\_LOG\_(FATAL)\ <<\ \textcolor{stringliteral}{"{}Read\ from\ death\ test\ child\ process\ failed:\ "{}}}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ GetLastErrnoDescription();}
+\DoxyCodeLine{00500\ \ \ \}}
+\DoxyCodeLine{00501\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(posix::Close(read\_fd()));}
+\DoxyCodeLine{00502\ \ \ set\_read\_fd(-\/1);}
+\DoxyCodeLine{00503\ \}}
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ std::string\ DeathTestImpl::GetErrorLogs()\ \{\ \textcolor{keywordflow}{return}\ GetCapturedStderr();\ \}}
+\DoxyCodeLine{00506\ }
+\DoxyCodeLine{00507\ \textcolor{comment}{//\ Signals\ that\ the\ death\ test\ code\ which\ should\ have\ exited,\ didn't.}}
+\DoxyCodeLine{00508\ \textcolor{comment}{//\ Should\ be\ called\ only\ in\ a\ death\ test\ child\ process.}}
+\DoxyCodeLine{00509\ \textcolor{comment}{//\ Writes\ a\ status\ byte\ to\ the\ child's\ status\ file\ descriptor,\ then}}
+\DoxyCodeLine{00510\ \textcolor{comment}{//\ calls\ \_exit(1).}}
+\DoxyCodeLine{00511\ \textcolor{keywordtype}{void}\ DeathTestImpl::Abort(AbortReason\ reason)\ \{}
+\DoxyCodeLine{00512\ \ \ \textcolor{comment}{//\ The\ parent\ process\ considers\ the\ death\ test\ to\ be\ a\ failure\ if}}
+\DoxyCodeLine{00513\ \ \ \textcolor{comment}{//\ it\ finds\ any\ data\ in\ our\ pipe.\ \ So,\ here\ we\ write\ a\ single\ flag\ byte}}
+\DoxyCodeLine{00514\ \ \ \textcolor{comment}{//\ to\ the\ pipe,\ then\ exit.}}
+\DoxyCodeLine{00515\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ status\_ch\ =\ reason\ ==\ TEST\_DID\_NOT\_DIE\ \ \ \ \ \ \ ?\ kDeathTestLived}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ reason\ ==\ TEST\_THREW\_EXCEPTION\ ?\ kDeathTestThrew}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ kDeathTestReturned;}
+\DoxyCodeLine{00518\ }
+\DoxyCodeLine{00519\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(posix::Write(write\_fd(),\ \&status\_ch,\ 1));}
+\DoxyCodeLine{00520\ \ \ \textcolor{comment}{//\ We\ are\ leaking\ the\ descriptor\ here\ because\ on\ some\ platforms\ (i.e.,}}
+\DoxyCodeLine{00521\ \ \ \textcolor{comment}{//\ when\ built\ as\ Windows\ DLL),\ destructors\ of\ global\ objects\ will\ still}}
+\DoxyCodeLine{00522\ \ \ \textcolor{comment}{//\ run\ after\ calling\ \_exit().\ On\ such\ systems,\ write\_fd\_\ will\ be}}
+\DoxyCodeLine{00523\ \ \ \textcolor{comment}{//\ indirectly\ closed\ from\ the\ destructor\ of\ UnitTestImpl,\ causing\ double}}
+\DoxyCodeLine{00524\ \ \ \textcolor{comment}{//\ close\ if\ it\ is\ also\ closed\ here.\ On\ debug\ configurations,\ double\ close}}
+\DoxyCodeLine{00525\ \ \ \textcolor{comment}{//\ may\ assert.\ As\ there\ are\ no\ in-\/process\ buffers\ to\ flush\ here,\ we\ are}}
+\DoxyCodeLine{00526\ \ \ \textcolor{comment}{//\ relying\ on\ the\ OS\ to\ close\ the\ descriptor\ after\ the\ process\ terminates}}
+\DoxyCodeLine{00527\ \ \ \textcolor{comment}{//\ when\ the\ destructors\ are\ not\ run.}}
+\DoxyCodeLine{00528\ \ \ \_exit(1);\ \ \textcolor{comment}{//\ Exits\ w/o\ any\ normal\ exit\ hooks\ (we\ were\ supposed\ to\ crash)}}
+\DoxyCodeLine{00529\ \}}
+\DoxyCodeLine{00530\ }
+\DoxyCodeLine{00531\ \textcolor{comment}{//\ Returns\ an\ indented\ copy\ of\ stderr\ output\ for\ a\ death\ test.}}
+\DoxyCodeLine{00532\ \textcolor{comment}{//\ This\ makes\ distinguishing\ death\ test\ output\ lines\ from\ regular\ log\ lines}}
+\DoxyCodeLine{00533\ \textcolor{comment}{//\ much\ easier.}}
+\DoxyCodeLine{00534\ static\ ::std::string\ FormatDeathTestOutput(const\ ::std::string\&\ output)\ \{}
+\DoxyCodeLine{00535\ \ \ ::std::string\ ret;}
+\DoxyCodeLine{00536\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ at\ =\ 0;;)\ \{}
+\DoxyCodeLine{00537\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ line\_end\ =\ output.find(\textcolor{charliteral}{'\(\backslash\)n'},\ at);}
+\DoxyCodeLine{00538\ \ \ \ \ ret\ +=\ \textcolor{stringliteral}{"{}[\ \ DEATH\ \ \ ]\ "{}};}
+\DoxyCodeLine{00539\ \ \ \ \ \textcolor{keywordflow}{if}\ (line\_end\ ==\ ::std::string::npos)\ \{}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ ret\ +=\ output.substr(at);}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00542\ \ \ \ \ \}}
+\DoxyCodeLine{00543\ \ \ \ \ ret\ +=\ output.substr(at,\ line\_end\ +\ 1\ -\/\ at);}
+\DoxyCodeLine{00544\ \ \ \ \ at\ =\ line\_end\ +\ 1;}
+\DoxyCodeLine{00545\ \ \ \}}
+\DoxyCodeLine{00546\ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00547\ \}}
+\DoxyCodeLine{00548\ }
+\DoxyCodeLine{00549\ \textcolor{comment}{//\ Assesses\ the\ success\ or\ failure\ of\ a\ death\ test,\ using\ both\ private}}
+\DoxyCodeLine{00550\ \textcolor{comment}{//\ members\ which\ have\ previously\ been\ set,\ and\ one\ argument:}}
+\DoxyCodeLine{00551\ \textcolor{comment}{//}}
+\DoxyCodeLine{00552\ \textcolor{comment}{//\ Private\ data\ members:}}
+\DoxyCodeLine{00553\ \textcolor{comment}{//\ \ \ outcome:\ \ An\ enumeration\ describing\ how\ the\ death\ test}}
+\DoxyCodeLine{00554\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ concluded:\ DIED,\ LIVED,\ THREW,\ or\ RETURNED.\ \ The\ death\ test}}
+\DoxyCodeLine{00555\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ fails\ in\ the\ latter\ three\ cases.}}
+\DoxyCodeLine{00556\ \textcolor{comment}{//\ \ \ status:\ \ \ The\ exit\ status\ of\ the\ child\ process.\ On\ *nix,\ it\ is\ in\ the}}
+\DoxyCodeLine{00557\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ in\ the\ format\ specified\ by\ wait(2).\ On\ Windows,\ this\ is\ the}}
+\DoxyCodeLine{00558\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ value\ supplied\ to\ the\ ExitProcess()\ API\ or\ a\ numeric\ code}}
+\DoxyCodeLine{00559\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ of\ the\ exception\ that\ terminated\ the\ program.}}
+\DoxyCodeLine{00560\ \textcolor{comment}{//\ \ \ matcher\_:\ A\ matcher\ that's\ expected\ to\ match\ the\ stderr\ output\ by\ the\ child}}
+\DoxyCodeLine{00561\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ process.}}
+\DoxyCodeLine{00562\ \textcolor{comment}{//}}
+\DoxyCodeLine{00563\ \textcolor{comment}{//\ Argument:}}
+\DoxyCodeLine{00564\ \textcolor{comment}{//\ \ \ status\_ok:\ true\ if\ exit\_status\ is\ acceptable\ in\ the\ context\ of}}
+\DoxyCodeLine{00565\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ this\ particular\ death\ test,\ which\ fails\ if\ it\ is\ false}}
+\DoxyCodeLine{00566\ \textcolor{comment}{//}}
+\DoxyCodeLine{00567\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ all\ of\ the\ above\ conditions\ are\ met.\ \ Otherwise,}}
+\DoxyCodeLine{00568\ \textcolor{comment}{//\ the\ first\ failing\ condition,\ in\ the\ order\ given\ above,\ is\ the\ one\ that\ is}}
+\DoxyCodeLine{00569\ \textcolor{comment}{//\ reported.\ Also\ sets\ the\ last\ death\ test\ message\ string.}}
+\DoxyCodeLine{00570\ \textcolor{keywordtype}{bool}\ DeathTestImpl::Passed(\textcolor{keywordtype}{bool}\ status\_ok)\ \{}
+\DoxyCodeLine{00571\ \ \ \textcolor{keywordflow}{if}\ (!spawned())\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00572\ }
+\DoxyCodeLine{00573\ \ \ \textcolor{keyword}{const}\ std::string\ error\_message\ =\ GetErrorLogs();}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \ \ \textcolor{keywordtype}{bool}\ success\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00576\ \ \ Message\ buffer;}
+\DoxyCodeLine{00577\ }
+\DoxyCodeLine{00578\ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}Death\ test:\ "{}}\ <<\ statement()\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00579\ \ \ \textcolor{keywordflow}{switch}\ (outcome())\ \{}
+\DoxyCodeLine{00580\ \ \ \ \ \textcolor{keywordflow}{case}\ LIVED:}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Result:\ failed\ to\ die.\(\backslash\)n"{}}}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ Error\ msg:\(\backslash\)n"{}}}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ FormatDeathTestOutput(error\_message);}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00585\ \ \ \ \ \textcolor{keywordflow}{case}\ THREW:}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Result:\ threw\ an\ exception.\(\backslash\)n"{}}}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ Error\ msg:\(\backslash\)n"{}}}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ FormatDeathTestOutput(error\_message);}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00590\ \ \ \ \ \textcolor{keywordflow}{case}\ RETURNED:}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Result:\ illegal\ return\ in\ test\ statement.\(\backslash\)n"{}}}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ Error\ msg:\(\backslash\)n"{}}}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ FormatDeathTestOutput(error\_message);}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00595\ \ \ \ \ \textcolor{keywordflow}{case}\ DIED:}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status\_ok)\ \{}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (matcher\_.Matches(error\_message))\ \{}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \ \ success\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \ \ std::ostringstream\ stream;}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \ \ matcher\_.DescribeTo(\&stream);}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Result:\ died\ but\ not\ with\ expected\ error.\(\backslash\)n"{}}}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ Expected:\ "{}}\ <<\ stream.str()\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Actual\ msg:\(\backslash\)n"{}}}
+\DoxyCodeLine{00605\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ FormatDeathTestOutput(error\_message);}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ buffer\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Result:\ died\ but\ not\ with\ expected\ exit\ code:\(\backslash\)n"{}}}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ \ "{}}\ <<\ ExitSummary(status())\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Actual\ msg:\(\backslash\)n"{}}}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ FormatDeathTestOutput(error\_message);}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00614\ \ \ \ \ \textcolor{keywordflow}{case}\ IN\_PROGRESS:}
+\DoxyCodeLine{00615\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ GTEST\_LOG\_(FATAL)}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}DeathTest::Passed\ somehow\ called\ before\ conclusion\ of\ test"{}};}
+\DoxyCodeLine{00618\ \ \ \}}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00620\ \ \ DeathTest::set\_last\_death\_test\_message(buffer.GetString());}
+\DoxyCodeLine{00621\ \ \ \textcolor{keywordflow}{return}\ success;}
+\DoxyCodeLine{00622\ \}}
+\DoxyCodeLine{00623\ }
+\DoxyCodeLine{00624\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{00625\ \textcolor{comment}{//\ WindowsDeathTest\ implements\ death\ tests\ on\ Windows.\ Due\ to\ the}}
+\DoxyCodeLine{00626\ \textcolor{comment}{//\ specifics\ of\ starting\ new\ processes\ on\ Windows,\ death\ tests\ there\ are}}
+\DoxyCodeLine{00627\ \textcolor{comment}{//\ always\ threadsafe,\ and\ Google\ Test\ considers\ the}}
+\DoxyCodeLine{00628\ \textcolor{comment}{//\ -\/-\/gtest\_death\_test\_style=fast\ setting\ to\ be\ equivalent\ to}}
+\DoxyCodeLine{00629\ \textcolor{comment}{//\ -\/-\/gtest\_death\_test\_style=threadsafe\ there.}}
+\DoxyCodeLine{00630\ \textcolor{comment}{//}}
+\DoxyCodeLine{00631\ \textcolor{comment}{//\ A\ few\ implementation\ notes:\ \ Like\ the\ Linux\ version,\ the\ Windows}}
+\DoxyCodeLine{00632\ \textcolor{comment}{//\ implementation\ uses\ pipes\ for\ child-\/to-\/parent\ communication.\ But\ due\ to}}
+\DoxyCodeLine{00633\ \textcolor{comment}{//\ the\ specifics\ of\ pipes\ on\ Windows,\ some\ extra\ steps\ are\ required:}}
+\DoxyCodeLine{00634\ \textcolor{comment}{//}}
+\DoxyCodeLine{00635\ \textcolor{comment}{//\ 1.\ The\ parent\ creates\ a\ communication\ pipe\ and\ stores\ handles\ to\ both}}
+\DoxyCodeLine{00636\ \textcolor{comment}{//\ \ \ \ ends\ of\ it.}}
+\DoxyCodeLine{00637\ \textcolor{comment}{//\ 2.\ The\ parent\ starts\ the\ child\ and\ provides\ it\ with\ the\ information}}
+\DoxyCodeLine{00638\ \textcolor{comment}{//\ \ \ \ necessary\ to\ acquire\ the\ handle\ to\ the\ write\ end\ of\ the\ pipe.}}
+\DoxyCodeLine{00639\ \textcolor{comment}{//\ 3.\ The\ child\ acquires\ the\ write\ end\ of\ the\ pipe\ and\ signals\ the\ parent}}
+\DoxyCodeLine{00640\ \textcolor{comment}{//\ \ \ \ using\ a\ Windows\ event.}}
+\DoxyCodeLine{00641\ \textcolor{comment}{//\ 4.\ Now\ the\ parent\ can\ release\ the\ write\ end\ of\ the\ pipe\ on\ its\ side.\ If}}
+\DoxyCodeLine{00642\ \textcolor{comment}{//\ \ \ \ this\ is\ done\ before\ step\ 3,\ the\ object's\ reference\ count\ goes\ down\ to}}
+\DoxyCodeLine{00643\ \textcolor{comment}{//\ \ \ \ 0\ and\ it\ is\ destroyed,\ preventing\ the\ child\ from\ acquiring\ it.\ The}}
+\DoxyCodeLine{00644\ \textcolor{comment}{//\ \ \ \ parent\ now\ has\ to\ release\ it,\ or\ read\ operations\ on\ the\ read\ end\ of}}
+\DoxyCodeLine{00645\ \textcolor{comment}{//\ \ \ \ the\ pipe\ will\ not\ return\ when\ the\ child\ terminates.}}
+\DoxyCodeLine{00646\ \textcolor{comment}{//\ 5.\ The\ parent\ reads\ child's\ output\ through\ the\ pipe\ (outcome\ code\ and}}
+\DoxyCodeLine{00647\ \textcolor{comment}{//\ \ \ \ any\ possible\ error\ messages)\ from\ the\ pipe,\ and\ its\ stderr\ and\ then}}
+\DoxyCodeLine{00648\ \textcolor{comment}{//\ \ \ \ determines\ whether\ to\ fail\ the\ test.}}
+\DoxyCodeLine{00649\ \textcolor{comment}{//}}
+\DoxyCodeLine{00650\ \textcolor{comment}{//\ Note:\ to\ distinguish\ Win32\ API\ calls\ from\ the\ local\ method\ and\ function}}
+\DoxyCodeLine{00651\ \textcolor{comment}{//\ calls,\ the\ former\ are\ explicitly\ resolved\ in\ the\ global\ namespace.}}
+\DoxyCodeLine{00652\ \textcolor{comment}{//}}
+\DoxyCodeLine{00653\ \textcolor{keyword}{class\ }WindowsDeathTest\ :\ \textcolor{keyword}{public}\ DeathTestImpl\ \{}
+\DoxyCodeLine{00654\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00655\ \ \ WindowsDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,\ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ :\ DeathTestImpl(a\_statement,\ std::move(matcher)),}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ file\_(file),}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ line\_(line)\ \{\}}
+\DoxyCodeLine{00660\ }
+\DoxyCodeLine{00661\ \ \ \textcolor{comment}{//\ All\ of\ these\ virtual\ functions\ are\ inherited\ from\ DeathTest.}}
+\DoxyCodeLine{00662\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ Wait();}
+\DoxyCodeLine{00663\ \ \ \textcolor{keyword}{virtual}\ TestRole\ AssumeRole();}
+\DoxyCodeLine{00664\ }
+\DoxyCodeLine{00665\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00666\ \ \ \textcolor{comment}{//\ The\ name\ of\ the\ file\ in\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{00667\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ file\_;}
+\DoxyCodeLine{00668\ \ \ \textcolor{comment}{//\ The\ line\ number\ on\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{00669\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ line\_;}
+\DoxyCodeLine{00670\ \ \ \textcolor{comment}{//\ Handle\ to\ the\ write\ end\ of\ the\ pipe\ to\ the\ child\ process.}}
+\DoxyCodeLine{00671\ \ \ AutoHandle\ write\_handle\_;}
+\DoxyCodeLine{00672\ \ \ \textcolor{comment}{//\ Child\ process\ handle.}}
+\DoxyCodeLine{00673\ \ \ AutoHandle\ child\_handle\_;}
+\DoxyCodeLine{00674\ \ \ \textcolor{comment}{//\ Event\ the\ child\ process\ uses\ to\ signal\ the\ parent\ that\ it\ has}}
+\DoxyCodeLine{00675\ \ \ \textcolor{comment}{//\ acquired\ the\ handle\ to\ the\ write\ end\ of\ the\ pipe.\ After\ seeing\ this}}
+\DoxyCodeLine{00676\ \ \ \textcolor{comment}{//\ event\ the\ parent\ can\ release\ its\ own\ handles\ to\ make\ sure\ its}}
+\DoxyCodeLine{00677\ \ \ \textcolor{comment}{//\ ReadFile()\ calls\ return\ when\ the\ child\ terminates.}}
+\DoxyCodeLine{00678\ \ \ AutoHandle\ event\_handle\_;}
+\DoxyCodeLine{00679\ \};}
+\DoxyCodeLine{00680\ }
+\DoxyCodeLine{00681\ \textcolor{comment}{//\ Waits\ for\ the\ child\ in\ a\ death\ test\ to\ exit,\ returning\ its\ exit}}
+\DoxyCodeLine{00682\ \textcolor{comment}{//\ status,\ or\ 0\ if\ no\ child\ process\ exists.\ \ As\ a\ side\ effect,\ sets\ the}}
+\DoxyCodeLine{00683\ \textcolor{comment}{//\ outcome\ data\ member.}}
+\DoxyCodeLine{00684\ \textcolor{keywordtype}{int}\ WindowsDeathTest::Wait()\ \{}
+\DoxyCodeLine{00685\ \ \ \textcolor{keywordflow}{if}\ (!spawned())\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00686\ }
+\DoxyCodeLine{00687\ \ \ \textcolor{comment}{//\ Wait\ until\ the\ child\ either\ signals\ that\ it\ has\ acquired\ the\ write\ end}}
+\DoxyCodeLine{00688\ \ \ \textcolor{comment}{//\ of\ the\ pipe\ or\ it\ dies.}}
+\DoxyCodeLine{00689\ \ \ \textcolor{keyword}{const}\ HANDLE\ wait\_handles[2]\ =\ \{child\_handle\_.Get(),\ event\_handle\_.Get()\};}
+\DoxyCodeLine{00690\ \ \ \textcolor{keywordflow}{switch}\ (::WaitForMultipleObjects(2,\ wait\_handles,}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FALSE,\ \ \textcolor{comment}{//\ Waits\ for\ any\ of\ the\ handles.}}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ INFINITE))\ \{}
+\DoxyCodeLine{00693\ \ \ \ \ \textcolor{keywordflow}{case}\ WAIT\_OBJECT\_0:}
+\DoxyCodeLine{00694\ \ \ \ \ \textcolor{keywordflow}{case}\ WAIT\_OBJECT\_0\ +\ 1:}
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00696\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(\textcolor{keyword}{false});\ \ \textcolor{comment}{//\ Should\ not\ get\ here.}}
+\DoxyCodeLine{00698\ \ \ \}}
+\DoxyCodeLine{00699\ }
+\DoxyCodeLine{00700\ \ \ \textcolor{comment}{//\ The\ child\ has\ acquired\ the\ write\ end\ of\ the\ pipe\ or\ exited.}}
+\DoxyCodeLine{00701\ \ \ \textcolor{comment}{//\ We\ release\ the\ handle\ on\ our\ side\ and\ continue.}}
+\DoxyCodeLine{00702\ \ \ write\_handle\_.Reset();}
+\DoxyCodeLine{00703\ \ \ event\_handle\_.Reset();}
+\DoxyCodeLine{00704\ }
+\DoxyCodeLine{00705\ \ \ ReadAndInterpretStatusByte();}
+\DoxyCodeLine{00706\ }
+\DoxyCodeLine{00707\ \ \ \textcolor{comment}{//\ Waits\ for\ the\ child\ process\ to\ exit\ if\ it\ haven't\ already.\ This}}
+\DoxyCodeLine{00708\ \ \ \textcolor{comment}{//\ returns\ immediately\ if\ the\ child\ has\ already\ exited,\ regardless\ of}}
+\DoxyCodeLine{00709\ \ \ \textcolor{comment}{//\ whether\ previous\ calls\ to\ WaitForMultipleObjects\ synchronized\ on\ this}}
+\DoxyCodeLine{00710\ \ \ \textcolor{comment}{//\ handle\ or\ not.}}
+\DoxyCodeLine{00711\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(WAIT\_OBJECT\_0\ ==}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::WaitForSingleObject(child\_handle\_.Get(),\ INFINITE));}
+\DoxyCodeLine{00713\ \ \ DWORD\ status\_code;}
+\DoxyCodeLine{00714\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(}
+\DoxyCodeLine{00715\ \ \ \ \ \ \ ::GetExitCodeProcess(child\_handle\_.Get(),\ \&status\_code)\ !=\ FALSE);}
+\DoxyCodeLine{00716\ \ \ child\_handle\_.Reset();}
+\DoxyCodeLine{00717\ \ \ set\_status(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(status\_code));}
+\DoxyCodeLine{00718\ \ \ \textcolor{keywordflow}{return}\ status();}
+\DoxyCodeLine{00719\ \}}
+\DoxyCodeLine{00720\ }
+\DoxyCodeLine{00721\ \textcolor{comment}{//\ The\ AssumeRole\ process\ for\ a\ Windows\ death\ test.\ \ It\ creates\ a\ child}}
+\DoxyCodeLine{00722\ \textcolor{comment}{//\ process\ with\ the\ same\ executable\ as\ the\ current\ process\ to\ run\ the}}
+\DoxyCodeLine{00723\ \textcolor{comment}{//\ death\ test.\ \ The\ child\ process\ is\ given\ the\ -\/-\/gtest\_filter\ and}}
+\DoxyCodeLine{00724\ \textcolor{comment}{//\ -\/-\/gtest\_internal\_run\_death\_test\ flags\ such\ that\ it\ knows\ to\ run\ the}}
+\DoxyCodeLine{00725\ \textcolor{comment}{//\ current\ death\ test\ only.}}
+\DoxyCodeLine{00726\ DeathTest::TestRole\ WindowsDeathTest::AssumeRole()\ \{}
+\DoxyCodeLine{00727\ \ \ \textcolor{keyword}{const}\ UnitTestImpl*\ \textcolor{keyword}{const}\ impl\ =\ GetUnitTestImpl();}
+\DoxyCodeLine{00728\ \ \ \textcolor{keyword}{const}\ InternalRunDeathTestFlag*\ \textcolor{keyword}{const}\ flag\ =}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ impl-\/>internal\_run\_death\_test\_flag();}
+\DoxyCodeLine{00730\ \ \ \textcolor{keyword}{const}\ TestInfo*\ \textcolor{keyword}{const}\ info\ =\ impl-\/>current\_test\_info();}
+\DoxyCodeLine{00731\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ death\_test\_index\ =\ info-\/>result()-\/>death\_test\_count();}
+\DoxyCodeLine{00732\ }
+\DoxyCodeLine{00733\ \ \ \textcolor{keywordflow}{if}\ (flag\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00734\ \ \ \ \ \textcolor{comment}{//\ ParseInternalRunDeathTestFlag()\ has\ performed\ all\ the\ necessary}}
+\DoxyCodeLine{00735\ \ \ \ \ \textcolor{comment}{//\ processing.}}
+\DoxyCodeLine{00736\ \ \ \ \ set\_write\_fd(flag-\/>write\_fd());}
+\DoxyCodeLine{00737\ \ \ \ \ \textcolor{keywordflow}{return}\ EXECUTE\_TEST;}
+\DoxyCodeLine{00738\ \ \ \}}
+\DoxyCodeLine{00739\ }
+\DoxyCodeLine{00740\ \ \ \textcolor{comment}{//\ WindowsDeathTest\ uses\ an\ anonymous\ pipe\ to\ communicate\ results\ of}}
+\DoxyCodeLine{00741\ \ \ \textcolor{comment}{//\ a\ death\ test.}}
+\DoxyCodeLine{00742\ \ \ SECURITY\_ATTRIBUTES\ handles\_are\_inheritable\ =\ \{\textcolor{keyword}{sizeof}(SECURITY\_ATTRIBUTES),}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ TRUE\};}
+\DoxyCodeLine{00744\ \ \ HANDLE\ read\_handle,\ write\_handle;}
+\DoxyCodeLine{00745\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(::CreatePipe(\&read\_handle,\ \&write\_handle,}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&handles\_are\_inheritable,}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0)\ \ \textcolor{comment}{//\ Default\ buffer\ size.}}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !=\ FALSE);}
+\DoxyCodeLine{00749\ \ \ set\_read\_fd(}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ ::\_open\_osfhandle(\textcolor{keyword}{reinterpret\_cast<}intptr\_t\textcolor{keyword}{>}(read\_handle),\ O\_RDONLY));}
+\DoxyCodeLine{00751\ \ \ write\_handle\_.Reset(write\_handle);}
+\DoxyCodeLine{00752\ \ \ event\_handle\_.Reset(::CreateEvent(}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \&handles\_are\_inheritable,}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ TRUE,\ \ \ \ \ \ \ \textcolor{comment}{//\ The\ event\ will\ automatically\ reset\ to\ non-\/signaled\ state.}}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ FALSE,\ \ \ \ \ \ \textcolor{comment}{//\ The\ initial\ state\ is\ non-\/signalled.}}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \textcolor{keyword}{nullptr}));\ \ \textcolor{comment}{//\ The\ even\ is\ unnamed.}}
+\DoxyCodeLine{00757\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(event\_handle\_.Get()\ !=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00758\ \ \ \textcolor{keyword}{const}\ std::string\ filter\_flag\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}filter="{}}\ +\ info-\/>test\_suite\_name()\ +\ \textcolor{stringliteral}{"{}."{}}\ +}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ info-\/>name();}
+\DoxyCodeLine{00761\ \ \ \textcolor{keyword}{const}\ std::string\ internal\_flag\ =}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}internal\_run\_death\_test="{}}\ +\ file\_\ +\ \textcolor{stringliteral}{"{}|"{}}\ +\ StreamableToString(line\_)\ +}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}|"{}}\ +\ StreamableToString(death\_test\_index)\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ StreamableToString(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\textcolor{keyword}{>}(::GetCurrentProcessId()))\ +}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \textcolor{comment}{//\ size\_t\ has\ the\ same\ width\ as\ pointers\ on\ both\ 32-\/bit\ and\ 64-\/bit}}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \textcolor{comment}{//\ Windows\ platforms.}}
+\DoxyCodeLine{00768\ \ \ \ \ \ \ \textcolor{comment}{//\ See\ http://msdn.microsoft.com/en-\/us/library/tcxf1dw6.aspx.}}
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}|"{}}\ +\ StreamableToString(\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(write\_handle))\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ StreamableToString(\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(event\_handle\_.Get()));}
+\DoxyCodeLine{00771\ }
+\DoxyCodeLine{00772\ \ \ \textcolor{keywordtype}{char}\ executable\_path[\_MAX\_PATH\ +\ 1];\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00773\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(\_MAX\_PATH\ +\ 1\ !=\ ::GetModuleFileNameA(\textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ executable\_path,}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_MAX\_PATH));}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00777\ \ \ std::string\ command\_line\ =\ std::string(::GetCommandLineA())\ +\ \textcolor{stringliteral}{"{}\ "{}}\ +}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ filter\_flag\ +\ \textcolor{stringliteral}{"{}\ \(\backslash\)"{}"{}}\ +\ internal\_flag\ +\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00779\ }
+\DoxyCodeLine{00780\ \ \ DeathTest::set\_last\_death\_test\_message(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \ \ CaptureStderr();}
+\DoxyCodeLine{00783\ \ \ \textcolor{comment}{//\ Flush\ the\ log\ buffers\ since\ the\ log\ streams\ are\ shared\ with\ the\ child.}}
+\DoxyCodeLine{00784\ \ \ FlushInfoLog();}
+\DoxyCodeLine{00785\ }
+\DoxyCodeLine{00786\ \ \ \textcolor{comment}{//\ The\ child\ process\ will\ share\ the\ standard\ handles\ with\ the\ parent.}}
+\DoxyCodeLine{00787\ \ \ STARTUPINFOA\ startup\_info;}
+\DoxyCodeLine{00788\ \ \ memset(\&startup\_info,\ 0,\ \textcolor{keyword}{sizeof}(STARTUPINFO));}
+\DoxyCodeLine{00789\ \ \ startup\_info.dwFlags\ =\ STARTF\_USESTDHANDLES;}
+\DoxyCodeLine{00790\ \ \ startup\_info.hStdInput\ =\ ::GetStdHandle(STD\_INPUT\_HANDLE);}
+\DoxyCodeLine{00791\ \ \ startup\_info.hStdOutput\ =\ ::GetStdHandle(STD\_OUTPUT\_HANDLE);}
+\DoxyCodeLine{00792\ \ \ startup\_info.hStdError\ =\ ::GetStdHandle(STD\_ERROR\_HANDLE);}
+\DoxyCodeLine{00793\ }
+\DoxyCodeLine{00794\ \ \ PROCESS\_INFORMATION\ process\_info;}
+\DoxyCodeLine{00795\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ ::CreateProcessA(}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \ \ executable\_path,\ \textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(command\_line.c\_str()),}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ Returned\ process\ handle\ is\ not\ inheritable.}}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ Returned\ thread\ handle\ is\ not\ inheritable.}}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ TRUE,\ \ \textcolor{comment}{//\ Child\ inherits\ all\ inheritable\ handles\ (for\ write\_handle\_).}}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ 0x0,\ \ \ \textcolor{comment}{//\ Default\ creation\ flags.}}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \ \textcolor{comment}{//\ Inherit\ the\ parent's\ environment.}}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ UnitTest::GetInstance()-\/>original\_working\_dir(),\ \&startup\_info,}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \&process\_info)\ !=\ FALSE);}
+\DoxyCodeLine{00805\ \ \ child\_handle\_.Reset(process\_info.hProcess);}
+\DoxyCodeLine{00806\ \ \ ::CloseHandle(process\_info.hThread);}
+\DoxyCodeLine{00807\ \ \ set\_spawned(\textcolor{keyword}{true});}
+\DoxyCodeLine{00808\ \ \ \textcolor{keywordflow}{return}\ OVERSEE\_TEST;}
+\DoxyCodeLine{00809\ \}}
+\DoxyCodeLine{00810\ }
+\DoxyCodeLine{00811\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00812\ }
+\DoxyCodeLine{00813\ \textcolor{keyword}{class\ }FuchsiaDeathTest\ :\ \textcolor{keyword}{public}\ DeathTestImpl\ \{}
+\DoxyCodeLine{00814\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00815\ \ \ FuchsiaDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,\ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ :\ DeathTestImpl(a\_statement,\ std::move(matcher)),}
+\DoxyCodeLine{00818\ \ \ \ \ \ \ \ \ file\_(file),}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \ \ line\_(line)\ \{\}}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \ \ \textcolor{comment}{//\ All\ of\ these\ virtual\ functions\ are\ inherited\ from\ DeathTest.}}
+\DoxyCodeLine{00822\ \ \ \textcolor{keywordtype}{int}\ Wait()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00823\ \ \ TestRole\ AssumeRole()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00824\ \ \ std::string\ GetErrorLogs()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00825\ }
+\DoxyCodeLine{00826\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00827\ \ \ \textcolor{comment}{//\ The\ name\ of\ the\ file\ in\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{00828\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ file\_;}
+\DoxyCodeLine{00829\ \ \ \textcolor{comment}{//\ The\ line\ number\ on\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{00830\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ line\_;}
+\DoxyCodeLine{00831\ \ \ \textcolor{comment}{//\ The\ stderr\ data\ captured\ by\ the\ child\ process.}}
+\DoxyCodeLine{00832\ \ \ std::string\ captured\_stderr\_;}
+\DoxyCodeLine{00833\ }
+\DoxyCodeLine{00834\ \ \ zx::process\ child\_process\_;}
+\DoxyCodeLine{00835\ \ \ zx::channel\ exception\_channel\_;}
+\DoxyCodeLine{00836\ \ \ zx::socket\ stderr\_socket\_;}
+\DoxyCodeLine{00837\ \};}
+\DoxyCodeLine{00838\ }
+\DoxyCodeLine{00839\ \textcolor{comment}{//\ Utility\ class\ for\ accumulating\ command-\/line\ arguments.}}
+\DoxyCodeLine{00840\ \textcolor{keyword}{class\ }Arguments\ \{}
+\DoxyCodeLine{00841\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00842\ \ \ Arguments()\ \{\ args\_.push\_back(\textcolor{keyword}{nullptr});\ \}}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00844\ \ \ \string~Arguments()\ \{}
+\DoxyCodeLine{00845\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::vector<char*>::iterator\ i\ =\ args\_.begin();\ i\ !=\ args\_.end();}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ \ ++i)\ \{}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ free(*i);}
+\DoxyCodeLine{00848\ \ \ \ \ \}}
+\DoxyCodeLine{00849\ \ \ \}}
+\DoxyCodeLine{00850\ \ \ \textcolor{keywordtype}{void}\ AddArgument(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argument)\ \{}
+\DoxyCodeLine{00851\ \ \ \ \ args\_.insert(args\_.end()\ -\/\ 1,\ posix::StrDup(argument));}
+\DoxyCodeLine{00852\ \ \ \}}
+\DoxyCodeLine{00853\ }
+\DoxyCodeLine{00854\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Str>}
+\DoxyCodeLine{00855\ \ \ \textcolor{keywordtype}{void}\ AddArguments(const\ ::std::vector<Str>\&\ arguments)\ \{}
+\DoxyCodeLine{00856\ \ \ \ \ \textcolor{keywordflow}{for}\ (typename\ ::std::vector<Str>::const\_iterator\ i\ =\ arguments.begin();}
+\DoxyCodeLine{00857\ \ \ \ \ \ \ \ \ \ i\ !=\ arguments.end();\ ++i)\ \{}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ args\_.insert(args\_.end()\ -\/\ 1,\ posix::StrDup(i-\/>c\_str()));}
+\DoxyCodeLine{00859\ \ \ \ \ \}}
+\DoxyCodeLine{00860\ \ \ \}}
+\DoxyCodeLine{00861\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}*\ Argv()\ \{\ \textcolor{keywordflow}{return}\ \&args\_[0];\ \}}
+\DoxyCodeLine{00862\ }
+\DoxyCodeLine{00863\ \ \ \textcolor{keywordtype}{int}\ size()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(args\_.size())\ -\/\ 1;\ \}}
+\DoxyCodeLine{00864\ }
+\DoxyCodeLine{00865\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00866\ \ \ std::vector<char*>\ args\_;}
+\DoxyCodeLine{00867\ \};}
+\DoxyCodeLine{00868\ }
+\DoxyCodeLine{00869\ \textcolor{comment}{//\ Waits\ for\ the\ child\ in\ a\ death\ test\ to\ exit,\ returning\ its\ exit}}
+\DoxyCodeLine{00870\ \textcolor{comment}{//\ status,\ or\ 0\ if\ no\ child\ process\ exists.\ \ As\ a\ side\ effect,\ sets\ the}}
+\DoxyCodeLine{00871\ \textcolor{comment}{//\ outcome\ data\ member.}}
+\DoxyCodeLine{00872\ \textcolor{keywordtype}{int}\ FuchsiaDeathTest::Wait()\ \{}
+\DoxyCodeLine{00873\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kProcessKey\ =\ 0;}
+\DoxyCodeLine{00874\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kSocketKey\ =\ 1;}
+\DoxyCodeLine{00875\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kExceptionKey\ =\ 2;}
+\DoxyCodeLine{00876\ }
+\DoxyCodeLine{00877\ \ \ \textcolor{keywordflow}{if}\ (!spawned())\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00878\ }
+\DoxyCodeLine{00879\ \ \ \textcolor{comment}{//\ Create\ a\ port\ to\ wait\ for\ socket/task/exception\ events.}}
+\DoxyCodeLine{00880\ \ \ zx\_status\_t\ status\_zx;}
+\DoxyCodeLine{00881\ \ \ zx::port\ port;}
+\DoxyCodeLine{00882\ \ \ status\_zx\ =\ zx::port::create(0,\ \&port);}
+\DoxyCodeLine{00883\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00884\ }
+\DoxyCodeLine{00885\ \ \ \textcolor{comment}{//\ Register\ to\ wait\ for\ the\ child\ process\ to\ terminate.}}
+\DoxyCodeLine{00886\ \ \ status\_zx\ =}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ child\_process\_.wait\_async(port,\ kProcessKey,\ ZX\_PROCESS\_TERMINATED,\ 0);}
+\DoxyCodeLine{00888\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00889\ }
+\DoxyCodeLine{00890\ \ \ \textcolor{comment}{//\ Register\ to\ wait\ for\ the\ socket\ to\ be\ readable\ or\ closed.}}
+\DoxyCodeLine{00891\ \ \ status\_zx\ =\ stderr\_socket\_.wait\_async(}
+\DoxyCodeLine{00892\ \ \ \ \ \ \ port,\ kSocketKey,\ ZX\_SOCKET\_READABLE\ |\ ZX\_SOCKET\_PEER\_CLOSED,\ 0);}
+\DoxyCodeLine{00893\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00894\ }
+\DoxyCodeLine{00895\ \ \ \textcolor{comment}{//\ Register\ to\ wait\ for\ an\ exception.}}
+\DoxyCodeLine{00896\ \ \ status\_zx\ =\ exception\_channel\_.wait\_async(port,\ kExceptionKey,}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ZX\_CHANNEL\_READABLE,\ 0);}
+\DoxyCodeLine{00898\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00899\ }
+\DoxyCodeLine{00900\ \ \ \textcolor{keywordtype}{bool}\ process\_terminated\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00901\ \ \ \textcolor{keywordtype}{bool}\ socket\_closed\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00902\ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00903\ \ \ \ \ zx\_port\_packet\_t\ packet\ =\ \{\};}
+\DoxyCodeLine{00904\ \ \ \ \ status\_zx\ =\ port.wait(zx::time::infinite(),\ \&packet);}
+\DoxyCodeLine{00905\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00906\ }
+\DoxyCodeLine{00907\ \ \ \ \ \textcolor{keywordflow}{if}\ (packet.key\ ==\ kExceptionKey)\ \{}
+\DoxyCodeLine{00908\ \ \ \ \ \ \ \textcolor{comment}{//\ Process\ encountered\ an\ exception.\ Kill\ it\ directly\ rather\ than}}
+\DoxyCodeLine{00909\ \ \ \ \ \ \ \textcolor{comment}{//\ letting\ other\ handlers\ process\ the\ event.\ We\ will\ get\ a\ kProcessKey}}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \textcolor{comment}{//\ event\ when\ the\ process\ actually\ terminates.}}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ status\_zx\ =\ child\_process\_.kill();}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00913\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (packet.key\ ==\ kProcessKey)\ \{}
+\DoxyCodeLine{00914\ \ \ \ \ \ \ \textcolor{comment}{//\ Process\ terminated.}}
+\DoxyCodeLine{00915\ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(ZX\_PKT\_IS\_SIGNAL\_ONE(packet.type));}
+\DoxyCodeLine{00916\ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(packet.signal.observed\ \&\ ZX\_PROCESS\_TERMINATED);}
+\DoxyCodeLine{00917\ \ \ \ \ \ \ process\_terminated\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00918\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (packet.key\ ==\ kSocketKey)\ \{}
+\DoxyCodeLine{00919\ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(ZX\_PKT\_IS\_SIGNAL\_ONE(packet.type));}
+\DoxyCodeLine{00920\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (packet.signal.observed\ \&\ ZX\_SOCKET\_READABLE)\ \{}
+\DoxyCodeLine{00921\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Read\ data\ from\ the\ socket.}}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ kBufferSize\ =\ 1024;}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ old\_length\ =\ captured\_stderr\_.length();}
+\DoxyCodeLine{00925\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ bytes\_read\ =\ 0;}
+\DoxyCodeLine{00926\ \ \ \ \ \ \ \ \ \ \ captured\_stderr\_.resize(old\_length\ +\ kBufferSize);}
+\DoxyCodeLine{00927\ \ \ \ \ \ \ \ \ \ \ status\_zx\ =}
+\DoxyCodeLine{00928\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stderr\_socket\_.read(0,\ \&captured\_stderr\_.front()\ +\ old\_length,}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kBufferSize,\ \&bytes\_read);}
+\DoxyCodeLine{00930\ \ \ \ \ \ \ \ \ \ \ captured\_stderr\_.resize(old\_length\ +\ bytes\_read);}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{while}\ (status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00932\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status\_zx\ ==\ ZX\_ERR\_PEER\_CLOSED)\ \{}
+\DoxyCodeLine{00933\ \ \ \ \ \ \ \ \ \ \ socket\_closed\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_ERR\_SHOULD\_WAIT);}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ \ \ status\_zx\ =\ stderr\_socket\_.wait\_async(}
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ port,\ kSocketKey,\ ZX\_SOCKET\_READABLE\ |\ ZX\_SOCKET\_PEER\_CLOSED,\ 0);}
+\DoxyCodeLine{00938\ \ \ \ \ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00939\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00940\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00941\ \ \ \ \ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(packet.signal.observed\ \&\ ZX\_SOCKET\_PEER\_CLOSED);}
+\DoxyCodeLine{00942\ \ \ \ \ \ \ \ \ socket\_closed\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00943\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00944\ \ \ \ \ \}}
+\DoxyCodeLine{00945\ \ \ \}\ \textcolor{keywordflow}{while}\ (!process\_terminated\ \&\&\ !socket\_closed);}
+\DoxyCodeLine{00946\ }
+\DoxyCodeLine{00947\ \ \ ReadAndInterpretStatusByte();}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00949\ \ \ zx\_info\_process\_t\ buffer;}
+\DoxyCodeLine{00950\ \ \ status\_zx\ =\ child\_process\_.get\_info(ZX\_INFO\_PROCESS,\ \&buffer,\ \textcolor{keyword}{sizeof}(buffer),}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00952\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\_zx\ ==\ ZX\_OK);}
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00954\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(buffer.flags\ \&\ ZX\_INFO\_PROCESS\_FLAG\_EXITED);}
+\DoxyCodeLine{00955\ \ \ set\_status(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(buffer.return\_code));}
+\DoxyCodeLine{00956\ \ \ \textcolor{keywordflow}{return}\ status();}
+\DoxyCodeLine{00957\ \}}
+\DoxyCodeLine{00958\ }
+\DoxyCodeLine{00959\ \textcolor{comment}{//\ The\ AssumeRole\ process\ for\ a\ Fuchsia\ death\ test.\ \ It\ creates\ a\ child}}
+\DoxyCodeLine{00960\ \textcolor{comment}{//\ process\ with\ the\ same\ executable\ as\ the\ current\ process\ to\ run\ the}}
+\DoxyCodeLine{00961\ \textcolor{comment}{//\ death\ test.\ \ The\ child\ process\ is\ given\ the\ -\/-\/gtest\_filter\ and}}
+\DoxyCodeLine{00962\ \textcolor{comment}{//\ -\/-\/gtest\_internal\_run\_death\_test\ flags\ such\ that\ it\ knows\ to\ run\ the}}
+\DoxyCodeLine{00963\ \textcolor{comment}{//\ current\ death\ test\ only.}}
+\DoxyCodeLine{00964\ DeathTest::TestRole\ FuchsiaDeathTest::AssumeRole()\ \{}
+\DoxyCodeLine{00965\ \ \ \textcolor{keyword}{const}\ UnitTestImpl*\ \textcolor{keyword}{const}\ impl\ =\ GetUnitTestImpl();}
+\DoxyCodeLine{00966\ \ \ \textcolor{keyword}{const}\ InternalRunDeathTestFlag*\ \textcolor{keyword}{const}\ flag\ =}
+\DoxyCodeLine{00967\ \ \ \ \ \ \ impl-\/>internal\_run\_death\_test\_flag();}
+\DoxyCodeLine{00968\ \ \ \textcolor{keyword}{const}\ TestInfo*\ \textcolor{keyword}{const}\ info\ =\ impl-\/>current\_test\_info();}
+\DoxyCodeLine{00969\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ death\_test\_index\ =\ info-\/>result()-\/>death\_test\_count();}
+\DoxyCodeLine{00970\ }
+\DoxyCodeLine{00971\ \ \ \textcolor{keywordflow}{if}\ (flag\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00972\ \ \ \ \ \textcolor{comment}{//\ ParseInternalRunDeathTestFlag()\ has\ performed\ all\ the\ necessary}}
+\DoxyCodeLine{00973\ \ \ \ \ \textcolor{comment}{//\ processing.}}
+\DoxyCodeLine{00974\ \ \ \ \ set\_write\_fd(kFuchsiaReadPipeFd);}
+\DoxyCodeLine{00975\ \ \ \ \ \textcolor{keywordflow}{return}\ EXECUTE\_TEST;}
+\DoxyCodeLine{00976\ \ \ \}}
+\DoxyCodeLine{00977\ }
+\DoxyCodeLine{00978\ \ \ \textcolor{comment}{//\ Flush\ the\ log\ buffers\ since\ the\ log\ streams\ are\ shared\ with\ the\ child.}}
+\DoxyCodeLine{00979\ \ \ FlushInfoLog();}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \ \ \textcolor{comment}{//\ Build\ the\ child\ process\ command\ line.}}
+\DoxyCodeLine{00982\ \ \ \textcolor{keyword}{const}\ std::string\ filter\_flag\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{00983\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}filter="{}}\ +\ info-\/>test\_suite\_name()\ +\ \textcolor{stringliteral}{"{}."{}}\ +}
+\DoxyCodeLine{00984\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ info-\/>name();}
+\DoxyCodeLine{00985\ \ \ \textcolor{keyword}{const}\ std::string\ internal\_flag\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kInternalRunDeathTestFlag\ +\ \textcolor{stringliteral}{"{}="{}}\ +\ file\_\ +}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}|"{}}\ +\ StreamableToString(line\_)\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(death\_test\_index);}
+\DoxyCodeLine{00989\ \ \ Arguments\ args;}
+\DoxyCodeLine{00990\ \ \ args.AddArguments(GetInjectableArgvs());}
+\DoxyCodeLine{00991\ \ \ args.AddArgument(filter\_flag.c\_str());}
+\DoxyCodeLine{00992\ \ \ args.AddArgument(internal\_flag.c\_str());}
+\DoxyCodeLine{00993\ }
+\DoxyCodeLine{00994\ \ \ \textcolor{comment}{//\ Build\ the\ pipe\ for\ communication\ with\ the\ child.}}
+\DoxyCodeLine{00995\ \ \ zx\_status\_t\ status;}
+\DoxyCodeLine{00996\ \ \ zx\_handle\_t\ child\_pipe\_handle;}
+\DoxyCodeLine{00997\ \ \ \textcolor{keywordtype}{int}\ child\_pipe\_fd;}
+\DoxyCodeLine{00998\ \ \ status\ =\ fdio\_pipe\_half(\&child\_pipe\_fd,\ \&child\_pipe\_handle);}
+\DoxyCodeLine{00999\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ ==\ ZX\_OK);}
+\DoxyCodeLine{01000\ \ \ set\_read\_fd(child\_pipe\_fd);}
+\DoxyCodeLine{01001\ }
+\DoxyCodeLine{01002\ \ \ \textcolor{comment}{//\ Set\ the\ pipe\ handle\ for\ the\ child.}}
+\DoxyCodeLine{01003\ \ \ fdio\_spawn\_action\_t\ spawn\_actions[2]\ =\ \{\};}
+\DoxyCodeLine{01004\ \ \ fdio\_spawn\_action\_t*\ add\_handle\_action\ =\ \&spawn\_actions[0];}
+\DoxyCodeLine{01005\ \ \ add\_handle\_action-\/>action\ =\ FDIO\_SPAWN\_ACTION\_ADD\_HANDLE;}
+\DoxyCodeLine{01006\ \ \ add\_handle\_action-\/>h.id\ =\ PA\_HND(PA\_FD,\ kFuchsiaReadPipeFd);}
+\DoxyCodeLine{01007\ \ \ add\_handle\_action-\/>h.handle\ =\ child\_pipe\_handle;}
+\DoxyCodeLine{01008\ }
+\DoxyCodeLine{01009\ \ \ \textcolor{comment}{//\ Create\ a\ socket\ pair\ will\ be\ used\ to\ receive\ the\ child\ process'\ stderr.}}
+\DoxyCodeLine{01010\ \ \ zx::socket\ stderr\_producer\_socket;}
+\DoxyCodeLine{01011\ \ \ status\ =\ zx::socket::create(0,\ \&stderr\_producer\_socket,\ \&stderr\_socket\_);}
+\DoxyCodeLine{01012\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ >=\ 0);}
+\DoxyCodeLine{01013\ \ \ \textcolor{keywordtype}{int}\ stderr\_producer\_fd\ =\ -\/1;}
+\DoxyCodeLine{01014\ \ \ status\ =}
+\DoxyCodeLine{01015\ \ \ \ \ \ \ fdio\_fd\_create(stderr\_producer\_socket.release(),\ \&stderr\_producer\_fd);}
+\DoxyCodeLine{01016\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ >=\ 0);}
+\DoxyCodeLine{01017\ }
+\DoxyCodeLine{01018\ \ \ \textcolor{comment}{//\ Make\ the\ stderr\ socket\ nonblocking.}}
+\DoxyCodeLine{01019\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(fcntl(stderr\_producer\_fd,\ F\_SETFL,\ 0)\ ==\ 0);}
+\DoxyCodeLine{01020\ }
+\DoxyCodeLine{01021\ \ \ fdio\_spawn\_action\_t*\ add\_stderr\_action\ =\ \&spawn\_actions[1];}
+\DoxyCodeLine{01022\ \ \ add\_stderr\_action-\/>action\ =\ FDIO\_SPAWN\_ACTION\_CLONE\_FD;}
+\DoxyCodeLine{01023\ \ \ add\_stderr\_action-\/>fd.local\_fd\ =\ stderr\_producer\_fd;}
+\DoxyCodeLine{01024\ \ \ add\_stderr\_action-\/>fd.target\_fd\ =\ STDERR\_FILENO;}
+\DoxyCodeLine{01025\ }
+\DoxyCodeLine{01026\ \ \ \textcolor{comment}{//\ Create\ a\ child\ job.}}
+\DoxyCodeLine{01027\ \ \ zx\_handle\_t\ child\_job\ =\ ZX\_HANDLE\_INVALID;}
+\DoxyCodeLine{01028\ \ \ status\ =\ zx\_job\_create(zx\_job\_default(),\ 0,\ \&child\_job);}
+\DoxyCodeLine{01029\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ ==\ ZX\_OK);}
+\DoxyCodeLine{01030\ \ \ zx\_policy\_basic\_t\ policy;}
+\DoxyCodeLine{01031\ \ \ policy.condition\ =\ ZX\_POL\_NEW\_ANY;}
+\DoxyCodeLine{01032\ \ \ policy.policy\ =\ ZX\_POL\_ACTION\_ALLOW;}
+\DoxyCodeLine{01033\ \ \ status\ =\ zx\_job\_set\_policy(child\_job,\ ZX\_JOB\_POL\_RELATIVE,\ ZX\_JOB\_POL\_BASIC,}
+\DoxyCodeLine{01034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&policy,\ 1);}
+\DoxyCodeLine{01035\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ ==\ ZX\_OK);}
+\DoxyCodeLine{01036\ }
+\DoxyCodeLine{01037\ \ \ \textcolor{comment}{//\ Create\ an\ exception\ channel\ attached\ to\ the\ |child\_job|,\ to\ allow}}
+\DoxyCodeLine{01038\ \ \ \textcolor{comment}{//\ us\ to\ suppress\ the\ system\ default\ exception\ handler\ from\ firing.}}
+\DoxyCodeLine{01039\ \ \ status\ =\ zx\_task\_create\_exception\_channel(}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ child\_job,\ 0,\ exception\_channel\_.reset\_and\_get\_address());}
+\DoxyCodeLine{01041\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ ==\ ZX\_OK);}
+\DoxyCodeLine{01042\ }
+\DoxyCodeLine{01043\ \ \ \textcolor{comment}{//\ Spawn\ the\ child\ process.}}
+\DoxyCodeLine{01044\ \ \ status\ =\ fdio\_spawn\_etc(child\_job,\ FDIO\_SPAWN\_CLONE\_ALL,\ args.Argv()[0],}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ args.Argv(),\ \textcolor{keyword}{nullptr},\ 2,\ spawn\_actions,}
+\DoxyCodeLine{01046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ child\_process\_.reset\_and\_get\_address(),\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{01047\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(status\ ==\ ZX\_OK);}
+\DoxyCodeLine{01048\ }
+\DoxyCodeLine{01049\ \ \ set\_spawned(\textcolor{keyword}{true});}
+\DoxyCodeLine{01050\ \ \ \textcolor{keywordflow}{return}\ OVERSEE\_TEST;}
+\DoxyCodeLine{01051\ \}}
+\DoxyCodeLine{01052\ }
+\DoxyCodeLine{01053\ std::string\ FuchsiaDeathTest::GetErrorLogs()\ \{\ \textcolor{keywordflow}{return}\ captured\_stderr\_;\ \}}
+\DoxyCodeLine{01054\ }
+\DoxyCodeLine{01055\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ We\ are\ neither\ on\ Windows,\ nor\ on\ Fuchsia.}}
+\DoxyCodeLine{01056\ }
+\DoxyCodeLine{01057\ \textcolor{comment}{//\ ForkingDeathTest\ provides\ implementations\ for\ most\ of\ the\ abstract}}
+\DoxyCodeLine{01058\ \textcolor{comment}{//\ methods\ of\ the\ DeathTest\ interface.\ \ Only\ the\ AssumeRole\ method\ is}}
+\DoxyCodeLine{01059\ \textcolor{comment}{//\ left\ undefined.}}
+\DoxyCodeLine{01060\ \textcolor{keyword}{class\ }ForkingDeathTest\ :\ \textcolor{keyword}{public}\ DeathTestImpl\ \{}
+\DoxyCodeLine{01061\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01062\ \ \ ForkingDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,\ Matcher<const\ std::string\&>\ matcher);}
+\DoxyCodeLine{01063\ }
+\DoxyCodeLine{01064\ \ \ \textcolor{comment}{//\ All\ of\ these\ virtual\ functions\ are\ inherited\ from\ DeathTest.}}
+\DoxyCodeLine{01065\ \ \ \textcolor{keywordtype}{int}\ Wait()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{01066\ }
+\DoxyCodeLine{01067\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{01068\ \ \ \textcolor{keywordtype}{void}\ set\_child\_pid(pid\_t\ child\_pid)\ \{\ child\_pid\_\ =\ child\_pid;\ \}}
+\DoxyCodeLine{01069\ }
+\DoxyCodeLine{01070\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01071\ \ \ \textcolor{comment}{//\ PID\ of\ child\ process\ during\ death\ test;\ 0\ in\ the\ child\ process\ itself.}}
+\DoxyCodeLine{01072\ \ \ pid\_t\ child\_pid\_;}
+\DoxyCodeLine{01073\ \};}
+\DoxyCodeLine{01074\ }
+\DoxyCodeLine{01075\ \textcolor{comment}{//\ Constructs\ a\ ForkingDeathTest.}}
+\DoxyCodeLine{01076\ ForkingDeathTest::ForkingDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,}
+\DoxyCodeLine{01077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Matcher<const\ std::string\&>\ matcher)}
+\DoxyCodeLine{01078\ \ \ \ \ :\ DeathTestImpl(a\_statement,\ std::move(matcher)),\ child\_pid\_(-\/1)\ \{\}}
+\DoxyCodeLine{01079\ }
+\DoxyCodeLine{01080\ \textcolor{comment}{//\ Waits\ for\ the\ child\ in\ a\ death\ test\ to\ exit,\ returning\ its\ exit}}
+\DoxyCodeLine{01081\ \textcolor{comment}{//\ status,\ or\ 0\ if\ no\ child\ process\ exists.\ \ As\ a\ side\ effect,\ sets\ the}}
+\DoxyCodeLine{01082\ \textcolor{comment}{//\ outcome\ data\ member.}}
+\DoxyCodeLine{01083\ \textcolor{keywordtype}{int}\ ForkingDeathTest::Wait()\ \{}
+\DoxyCodeLine{01084\ \ \ \textcolor{keywordflow}{if}\ (!spawned())\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{01085\ }
+\DoxyCodeLine{01086\ \ \ ReadAndInterpretStatusByte();}
+\DoxyCodeLine{01087\ }
+\DoxyCodeLine{01088\ \ \ \textcolor{keywordtype}{int}\ status\_value;}
+\DoxyCodeLine{01089\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(waitpid(child\_pid\_,\ \&status\_value,\ 0));}
+\DoxyCodeLine{01090\ \ \ set\_status(status\_value);}
+\DoxyCodeLine{01091\ \ \ \textcolor{keywordflow}{return}\ status\_value;}
+\DoxyCodeLine{01092\ \}}
+\DoxyCodeLine{01093\ }
+\DoxyCodeLine{01094\ \textcolor{comment}{//\ A\ concrete\ death\ test\ class\ that\ forks,\ then\ immediately\ runs\ the\ test}}
+\DoxyCodeLine{01095\ \textcolor{comment}{//\ in\ the\ child\ process.}}
+\DoxyCodeLine{01096\ \textcolor{keyword}{class\ }NoExecDeathTest\ :\ \textcolor{keyword}{public}\ ForkingDeathTest\ \{}
+\DoxyCodeLine{01097\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01098\ \ \ NoExecDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,\ Matcher<const\ std::string\&>\ matcher)}
+\DoxyCodeLine{01099\ \ \ \ \ \ \ :\ ForkingDeathTest(a\_statement,\ std::move(matcher))\ \{\}}
+\DoxyCodeLine{01100\ \ \ TestRole\ AssumeRole()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{01101\ \};}
+\DoxyCodeLine{01102\ }
+\DoxyCodeLine{01103\ \textcolor{comment}{//\ The\ AssumeRole\ process\ for\ a\ fork-\/and-\/run\ death\ test.\ \ It\ implements\ a}}
+\DoxyCodeLine{01104\ \textcolor{comment}{//\ straightforward\ fork,\ with\ a\ simple\ pipe\ to\ transmit\ the\ status\ byte.}}
+\DoxyCodeLine{01105\ DeathTest::TestRole\ NoExecDeathTest::AssumeRole()\ \{}
+\DoxyCodeLine{01106\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ thread\_count\ =\ GetThreadCount();}
+\DoxyCodeLine{01107\ \ \ \textcolor{keywordflow}{if}\ (thread\_count\ !=\ 1)\ \{}
+\DoxyCodeLine{01108\ \ \ \ \ GTEST\_LOG\_(WARNING)\ <<\ DeathTestThreadWarning(thread\_count);}
+\DoxyCodeLine{01109\ \ \ \}}
+\DoxyCodeLine{01110\ }
+\DoxyCodeLine{01111\ \ \ \textcolor{keywordtype}{int}\ pipe\_fd[2];}
+\DoxyCodeLine{01112\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(pipe(pipe\_fd)\ !=\ -\/1);}
+\DoxyCodeLine{01113\ }
+\DoxyCodeLine{01114\ \ \ DeathTest::set\_last\_death\_test\_message(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01115\ \ \ CaptureStderr();}
+\DoxyCodeLine{01116\ \ \ \textcolor{comment}{//\ When\ we\ fork\ the\ process\ below,\ the\ log\ file\ buffers\ are\ copied,\ but\ the}}
+\DoxyCodeLine{01117\ \ \ \textcolor{comment}{//\ file\ descriptors\ are\ shared.\ \ We\ flush\ all\ log\ files\ here\ so\ that\ closing}}
+\DoxyCodeLine{01118\ \ \ \textcolor{comment}{//\ the\ file\ descriptors\ in\ the\ child\ process\ doesn't\ throw\ off\ the}}
+\DoxyCodeLine{01119\ \ \ \textcolor{comment}{//\ synchronization\ between\ descriptors\ and\ buffers\ in\ the\ parent\ process.}}
+\DoxyCodeLine{01120\ \ \ \textcolor{comment}{//\ This\ is\ as\ close\ to\ the\ fork\ as\ possible\ to\ avoid\ a\ race\ condition\ in\ case}}
+\DoxyCodeLine{01121\ \ \ \textcolor{comment}{//\ there\ are\ multiple\ threads\ running\ before\ the\ death\ test,\ and\ another}}
+\DoxyCodeLine{01122\ \ \ \textcolor{comment}{//\ thread\ writes\ to\ the\ log\ file.}}
+\DoxyCodeLine{01123\ \ \ FlushInfoLog();}
+\DoxyCodeLine{01124\ }
+\DoxyCodeLine{01125\ \ \ \textcolor{keyword}{const}\ pid\_t\ child\_pid\ =\ fork();}
+\DoxyCodeLine{01126\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(child\_pid\ !=\ -\/1);}
+\DoxyCodeLine{01127\ \ \ set\_child\_pid(child\_pid);}
+\DoxyCodeLine{01128\ \ \ \textcolor{keywordflow}{if}\ (child\_pid\ ==\ 0)\ \{}
+\DoxyCodeLine{01129\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(close(pipe\_fd[0]));}
+\DoxyCodeLine{01130\ \ \ \ \ set\_write\_fd(pipe\_fd[1]);}
+\DoxyCodeLine{01131\ \ \ \ \ \textcolor{comment}{//\ Redirects\ all\ logging\ to\ stderr\ in\ the\ child\ process\ to\ prevent}}
+\DoxyCodeLine{01132\ \ \ \ \ \textcolor{comment}{//\ concurrent\ writes\ to\ the\ log\ files.\ \ We\ capture\ stderr\ in\ the\ parent}}
+\DoxyCodeLine{01133\ \ \ \ \ \textcolor{comment}{//\ process\ and\ append\ the\ child\ process'\ output\ to\ a\ log.}}
+\DoxyCodeLine{01134\ \ \ \ \ LogToStderr();}
+\DoxyCodeLine{01135\ \ \ \ \ \textcolor{comment}{//\ Event\ forwarding\ to\ the\ listeners\ of\ event\ listener\ API\ mush\ be\ shut}}
+\DoxyCodeLine{01136\ \ \ \ \ \textcolor{comment}{//\ down\ in\ death\ test\ subprocesses.}}
+\DoxyCodeLine{01137\ \ \ \ \ GetUnitTestImpl()-\/>listeners()-\/>SuppressEventForwarding();}
+\DoxyCodeLine{01138\ \ \ \ \ g\_in\_fast\_death\_test\_child\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01139\ \ \ \ \ \textcolor{keywordflow}{return}\ EXECUTE\_TEST;}
+\DoxyCodeLine{01140\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01141\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(close(pipe\_fd[1]));}
+\DoxyCodeLine{01142\ \ \ \ \ set\_read\_fd(pipe\_fd[0]);}
+\DoxyCodeLine{01143\ \ \ \ \ set\_spawned(\textcolor{keyword}{true});}
+\DoxyCodeLine{01144\ \ \ \ \ \textcolor{keywordflow}{return}\ OVERSEE\_TEST;}
+\DoxyCodeLine{01145\ \ \ \}}
+\DoxyCodeLine{01146\ \}}
+\DoxyCodeLine{01147\ }
+\DoxyCodeLine{01148\ \textcolor{comment}{//\ A\ concrete\ death\ test\ class\ that\ forks\ and\ re-\/executes\ the\ main}}
+\DoxyCodeLine{01149\ \textcolor{comment}{//\ program\ from\ the\ beginning,\ with\ command-\/line\ flags\ set\ that\ cause}}
+\DoxyCodeLine{01150\ \textcolor{comment}{//\ only\ this\ specific\ death\ test\ to\ be\ run.}}
+\DoxyCodeLine{01151\ \textcolor{keyword}{class\ }ExecDeathTest\ :\ \textcolor{keyword}{public}\ ForkingDeathTest\ \{}
+\DoxyCodeLine{01152\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01153\ \ \ ExecDeathTest(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a\_statement,\ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{01154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)}
+\DoxyCodeLine{01155\ \ \ \ \ \ \ :\ ForkingDeathTest(a\_statement,\ std::move(matcher)),}
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ file\_(file),}
+\DoxyCodeLine{01157\ \ \ \ \ \ \ \ \ line\_(line)\ \{\}}
+\DoxyCodeLine{01158\ \ \ TestRole\ AssumeRole()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{01159\ }
+\DoxyCodeLine{01160\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01161\ \ \ static\ ::std::vector<std::string>\ GetArgvsForDeathTestChildProcess()\ \{}
+\DoxyCodeLine{01162\ \ \ \ \ ::std::vector<std::string>\ args\ =\ GetInjectableArgvs();}
+\DoxyCodeLine{01163\ \textcolor{preprocessor}{\#if\ defined(GTEST\_EXTRA\_DEATH\_TEST\_COMMAND\_LINE\_ARGS\_)}}
+\DoxyCodeLine{01164\ \ \ \ \ ::std::vector<std::string>\ extra\_args\ =}
+\DoxyCodeLine{01165\ \ \ \ \ \ \ \ \ GTEST\_EXTRA\_DEATH\_TEST\_COMMAND\_LINE\_ARGS\_();}
+\DoxyCodeLine{01166\ \ \ \ \ args.insert(args.end(),\ extra\_args.begin(),\ extra\_args.end());}
+\DoxyCodeLine{01167\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ defined(GTEST\_EXTRA\_DEATH\_TEST\_COMMAND\_LINE\_ARGS\_)}}
+\DoxyCodeLine{01168\ \ \ \ \ \textcolor{keywordflow}{return}\ args;}
+\DoxyCodeLine{01169\ \ \ \}}
+\DoxyCodeLine{01170\ \ \ \textcolor{comment}{//\ The\ name\ of\ the\ file\ in\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{01171\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ file\_;}
+\DoxyCodeLine{01172\ \ \ \textcolor{comment}{//\ The\ line\ number\ on\ which\ the\ death\ test\ is\ located.}}
+\DoxyCodeLine{01173\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ line\_;}
+\DoxyCodeLine{01174\ \};}
+\DoxyCodeLine{01175\ }
+\DoxyCodeLine{01176\ \textcolor{comment}{//\ Utility\ class\ for\ accumulating\ command-\/line\ arguments.}}
+\DoxyCodeLine{01177\ \textcolor{keyword}{class\ }Arguments\ \{}
+\DoxyCodeLine{01178\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01179\ \ \ Arguments()\ \{\ args\_.push\_back(\textcolor{keyword}{nullptr});\ \}}
+\DoxyCodeLine{01180\ }
+\DoxyCodeLine{01181\ \ \ \string~Arguments()\ \{}
+\DoxyCodeLine{01182\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::vector<char*>::iterator\ i\ =\ args\_.begin();\ i\ !=\ args\_.end();}
+\DoxyCodeLine{01183\ \ \ \ \ \ \ \ \ \ ++i)\ \{}
+\DoxyCodeLine{01184\ \ \ \ \ \ \ free(*i);}
+\DoxyCodeLine{01185\ \ \ \ \ \}}
+\DoxyCodeLine{01186\ \ \ \}}
+\DoxyCodeLine{01187\ \ \ \textcolor{keywordtype}{void}\ AddArgument(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argument)\ \{}
+\DoxyCodeLine{01188\ \ \ \ \ args\_.insert(args\_.end()\ -\/\ 1,\ posix::StrDup(argument));}
+\DoxyCodeLine{01189\ \ \ \}}
+\DoxyCodeLine{01190\ }
+\DoxyCodeLine{01191\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Str>}
+\DoxyCodeLine{01192\ \ \ \textcolor{keywordtype}{void}\ AddArguments(const\ ::std::vector<Str>\&\ arguments)\ \{}
+\DoxyCodeLine{01193\ \ \ \ \ \textcolor{keywordflow}{for}\ (typename\ ::std::vector<Str>::const\_iterator\ i\ =\ arguments.begin();}
+\DoxyCodeLine{01194\ \ \ \ \ \ \ \ \ \ i\ !=\ arguments.end();\ ++i)\ \{}
+\DoxyCodeLine{01195\ \ \ \ \ \ \ args\_.insert(args\_.end()\ -\/\ 1,\ posix::StrDup(i-\/>c\_str()));}
+\DoxyCodeLine{01196\ \ \ \ \ \}}
+\DoxyCodeLine{01197\ \ \ \}}
+\DoxyCodeLine{01198\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}*\ Argv()\ \{\ \textcolor{keywordflow}{return}\ \&args\_[0];\ \}}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01200\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01201\ \ \ std::vector<char*>\ args\_;}
+\DoxyCodeLine{01202\ \};}
+\DoxyCodeLine{01203\ }
+\DoxyCodeLine{01204\ \textcolor{comment}{//\ A\ struct\ that\ encompasses\ the\ arguments\ to\ the\ child\ process\ of\ a}}
+\DoxyCodeLine{01205\ \textcolor{comment}{//\ threadsafe-\/style\ death\ test\ process.}}
+\DoxyCodeLine{01206\ \textcolor{keyword}{struct\ }ExecDeathTestArgs\ \{}
+\DoxyCodeLine{01207\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}*\ argv;\ \ \textcolor{comment}{//\ Command-\/line\ arguments\ for\ the\ child's\ call\ to\ exec}}
+\DoxyCodeLine{01208\ \ \ \textcolor{keywordtype}{int}\ close\_fd;\ \ \ \ \ \ \ \textcolor{comment}{//\ File\ descriptor\ to\ close;\ the\ read\ end\ of\ a\ pipe}}
+\DoxyCodeLine{01209\ \};}
+\DoxyCodeLine{01210\ }
+\DoxyCodeLine{01211\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01212\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \textcolor{keywordtype}{char}**\ environ;}
+\DoxyCodeLine{01213\ \textcolor{preprocessor}{\#else\ \ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01214\ \textcolor{comment}{//\ The\ main\ function\ for\ a\ threadsafe-\/style\ death\ test\ child\ process.}}
+\DoxyCodeLine{01215\ \textcolor{comment}{//\ This\ function\ is\ called\ in\ a\ clone()-\/ed\ process\ and\ thus\ must\ avoid}}
+\DoxyCodeLine{01216\ \textcolor{comment}{//\ any\ potentially\ unsafe\ operations\ like\ malloc\ or\ libc\ functions.}}
+\DoxyCodeLine{01217\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ ExecDeathTestChildMain(\textcolor{keywordtype}{void}*\ child\_arg)\ \{}
+\DoxyCodeLine{01218\ \ \ ExecDeathTestArgs*\ \textcolor{keyword}{const}\ args\ =\ \textcolor{keyword}{static\_cast<}ExecDeathTestArgs*\textcolor{keyword}{>}(child\_arg);}
+\DoxyCodeLine{01219\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(close(args-\/>close\_fd));}
+\DoxyCodeLine{01220\ }
+\DoxyCodeLine{01221\ \ \ \textcolor{comment}{//\ We\ need\ to\ execute\ the\ test\ program\ in\ the\ same\ environment\ where}}
+\DoxyCodeLine{01222\ \ \ \textcolor{comment}{//\ it\ was\ originally\ invoked.\ \ Therefore\ we\ change\ to\ the\ original}}
+\DoxyCodeLine{01223\ \ \ \textcolor{comment}{//\ working\ directory\ first.}}
+\DoxyCodeLine{01224\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ original\_dir\ =}
+\DoxyCodeLine{01225\ \ \ \ \ \ \ UnitTest::GetInstance()-\/>original\_working\_dir();}
+\DoxyCodeLine{01226\ \ \ \textcolor{comment}{//\ We\ can\ safely\ call\ chdir()\ as\ it's\ a\ direct\ system\ call.}}
+\DoxyCodeLine{01227\ \ \ \textcolor{keywordflow}{if}\ (chdir(original\_dir)\ !=\ 0)\ \{}
+\DoxyCodeLine{01228\ \ \ \ \ DeathTestAbort(std::string(\textcolor{stringliteral}{"{}chdir(\(\backslash\)"{}"{}})\ +\ original\_dir\ +}
+\DoxyCodeLine{01229\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)"{})\ failed:\ "{}}\ +\ GetLastErrnoDescription());}
+\DoxyCodeLine{01230\ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{01231\ \ \ \}}
+\DoxyCodeLine{01232\ }
+\DoxyCodeLine{01233\ \ \ \textcolor{comment}{//\ We\ can\ safely\ call\ execv()\ as\ it's\ almost\ a\ direct\ system\ call.\ We}}
+\DoxyCodeLine{01234\ \ \ \textcolor{comment}{//\ cannot\ use\ execvp()\ as\ it's\ a\ libc\ function\ and\ thus\ potentially}}
+\DoxyCodeLine{01235\ \ \ \textcolor{comment}{//\ unsafe.\ \ Since\ execv()\ doesn't\ search\ the\ PATH,\ the\ user\ must}}
+\DoxyCodeLine{01236\ \ \ \textcolor{comment}{//\ invoke\ the\ test\ program\ via\ a\ valid\ path\ that\ contains\ at\ least}}
+\DoxyCodeLine{01237\ \ \ \textcolor{comment}{//\ one\ path\ separator.}}
+\DoxyCodeLine{01238\ \ \ execv(args-\/>argv[0],\ args-\/>argv);}
+\DoxyCodeLine{01239\ \ \ DeathTestAbort(std::string(\textcolor{stringliteral}{"{}execv("{}})\ +\ args-\/>argv[0]\ +\ \textcolor{stringliteral}{"{},\ ...)\ in\ "{}}\ +}
+\DoxyCodeLine{01240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ original\_dir\ +\ \textcolor{stringliteral}{"{}\ failed:\ "{}}\ +\ GetLastErrnoDescription());}
+\DoxyCodeLine{01241\ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{01242\ \}}
+\DoxyCodeLine{01243\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01244\ }
+\DoxyCodeLine{01245\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_CLONE}}
+\DoxyCodeLine{01246\ \textcolor{comment}{//\ Two\ utility\ routines\ that\ together\ determine\ the\ direction\ the\ stack}}
+\DoxyCodeLine{01247\ \textcolor{comment}{//\ grows.}}
+\DoxyCodeLine{01248\ \textcolor{comment}{//\ This\ could\ be\ accomplished\ more\ elegantly\ by\ a\ single\ recursive}}
+\DoxyCodeLine{01249\ \textcolor{comment}{//\ function,\ but\ we\ want\ to\ guard\ against\ the\ unlikely\ possibility\ of}}
+\DoxyCodeLine{01250\ \textcolor{comment}{//\ a\ smart\ compiler\ optimizing\ the\ recursion\ away.}}
+\DoxyCodeLine{01251\ \textcolor{comment}{//}}
+\DoxyCodeLine{01252\ \textcolor{comment}{//\ GTEST\_NO\_INLINE\_\ is\ required\ to\ prevent\ GCC\ 4.6\ from\ inlining}}
+\DoxyCodeLine{01253\ \textcolor{comment}{//\ StackLowerThanAddress\ into\ StackGrowsDown,\ which\ then\ doesn't\ give}}
+\DoxyCodeLine{01254\ \textcolor{comment}{//\ correct\ answer.}}
+\DoxyCodeLine{01255\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ StackLowerThanAddress(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ ptr,}
+\DoxyCodeLine{01256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}*\ result)\ GTEST\_NO\_INLINE\_;}
+\DoxyCodeLine{01257\ \textcolor{comment}{//\ Make\ sure\ sanitizers\ do\ not\ tamper\ with\ the\ stack\ here.}}
+\DoxyCodeLine{01258\ \textcolor{comment}{//\ Ideally,\ we\ want\ to\ use\ \`{}\_\_builtin\_frame\_address`\ instead\ of\ a\ local\ variable}}
+\DoxyCodeLine{01259\ \textcolor{comment}{//\ address\ with\ sanitizer\ disabled,\ but\ it\ does\ not\ work\ when\ the}}
+\DoxyCodeLine{01260\ \textcolor{comment}{//\ compiler\ optimizes\ the\ stack\ frame\ out,\ which\ happens\ on\ PowerPC\ targets.}}
+\DoxyCodeLine{01261\ \textcolor{comment}{//\ HWAddressSanitizer\ add\ a\ random\ tag\ to\ the\ MSB\ of\ the\ local\ variable\ address,}}
+\DoxyCodeLine{01262\ \textcolor{comment}{//\ making\ comparison\ result\ unpredictable.}}
+\DoxyCodeLine{01263\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_ADDRESS\_}
+\DoxyCodeLine{01264\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_HWADDRESS\_}
+\DoxyCodeLine{01265\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ StackLowerThanAddress(\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ ptr,\ \textcolor{keywordtype}{bool}*\ result)\ \{}
+\DoxyCodeLine{01266\ \ \ \textcolor{keywordtype}{int}\ dummy\ =\ 0;}
+\DoxyCodeLine{01267\ \ \ *result\ =\ std::less<const\ void*>()(\&dummy,\ ptr);}
+\DoxyCodeLine{01268\ \}}
+\DoxyCodeLine{01269\ }
+\DoxyCodeLine{01270\ \textcolor{comment}{//\ Make\ sure\ AddressSanitizer\ does\ not\ tamper\ with\ the\ stack\ here.}}
+\DoxyCodeLine{01271\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_ADDRESS\_}
+\DoxyCodeLine{01272\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_HWADDRESS\_}
+\DoxyCodeLine{01273\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ StackGrowsDown()\ \{}
+\DoxyCodeLine{01274\ \ \ \textcolor{keywordtype}{int}\ dummy\ =\ 0;}
+\DoxyCodeLine{01275\ \ \ \textcolor{keywordtype}{bool}\ result;}
+\DoxyCodeLine{01276\ \ \ StackLowerThanAddress(\&dummy,\ \&result);}
+\DoxyCodeLine{01277\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{01278\ \}}
+\DoxyCodeLine{01279\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_CLONE}}
+\DoxyCodeLine{01280\ }
+\DoxyCodeLine{01281\ \textcolor{comment}{//\ Spawns\ a\ child\ process\ with\ the\ same\ executable\ as\ the\ current\ process\ in}}
+\DoxyCodeLine{01282\ \textcolor{comment}{//\ a\ thread-\/safe\ manner\ and\ instructs\ it\ to\ run\ the\ death\ test.\ \ The}}
+\DoxyCodeLine{01283\ \textcolor{comment}{//\ implementation\ uses\ fork(2)\ +\ exec.\ \ On\ systems\ where\ clone(2)\ is}}
+\DoxyCodeLine{01284\ \textcolor{comment}{//\ available,\ it\ is\ used\ instead,\ being\ slightly\ more\ thread-\/safe.\ \ On\ QNX,}}
+\DoxyCodeLine{01285\ \textcolor{comment}{//\ fork\ supports\ only\ single-\/threaded\ environments,\ so\ this\ function\ uses}}
+\DoxyCodeLine{01286\ \textcolor{comment}{//\ spawn(2)\ there\ instead.\ \ The\ function\ dies\ with\ an\ error\ message\ if}}
+\DoxyCodeLine{01287\ \textcolor{comment}{//\ anything\ goes\ wrong.}}
+\DoxyCodeLine{01288\ \textcolor{keyword}{static}\ pid\_t\ ExecDeathTestSpawnChild(\textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}*\ argv,\ \textcolor{keywordtype}{int}\ close\_fd)\ \{}
+\DoxyCodeLine{01289\ \ \ ExecDeathTestArgs\ args\ =\ \{argv,\ close\_fd\};}
+\DoxyCodeLine{01290\ \ \ pid\_t\ child\_pid\ =\ -\/1;}
+\DoxyCodeLine{01291\ }
+\DoxyCodeLine{01292\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01293\ \ \ \textcolor{comment}{//\ Obtains\ the\ current\ directory\ and\ sets\ it\ to\ be\ closed\ in\ the\ child}}
+\DoxyCodeLine{01294\ \ \ \textcolor{comment}{//\ process.}}
+\DoxyCodeLine{01295\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ cwd\_fd\ =\ open(\textcolor{stringliteral}{"{}."{}},\ O\_RDONLY);}
+\DoxyCodeLine{01296\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(cwd\_fd\ !=\ -\/1);}
+\DoxyCodeLine{01297\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(fcntl(cwd\_fd,\ F\_SETFD,\ FD\_CLOEXEC));}
+\DoxyCodeLine{01298\ \ \ \textcolor{comment}{//\ We\ need\ to\ execute\ the\ test\ program\ in\ the\ same\ environment\ where}}
+\DoxyCodeLine{01299\ \ \ \textcolor{comment}{//\ it\ was\ originally\ invoked.\ \ Therefore\ we\ change\ to\ the\ original}}
+\DoxyCodeLine{01300\ \ \ \textcolor{comment}{//\ working\ directory\ first.}}
+\DoxyCodeLine{01301\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ original\_dir\ =}
+\DoxyCodeLine{01302\ \ \ \ \ \ \ UnitTest::GetInstance()-\/>original\_working\_dir();}
+\DoxyCodeLine{01303\ \ \ \textcolor{comment}{//\ We\ can\ safely\ call\ chdir()\ as\ it's\ a\ direct\ system\ call.}}
+\DoxyCodeLine{01304\ \ \ \textcolor{keywordflow}{if}\ (chdir(original\_dir)\ !=\ 0)\ \{}
+\DoxyCodeLine{01305\ \ \ \ \ DeathTestAbort(std::string(\textcolor{stringliteral}{"{}chdir(\(\backslash\)"{}"{}})\ +\ original\_dir\ +}
+\DoxyCodeLine{01306\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)"{})\ failed:\ "{}}\ +\ GetLastErrnoDescription());}
+\DoxyCodeLine{01307\ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{01308\ \ \ \}}
+\DoxyCodeLine{01309\ }
+\DoxyCodeLine{01310\ \ \ \textcolor{keywordtype}{int}\ fd\_flags;}
+\DoxyCodeLine{01311\ \ \ \textcolor{comment}{//\ Set\ close\_fd\ to\ be\ closed\ after\ spawn.}}
+\DoxyCodeLine{01312\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(fd\_flags\ =\ fcntl(close\_fd,\ F\_GETFD));}
+\DoxyCodeLine{01313\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ fcntl(close\_fd,\ F\_SETFD,\ fd\_flags\ |\ FD\_CLOEXEC));}
+\DoxyCodeLine{01315\ \ \ \textcolor{keyword}{struct\ }inheritance\ inherit\ =\ \{0\};}
+\DoxyCodeLine{01316\ \ \ \textcolor{comment}{//\ spawn\ is\ a\ system\ call.}}
+\DoxyCodeLine{01317\ \ \ child\_pid\ =\ spawn(args.argv[0],\ 0,\ \textcolor{keyword}{nullptr},\ \&inherit,\ args.argv,\ environ);}
+\DoxyCodeLine{01318\ \ \ \textcolor{comment}{//\ Restores\ the\ current\ working\ directory.}}
+\DoxyCodeLine{01319\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(fchdir(cwd\_fd)\ !=\ -\/1);}
+\DoxyCodeLine{01320\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(close(cwd\_fd));}
+\DoxyCodeLine{01321\ }
+\DoxyCodeLine{01322\ \textcolor{preprocessor}{\#else\ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01323\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{01324\ \ \ \textcolor{comment}{//\ When\ a\ SIGPROF\ signal\ is\ received\ while\ fork()\ or\ clone()\ are\ executing,}}
+\DoxyCodeLine{01325\ \ \ \textcolor{comment}{//\ the\ process\ may\ hang.\ To\ avoid\ this,\ we\ ignore\ SIGPROF\ here\ and\ re-\/enable}}
+\DoxyCodeLine{01326\ \ \ \textcolor{comment}{//\ it\ after\ the\ call\ to\ fork()/clone()\ is\ complete.}}
+\DoxyCodeLine{01327\ \ \ \textcolor{keyword}{struct\ }sigaction\ saved\_sigprof\_action;}
+\DoxyCodeLine{01328\ \ \ \textcolor{keyword}{struct\ }sigaction\ ignore\_sigprof\_action;}
+\DoxyCodeLine{01329\ \ \ memset(\&ignore\_sigprof\_action,\ 0,\ \textcolor{keyword}{sizeof}(ignore\_sigprof\_action));}
+\DoxyCodeLine{01330\ \ \ sigemptyset(\&ignore\_sigprof\_action.sa\_mask);}
+\DoxyCodeLine{01331\ \ \ ignore\_sigprof\_action.sa\_handler\ =\ SIG\_IGN;}
+\DoxyCodeLine{01332\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(}
+\DoxyCodeLine{01333\ \ \ \ \ \ \ sigaction(SIGPROF,\ \&ignore\_sigprof\_action,\ \&saved\_sigprof\_action));}
+\DoxyCodeLine{01334\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{01335\ }
+\DoxyCodeLine{01336\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_CLONE}}
+\DoxyCodeLine{01337\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ use\_fork\ =\ GTEST\_FLAG\_GET(death\_test\_use\_fork);}
+\DoxyCodeLine{01338\ }
+\DoxyCodeLine{01339\ \ \ \textcolor{keywordflow}{if}\ (!use\_fork)\ \{}
+\DoxyCodeLine{01340\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ stack\_grows\_down\ =\ StackGrowsDown();}
+\DoxyCodeLine{01341\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ stack\_size\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(getpagesize()\ *\ 2);}
+\DoxyCodeLine{01342\ \ \ \ \ \textcolor{comment}{//\ MMAP\_ANONYMOUS\ is\ not\ defined\ on\ Mac,\ so\ we\ use\ MAP\_ANON\ instead.}}
+\DoxyCodeLine{01343\ \ \ \ \ \textcolor{keywordtype}{void}*\ \textcolor{keyword}{const}\ stack\ =\ mmap(\textcolor{keyword}{nullptr},\ stack\_size,\ PROT\_READ\ |\ PROT\_WRITE,}
+\DoxyCodeLine{01344\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MAP\_ANON\ |\ MAP\_PRIVATE,\ -\/1,\ 0);}
+\DoxyCodeLine{01345\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(stack\ !=\ MAP\_FAILED);}
+\DoxyCodeLine{01346\ }
+\DoxyCodeLine{01347\ \ \ \ \ \textcolor{comment}{//\ Maximum\ stack\ alignment\ in\ bytes:\ \ For\ a\ downward-\/growing\ stack,\ this}}
+\DoxyCodeLine{01348\ \ \ \ \ \textcolor{comment}{//\ amount\ is\ subtracted\ from\ size\ of\ the\ stack\ space\ to\ get\ an\ address}}
+\DoxyCodeLine{01349\ \ \ \ \ \textcolor{comment}{//\ that\ is\ within\ the\ stack\ space\ and\ is\ aligned\ on\ all\ systems\ we\ care}}
+\DoxyCodeLine{01350\ \ \ \ \ \textcolor{comment}{//\ about.\ \ As\ far\ as\ I\ know\ there\ is\ no\ ABI\ with\ stack\ alignment\ greater}}
+\DoxyCodeLine{01351\ \ \ \ \ \textcolor{comment}{//\ than\ 64.\ \ We\ assume\ stack\ and\ stack\_size\ already\ have\ alignment\ of}}
+\DoxyCodeLine{01352\ \ \ \ \ \textcolor{comment}{//\ kMaxStackAlignment.}}
+\DoxyCodeLine{01353\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kMaxStackAlignment\ =\ 64;}
+\DoxyCodeLine{01354\ \ \ \ \ \textcolor{keywordtype}{void}*\ \textcolor{keyword}{const}\ stack\_top\ =}
+\DoxyCodeLine{01355\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(stack)\ +}
+\DoxyCodeLine{01356\ \ \ \ \ \ \ \ \ (stack\_grows\_down\ ?\ stack\_size\ -\/\ kMaxStackAlignment\ :\ 0);}
+\DoxyCodeLine{01357\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(}
+\DoxyCodeLine{01358\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(stack\_size)\ >\ kMaxStackAlignment\ \&\&}
+\DoxyCodeLine{01359\ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}uintptr\_t\textcolor{keyword}{>}(stack\_top)\ \%\ kMaxStackAlignment\ ==\ 0);}
+\DoxyCodeLine{01360\ }
+\DoxyCodeLine{01361\ \ \ \ \ child\_pid\ =\ clone(\&ExecDeathTestChildMain,\ stack\_top,\ SIGCHLD,\ \&args);}
+\DoxyCodeLine{01362\ }
+\DoxyCodeLine{01363\ \ \ \ \ GTEST\_DEATH\_TEST\_CHECK\_(munmap(stack,\ stack\_size)\ !=\ -\/1);}
+\DoxyCodeLine{01364\ \ \ \}}
+\DoxyCodeLine{01365\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01366\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ use\_fork\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01367\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_CLONE}}
+\DoxyCodeLine{01368\ }
+\DoxyCodeLine{01369\ \ \ \textcolor{keywordflow}{if}\ (use\_fork\ \&\&\ (child\_pid\ =\ fork())\ ==\ 0)\ \{}
+\DoxyCodeLine{01370\ \ \ \ \ ExecDeathTestChildMain(\&args);}
+\DoxyCodeLine{01371\ \ \ \ \ \_exit(0);}
+\DoxyCodeLine{01372\ \ \ \}}
+\DoxyCodeLine{01373\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_QNX}}
+\DoxyCodeLine{01374\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{01375\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(}
+\DoxyCodeLine{01376\ \ \ \ \ \ \ sigaction(SIGPROF,\ \&saved\_sigprof\_action,\ \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{01377\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX}}
+\DoxyCodeLine{01378\ }
+\DoxyCodeLine{01379\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(child\_pid\ !=\ -\/1);}
+\DoxyCodeLine{01380\ \ \ \textcolor{keywordflow}{return}\ child\_pid;}
+\DoxyCodeLine{01381\ \}}
+\DoxyCodeLine{01382\ }
+\DoxyCodeLine{01383\ \textcolor{comment}{//\ The\ AssumeRole\ process\ for\ a\ fork-\/and-\/exec\ death\ test.\ \ It\ re-\/executes\ the}}
+\DoxyCodeLine{01384\ \textcolor{comment}{//\ main\ program\ from\ the\ beginning,\ setting\ the\ -\/-\/gtest\_filter}}
+\DoxyCodeLine{01385\ \textcolor{comment}{//\ and\ -\/-\/gtest\_internal\_run\_death\_test\ flags\ to\ cause\ only\ the\ current}}
+\DoxyCodeLine{01386\ \textcolor{comment}{//\ death\ test\ to\ be\ re-\/run.}}
+\DoxyCodeLine{01387\ DeathTest::TestRole\ ExecDeathTest::AssumeRole()\ \{}
+\DoxyCodeLine{01388\ \ \ \textcolor{keyword}{const}\ UnitTestImpl*\ \textcolor{keyword}{const}\ impl\ =\ GetUnitTestImpl();}
+\DoxyCodeLine{01389\ \ \ \textcolor{keyword}{const}\ InternalRunDeathTestFlag*\ \textcolor{keyword}{const}\ flag\ =}
+\DoxyCodeLine{01390\ \ \ \ \ \ \ impl-\/>internal\_run\_death\_test\_flag();}
+\DoxyCodeLine{01391\ \ \ \textcolor{keyword}{const}\ TestInfo*\ \textcolor{keyword}{const}\ info\ =\ impl-\/>current\_test\_info();}
+\DoxyCodeLine{01392\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ death\_test\_index\ =\ info-\/>result()-\/>death\_test\_count();}
+\DoxyCodeLine{01393\ }
+\DoxyCodeLine{01394\ \ \ \textcolor{keywordflow}{if}\ (flag\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01395\ \ \ \ \ set\_write\_fd(flag-\/>write\_fd());}
+\DoxyCodeLine{01396\ \ \ \ \ \textcolor{keywordflow}{return}\ EXECUTE\_TEST;}
+\DoxyCodeLine{01397\ \ \ \}}
+\DoxyCodeLine{01398\ }
+\DoxyCodeLine{01399\ \ \ \textcolor{keywordtype}{int}\ pipe\_fd[2];}
+\DoxyCodeLine{01400\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(pipe(pipe\_fd)\ !=\ -\/1);}
+\DoxyCodeLine{01401\ \ \ \textcolor{comment}{//\ Clear\ the\ close-\/on-\/exec\ flag\ on\ the\ write\ end\ of\ the\ pipe,\ lest}}
+\DoxyCodeLine{01402\ \ \ \textcolor{comment}{//\ it\ be\ closed\ when\ the\ child\ process\ does\ an\ exec:}}
+\DoxyCodeLine{01403\ \ \ GTEST\_DEATH\_TEST\_CHECK\_(fcntl(pipe\_fd[1],\ F\_SETFD,\ 0)\ !=\ -\/1);}
+\DoxyCodeLine{01404\ }
+\DoxyCodeLine{01405\ \ \ \textcolor{keyword}{const}\ std::string\ filter\_flag\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{01406\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}filter="{}}\ +\ info-\/>test\_suite\_name()\ +\ \textcolor{stringliteral}{"{}."{}}\ +}
+\DoxyCodeLine{01407\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ info-\/>name();}
+\DoxyCodeLine{01408\ \ \ \textcolor{keyword}{const}\ std::string\ internal\_flag\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/"{}})\ +\ GTEST\_FLAG\_PREFIX\_\ +}
+\DoxyCodeLine{01409\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}internal\_run\_death\_test="{}}\ +\ file\_\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{01410\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(line\_)\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{01411\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(death\_test\_index)\ +\ \textcolor{stringliteral}{"{}|"{}}\ +}
+\DoxyCodeLine{01412\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(pipe\_fd[1]);}
+\DoxyCodeLine{01413\ \ \ Arguments\ args;}
+\DoxyCodeLine{01414\ \ \ args.AddArguments(GetArgvsForDeathTestChildProcess());}
+\DoxyCodeLine{01415\ \ \ args.AddArgument(filter\_flag.c\_str());}
+\DoxyCodeLine{01416\ \ \ args.AddArgument(internal\_flag.c\_str());}
+\DoxyCodeLine{01417\ }
+\DoxyCodeLine{01418\ \ \ DeathTest::set\_last\_death\_test\_message(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01419\ }
+\DoxyCodeLine{01420\ \ \ CaptureStderr();}
+\DoxyCodeLine{01421\ \ \ \textcolor{comment}{//\ See\ the\ comment\ in\ NoExecDeathTest::AssumeRole\ for\ why\ the\ next\ line}}
+\DoxyCodeLine{01422\ \ \ \textcolor{comment}{//\ is\ necessary.}}
+\DoxyCodeLine{01423\ \ \ FlushInfoLog();}
+\DoxyCodeLine{01424\ }
+\DoxyCodeLine{01425\ \ \ \textcolor{keyword}{const}\ pid\_t\ child\_pid\ =\ ExecDeathTestSpawnChild(args.Argv(),\ pipe\_fd[0]);}
+\DoxyCodeLine{01426\ \ \ GTEST\_DEATH\_TEST\_CHECK\_SYSCALL\_(close(pipe\_fd[1]));}
+\DoxyCodeLine{01427\ \ \ set\_child\_pid(child\_pid);}
+\DoxyCodeLine{01428\ \ \ set\_read\_fd(pipe\_fd[0]);}
+\DoxyCodeLine{01429\ \ \ set\_spawned(\textcolor{keyword}{true});}
+\DoxyCodeLine{01430\ \ \ \textcolor{keywordflow}{return}\ OVERSEE\_TEST;}
+\DoxyCodeLine{01431\ \}}
+\DoxyCodeLine{01432\ }
+\DoxyCodeLine{01433\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01434\ }
+\DoxyCodeLine{01435\ \textcolor{comment}{//\ Creates\ a\ concrete\ DeathTest-\/derived\ class\ that\ depends\ on\ the}}
+\DoxyCodeLine{01436\ \textcolor{comment}{//\ -\/-\/gtest\_death\_test\_style\ flag,\ and\ sets\ the\ pointer\ pointed\ to}}
+\DoxyCodeLine{01437\ \textcolor{comment}{//\ by\ the\ "{}test"{}\ argument\ to\ its\ address.\ \ If\ the\ test\ should\ be}}
+\DoxyCodeLine{01438\ \textcolor{comment}{//\ skipped,\ sets\ that\ pointer\ to\ NULL.\ \ Returns\ true,\ unless\ the}}
+\DoxyCodeLine{01439\ \textcolor{comment}{//\ flag\ is\ set\ to\ an\ invalid\ value.}}
+\DoxyCodeLine{01440\ \textcolor{keywordtype}{bool}\ DefaultDeathTestFactory::Create(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ statement,}
+\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Matcher<const\ std::string\&>\ matcher,}
+\DoxyCodeLine{01442\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{01443\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ DeathTest**\ test)\ \{}
+\DoxyCodeLine{01444\ \ \ UnitTestImpl*\ \textcolor{keyword}{const}\ impl\ =\ GetUnitTestImpl();}
+\DoxyCodeLine{01445\ \ \ \textcolor{keyword}{const}\ InternalRunDeathTestFlag*\ \textcolor{keyword}{const}\ flag\ =}
+\DoxyCodeLine{01446\ \ \ \ \ \ \ impl-\/>internal\_run\_death\_test\_flag();}
+\DoxyCodeLine{01447\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ death\_test\_index\ =}
+\DoxyCodeLine{01448\ \ \ \ \ \ \ impl-\/>current\_test\_info()-\/>increment\_death\_test\_count();}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \ \ \textcolor{keywordflow}{if}\ (flag\ !=\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{01451\ \ \ \ \ \textcolor{keywordflow}{if}\ (death\_test\_index\ >\ flag-\/>index())\ \{}
+\DoxyCodeLine{01452\ \ \ \ \ \ \ DeathTest::set\_last\_death\_test\_message(}
+\DoxyCodeLine{01453\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Death\ test\ count\ ("{}}\ +\ StreamableToString(death\_test\_index)\ +}
+\DoxyCodeLine{01454\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{})\ somehow\ exceeded\ expected\ maximum\ ("{}}\ +}
+\DoxyCodeLine{01455\ \ \ \ \ \ \ \ \ \ \ StreamableToString(flag-\/>index())\ +\ \textcolor{stringliteral}{"{})"{}});}
+\DoxyCodeLine{01456\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01457\ \ \ \ \ \}}
+\DoxyCodeLine{01458\ }
+\DoxyCodeLine{01459\ \ \ \ \ \textcolor{keywordflow}{if}\ (!(flag-\/>file()\ ==\ file\ \&\&\ flag-\/>line()\ ==\ line\ \&\&}
+\DoxyCodeLine{01460\ \ \ \ \ \ \ \ \ \ \ flag-\/>index()\ ==\ death\_test\_index))\ \{}
+\DoxyCodeLine{01461\ \ \ \ \ \ \ *test\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01462\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01463\ \ \ \ \ \}}
+\DoxyCodeLine{01464\ \ \ \}}
+\DoxyCodeLine{01465\ }
+\DoxyCodeLine{01466\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01467\ }
+\DoxyCodeLine{01468\ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}threadsafe"{}}\ ||}
+\DoxyCodeLine{01469\ \ \ \ \ \ \ GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}fast"{}})\ \{}
+\DoxyCodeLine{01470\ \ \ \ \ *test\ =\ \textcolor{keyword}{new}\ WindowsDeathTest(statement,\ std::move(matcher),\ file,\ line);}
+\DoxyCodeLine{01471\ \ \ \}}
+\DoxyCodeLine{01472\ }
+\DoxyCodeLine{01473\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{01474\ }
+\DoxyCodeLine{01475\ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}threadsafe"{}}\ ||}
+\DoxyCodeLine{01476\ \ \ \ \ \ \ GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}fast"{}})\ \{}
+\DoxyCodeLine{01477\ \ \ \ \ *test\ =\ \textcolor{keyword}{new}\ FuchsiaDeathTest(statement,\ std::move(matcher),\ file,\ line);}
+\DoxyCodeLine{01478\ \ \ \}}
+\DoxyCodeLine{01479\ }
+\DoxyCodeLine{01480\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01481\ }
+\DoxyCodeLine{01482\ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}threadsafe"{}})\ \{}
+\DoxyCodeLine{01483\ \ \ \ \ *test\ =\ \textcolor{keyword}{new}\ ExecDeathTest(statement,\ std::move(matcher),\ file,\ line);}
+\DoxyCodeLine{01484\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(death\_test\_style)\ ==\ \textcolor{stringliteral}{"{}fast"{}})\ \{}
+\DoxyCodeLine{01485\ \ \ \ \ *test\ =\ \textcolor{keyword}{new}\ NoExecDeathTest(statement,\ std::move(matcher));}
+\DoxyCodeLine{01486\ \ \ \}}
+\DoxyCodeLine{01487\ }
+\DoxyCodeLine{01488\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01489\ }
+\DoxyCodeLine{01490\ \ \ \textcolor{keywordflow}{else}\ \{\ \ \textcolor{comment}{//\ NOLINT\ -\/\ this\ is\ more\ readable\ than\ unbalanced\ brackets\ inside\ \#if.}}
+\DoxyCodeLine{01491\ \ \ \ \ DeathTest::set\_last\_death\_test\_message(\textcolor{stringliteral}{"{}Unknown\ death\ test\ style\ \(\backslash\)"{}"{}}\ +}
+\DoxyCodeLine{01492\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GTEST\_FLAG\_GET(death\_test\_style)\ +}
+\DoxyCodeLine{01493\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)"{}\ encountered"{}});}
+\DoxyCodeLine{01494\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01495\ \ \ \}}
+\DoxyCodeLine{01496\ }
+\DoxyCodeLine{01497\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01498\ \}}
+\DoxyCodeLine{01499\ }
+\DoxyCodeLine{01500\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01501\ \textcolor{comment}{//\ Recreates\ the\ pipe\ and\ event\ handles\ from\ the\ provided\ parameters,}}
+\DoxyCodeLine{01502\ \textcolor{comment}{//\ signals\ the\ event,\ and\ returns\ a\ file\ descriptor\ wrapped\ around\ the\ pipe}}
+\DoxyCodeLine{01503\ \textcolor{comment}{//\ handle.\ This\ function\ is\ called\ in\ the\ child\ process\ only.}}
+\DoxyCodeLine{01504\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ GetStatusFileDescriptor(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ parent\_process\_id,}
+\DoxyCodeLine{01505\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ write\_handle\_as\_size\_t,}
+\DoxyCodeLine{01506\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ event\_handle\_as\_size\_t)\ \{}
+\DoxyCodeLine{01507\ \ \ AutoHandle\ parent\_process\_handle(::OpenProcess(PROCESS\_DUP\_HANDLE,}
+\DoxyCodeLine{01508\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FALSE,\ \ \textcolor{comment}{//\ Non-\/inheritable.}}
+\DoxyCodeLine{01509\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ parent\_process\_id));}
+\DoxyCodeLine{01510\ \ \ \textcolor{keywordflow}{if}\ (parent\_process\_handle.Get()\ ==\ INVALID\_HANDLE\_VALUE)\ \{}
+\DoxyCodeLine{01511\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Unable\ to\ open\ parent\ process\ "{}}\ +}
+\DoxyCodeLine{01512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(parent\_process\_id));}
+\DoxyCodeLine{01513\ \ \ \}}
+\DoxyCodeLine{01514\ }
+\DoxyCodeLine{01515\ \ \ GTEST\_CHECK\_(\textcolor{keyword}{sizeof}(HANDLE)\ <=\ \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{size\_t}));}
+\DoxyCodeLine{01516\ }
+\DoxyCodeLine{01517\ \ \ \textcolor{keyword}{const}\ HANDLE\ write\_handle\ =\ \textcolor{keyword}{reinterpret\_cast<}HANDLE\textcolor{keyword}{>}(write\_handle\_as\_size\_t);}
+\DoxyCodeLine{01518\ \ \ HANDLE\ dup\_write\_handle;}
+\DoxyCodeLine{01519\ }
+\DoxyCodeLine{01520\ \ \ \textcolor{comment}{//\ The\ newly\ initialized\ handle\ is\ accessible\ only\ in\ the\ parent}}
+\DoxyCodeLine{01521\ \ \ \textcolor{comment}{//\ process.\ To\ obtain\ one\ accessible\ within\ the\ child,\ we\ need\ to\ use}}
+\DoxyCodeLine{01522\ \ \ \textcolor{comment}{//\ DuplicateHandle.}}
+\DoxyCodeLine{01523\ \ \ \textcolor{keywordflow}{if}\ (!::DuplicateHandle(parent\_process\_handle.Get(),\ write\_handle,}
+\DoxyCodeLine{01524\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::GetCurrentProcess(),\ \&dup\_write\_handle,}
+\DoxyCodeLine{01525\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0x0,\ \ \ \ \textcolor{comment}{//\ Requested\ privileges\ ignored\ since}}
+\DoxyCodeLine{01526\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ DUPLICATE\_SAME\_ACCESS\ is\ used.}}
+\DoxyCodeLine{01527\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FALSE,\ \ \textcolor{comment}{//\ Request\ non-\/inheritable\ handler.}}
+\DoxyCodeLine{01528\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ DUPLICATE\_SAME\_ACCESS))\ \{}
+\DoxyCodeLine{01529\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Unable\ to\ duplicate\ the\ pipe\ handle\ "{}}\ +}
+\DoxyCodeLine{01530\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(write\_handle\_as\_size\_t)\ +}
+\DoxyCodeLine{01531\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ from\ the\ parent\ process\ "{}}\ +}
+\DoxyCodeLine{01532\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(parent\_process\_id));}
+\DoxyCodeLine{01533\ \ \ \}}
+\DoxyCodeLine{01534\ }
+\DoxyCodeLine{01535\ \ \ \textcolor{keyword}{const}\ HANDLE\ event\_handle\ =\ \textcolor{keyword}{reinterpret\_cast<}HANDLE\textcolor{keyword}{>}(event\_handle\_as\_size\_t);}
+\DoxyCodeLine{01536\ \ \ HANDLE\ dup\_event\_handle;}
+\DoxyCodeLine{01537\ }
+\DoxyCodeLine{01538\ \ \ \textcolor{keywordflow}{if}\ (!::DuplicateHandle(parent\_process\_handle.Get(),\ event\_handle,}
+\DoxyCodeLine{01539\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::GetCurrentProcess(),\ \&dup\_event\_handle,\ 0x0,\ FALSE,}
+\DoxyCodeLine{01540\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ DUPLICATE\_SAME\_ACCESS))\ \{}
+\DoxyCodeLine{01541\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Unable\ to\ duplicate\ the\ event\ handle\ "{}}\ +}
+\DoxyCodeLine{01542\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(event\_handle\_as\_size\_t)\ +}
+\DoxyCodeLine{01543\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ from\ the\ parent\ process\ "{}}\ +}
+\DoxyCodeLine{01544\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(parent\_process\_id));}
+\DoxyCodeLine{01545\ \ \ \}}
+\DoxyCodeLine{01546\ }
+\DoxyCodeLine{01547\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ write\_fd\ =}
+\DoxyCodeLine{01548\ \ \ \ \ \ \ ::\_open\_osfhandle(\textcolor{keyword}{reinterpret\_cast<}intptr\_t\textcolor{keyword}{>}(dup\_write\_handle),\ O\_APPEND);}
+\DoxyCodeLine{01549\ \ \ \textcolor{keywordflow}{if}\ (write\_fd\ ==\ -\/1)\ \{}
+\DoxyCodeLine{01550\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Unable\ to\ convert\ pipe\ handle\ "{}}\ +}
+\DoxyCodeLine{01551\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ StreamableToString(write\_handle\_as\_size\_t)\ +}
+\DoxyCodeLine{01552\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ to\ a\ file\ descriptor"{}});}
+\DoxyCodeLine{01553\ \ \ \}}
+\DoxyCodeLine{01554\ }
+\DoxyCodeLine{01555\ \ \ \textcolor{comment}{//\ Signals\ the\ parent\ that\ the\ write\ end\ of\ the\ pipe\ has\ been\ acquired}}
+\DoxyCodeLine{01556\ \ \ \textcolor{comment}{//\ so\ the\ parent\ can\ release\ its\ own\ write\ end.}}
+\DoxyCodeLine{01557\ \ \ ::SetEvent(dup\_event\_handle);}
+\DoxyCodeLine{01558\ }
+\DoxyCodeLine{01559\ \ \ \textcolor{keywordflow}{return}\ write\_fd;}
+\DoxyCodeLine{01560\ \}}
+\DoxyCodeLine{01561\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01562\ }
+\DoxyCodeLine{01563\ \textcolor{comment}{//\ Returns\ a\ newly\ created\ InternalRunDeathTestFlag\ object\ with\ fields}}
+\DoxyCodeLine{01564\ \textcolor{comment}{//\ initialized\ from\ the\ GTEST\_FLAG(internal\_run\_death\_test)\ flag\ if}}
+\DoxyCodeLine{01565\ \textcolor{comment}{//\ the\ flag\ is\ specified;\ otherwise\ returns\ NULL.}}
+\DoxyCodeLine{01566\ InternalRunDeathTestFlag*\ ParseInternalRunDeathTestFlag()\ \{}
+\DoxyCodeLine{01567\ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG\_GET(internal\_run\_death\_test)\ ==\ \textcolor{stringliteral}{"{}"{}})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01568\ }
+\DoxyCodeLine{01569\ \ \ \textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST\ implies\ that\ we\ have\ ::std::string,\ so\ we}}
+\DoxyCodeLine{01570\ \ \ \textcolor{comment}{//\ can\ use\ it\ here.}}
+\DoxyCodeLine{01571\ \ \ \textcolor{keywordtype}{int}\ line\ =\ -\/1;}
+\DoxyCodeLine{01572\ \ \ \textcolor{keywordtype}{int}\ index\ =\ -\/1;}
+\DoxyCodeLine{01573\ \ \ ::std::vector<\ ::std::string>\ fields;}
+\DoxyCodeLine{01574\ \ \ SplitString(GTEST\_FLAG\_GET(internal\_run\_death\_test),\ \textcolor{charliteral}{'|'},\ \&fields);}
+\DoxyCodeLine{01575\ \ \ \textcolor{keywordtype}{int}\ write\_fd\ =\ -\/1;}
+\DoxyCodeLine{01576\ }
+\DoxyCodeLine{01577\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01578\ }
+\DoxyCodeLine{01579\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ parent\_process\_id\ =\ 0;}
+\DoxyCodeLine{01580\ \ \ \textcolor{keywordtype}{size\_t}\ write\_handle\_as\_size\_t\ =\ 0;}
+\DoxyCodeLine{01581\ \ \ \textcolor{keywordtype}{size\_t}\ event\_handle\_as\_size\_t\ =\ 0;}
+\DoxyCodeLine{01582\ }
+\DoxyCodeLine{01583\ \ \ \textcolor{keywordflow}{if}\ (fields.size()\ !=\ 6\ ||\ !ParseNaturalNumber(fields[1],\ \&line)\ ||}
+\DoxyCodeLine{01584\ \ \ \ \ \ \ !ParseNaturalNumber(fields[2],\ \&index)\ ||}
+\DoxyCodeLine{01585\ \ \ \ \ \ \ !ParseNaturalNumber(fields[3],\ \&parent\_process\_id)\ ||}
+\DoxyCodeLine{01586\ \ \ \ \ \ \ !ParseNaturalNumber(fields[4],\ \&write\_handle\_as\_size\_t)\ ||}
+\DoxyCodeLine{01587\ \ \ \ \ \ \ !ParseNaturalNumber(fields[5],\ \&event\_handle\_as\_size\_t))\ \{}
+\DoxyCodeLine{01588\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Bad\ -\/-\/gtest\_internal\_run\_death\_test\ flag:\ "{}}\ +}
+\DoxyCodeLine{01589\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GTEST\_FLAG\_GET(internal\_run\_death\_test));}
+\DoxyCodeLine{01590\ \ \ \}}
+\DoxyCodeLine{01591\ \ \ write\_fd\ =\ GetStatusFileDescriptor(parent\_process\_id,\ write\_handle\_as\_size\_t,}
+\DoxyCodeLine{01592\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ event\_handle\_as\_size\_t);}
+\DoxyCodeLine{01593\ }
+\DoxyCodeLine{01594\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{01595\ }
+\DoxyCodeLine{01596\ \ \ \textcolor{keywordflow}{if}\ (fields.size()\ !=\ 3\ ||\ !ParseNaturalNumber(fields[1],\ \&line)\ ||}
+\DoxyCodeLine{01597\ \ \ \ \ \ \ !ParseNaturalNumber(fields[2],\ \&index))\ \{}
+\DoxyCodeLine{01598\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Bad\ -\/-\/gtest\_internal\_run\_death\_test\ flag:\ "{}}\ +}
+\DoxyCodeLine{01599\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GTEST\_FLAG\_GET(internal\_run\_death\_test));}
+\DoxyCodeLine{01600\ \ \ \}}
+\DoxyCodeLine{01601\ }
+\DoxyCodeLine{01602\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01603\ }
+\DoxyCodeLine{01604\ \ \ \textcolor{keywordflow}{if}\ (fields.size()\ !=\ 4\ ||\ !ParseNaturalNumber(fields[1],\ \&line)\ ||}
+\DoxyCodeLine{01605\ \ \ \ \ \ \ !ParseNaturalNumber(fields[2],\ \&index)\ ||}
+\DoxyCodeLine{01606\ \ \ \ \ \ \ !ParseNaturalNumber(fields[3],\ \&write\_fd))\ \{}
+\DoxyCodeLine{01607\ \ \ \ \ DeathTestAbort(\textcolor{stringliteral}{"{}Bad\ -\/-\/gtest\_internal\_run\_death\_test\ flag:\ "{}}\ +}
+\DoxyCodeLine{01608\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GTEST\_FLAG\_GET(internal\_run\_death\_test));}
+\DoxyCodeLine{01609\ \ \ \}}
+\DoxyCodeLine{01610\ }
+\DoxyCodeLine{01611\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01612\ }
+\DoxyCodeLine{01613\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ InternalRunDeathTestFlag(fields[0],\ line,\ index,\ write\_fd);}
+\DoxyCodeLine{01614\ \}}
+\DoxyCodeLine{01615\ }
+\DoxyCodeLine{01616\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01617\ }
+\DoxyCodeLine{01618\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{01619\ }
+\DoxyCodeLine{01620\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

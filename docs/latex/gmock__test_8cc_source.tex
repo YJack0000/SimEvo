@@ -1,0 +1,185 @@
+\doxysection{gmock\+\_\+test.\+cc}
+\hypertarget{gmock__test_8cc_source}{}\label{gmock__test_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock\_test.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/test/gmock\_test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ tests\ code\ in\ gmock.cc.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/custom/gtest.h"{}}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#if\ !defined(GTEST\_CUSTOM\_INIT\_GOOGLE\_TEST\_FUNCTION\_)}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{keyword}{using\ }testing::InitGoogleMock;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{comment}{//\ Verifies\ that\ calling\ InitGoogleMock()\ on\ argv\ results\ in\ new\_argv,}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ and\ the\ gmock\_verbose\ flag's\ value\ is\ set\ to\ expected\_gmock\_verbose.}}
+\DoxyCodeLine{00047\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Char,\ \textcolor{keywordtype}{int}\ M,\ \textcolor{keywordtype}{int}\ N>}
+\DoxyCodeLine{00048\ \textcolor{keywordtype}{void}\ TestInitGoogleMock(\textcolor{keyword}{const}\ Char*\ (\&argv)[M],\ \textcolor{keyword}{const}\ Char*\ (\&new\_argv)[N],}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ ::std::string\&\ expected\_gmock\_verbose)\ \{}
+\DoxyCodeLine{00050\ \ \ const\ ::std::string\ old\_verbose\ =\ GMOCK\_FLAG\_GET(verbose);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \textcolor{keywordtype}{int}\ argc\ =\ M\ -\/\ 1;}
+\DoxyCodeLine{00053\ \ \ InitGoogleMock(\&argc,\ \textcolor{keyword}{const\_cast<}Char**\textcolor{keyword}{>}(argv));}
+\DoxyCodeLine{00054\ \ \ ASSERT\_EQ(N\ -\/\ 1,\ argc)\ <<\ \textcolor{stringliteral}{"{}The\ new\ argv\ has\ wrong\ number\ of\ elements."{}};}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ N;\ i++)\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ EXPECT\_STREQ(new\_argv[i],\ argv[i]);}
+\DoxyCodeLine{00058\ \ \ \}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ EXPECT\_EQ(expected\_gmock\_verbose,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00061\ \ \ GMOCK\_FLAG\_SET(verbose,\ old\_verbose);\ \ \textcolor{comment}{//\ Restores\ the\ gmock\_verbose\ flag.}}
+\DoxyCodeLine{00062\ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ TEST(InitGoogleMockTest,\ ParsesInvalidCommandLine)\ \{}
+\DoxyCodeLine{00065\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argv[]\ =\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ new\_argv[]\ =\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00070\ \}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ TEST(InitGoogleMockTest,\ ParsesEmptyCommandLine)\ \{}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ new\_argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00078\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ TEST(InitGoogleMockTest,\ ParsesSingleFlag)\ \{}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=info"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ new\_argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}info"{}});}
+\DoxyCodeLine{00086\ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ TEST(InitGoogleMockTest,\ ParsesMultipleFlags)\ \{}
+\DoxyCodeLine{00089\ \ \ \textcolor{keywordtype}{int}\ old\_default\_behavior\ =\ GMOCK\_FLAG\_GET(default\_mock\_behavior);}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=info"{}},}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ L\textcolor{stringliteral}{"{}-\/-\/gmock\_default\_mock\_behavior=2"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}info"{}});}
+\DoxyCodeLine{00096\ \ \ EXPECT\_EQ(2,\ GMOCK\_FLAG\_GET(default\_mock\_behavior));}
+\DoxyCodeLine{00097\ \ \ EXPECT\_NE(2,\ old\_default\_behavior);}
+\DoxyCodeLine{00098\ \ \ GMOCK\_FLAG\_SET(default\_mock\_behavior,\ old\_default\_behavior);}
+\DoxyCodeLine{00099\ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ TEST(InitGoogleMockTest,\ ParsesUnrecognizedFlag)\ \{}
+\DoxyCodeLine{00102\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ new\_argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00107\ \}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ TEST(InitGoogleMockTest,\ ParsesGoogleMockFlagAndUnrecognizedFlag)\ \{}
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=error"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ new\_argv[]\ =\ \{\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}error"{}});}
+\DoxyCodeLine{00116\ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ TEST(WideInitGoogleMockTest,\ ParsesInvalidCommandLine)\ \{}
+\DoxyCodeLine{00119\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ TEST(WideInitGoogleMockTest,\ ParsesEmptyCommandLine)\ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00132\ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ TEST(WideInitGoogleMockTest,\ ParsesSingleFlag)\ \{}
+\DoxyCodeLine{00135\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=info"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}info"{}});}
+\DoxyCodeLine{00140\ \}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ TEST(WideInitGoogleMockTest,\ ParsesMultipleFlags)\ \{}
+\DoxyCodeLine{00143\ \ \ \textcolor{keywordtype}{int}\ old\_default\_behavior\ =\ GMOCK\_FLAG\_GET(default\_mock\_behavior);}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=info"{}},}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ L\textcolor{stringliteral}{"{}-\/-\/gmock\_default\_mock\_behavior=2"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}info"{}});}
+\DoxyCodeLine{00150\ \ \ EXPECT\_EQ(2,\ GMOCK\_FLAG\_GET(default\_mock\_behavior));}
+\DoxyCodeLine{00151\ \ \ EXPECT\_NE(2,\ old\_default\_behavior);}
+\DoxyCodeLine{00152\ \ \ GMOCK\_FLAG\_SET(default\_mock\_behavior,\ old\_default\_behavior);}
+\DoxyCodeLine{00153\ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ TEST(WideInitGoogleMockTest,\ ParsesUnrecognizedFlag)\ \{}
+\DoxyCodeLine{00156\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ GMOCK\_FLAG\_GET(verbose));}
+\DoxyCodeLine{00161\ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ TEST(WideInitGoogleMockTest,\ ParsesGoogleMockFlagAndUnrecognizedFlag)\ \{}
+\DoxyCodeLine{00164\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ L\textcolor{stringliteral}{"{}-\/-\/gmock\_verbose=error"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ new\_argv[]\ =\ \{L\textcolor{stringliteral}{"{}foo.exe"{}},\ L\textcolor{stringliteral}{"{}-\/-\/non\_gmock\_flag=blah"{}},\ \textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ TestInitGoogleMock(argv,\ new\_argv,\ \textcolor{stringliteral}{"{}error"{}});}
+\DoxyCodeLine{00170\ \}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !defined(GTEST\_CUSTOM\_INIT\_GOOGLE\_TEST\_FUNCTION\_)}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{comment}{//\ Makes\ sure\ Google\ Mock\ flags\ can\ be\ accessed\ in\ code.}}
+\DoxyCodeLine{00175\ TEST(FlagTest,\ IsAccessibleInCode)\ \{}
+\DoxyCodeLine{00176\ \ \ \textcolor{keywordtype}{bool}\ dummy\ =}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ GMOCK\_FLAG\_GET(catch\_leaked\_mocks)\ \&\&\ GMOCK\_FLAG\_GET(verbose)\ ==\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00178\ \ \ (void)dummy;\ \ \textcolor{comment}{//\ Avoids\ the\ "{}unused\ local\ variable"{}\ warning.}}
+\DoxyCodeLine{00179\ \}}
+
+\end{DoxyCode}
