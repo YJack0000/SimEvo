@@ -8,30 +8,39 @@ SimEvo: A Simple Python Library for Simulations of Natural Selection
 
 [2024 Spring NSD - Final Project - SimEvo: A Simple Python Library for Simulations of Natural Selection](https://docs.google.com/presentation/d/1wtIAIIpjK2PZ31WvOYsF79wrXSUaM7NFj_LneUBSIJM/edit#slide=id.g2e20d1646bc_0_75)
 
-## Basic Information
+## Overview
 
 > **Project Overview:** Simulating Natural Selection in Ecosystems using C++ and Python
 
-SimSel leverages the computational efficiency of C++ for the core simulation engine and offers an intuitive Python interface for ease of use and accessibility. It models ecosystems composed of organisms with genetically determined traits, interacting within an environment that includes resources like food. The simulation observes the principles of natural selection, with organism survival and reproduction influenced by their traits and environmental factors.
+SimEvo leverages the computational efficiency of C++ for the core simulation engine and offers an intuitive Python interface for ease of use and accessibility. It models ecosystems composed of organisms with genetically determined traits, interacting within an environment that includes resources like food. The simulation observes the principles of natural selection, with organism survival and reproduction influenced by their traits and environmental factors.
 
 - 📂 **GitHub Repository**: [https://github.com/YJack0000/SimEvo](https://github.com/YJack0000/SimEvo)
 - 💻 **Implemented In**:
   - **Core Library**: C++
   - **Bindings & Interface**: Python
 
-## Problem to Solve
-Understanding the dynamics of natural selection and ecosystem evolution involves complex interactions among organisms and their environments. SimSel aims to provide a simplified yet powerful simulation environment where users can define various organisms, their genetic makeup, and environmental factors, to observe how natural selection unfolds over generations.
-In this context, the implementation of spatial indexing algorithms plays a critical role. Efficient spatial indexing is essential for managing the simulation's computational complexity, enabling the simulation to handle large numbers of organisms and their interactions within the environment accurately and swiftly. 
+## How to use
 
-## Prospective Users
+### Install directly from PyPI
+!!!This feature is only support Linux and MacOS currently. 
+```
+pip install simevopy
+```
 
-SimSel is aimed at a broad audience interested in evolutionary biology, including:
-- **Educators and Students**: For teaching and learning evolutionary concepts through interactive simulations.
-- **Researchers**: For conducting experiments on evolutionary strategies and hypotheses.
-- **Hobbyists**: For exploring the principles of evolution in a virtual environment.
+### Build from scratch
 
-## System Architecture
-SimSel comprises a high-performance simulation engine written in C++ for handling the complex computations of natural selection dynamics efficiently. Python bindings, created using pybind11, make this engine accessible to users who can interact with the simulation using a simple Python API.
+#### Build for testing
+```
+mkdir build; cd build
+cmake -S .. -B . -DBUILD_TESTS=true
+make
+ctest -V
+```
+#### Build for python package
+```
+python setup.py install
+```
+
 
 ### Components:
 
