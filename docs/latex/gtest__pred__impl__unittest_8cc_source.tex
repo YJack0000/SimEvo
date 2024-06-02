@@ -1,0 +1,2075 @@
+\doxysection{gtest\+\_\+pred\+\_\+impl\+\_\+unittest.\+cc}
+\hypertarget{gtest__pred__impl__unittest_8cc_source}{}\label{gtest__pred__impl__unittest_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/gtest\_pred\_impl\_unittest.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/test/gtest\_pred\_impl\_unittest.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2006,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Regression\ test\ for\ gtest\_pred\_impl.h}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ is\ generated\ by\ a\ script\ and\ quite\ long.\ \ If\ you\ intend\ to}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ learn\ how\ Google\ Test\ works\ by\ reading\ its\ unit\ tests,\ read}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ gtest\_unittest.cc\ instead.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ This\ is\ intended\ as\ a\ regression\ test\ for\ the\ Google\ Test\ predicate}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ assertions.\ \ We\ compile\ it\ as\ part\ of\ the\ gtest\_unittest\ target}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ only\ to\ keep\ the\ implementation\ tidy\ and\ compact,\ as\ it\ is\ quite}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ involved\ to\ set\ up\ the\ stage\ for\ testing\ Google\ Test\ using\ Google}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ Test\ itself.}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ Currently,\ gtest\_unittest\ takes\ \string~11\ seconds\ to\ run\ in\ the\ testing}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ daemon.\ \ In\ the\ future,\ if\ it\ grows\ too\ large\ and\ needs\ much\ more}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ time\ to\ finish,\ we\ should\ consider\ separating\ this\ file\ into\ a}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//\ stand-\/alone\ regression\ test.}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ A\ user-\/defined\ data\ type.}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_bool}{Bool}}\ \{}
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{struct_bool}{Bool}}(\textcolor{keywordtype}{int}\ val)\ :\ value(val\ !=\ 0)\ \{\}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \textcolor{keywordtype}{bool}\ operator>(\textcolor{keywordtype}{int}\ n)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value\ >\ \mbox{\hyperlink{struct_bool}{Bool}}(n).value;\ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \mbox{\hyperlink{struct_bool}{Bool}}\ operator+(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_bool}{Bool}}\&\ rhs)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_bool}{Bool}}(value\ +\ rhs.value);\ \}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_bool}{Bool}}\&\ rhs)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value\ ==\ rhs.value;\ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keywordtype}{bool}\ value;}
+\DoxyCodeLine{00063\ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{comment}{//\ Enables\ Bool\ to\ be\ used\ in\ assertions.}}
+\DoxyCodeLine{00066\ std::ostream\&\ operator<<(std::ostream\&\ os,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_bool}{Bool}}\&\ x)\ \{}
+\DoxyCodeLine{00067\ \ \ \textcolor{keywordflow}{return}\ os\ <<\ (x.value\ ?\ \textcolor{stringliteral}{"{}true"{}}\ :\ \textcolor{stringliteral}{"{}false"{}});}
+\DoxyCodeLine{00068\ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ Sample\ functions/functors\ for\ testing\ unary\ predicate\ assertions.}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ A\ unary\ predicate\ function.}}
+\DoxyCodeLine{00073\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1>}
+\DoxyCodeLine{00074\ \textcolor{keywordtype}{bool}\ PredFunction1(T1\ v1)\ \{}
+\DoxyCodeLine{00075\ \ \ \textcolor{keywordflow}{return}\ v1\ >\ 0;}
+\DoxyCodeLine{00076\ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ The\ following\ two\ functions\ are\ needed\ because\ a\ compiler\ doesn't\ have}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ a\ context\ yet\ to\ know\ which\ template\ function\ must\ be\ instantiated.}}
+\DoxyCodeLine{00080\ \textcolor{keywordtype}{bool}\ PredFunction1Int(\textcolor{keywordtype}{int}\ v1)\ \{\ \textcolor{keywordflow}{return}\ v1\ >\ 0;\ \}}
+\DoxyCodeLine{00081\ \textcolor{keywordtype}{bool}\ PredFunction1Bool(\mbox{\hyperlink{struct_bool}{Bool}}\ v1)\ \{\ \textcolor{keywordflow}{return}\ v1\ >\ 0;\ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ A\ unary\ predicate\ functor.}}
+\DoxyCodeLine{00084\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}\ \{}
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1>}
+\DoxyCodeLine{00086\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ T1\&\ v1)\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{return}\ v1\ >\ 0;}
+\DoxyCodeLine{00088\ \ \ \}}
+\DoxyCodeLine{00089\ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ A\ unary\ predicate-\/formatter\ function.}}
+\DoxyCodeLine{00092\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1>}
+\DoxyCodeLine{00093\ testing::AssertionResult\ PredFormatFunction1(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ T1\&\ v1)\ \{}
+\DoxyCodeLine{00094\ \ \ \textcolor{keywordflow}{if}\ (PredFunction1(v1))\ \textcolor{keywordflow}{return}\ testing::AssertionSuccess();}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \textcolor{keywordflow}{return}\ testing::AssertionFailure()}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ <<\ e1\ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ positive,\ but\ evaluates\ to\ "{}}\ <<\ v1\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00098\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ A\ unary\ predicate-\/formatter\ functor.}}
+\DoxyCodeLine{00101\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}\ \{}
+\DoxyCodeLine{00102\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1>}
+\DoxyCodeLine{00103\ \ \ testing::AssertionResult\ operator()(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ T1\&\ v1)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordflow}{return}\ PredFormatFunction1(e1,\ v1);}
+\DoxyCodeLine{00105\ \ \ \}}
+\DoxyCodeLine{00106\ \};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ Tests\ for\ \{EXPECT|ASSERT\}\_PRED\_FORMAT1.}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_predicate1_test}{Predicate1Test}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{00111\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00112\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00113\ \ \ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00114\ \ \ \ \ finished\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00115\ \ \ \ \ n1\_\ =\ 0;}
+\DoxyCodeLine{00116\ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ each\ of\ the\ predicate's\ arguments\ was\ evaluated}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{comment}{//\ exactly\ once.}}
+\DoxyCodeLine{00121\ \ \ \ \ EXPECT\_EQ(1,\ n1\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 2\ "{}}}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ control\ flow\ in\ the\ test\ function\ is\ expected.}}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\_to\_finish\_\ \&\&\ !finished\_)\ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ unexpectedly\ aborted\ the\ test."{}};}
+\DoxyCodeLine{00127\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!expected\_to\_finish\_\ \&\&\ finished\_)\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ failed\ predicate\ assertion\ didn't\ abort\ the\ test\ "{}}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}as\ expected."{}};}
+\DoxyCodeLine{00130\ \ \ \ \ \}}
+\DoxyCodeLine{00131\ \ \ \}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ is\ expected\ to\ run\ to\ finish.}}
+\DoxyCodeLine{00134\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ expected\_to\_finish\_;}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ did\ run\ to\ finish.}}
+\DoxyCodeLine{00137\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ finished\_;}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n1\_;}
+\DoxyCodeLine{00140\ \};}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \textcolor{keywordtype}{bool}\ Predicate1Test::expected\_to\_finish\_;}
+\DoxyCodeLine{00143\ \textcolor{keywordtype}{bool}\ Predicate1Test::finished\_;}
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{int}\ Predicate1Test::n1\_;}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate1_test}{Predicate1Test}}\ \mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}};}
+\DoxyCodeLine{00147\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate1_test}{Predicate1Test}}\ \mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}};}
+\DoxyCodeLine{00148\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate1_test}{Predicate1Test}}\ \mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}};}
+\DoxyCodeLine{00149\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate1_test}{Predicate1Test}}\ \mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}};}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00153\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00154\ \ \ EXPECT\_PRED1(PredFunction1Int,\ ++n1\_);}
+\DoxyCodeLine{00155\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00156\ \}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00159\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00160\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00161\ \ \ EXPECT\_PRED1(PredFunction1Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00162\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00166\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00167\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00168\ \ \ EXPECT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ ++n1\_);}
+\DoxyCodeLine{00169\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00170\ \}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00174\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00175\ \ \ EXPECT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00176\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00177\ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00180\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00181\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00182\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ EXPECT\_PRED1(PredFunction1Int,\ n1\_++);}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00188\ \}}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00191\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00192\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00193\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ EXPECT\_PRED1(PredFunction1Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00199\ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00203\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00204\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ EXPECT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ n1\_++);}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00210\ \}}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED1\ where\ the}}
+\DoxyCodeLine{00213\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00214\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED1Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00215\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ EXPECT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00221\ \}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00224\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00225\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00226\ \ \ ASSERT\_PRED1(PredFunction1Int,\ ++n1\_);}
+\DoxyCodeLine{00227\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00228\ \}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00232\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00233\ \ \ ASSERT\_PRED1(PredFunction1Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00234\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00235\ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00238\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00239\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00240\ \ \ ASSERT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ ++n1\_);}
+\DoxyCodeLine{00241\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00242\ \}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00245\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00246\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00247\ \ \ ASSERT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00248\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00249\ \}}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00252\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00253\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00254\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00255\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ ASSERT\_PRED1(PredFunction1Int,\ n1\_++);}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00261\ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00264\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00265\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00266\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00267\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ ASSERT\_PRED1(PredFunction1Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00273\ \}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00276\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00277\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00278\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00279\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ ASSERT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ n1\_++);}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00285\ \}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED1\ where\ the}}
+\DoxyCodeLine{00288\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00289\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED1Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00290\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00291\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ ASSERT\_PRED1(\mbox{\hyperlink{struct_pred_functor1}{PredFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00297\ \}}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00300\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00301\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00302\ \ \ EXPECT\_PRED\_FORMAT1(PredFormatFunction1,\ ++n1\_);}
+\DoxyCodeLine{00303\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00304\ \}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00307\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00308\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00309\ \ \ EXPECT\_PRED\_FORMAT1(PredFormatFunction1,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00310\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00311\ \}}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00313\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00314\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00315\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00316\ \ \ EXPECT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ ++n1\_);}
+\DoxyCodeLine{00317\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00318\ \}}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00321\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00322\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00323\ \ \ EXPECT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00324\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00325\ \}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00328\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00329\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00330\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT1(PredFormatFunction1,\ n1\_++);}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00336\ \}}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00339\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00340\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00341\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT1(PredFormatFunction1,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00347\ \}}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00350\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00351\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00352\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ n1\_++);}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00358\ \}}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00361\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00362\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{EXPECT\_PRED\_FORMAT1Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00363\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00369\ \}}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00371\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00372\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00373\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00374\ \ \ ASSERT\_PRED\_FORMAT1(PredFormatFunction1,\ ++n1\_);}
+\DoxyCodeLine{00375\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00376\ \}}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00378\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00379\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00380\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00381\ \ \ ASSERT\_PRED\_FORMAT1(PredFormatFunction1,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00382\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00383\ \}}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00386\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00387\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00388\ \ \ ASSERT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ ++n1\_);}
+\DoxyCodeLine{00389\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00390\ \}}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00393\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00394\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00395\ \ \ ASSERT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_));}
+\DoxyCodeLine{00396\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00397\ \}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00400\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00401\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00402\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00403\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT1(PredFormatFunction1,\ n1\_++);}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00409\ \}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00412\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00413\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00414\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00415\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT1(PredFormatFunction1,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00421\ \}}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00424\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00425\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00426\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00427\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ n1\_++);}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00433\ \}}
+\DoxyCodeLine{00434\ }
+\DoxyCodeLine{00435\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT1\ where\ the}}
+\DoxyCodeLine{00436\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00437\ TEST\_F(\mbox{\hyperlink{class_predicate1_test}{ASSERT\_PRED\_FORMAT1Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00438\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00439\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT1(\mbox{\hyperlink{struct_pred_format_functor1}{PredFormatFunctor1}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++));}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00445\ \}}
+\DoxyCodeLine{00446\ \textcolor{comment}{//\ Sample\ functions/functors\ for\ testing\ binary\ predicate\ assertions.}}
+\DoxyCodeLine{00447\ }
+\DoxyCodeLine{00448\ \textcolor{comment}{//\ A\ binary\ predicate\ function.}}
+\DoxyCodeLine{00449\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00450\ \textcolor{keywordtype}{bool}\ PredFunction2(T1\ v1,\ T2\ v2)\ \{}
+\DoxyCodeLine{00451\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ >\ 0;}
+\DoxyCodeLine{00452\ \}}
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00454\ \textcolor{comment}{//\ The\ following\ two\ functions\ are\ needed\ because\ a\ compiler\ doesn't\ have}}
+\DoxyCodeLine{00455\ \textcolor{comment}{//\ a\ context\ yet\ to\ know\ which\ template\ function\ must\ be\ instantiated.}}
+\DoxyCodeLine{00456\ \textcolor{keywordtype}{bool}\ PredFunction2Int(\textcolor{keywordtype}{int}\ v1,\ \textcolor{keywordtype}{int}\ v2)\ \{\ \textcolor{keywordflow}{return}\ v1\ +\ v2\ >\ 0;\ \}}
+\DoxyCodeLine{00457\ \textcolor{keywordtype}{bool}\ PredFunction2Bool(\mbox{\hyperlink{struct_bool}{Bool}}\ v1,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v2)\ \{\ \textcolor{keywordflow}{return}\ v1\ +\ v2\ >\ 0;\ \}}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \textcolor{comment}{//\ A\ binary\ predicate\ functor.}}
+\DoxyCodeLine{00460\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}\ \{}
+\DoxyCodeLine{00461\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00462\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2)\ \{}
+\DoxyCodeLine{00463\ \ \ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ >\ 0;}
+\DoxyCodeLine{00464\ \ \ \}}
+\DoxyCodeLine{00465\ \};}
+\DoxyCodeLine{00466\ }
+\DoxyCodeLine{00467\ \textcolor{comment}{//\ A\ binary\ predicate-\/formatter\ function.}}
+\DoxyCodeLine{00468\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00469\ testing::AssertionResult\ PredFormatFunction2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2)\ \{}
+\DoxyCodeLine{00471\ \ \ \textcolor{keywordflow}{if}\ (PredFunction2(v1,\ v2))\ \textcolor{keywordflow}{return}\ testing::AssertionSuccess();}
+\DoxyCodeLine{00472\ }
+\DoxyCodeLine{00473\ \ \ \textcolor{keywordflow}{return}\ testing::AssertionFailure()}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ <<\ e1\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e2}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ positive,\ but\ evaluates\ to\ "{}}\ <<\ v1\ +\ v2\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00476\ \}}
+\DoxyCodeLine{00477\ }
+\DoxyCodeLine{00478\ \textcolor{comment}{//\ A\ binary\ predicate-\/formatter\ functor.}}
+\DoxyCodeLine{00479\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}\ \{}
+\DoxyCodeLine{00480\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00481\ \ \ testing::AssertionResult\ operator()(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00483\ \ \ \ \ \textcolor{keywordflow}{return}\ PredFormatFunction2(e1,\ e2,\ v1,\ v2);}
+\DoxyCodeLine{00484\ \ \ \}}
+\DoxyCodeLine{00485\ \};}
+\DoxyCodeLine{00486\ }
+\DoxyCodeLine{00487\ \textcolor{comment}{//\ Tests\ for\ \{EXPECT|ASSERT\}\_PRED\_FORMAT2.}}
+\DoxyCodeLine{00488\ }
+\DoxyCodeLine{00489\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_predicate2_test}{Predicate2Test}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{00490\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00491\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00492\ \ \ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00493\ \ \ \ \ finished\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00494\ \ \ \ \ n1\_\ =\ n2\_\ =\ 0;}
+\DoxyCodeLine{00495\ \ \ \}}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00497\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00498\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ each\ of\ the\ predicate's\ arguments\ was\ evaluated}}
+\DoxyCodeLine{00499\ \ \ \ \ \textcolor{comment}{//\ exactly\ once.}}
+\DoxyCodeLine{00500\ \ \ \ \ EXPECT\_EQ(1,\ n1\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 2\ "{}}}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00502\ \ \ \ \ EXPECT\_EQ(1,\ n2\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 3\ "{}}}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ control\ flow\ in\ the\ test\ function\ is\ expected.}}
+\DoxyCodeLine{00506\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\_to\_finish\_\ \&\&\ !finished\_)\ \{}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ unexpectedly\ aborted\ the\ test."{}};}
+\DoxyCodeLine{00508\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!expected\_to\_finish\_\ \&\&\ finished\_)\ \{}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ failed\ predicate\ assertion\ didn't\ abort\ the\ test\ "{}}}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}as\ expected."{}};}
+\DoxyCodeLine{00511\ \ \ \ \ \}}
+\DoxyCodeLine{00512\ \ \ \}}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ is\ expected\ to\ run\ to\ finish.}}
+\DoxyCodeLine{00515\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ expected\_to\_finish\_;}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ did\ run\ to\ finish.}}
+\DoxyCodeLine{00518\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ finished\_;}
+\DoxyCodeLine{00519\ }
+\DoxyCodeLine{00520\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n1\_;}
+\DoxyCodeLine{00521\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n2\_;}
+\DoxyCodeLine{00522\ \};}
+\DoxyCodeLine{00523\ }
+\DoxyCodeLine{00524\ \textcolor{keywordtype}{bool}\ Predicate2Test::expected\_to\_finish\_;}
+\DoxyCodeLine{00525\ \textcolor{keywordtype}{bool}\ Predicate2Test::finished\_;}
+\DoxyCodeLine{00526\ \textcolor{keywordtype}{int}\ Predicate2Test::n1\_;}
+\DoxyCodeLine{00527\ \textcolor{keywordtype}{int}\ Predicate2Test::n2\_;}
+\DoxyCodeLine{00528\ }
+\DoxyCodeLine{00529\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate2_test}{Predicate2Test}}\ \mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}};}
+\DoxyCodeLine{00530\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate2_test}{Predicate2Test}}\ \mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}};}
+\DoxyCodeLine{00531\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate2_test}{Predicate2Test}}\ \mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}};}
+\DoxyCodeLine{00532\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate2_test}{Predicate2Test}}\ \mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}};}
+\DoxyCodeLine{00533\ }
+\DoxyCodeLine{00534\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00535\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00536\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00537\ \ \ EXPECT\_PRED2(PredFunction2Int,\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00538\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00539\ \}}
+\DoxyCodeLine{00540\ }
+\DoxyCodeLine{00541\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00542\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00543\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00544\ \ \ EXPECT\_PRED2(PredFunction2Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00545\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00546\ \}}
+\DoxyCodeLine{00547\ }
+\DoxyCodeLine{00548\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00549\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00550\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00551\ \ \ EXPECT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00552\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00553\ \}}
+\DoxyCodeLine{00554\ }
+\DoxyCodeLine{00555\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00556\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00557\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00558\ \ \ EXPECT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00559\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00560\ \}}
+\DoxyCodeLine{00561\ }
+\DoxyCodeLine{00562\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00563\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00564\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00565\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ EXPECT\_PRED2(PredFunction2Int,\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00571\ \}}
+\DoxyCodeLine{00572\ }
+\DoxyCodeLine{00573\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00574\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00575\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00576\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ EXPECT\_PRED2(PredFunction2Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00582\ \}}
+\DoxyCodeLine{00583\ }
+\DoxyCodeLine{00584\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00585\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00586\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00587\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ EXPECT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00593\ \}}
+\DoxyCodeLine{00594\ }
+\DoxyCodeLine{00595\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED2\ where\ the}}
+\DoxyCodeLine{00596\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00597\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED2Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00598\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ EXPECT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00604\ \}}
+\DoxyCodeLine{00605\ }
+\DoxyCodeLine{00606\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00607\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00608\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00609\ \ \ ASSERT\_PRED2(PredFunction2Int,\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00610\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00611\ \}}
+\DoxyCodeLine{00612\ }
+\DoxyCodeLine{00613\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00614\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00615\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00616\ \ \ ASSERT\_PRED2(PredFunction2Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00617\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00618\ \}}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00620\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00621\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00622\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00623\ \ \ ASSERT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00624\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00625\ \}}
+\DoxyCodeLine{00626\ }
+\DoxyCodeLine{00627\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00628\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00629\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00630\ \ \ ASSERT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00631\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00632\ \}}
+\DoxyCodeLine{00633\ }
+\DoxyCodeLine{00634\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00635\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00636\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00637\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00638\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ ASSERT\_PRED2(PredFunction2Int,\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00644\ \}}
+\DoxyCodeLine{00645\ }
+\DoxyCodeLine{00646\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00647\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00648\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00649\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00650\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ ASSERT\_PRED2(PredFunction2Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00656\ \}}
+\DoxyCodeLine{00657\ }
+\DoxyCodeLine{00658\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00659\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00660\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00661\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00662\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ ASSERT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00668\ \}}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00670\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED2\ where\ the}}
+\DoxyCodeLine{00671\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00672\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED2Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00673\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00674\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ ASSERT\_PRED2(\mbox{\hyperlink{struct_pred_functor2}{PredFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00680\ \}}
+\DoxyCodeLine{00681\ }
+\DoxyCodeLine{00682\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00683\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00684\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00685\ \ \ EXPECT\_PRED\_FORMAT2(PredFormatFunction2,\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00686\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00687\ \}}
+\DoxyCodeLine{00688\ }
+\DoxyCodeLine{00689\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00690\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00691\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00692\ \ \ EXPECT\_PRED\_FORMAT2(PredFormatFunction2,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00693\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00694\ \}}
+\DoxyCodeLine{00695\ }
+\DoxyCodeLine{00696\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00697\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00698\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00699\ \ \ EXPECT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00700\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00701\ \}}
+\DoxyCodeLine{00702\ }
+\DoxyCodeLine{00703\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00704\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00705\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00706\ \ \ EXPECT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00707\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00708\ \}}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00711\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00712\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00713\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00715\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT2(PredFormatFunction2,\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00719\ \}}
+\DoxyCodeLine{00720\ }
+\DoxyCodeLine{00721\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00722\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00723\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00724\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00725\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00726\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT2(PredFormatFunction2,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00727\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00730\ \}}
+\DoxyCodeLine{00731\ }
+\DoxyCodeLine{00732\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00733\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00734\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00735\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00741\ \}}
+\DoxyCodeLine{00742\ }
+\DoxyCodeLine{00743\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00744\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00745\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{EXPECT\_PRED\_FORMAT2Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00746\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00752\ \}}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00754\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00755\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00756\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00757\ \ \ ASSERT\_PRED\_FORMAT2(PredFormatFunction2,\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00758\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00759\ \}}
+\DoxyCodeLine{00760\ }
+\DoxyCodeLine{00761\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00762\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00763\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00764\ \ \ ASSERT\_PRED\_FORMAT2(PredFormatFunction2,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00765\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00766\ \}}
+\DoxyCodeLine{00767\ }
+\DoxyCodeLine{00768\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00769\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00770\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00771\ \ \ ASSERT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ ++n1\_,\ ++n2\_);}
+\DoxyCodeLine{00772\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00773\ \}}
+\DoxyCodeLine{00774\ }
+\DoxyCodeLine{00775\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00776\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00777\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00778\ \ \ ASSERT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_));}
+\DoxyCodeLine{00779\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00780\ \}}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00783\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00784\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00785\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00786\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT2(PredFormatFunction2,\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00792\ \}}
+\DoxyCodeLine{00793\ }
+\DoxyCodeLine{00794\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00795\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00796\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00797\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00798\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT2(PredFormatFunction2,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00804\ \}}
+\DoxyCodeLine{00805\ }
+\DoxyCodeLine{00806\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00807\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00808\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00809\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00810\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ n1\_++,\ n2\_++);}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00816\ \}}
+\DoxyCodeLine{00817\ }
+\DoxyCodeLine{00818\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT2\ where\ the}}
+\DoxyCodeLine{00819\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00820\ TEST\_F(\mbox{\hyperlink{class_predicate2_test}{ASSERT\_PRED\_FORMAT2Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00821\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00822\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT2(\mbox{\hyperlink{struct_pred_format_functor2}{PredFormatFunctor2}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++));}
+\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00827\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00828\ \}}
+\DoxyCodeLine{00829\ \textcolor{comment}{//\ Sample\ functions/functors\ for\ testing\ ternary\ predicate\ assertions.}}
+\DoxyCodeLine{00830\ }
+\DoxyCodeLine{00831\ \textcolor{comment}{//\ A\ ternary\ predicate\ function.}}
+\DoxyCodeLine{00832\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3>}
+\DoxyCodeLine{00833\ \textcolor{keywordtype}{bool}\ PredFunction3(T1\ v1,\ T2\ v2,\ T3\ v3)\ \{}
+\DoxyCodeLine{00834\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ >\ 0;}
+\DoxyCodeLine{00835\ \}}
+\DoxyCodeLine{00836\ }
+\DoxyCodeLine{00837\ \textcolor{comment}{//\ The\ following\ two\ functions\ are\ needed\ because\ a\ compiler\ doesn't\ have}}
+\DoxyCodeLine{00838\ \textcolor{comment}{//\ a\ context\ yet\ to\ know\ which\ template\ function\ must\ be\ instantiated.}}
+\DoxyCodeLine{00839\ \textcolor{keywordtype}{bool}\ PredFunction3Int(\textcolor{keywordtype}{int}\ v1,\ \textcolor{keywordtype}{int}\ v2,\ \textcolor{keywordtype}{int}\ v3)\ \{\ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ >\ 0;\ \}}
+\DoxyCodeLine{00840\ \textcolor{keywordtype}{bool}\ PredFunction3Bool(\mbox{\hyperlink{struct_bool}{Bool}}\ v1,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v2,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v3)\ \{\ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ >\ 0;\ \}}
+\DoxyCodeLine{00841\ }
+\DoxyCodeLine{00842\ \textcolor{comment}{//\ A\ ternary\ predicate\ functor.}}
+\DoxyCodeLine{00843\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}\ \{}
+\DoxyCodeLine{00844\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3>}
+\DoxyCodeLine{00845\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3)\ \{}
+\DoxyCodeLine{00846\ \ \ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ >\ 0;}
+\DoxyCodeLine{00847\ \ \ \}}
+\DoxyCodeLine{00848\ \};}
+\DoxyCodeLine{00849\ }
+\DoxyCodeLine{00850\ \textcolor{comment}{//\ A\ ternary\ predicate-\/formatter\ function.}}
+\DoxyCodeLine{00851\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3>}
+\DoxyCodeLine{00852\ testing::AssertionResult\ PredFormatFunction3(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ T1\&\ v1,}
+\DoxyCodeLine{00854\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3)\ \{}
+\DoxyCodeLine{00855\ \ \ \textcolor{keywordflow}{if}\ (PredFunction3(v1,\ v2,\ v3))\ \textcolor{keywordflow}{return}\ testing::AssertionSuccess();}
+\DoxyCodeLine{00856\ }
+\DoxyCodeLine{00857\ \ \ \textcolor{keywordflow}{return}\ testing::AssertionFailure()}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ \ \ \ <<\ e1\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e2\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e3}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ positive,\ but\ evaluates\ to\ "{}}\ <<\ v1\ +\ v2\ +\ v3}
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00861\ \}}
+\DoxyCodeLine{00862\ }
+\DoxyCodeLine{00863\ \textcolor{comment}{//\ A\ ternary\ predicate-\/formatter\ functor.}}
+\DoxyCodeLine{00864\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}\ \{}
+\DoxyCodeLine{00865\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3>}
+\DoxyCodeLine{00866\ \ \ testing::AssertionResult\ operator()(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ T1\&\ v1,}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00869\ \ \ \ \ \textcolor{keywordflow}{return}\ PredFormatFunction3(e1,\ e2,\ e3,\ v1,\ v2,\ v3);}
+\DoxyCodeLine{00870\ \ \ \}}
+\DoxyCodeLine{00871\ \};}
+\DoxyCodeLine{00872\ }
+\DoxyCodeLine{00873\ \textcolor{comment}{//\ Tests\ for\ \{EXPECT|ASSERT\}\_PRED\_FORMAT3.}}
+\DoxyCodeLine{00874\ }
+\DoxyCodeLine{00875\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_predicate3_test}{Predicate3Test}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{00876\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00877\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00878\ \ \ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00879\ \ \ \ \ finished\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00880\ \ \ \ \ n1\_\ =\ n2\_\ =\ n3\_\ =\ 0;}
+\DoxyCodeLine{00881\ \ \ \}}
+\DoxyCodeLine{00882\ }
+\DoxyCodeLine{00883\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00884\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ each\ of\ the\ predicate's\ arguments\ was\ evaluated}}
+\DoxyCodeLine{00885\ \ \ \ \ \textcolor{comment}{//\ exactly\ once.}}
+\DoxyCodeLine{00886\ \ \ \ \ EXPECT\_EQ(1,\ n1\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 2\ "{}}}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00888\ \ \ \ \ EXPECT\_EQ(1,\ n2\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 3\ "{}}}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00890\ \ \ \ \ EXPECT\_EQ(1,\ n3\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 4\ "{}}}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{00892\ }
+\DoxyCodeLine{00893\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ control\ flow\ in\ the\ test\ function\ is\ expected.}}
+\DoxyCodeLine{00894\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\_to\_finish\_\ \&\&\ !finished\_)\ \{}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ unexpectedly\ aborted\ the\ test."{}};}
+\DoxyCodeLine{00896\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!expected\_to\_finish\_\ \&\&\ finished\_)\ \{}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ failed\ predicate\ assertion\ didn't\ abort\ the\ test\ "{}}}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}as\ expected."{}};}
+\DoxyCodeLine{00899\ \ \ \ \ \}}
+\DoxyCodeLine{00900\ \ \ \}}
+\DoxyCodeLine{00901\ }
+\DoxyCodeLine{00902\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ is\ expected\ to\ run\ to\ finish.}}
+\DoxyCodeLine{00903\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ expected\_to\_finish\_;}
+\DoxyCodeLine{00904\ }
+\DoxyCodeLine{00905\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ did\ run\ to\ finish.}}
+\DoxyCodeLine{00906\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ finished\_;}
+\DoxyCodeLine{00907\ }
+\DoxyCodeLine{00908\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n1\_;}
+\DoxyCodeLine{00909\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n2\_;}
+\DoxyCodeLine{00910\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n3\_;}
+\DoxyCodeLine{00911\ \};}
+\DoxyCodeLine{00912\ }
+\DoxyCodeLine{00913\ \textcolor{keywordtype}{bool}\ Predicate3Test::expected\_to\_finish\_;}
+\DoxyCodeLine{00914\ \textcolor{keywordtype}{bool}\ Predicate3Test::finished\_;}
+\DoxyCodeLine{00915\ \textcolor{keywordtype}{int}\ Predicate3Test::n1\_;}
+\DoxyCodeLine{00916\ \textcolor{keywordtype}{int}\ Predicate3Test::n2\_;}
+\DoxyCodeLine{00917\ \textcolor{keywordtype}{int}\ Predicate3Test::n3\_;}
+\DoxyCodeLine{00918\ }
+\DoxyCodeLine{00919\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate3_test}{Predicate3Test}}\ \mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}};}
+\DoxyCodeLine{00920\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate3_test}{Predicate3Test}}\ \mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}};}
+\DoxyCodeLine{00921\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate3_test}{Predicate3Test}}\ \mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}};}
+\DoxyCodeLine{00922\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate3_test}{Predicate3Test}}\ \mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}};}
+\DoxyCodeLine{00923\ }
+\DoxyCodeLine{00924\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00925\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00926\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00927\ \ \ EXPECT\_PRED3(PredFunction3Int,\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{00928\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00929\ \}}
+\DoxyCodeLine{00930\ }
+\DoxyCodeLine{00931\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00932\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00933\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00934\ \ \ EXPECT\_PRED3(PredFunction3Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{00935\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00936\ \}}
+\DoxyCodeLine{00937\ }
+\DoxyCodeLine{00938\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00939\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00940\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00941\ \ \ EXPECT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{00942\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00943\ \}}
+\DoxyCodeLine{00944\ }
+\DoxyCodeLine{00945\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00946\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00947\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{00948\ \ \ EXPECT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{00949\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00950\ \}}
+\DoxyCodeLine{00951\ }
+\DoxyCodeLine{00952\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00953\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00954\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00955\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \ \ EXPECT\_PRED3(PredFunction3Int,\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00961\ \}}
+\DoxyCodeLine{00962\ }
+\DoxyCodeLine{00963\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00964\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00965\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00966\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00967\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00968\ \ \ \ \ \ \ \ \ EXPECT\_PRED3(PredFunction3Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{00969\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00970\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00971\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00972\ \}}
+\DoxyCodeLine{00973\ }
+\DoxyCodeLine{00974\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00975\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00976\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{00977\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ EXPECT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{00980\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00983\ \}}
+\DoxyCodeLine{00984\ }
+\DoxyCodeLine{00985\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED3\ where\ the}}
+\DoxyCodeLine{00986\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{00987\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED3Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{00988\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ EXPECT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00992\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00994\ \}}
+\DoxyCodeLine{00995\ }
+\DoxyCodeLine{00996\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{00997\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{00998\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{00999\ \ \ ASSERT\_PRED3(PredFunction3Int,\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01000\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01001\ \}}
+\DoxyCodeLine{01002\ }
+\DoxyCodeLine{01003\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01004\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01005\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01006\ \ \ ASSERT\_PRED3(PredFunction3Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01007\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01008\ \}}
+\DoxyCodeLine{01009\ }
+\DoxyCodeLine{01010\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01011\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01012\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01013\ \ \ ASSERT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01014\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01015\ \}}
+\DoxyCodeLine{01016\ }
+\DoxyCodeLine{01017\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01018\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01019\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01020\ \ \ ASSERT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01021\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01022\ \}}
+\DoxyCodeLine{01023\ }
+\DoxyCodeLine{01024\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01025\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01026\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01027\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01028\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01029\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01030\ \ \ \ \ \ \ \ \ ASSERT\_PRED3(PredFunction3Int,\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01032\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01033\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01034\ \}}
+\DoxyCodeLine{01035\ }
+\DoxyCodeLine{01036\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01037\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01038\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01039\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01040\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \ \ ASSERT\_PRED3(PredFunction3Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01046\ \}}
+\DoxyCodeLine{01047\ }
+\DoxyCodeLine{01048\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01049\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01050\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01051\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01052\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ ASSERT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01058\ \}}
+\DoxyCodeLine{01059\ }
+\DoxyCodeLine{01060\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED3\ where\ the}}
+\DoxyCodeLine{01061\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01062\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED3Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01063\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01064\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01066\ \ \ \ \ \ \ \ \ ASSERT\_PRED3(\mbox{\hyperlink{struct_pred_functor3}{PredFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01068\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01069\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01070\ \}}
+\DoxyCodeLine{01071\ }
+\DoxyCodeLine{01072\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01073\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01074\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01075\ \ \ EXPECT\_PRED\_FORMAT3(PredFormatFunction3,\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01076\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01077\ \}}
+\DoxyCodeLine{01078\ }
+\DoxyCodeLine{01079\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01080\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01081\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01082\ \ \ EXPECT\_PRED\_FORMAT3(PredFormatFunction3,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01084\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01085\ \}}
+\DoxyCodeLine{01086\ }
+\DoxyCodeLine{01087\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01088\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01089\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01090\ \ \ EXPECT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01091\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01092\ \}}
+\DoxyCodeLine{01093\ }
+\DoxyCodeLine{01094\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01095\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01096\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01097\ \ \ EXPECT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01099\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01100\ \}}
+\DoxyCodeLine{01101\ }
+\DoxyCodeLine{01102\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01103\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01104\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01105\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT3(PredFormatFunction3,\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01109\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01110\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01111\ \}}
+\DoxyCodeLine{01112\ }
+\DoxyCodeLine{01113\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01114\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01115\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01116\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01117\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01118\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT3(PredFormatFunction3,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01121\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01122\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01123\ \}}
+\DoxyCodeLine{01124\ }
+\DoxyCodeLine{01125\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01126\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01127\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01128\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01129\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01130\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01131\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01132\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01133\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01134\ \}}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01137\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01138\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{EXPECT\_PRED\_FORMAT3Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01139\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01140\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01141\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01143\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01144\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01145\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01146\ \}}
+\DoxyCodeLine{01147\ }
+\DoxyCodeLine{01148\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01149\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01150\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01151\ \ \ ASSERT\_PRED\_FORMAT3(PredFormatFunction3,\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01152\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01153\ \}}
+\DoxyCodeLine{01154\ }
+\DoxyCodeLine{01155\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01156\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01157\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01158\ \ \ ASSERT\_PRED\_FORMAT3(PredFormatFunction3,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01160\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01161\ \}}
+\DoxyCodeLine{01162\ }
+\DoxyCodeLine{01163\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01164\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01165\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01166\ \ \ ASSERT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_);}
+\DoxyCodeLine{01167\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01168\ \}}
+\DoxyCodeLine{01169\ }
+\DoxyCodeLine{01170\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01171\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01172\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01173\ \ \ ASSERT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01174\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_));}
+\DoxyCodeLine{01175\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01176\ \}}
+\DoxyCodeLine{01177\ }
+\DoxyCodeLine{01178\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01179\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01180\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01181\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01182\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01183\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01184\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT3(PredFormatFunction3,\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01185\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01186\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01187\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01188\ \}}
+\DoxyCodeLine{01189\ }
+\DoxyCodeLine{01190\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01191\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01192\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01193\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01194\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01195\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01196\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT3(PredFormatFunction3,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01198\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01199\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01200\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01201\ \}}
+\DoxyCodeLine{01202\ }
+\DoxyCodeLine{01203\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01204\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01205\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01206\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01207\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01208\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01209\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ n1\_++,\ n2\_++,\ n3\_++);}
+\DoxyCodeLine{01210\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01213\ \}}
+\DoxyCodeLine{01214\ }
+\DoxyCodeLine{01215\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT3\ where\ the}}
+\DoxyCodeLine{01216\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01217\ TEST\_F(\mbox{\hyperlink{class_predicate3_test}{ASSERT\_PRED\_FORMAT3Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01218\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01219\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01220\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01221\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT3(\mbox{\hyperlink{struct_pred_format_functor3}{PredFormatFunctor3}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01222\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++));}
+\DoxyCodeLine{01223\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01225\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01226\ \}}
+\DoxyCodeLine{01227\ \textcolor{comment}{//\ Sample\ functions/functors\ for\ testing\ 4-\/ary\ predicate\ assertions.}}
+\DoxyCodeLine{01228\ }
+\DoxyCodeLine{01229\ \textcolor{comment}{//\ A\ 4-\/ary\ predicate\ function.}}
+\DoxyCodeLine{01230\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4>}
+\DoxyCodeLine{01231\ \textcolor{keywordtype}{bool}\ PredFunction4(T1\ v1,\ T2\ v2,\ T3\ v3,\ T4\ v4)\ \{}
+\DoxyCodeLine{01232\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ >\ 0;}
+\DoxyCodeLine{01233\ \}}
+\DoxyCodeLine{01234\ }
+\DoxyCodeLine{01235\ \textcolor{comment}{//\ The\ following\ two\ functions\ are\ needed\ because\ a\ compiler\ doesn't\ have}}
+\DoxyCodeLine{01236\ \textcolor{comment}{//\ a\ context\ yet\ to\ know\ which\ template\ function\ must\ be\ instantiated.}}
+\DoxyCodeLine{01237\ \textcolor{keywordtype}{bool}\ PredFunction4Int(\textcolor{keywordtype}{int}\ v1,\ \textcolor{keywordtype}{int}\ v2,\ \textcolor{keywordtype}{int}\ v3,\ \textcolor{keywordtype}{int}\ v4)\ \{}
+\DoxyCodeLine{01238\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ >\ 0;}
+\DoxyCodeLine{01239\ \}}
+\DoxyCodeLine{01240\ \textcolor{keywordtype}{bool}\ PredFunction4Bool(\mbox{\hyperlink{struct_bool}{Bool}}\ v1,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v2,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v3,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v4)\ \{}
+\DoxyCodeLine{01241\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ >\ 0;}
+\DoxyCodeLine{01242\ \}}
+\DoxyCodeLine{01243\ }
+\DoxyCodeLine{01244\ \textcolor{comment}{//\ A\ 4-\/ary\ predicate\ functor.}}
+\DoxyCodeLine{01245\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}\ \{}
+\DoxyCodeLine{01246\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4>}
+\DoxyCodeLine{01247\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3,\ \textcolor{keyword}{const}\ T4\&\ v4)\ \{}
+\DoxyCodeLine{01248\ \ \ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ >\ 0;}
+\DoxyCodeLine{01249\ \ \ \}}
+\DoxyCodeLine{01250\ \};}
+\DoxyCodeLine{01251\ }
+\DoxyCodeLine{01252\ \textcolor{comment}{//\ A\ 4-\/ary\ predicate-\/formatter\ function.}}
+\DoxyCodeLine{01253\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4>}
+\DoxyCodeLine{01254\ testing::AssertionResult\ PredFormatFunction4(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{01255\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e4,}
+\DoxyCodeLine{01256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2,}
+\DoxyCodeLine{01257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\&\ v3,\ \textcolor{keyword}{const}\ T4\&\ v4)\ \{}
+\DoxyCodeLine{01258\ \ \ \textcolor{keywordflow}{if}\ (PredFunction4(v1,\ v2,\ v3,\ v4))\ \textcolor{keywordflow}{return}\ testing::AssertionSuccess();}
+\DoxyCodeLine{01259\ }
+\DoxyCodeLine{01260\ \ \ \textcolor{keywordflow}{return}\ testing::AssertionFailure()}
+\DoxyCodeLine{01261\ \ \ \ \ \ \ \ \ \ <<\ e1\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e2\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e3\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e4}
+\DoxyCodeLine{01262\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ positive,\ but\ evaluates\ to\ "{}}}
+\DoxyCodeLine{01263\ \ \ \ \ \ \ \ \ \ <<\ v1\ +\ v2\ +\ v3\ +\ v4\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01264\ \}}
+\DoxyCodeLine{01265\ }
+\DoxyCodeLine{01266\ \textcolor{comment}{//\ A\ 4-\/ary\ predicate-\/formatter\ functor.}}
+\DoxyCodeLine{01267\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}\ \{}
+\DoxyCodeLine{01268\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4>}
+\DoxyCodeLine{01269\ \ \ testing::AssertionResult\ operator()(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{01270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e4,}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3,}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\&\ v4)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01273\ \ \ \ \ \textcolor{keywordflow}{return}\ PredFormatFunction4(e1,\ e2,\ e3,\ e4,\ v1,\ v2,\ v3,\ v4);}
+\DoxyCodeLine{01274\ \ \ \}}
+\DoxyCodeLine{01275\ \};}
+\DoxyCodeLine{01276\ }
+\DoxyCodeLine{01277\ \textcolor{comment}{//\ Tests\ for\ \{EXPECT|ASSERT\}\_PRED\_FORMAT4.}}
+\DoxyCodeLine{01278\ }
+\DoxyCodeLine{01279\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_predicate4_test}{Predicate4Test}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{01280\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{01281\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01282\ \ \ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01283\ \ \ \ \ finished\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01284\ \ \ \ \ n1\_\ =\ n2\_\ =\ n3\_\ =\ n4\_\ =\ 0;}
+\DoxyCodeLine{01285\ \ \ \}}
+\DoxyCodeLine{01286\ }
+\DoxyCodeLine{01287\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01288\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ each\ of\ the\ predicate's\ arguments\ was\ evaluated}}
+\DoxyCodeLine{01289\ \ \ \ \ \textcolor{comment}{//\ exactly\ once.}}
+\DoxyCodeLine{01290\ \ \ \ \ EXPECT\_EQ(1,\ n1\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 2\ "{}}}
+\DoxyCodeLine{01291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01292\ \ \ \ \ EXPECT\_EQ(1,\ n2\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 3\ "{}}}
+\DoxyCodeLine{01293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01294\ \ \ \ \ EXPECT\_EQ(1,\ n3\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 4\ "{}}}
+\DoxyCodeLine{01295\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01296\ \ \ \ \ EXPECT\_EQ(1,\ n4\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 5\ "{}}}
+\DoxyCodeLine{01297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01298\ }
+\DoxyCodeLine{01299\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ control\ flow\ in\ the\ test\ function\ is\ expected.}}
+\DoxyCodeLine{01300\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\_to\_finish\_\ \&\&\ !finished\_)\ \{}
+\DoxyCodeLine{01301\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ unexpectedly\ aborted\ the\ test."{}};}
+\DoxyCodeLine{01302\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!expected\_to\_finish\_\ \&\&\ finished\_)\ \{}
+\DoxyCodeLine{01303\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ failed\ predicate\ assertion\ didn't\ abort\ the\ test\ "{}}}
+\DoxyCodeLine{01304\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}as\ expected."{}};}
+\DoxyCodeLine{01305\ \ \ \ \ \}}
+\DoxyCodeLine{01306\ \ \ \}}
+\DoxyCodeLine{01307\ }
+\DoxyCodeLine{01308\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ is\ expected\ to\ run\ to\ finish.}}
+\DoxyCodeLine{01309\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ expected\_to\_finish\_;}
+\DoxyCodeLine{01310\ }
+\DoxyCodeLine{01311\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ did\ run\ to\ finish.}}
+\DoxyCodeLine{01312\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ finished\_;}
+\DoxyCodeLine{01313\ }
+\DoxyCodeLine{01314\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n1\_;}
+\DoxyCodeLine{01315\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n2\_;}
+\DoxyCodeLine{01316\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n3\_;}
+\DoxyCodeLine{01317\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n4\_;}
+\DoxyCodeLine{01318\ \};}
+\DoxyCodeLine{01319\ }
+\DoxyCodeLine{01320\ \textcolor{keywordtype}{bool}\ Predicate4Test::expected\_to\_finish\_;}
+\DoxyCodeLine{01321\ \textcolor{keywordtype}{bool}\ Predicate4Test::finished\_;}
+\DoxyCodeLine{01322\ \textcolor{keywordtype}{int}\ Predicate4Test::n1\_;}
+\DoxyCodeLine{01323\ \textcolor{keywordtype}{int}\ Predicate4Test::n2\_;}
+\DoxyCodeLine{01324\ \textcolor{keywordtype}{int}\ Predicate4Test::n3\_;}
+\DoxyCodeLine{01325\ \textcolor{keywordtype}{int}\ Predicate4Test::n4\_;}
+\DoxyCodeLine{01326\ }
+\DoxyCodeLine{01327\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate4_test}{Predicate4Test}}\ \mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}};}
+\DoxyCodeLine{01328\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate4_test}{Predicate4Test}}\ \mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}};}
+\DoxyCodeLine{01329\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate4_test}{Predicate4Test}}\ \mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}};}
+\DoxyCodeLine{01330\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate4_test}{Predicate4Test}}\ \mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}};}
+\DoxyCodeLine{01331\ }
+\DoxyCodeLine{01332\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01333\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01334\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01335\ \ \ EXPECT\_PRED4(PredFunction4Int,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01336\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01337\ \}}
+\DoxyCodeLine{01338\ }
+\DoxyCodeLine{01339\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01340\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01341\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01342\ \ \ EXPECT\_PRED4(PredFunction4Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01343\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01344\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01345\ \}}
+\DoxyCodeLine{01346\ }
+\DoxyCodeLine{01347\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01348\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01349\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01350\ \ \ EXPECT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01351\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01352\ \}}
+\DoxyCodeLine{01353\ }
+\DoxyCodeLine{01354\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01355\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01356\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01357\ \ \ EXPECT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01358\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01359\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01360\ \}}
+\DoxyCodeLine{01361\ }
+\DoxyCodeLine{01362\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01363\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01364\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01365\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01366\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01367\ \ \ \ \ \ \ \ \ EXPECT\_PRED4(PredFunction4Int,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01368\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01369\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01370\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01371\ \}}
+\DoxyCodeLine{01372\ }
+\DoxyCodeLine{01373\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01374\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01375\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01376\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01377\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01378\ \ \ \ \ \ \ \ \ EXPECT\_PRED4(PredFunction4Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01380\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01381\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01382\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01383\ \}}
+\DoxyCodeLine{01384\ }
+\DoxyCodeLine{01385\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01386\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01387\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01388\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01389\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01390\ \ \ \ \ \ \ \ \ EXPECT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01391\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01392\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01393\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01394\ \}}
+\DoxyCodeLine{01395\ }
+\DoxyCodeLine{01396\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED4\ where\ the}}
+\DoxyCodeLine{01397\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01398\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED4Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01399\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01400\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01401\ \ \ \ \ \ \ \ \ EXPECT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01402\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01403\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01404\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01405\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01406\ \}}
+\DoxyCodeLine{01407\ }
+\DoxyCodeLine{01408\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01409\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01410\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01411\ \ \ ASSERT\_PRED4(PredFunction4Int,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01412\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01413\ \}}
+\DoxyCodeLine{01414\ }
+\DoxyCodeLine{01415\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01416\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01417\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01418\ \ \ ASSERT\_PRED4(PredFunction4Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01419\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01420\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01421\ \}}
+\DoxyCodeLine{01422\ }
+\DoxyCodeLine{01423\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01424\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01425\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01426\ \ \ ASSERT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01427\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01428\ \}}
+\DoxyCodeLine{01429\ }
+\DoxyCodeLine{01430\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01431\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01432\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01433\ \ \ ASSERT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01434\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01435\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01436\ \}}
+\DoxyCodeLine{01437\ }
+\DoxyCodeLine{01438\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01439\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01440\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01441\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01442\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01443\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01444\ \ \ \ \ \ \ \ \ ASSERT\_PRED4(PredFunction4Int,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01445\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01446\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01447\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01448\ \}}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01451\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01452\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01453\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01454\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01455\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01456\ \ \ \ \ \ \ \ \ ASSERT\_PRED4(PredFunction4Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01457\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01458\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01459\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01460\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01461\ \}}
+\DoxyCodeLine{01462\ }
+\DoxyCodeLine{01463\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01464\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01465\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01466\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01467\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01468\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01469\ \ \ \ \ \ \ \ \ ASSERT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01470\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01471\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01472\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01473\ \}}
+\DoxyCodeLine{01474\ }
+\DoxyCodeLine{01475\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED4\ where\ the}}
+\DoxyCodeLine{01476\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01477\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED4Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01478\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01479\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01480\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01481\ \ \ \ \ \ \ \ \ ASSERT\_PRED4(\mbox{\hyperlink{struct_pred_functor4}{PredFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01482\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01483\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01484\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01485\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01486\ \}}
+\DoxyCodeLine{01487\ }
+\DoxyCodeLine{01488\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01489\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01490\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01491\ \ \ EXPECT\_PRED\_FORMAT4(PredFormatFunction4,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01492\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01493\ \}}
+\DoxyCodeLine{01494\ }
+\DoxyCodeLine{01495\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01496\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01497\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01498\ \ \ EXPECT\_PRED\_FORMAT4(PredFormatFunction4,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01499\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01500\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01501\ \}}
+\DoxyCodeLine{01502\ }
+\DoxyCodeLine{01503\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01504\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01505\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01506\ \ \ EXPECT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01507\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01508\ \}}
+\DoxyCodeLine{01509\ }
+\DoxyCodeLine{01510\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01511\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01512\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01513\ \ \ EXPECT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01514\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01515\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01516\ \}}
+\DoxyCodeLine{01517\ }
+\DoxyCodeLine{01518\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01519\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01520\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01521\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01522\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01523\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT4(PredFormatFunction4,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01524\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01525\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01526\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01527\ \}}
+\DoxyCodeLine{01528\ }
+\DoxyCodeLine{01529\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01530\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01531\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01532\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01533\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01534\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT4(PredFormatFunction4,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01535\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01536\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01537\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01538\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01539\ \}}
+\DoxyCodeLine{01540\ }
+\DoxyCodeLine{01541\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01542\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01543\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01544\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01545\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01546\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01547\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01548\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01549\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01550\ \}}
+\DoxyCodeLine{01551\ }
+\DoxyCodeLine{01552\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01553\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01554\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{EXPECT\_PRED\_FORMAT4Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01555\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01556\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01557\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01558\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01559\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01560\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01561\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01562\ \}}
+\DoxyCodeLine{01563\ }
+\DoxyCodeLine{01564\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01565\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01566\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01567\ \ \ ASSERT\_PRED\_FORMAT4(PredFormatFunction4,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01568\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01569\ \}}
+\DoxyCodeLine{01570\ }
+\DoxyCodeLine{01571\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01572\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01573\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01574\ \ \ ASSERT\_PRED\_FORMAT4(PredFormatFunction4,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01575\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01576\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01577\ \}}
+\DoxyCodeLine{01578\ }
+\DoxyCodeLine{01579\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01580\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01581\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01582\ \ \ ASSERT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_);}
+\DoxyCodeLine{01583\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01584\ \}}
+\DoxyCodeLine{01585\ }
+\DoxyCodeLine{01586\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01587\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01588\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01589\ \ \ ASSERT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01590\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_));}
+\DoxyCodeLine{01591\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01592\ \}}
+\DoxyCodeLine{01593\ }
+\DoxyCodeLine{01594\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01595\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01596\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01597\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01598\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01599\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01600\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT4(PredFormatFunction4,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01601\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01602\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01603\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01604\ \}}
+\DoxyCodeLine{01605\ }
+\DoxyCodeLine{01606\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01607\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01608\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01609\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01610\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01611\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01612\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT4(PredFormatFunction4,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01613\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01614\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01615\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01616\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01617\ \}}
+\DoxyCodeLine{01618\ }
+\DoxyCodeLine{01619\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01620\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01621\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01622\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01623\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01624\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01625\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++);}
+\DoxyCodeLine{01626\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01627\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01628\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01629\ \}}
+\DoxyCodeLine{01630\ }
+\DoxyCodeLine{01631\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT4\ where\ the}}
+\DoxyCodeLine{01632\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01633\ TEST\_F(\mbox{\hyperlink{class_predicate4_test}{ASSERT\_PRED\_FORMAT4Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01634\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01635\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01636\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01637\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT4(\mbox{\hyperlink{struct_pred_format_functor4}{PredFormatFunctor4}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01638\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++));}
+\DoxyCodeLine{01639\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01640\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01641\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01642\ \}}
+\DoxyCodeLine{01643\ \textcolor{comment}{//\ Sample\ functions/functors\ for\ testing\ 5-\/ary\ predicate\ assertions.}}
+\DoxyCodeLine{01644\ }
+\DoxyCodeLine{01645\ \textcolor{comment}{//\ A\ 5-\/ary\ predicate\ function.}}
+\DoxyCodeLine{01646\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4,\ \textcolor{keyword}{typename}\ T5>}
+\DoxyCodeLine{01647\ \textcolor{keywordtype}{bool}\ PredFunction5(T1\ v1,\ T2\ v2,\ T3\ v3,\ T4\ v4,\ T5\ v5)\ \{}
+\DoxyCodeLine{01648\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ +\ v5\ >\ 0;}
+\DoxyCodeLine{01649\ \}}
+\DoxyCodeLine{01650\ }
+\DoxyCodeLine{01651\ \textcolor{comment}{//\ The\ following\ two\ functions\ are\ needed\ because\ a\ compiler\ doesn't\ have}}
+\DoxyCodeLine{01652\ \textcolor{comment}{//\ a\ context\ yet\ to\ know\ which\ template\ function\ must\ be\ instantiated.}}
+\DoxyCodeLine{01653\ \textcolor{keywordtype}{bool}\ PredFunction5Int(\textcolor{keywordtype}{int}\ v1,\ \textcolor{keywordtype}{int}\ v2,\ \textcolor{keywordtype}{int}\ v3,\ \textcolor{keywordtype}{int}\ v4,\ \textcolor{keywordtype}{int}\ v5)\ \{}
+\DoxyCodeLine{01654\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ +\ v5\ >\ 0;}
+\DoxyCodeLine{01655\ \}}
+\DoxyCodeLine{01656\ \textcolor{keywordtype}{bool}\ PredFunction5Bool(\mbox{\hyperlink{struct_bool}{Bool}}\ v1,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v2,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v3,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v4,\ \mbox{\hyperlink{struct_bool}{Bool}}\ v5)\ \{}
+\DoxyCodeLine{01657\ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ +\ v5\ >\ 0;}
+\DoxyCodeLine{01658\ \}}
+\DoxyCodeLine{01659\ }
+\DoxyCodeLine{01660\ \textcolor{comment}{//\ A\ 5-\/ary\ predicate\ functor.}}
+\DoxyCodeLine{01661\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}\ \{}
+\DoxyCodeLine{01662\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4,\ \textcolor{keyword}{typename}\ T5>}
+\DoxyCodeLine{01663\ \ \ \textcolor{keywordtype}{bool}\ operator()(\textcolor{keyword}{const}\ T1\&\ v1,\ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3,\ \textcolor{keyword}{const}\ T4\&\ v4,}
+\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T5\&\ v5)\ \{}
+\DoxyCodeLine{01665\ \ \ \ \ \textcolor{keywordflow}{return}\ v1\ +\ v2\ +\ v3\ +\ v4\ +\ v5\ >\ 0;}
+\DoxyCodeLine{01666\ \ \ \}}
+\DoxyCodeLine{01667\ \};}
+\DoxyCodeLine{01668\ }
+\DoxyCodeLine{01669\ \textcolor{comment}{//\ A\ 5-\/ary\ predicate-\/formatter\ function.}}
+\DoxyCodeLine{01670\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4,\ \textcolor{keyword}{typename}\ T5>}
+\DoxyCodeLine{01671\ testing::AssertionResult\ PredFormatFunction5(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{01672\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e4,}
+\DoxyCodeLine{01673\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e5,\ \textcolor{keyword}{const}\ T1\&\ v1,}
+\DoxyCodeLine{01674\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3,}
+\DoxyCodeLine{01675\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\&\ v4,\ \textcolor{keyword}{const}\ T5\&\ v5)\ \{}
+\DoxyCodeLine{01676\ \ \ \textcolor{keywordflow}{if}\ (PredFunction5(v1,\ v2,\ v3,\ v4,\ v5))\ \textcolor{keywordflow}{return}\ testing::AssertionSuccess();}
+\DoxyCodeLine{01677\ }
+\DoxyCodeLine{01678\ \ \ \textcolor{keywordflow}{return}\ testing::AssertionFailure()}
+\DoxyCodeLine{01679\ \ \ \ \ \ \ \ \ \ <<\ e1\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e2\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e3\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e4\ <<\ \textcolor{stringliteral}{"{}\ +\ "{}}\ <<\ e5}
+\DoxyCodeLine{01680\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ is\ expected\ to\ be\ positive,\ but\ evaluates\ to\ "{}}}
+\DoxyCodeLine{01681\ \ \ \ \ \ \ \ \ \ <<\ v1\ +\ v2\ +\ v3\ +\ v4\ +\ v5\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01682\ \}}
+\DoxyCodeLine{01683\ }
+\DoxyCodeLine{01684\ \textcolor{comment}{//\ A\ 5-\/ary\ predicate-\/formatter\ functor.}}
+\DoxyCodeLine{01685\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}\ \{}
+\DoxyCodeLine{01686\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4,\ \textcolor{keyword}{typename}\ T5>}
+\DoxyCodeLine{01687\ \ \ testing::AssertionResult\ operator()(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e1,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e2,}
+\DoxyCodeLine{01688\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e3,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e4,}
+\DoxyCodeLine{01689\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ e5,\ \textcolor{keyword}{const}\ T1\&\ v1,}
+\DoxyCodeLine{01690\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\&\ v2,\ \textcolor{keyword}{const}\ T3\&\ v3,\ \textcolor{keyword}{const}\ T4\&\ v4,}
+\DoxyCodeLine{01691\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T5\&\ v5)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01692\ \ \ \ \ \textcolor{keywordflow}{return}\ PredFormatFunction5(e1,\ e2,\ e3,\ e4,\ e5,\ v1,\ v2,\ v3,\ v4,\ v5);}
+\DoxyCodeLine{01693\ \ \ \}}
+\DoxyCodeLine{01694\ \};}
+\DoxyCodeLine{01695\ }
+\DoxyCodeLine{01696\ \textcolor{comment}{//\ Tests\ for\ \{EXPECT|ASSERT\}\_PRED\_FORMAT5.}}
+\DoxyCodeLine{01697\ }
+\DoxyCodeLine{01698\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_predicate5_test}{Predicate5Test}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{01699\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{01700\ \ \ \textcolor{keywordtype}{void}\ SetUp()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01701\ \ \ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01702\ \ \ \ \ finished\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01703\ \ \ \ \ n1\_\ =\ n2\_\ =\ n3\_\ =\ n4\_\ =\ n5\_\ =\ 0;}
+\DoxyCodeLine{01704\ \ \ \}}
+\DoxyCodeLine{01705\ }
+\DoxyCodeLine{01706\ \ \ \textcolor{keywordtype}{void}\ TearDown()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01707\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ each\ of\ the\ predicate's\ arguments\ was\ evaluated}}
+\DoxyCodeLine{01708\ \ \ \ \ \textcolor{comment}{//\ exactly\ once.}}
+\DoxyCodeLine{01709\ \ \ \ \ EXPECT\_EQ(1,\ n1\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 2\ "{}}}
+\DoxyCodeLine{01710\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01711\ \ \ \ \ EXPECT\_EQ(1,\ n2\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 3\ "{}}}
+\DoxyCodeLine{01712\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01713\ \ \ \ \ EXPECT\_EQ(1,\ n3\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 4\ "{}}}
+\DoxyCodeLine{01714\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01715\ \ \ \ \ EXPECT\_EQ(1,\ n4\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 5\ "{}}}
+\DoxyCodeLine{01716\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01717\ \ \ \ \ EXPECT\_EQ(1,\ n5\_)\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ didn't\ evaluate\ argument\ 6\ "{}}}
+\DoxyCodeLine{01718\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}exactly\ once."{}};}
+\DoxyCodeLine{01719\ }
+\DoxyCodeLine{01720\ \ \ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ control\ flow\ in\ the\ test\ function\ is\ expected.}}
+\DoxyCodeLine{01721\ \ \ \ \ \textcolor{keywordflow}{if}\ (expected\_to\_finish\_\ \&\&\ !finished\_)\ \{}
+\DoxyCodeLine{01722\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ predicate\ assertion\ unexpectedly\ aborted\ the\ test."{}};}
+\DoxyCodeLine{01723\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!expected\_to\_finish\_\ \&\&\ finished\_)\ \{}
+\DoxyCodeLine{01724\ \ \ \ \ \ \ FAIL()\ <<\ \textcolor{stringliteral}{"{}The\ failed\ predicate\ assertion\ didn't\ abort\ the\ test\ "{}}}
+\DoxyCodeLine{01725\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}as\ expected."{}};}
+\DoxyCodeLine{01726\ \ \ \ \ \}}
+\DoxyCodeLine{01727\ \ \ \}}
+\DoxyCodeLine{01728\ }
+\DoxyCodeLine{01729\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ is\ expected\ to\ run\ to\ finish.}}
+\DoxyCodeLine{01730\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ expected\_to\_finish\_;}
+\DoxyCodeLine{01731\ }
+\DoxyCodeLine{01732\ \ \ \textcolor{comment}{//\ true\ if\ and\ only\ if\ the\ test\ function\ did\ run\ to\ finish.}}
+\DoxyCodeLine{01733\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ finished\_;}
+\DoxyCodeLine{01734\ }
+\DoxyCodeLine{01735\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n1\_;}
+\DoxyCodeLine{01736\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n2\_;}
+\DoxyCodeLine{01737\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n3\_;}
+\DoxyCodeLine{01738\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n4\_;}
+\DoxyCodeLine{01739\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ n5\_;}
+\DoxyCodeLine{01740\ \};}
+\DoxyCodeLine{01741\ }
+\DoxyCodeLine{01742\ \textcolor{keywordtype}{bool}\ Predicate5Test::expected\_to\_finish\_;}
+\DoxyCodeLine{01743\ \textcolor{keywordtype}{bool}\ Predicate5Test::finished\_;}
+\DoxyCodeLine{01744\ \textcolor{keywordtype}{int}\ Predicate5Test::n1\_;}
+\DoxyCodeLine{01745\ \textcolor{keywordtype}{int}\ Predicate5Test::n2\_;}
+\DoxyCodeLine{01746\ \textcolor{keywordtype}{int}\ Predicate5Test::n3\_;}
+\DoxyCodeLine{01747\ \textcolor{keywordtype}{int}\ Predicate5Test::n4\_;}
+\DoxyCodeLine{01748\ \textcolor{keywordtype}{int}\ Predicate5Test::n5\_;}
+\DoxyCodeLine{01749\ }
+\DoxyCodeLine{01750\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate5_test}{Predicate5Test}}\ \mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}};}
+\DoxyCodeLine{01751\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate5_test}{Predicate5Test}}\ \mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}};}
+\DoxyCodeLine{01752\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate5_test}{Predicate5Test}}\ \mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}};}
+\DoxyCodeLine{01753\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_predicate5_test}{Predicate5Test}}\ \mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}};}
+\DoxyCodeLine{01754\ }
+\DoxyCodeLine{01755\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01756\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01757\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01758\ \ \ EXPECT\_PRED5(PredFunction5Int,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01759\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01760\ \}}
+\DoxyCodeLine{01761\ }
+\DoxyCodeLine{01762\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01763\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01764\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01765\ \ \ EXPECT\_PRED5(PredFunction5Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01766\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01767\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01768\ \}}
+\DoxyCodeLine{01769\ }
+\DoxyCodeLine{01770\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01771\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01772\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01773\ \ \ EXPECT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01774\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01775\ \}}
+\DoxyCodeLine{01776\ }
+\DoxyCodeLine{01777\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01778\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01779\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01780\ \ \ EXPECT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01781\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01782\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01783\ \}}
+\DoxyCodeLine{01784\ }
+\DoxyCodeLine{01785\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01786\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01787\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01788\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01789\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01790\ \ \ \ \ \ \ \ \ EXPECT\_PRED5(PredFunction5Int,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,\ n5\_++);}
+\DoxyCodeLine{01791\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01792\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01793\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01794\ \}}
+\DoxyCodeLine{01795\ }
+\DoxyCodeLine{01796\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01797\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01798\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01799\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01800\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01801\ \ \ \ \ \ \ \ \ EXPECT\_PRED5(PredFunction5Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01803\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01804\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01805\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01806\ \}}
+\DoxyCodeLine{01807\ }
+\DoxyCodeLine{01808\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01809\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01810\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01811\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01812\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01813\ \ \ \ \ \ \ \ \ EXPECT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,\ n5\_++);}
+\DoxyCodeLine{01814\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01815\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01816\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01817\ \}}
+\DoxyCodeLine{01818\ }
+\DoxyCodeLine{01819\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED5\ where\ the}}
+\DoxyCodeLine{01820\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01821\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED5Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01822\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01823\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01824\ \ \ \ \ \ \ \ \ EXPECT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01825\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01826\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01827\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01828\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01829\ \}}
+\DoxyCodeLine{01830\ }
+\DoxyCodeLine{01831\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01832\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01833\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01834\ \ \ ASSERT\_PRED5(PredFunction5Int,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01835\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01836\ \}}
+\DoxyCodeLine{01837\ }
+\DoxyCodeLine{01838\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01839\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01840\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01841\ \ \ ASSERT\_PRED5(PredFunction5Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01842\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01843\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01844\ \}}
+\DoxyCodeLine{01845\ }
+\DoxyCodeLine{01846\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01847\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01848\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01849\ \ \ ASSERT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01850\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01851\ \}}
+\DoxyCodeLine{01852\ }
+\DoxyCodeLine{01853\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01854\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01855\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01856\ \ \ ASSERT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),}
+\DoxyCodeLine{01857\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01858\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01859\ \}}
+\DoxyCodeLine{01860\ }
+\DoxyCodeLine{01861\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01862\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01863\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01864\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01865\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01866\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01867\ \ \ \ \ \ \ \ \ ASSERT\_PRED5(PredFunction5Int,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,\ n5\_++);}
+\DoxyCodeLine{01868\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01869\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01870\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01871\ \}}
+\DoxyCodeLine{01872\ }
+\DoxyCodeLine{01873\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01874\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01875\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01876\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01877\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01878\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01879\ \ \ \ \ \ \ \ \ ASSERT\_PRED5(PredFunction5Bool,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01880\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01881\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01882\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01883\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01884\ \}}
+\DoxyCodeLine{01885\ }
+\DoxyCodeLine{01886\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01887\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01888\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01889\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01890\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01891\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01892\ \ \ \ \ \ \ \ \ ASSERT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,\ n5\_++);}
+\DoxyCodeLine{01893\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01894\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01895\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01896\ \}}
+\DoxyCodeLine{01897\ }
+\DoxyCodeLine{01898\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED5\ where\ the}}
+\DoxyCodeLine{01899\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01900\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED5Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01901\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01902\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{01903\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01904\ \ \ \ \ \ \ \ \ ASSERT\_PRED5(\mbox{\hyperlink{struct_pred_functor5}{PredFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),}
+\DoxyCodeLine{01905\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01906\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01907\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01908\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01909\ \}}
+\DoxyCodeLine{01910\ }
+\DoxyCodeLine{01911\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01912\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01913\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01914\ \ \ EXPECT\_PRED\_FORMAT5(PredFormatFunction5,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01915\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01916\ \}}
+\DoxyCodeLine{01917\ }
+\DoxyCodeLine{01918\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01919\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01920\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01921\ \ \ EXPECT\_PRED\_FORMAT5(PredFormatFunction5,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01922\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01923\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01924\ \}}
+\DoxyCodeLine{01925\ }
+\DoxyCodeLine{01926\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01927\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01928\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01929\ \ \ EXPECT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01930\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01931\ \}}
+\DoxyCodeLine{01932\ }
+\DoxyCodeLine{01933\ \textcolor{comment}{//\ Tests\ a\ successful\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01934\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01935\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01936\ \ \ EXPECT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{01937\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{01938\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01939\ \}}
+\DoxyCodeLine{01940\ }
+\DoxyCodeLine{01941\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01942\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01943\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01944\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01945\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01946\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT5(PredFormatFunction5,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,}
+\DoxyCodeLine{01947\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n5\_++);}
+\DoxyCodeLine{01948\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01949\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01950\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01951\ \}}
+\DoxyCodeLine{01952\ }
+\DoxyCodeLine{01953\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01954\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01955\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01956\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01957\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01958\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT5(PredFormatFunction5,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01959\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01960\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01961\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01962\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01963\ \}}
+\DoxyCodeLine{01964\ }
+\DoxyCodeLine{01965\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01966\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01967\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{01968\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01969\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01970\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,}
+\DoxyCodeLine{01971\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n5\_++);}
+\DoxyCodeLine{01972\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01973\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01974\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01975\ \}}
+\DoxyCodeLine{01976\ }
+\DoxyCodeLine{01977\ \textcolor{comment}{//\ Tests\ a\ failed\ EXPECT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01978\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01979\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{EXPECT\_PRED\_FORMAT5Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{01980\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01981\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01982\ \ \ \ \ \ \ \ \ EXPECT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{01983\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{01984\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01985\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01986\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01987\ \}}
+\DoxyCodeLine{01988\ }
+\DoxyCodeLine{01989\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01990\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{01991\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctionOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{01992\ \ \ ASSERT\_PRED\_FORMAT5(PredFormatFunction5,\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{01993\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01994\ \}}
+\DoxyCodeLine{01995\ }
+\DoxyCodeLine{01996\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{01997\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{01998\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctionOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{01999\ \ \ ASSERT\_PRED\_FORMAT5(PredFormatFunction5,\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{02000\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{02001\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02002\ \}}
+\DoxyCodeLine{02003\ }
+\DoxyCodeLine{02004\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02005\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{02006\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctorOnBuiltInTypeSuccess)\ \{}
+\DoxyCodeLine{02007\ \ \ ASSERT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ ++n1\_,\ ++n2\_,\ ++n3\_,\ ++n4\_,\ ++n5\_);}
+\DoxyCodeLine{02008\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02009\ \}}
+\DoxyCodeLine{02010\ }
+\DoxyCodeLine{02011\ \textcolor{comment}{//\ Tests\ a\ successful\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02012\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{02013\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctorOnUserTypeSuccess)\ \{}
+\DoxyCodeLine{02014\ \ \ ASSERT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n1\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n2\_),}
+\DoxyCodeLine{02015\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(++n3\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n4\_),\ \mbox{\hyperlink{struct_bool}{Bool}}(++n5\_));}
+\DoxyCodeLine{02016\ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02017\ \}}
+\DoxyCodeLine{02018\ }
+\DoxyCodeLine{02019\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02020\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{02021\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctionOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{02022\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{02023\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{02024\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{02025\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT5(PredFormatFunction5,\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,}
+\DoxyCodeLine{02026\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n5\_++);}
+\DoxyCodeLine{02027\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02028\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{02029\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{02030\ \}}
+\DoxyCodeLine{02031\ }
+\DoxyCodeLine{02032\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02033\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ function\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{02034\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctionOnUserTypeFailure)\ \{}
+\DoxyCodeLine{02035\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{02036\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{02037\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{02038\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT5(PredFormatFunction5,\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{02039\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{02040\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02041\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{02042\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{02043\ \}}
+\DoxyCodeLine{02044\ }
+\DoxyCodeLine{02045\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02046\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ built-\/in\ type\ (int).}}
+\DoxyCodeLine{02047\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctorOnBuiltInTypeFailure)\ \{}
+\DoxyCodeLine{02048\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{02049\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{02050\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{02051\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ n1\_++,\ n2\_++,\ n3\_++,\ n4\_++,}
+\DoxyCodeLine{02052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ n5\_++);}
+\DoxyCodeLine{02053\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02054\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{02055\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{02056\ \}}
+\DoxyCodeLine{02057\ }
+\DoxyCodeLine{02058\ \textcolor{comment}{//\ Tests\ a\ failed\ ASSERT\_PRED\_FORMAT5\ where\ the}}
+\DoxyCodeLine{02059\ \textcolor{comment}{//\ predicate-\/formatter\ is\ a\ functor\ on\ a\ user-\/defined\ type\ (Bool).}}
+\DoxyCodeLine{02060\ TEST\_F(\mbox{\hyperlink{class_predicate5_test}{ASSERT\_PRED\_FORMAT5Test}},\ FunctorOnUserTypeFailure)\ \{}
+\DoxyCodeLine{02061\ \ \ expected\_to\_finish\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{02062\ \ \ EXPECT\_FATAL\_FAILURE(}
+\DoxyCodeLine{02063\ \ \ \ \ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{02064\ \ \ \ \ \ \ \ \ ASSERT\_PRED\_FORMAT5(\mbox{\hyperlink{struct_pred_format_functor5}{PredFormatFunctor5}}(),\ \mbox{\hyperlink{struct_bool}{Bool}}(n1\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n2\_++),}
+\DoxyCodeLine{02065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_bool}{Bool}}(n3\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n4\_++),\ \mbox{\hyperlink{struct_bool}{Bool}}(n5\_++));}
+\DoxyCodeLine{02066\ \ \ \ \ \ \ \ \ finished\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02067\ \ \ \ \ \ \ \},}
+\DoxyCodeLine{02068\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{02069\ \}}
+
+\end{DoxyCode}

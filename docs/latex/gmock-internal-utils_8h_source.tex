@@ -1,0 +1,478 @@
+\doxysection{gmock-\/internal-\/utils.h}
+\hypertarget{gmock-internal-utils_8h_source}{}\label{gmock-internal-utils_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/internal-\/utils.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/internal-\/utils.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ defines\ some\ utilities\ useful\ for\ implementing\ Google}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Mock.\ \ They\ are\ subject\ to\ change\ without\ notice,\ so\ please\ DO\ NOT}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ USE\ THEM\ IN\ USER\ CODE.}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_INTERNAL\_UTILS\_H\_}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_INTERNAL\_UTILS\_H\_}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <ostream>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00055\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1_matcher}{Matcher}};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ Silence\ MSVC\ C4100\ (unreferenced\ formal\ parameter)\ and}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ C4805('==':\ unsafe\ mix\ of\ type\ 'const\ int'\ and\ type\ 'const\ bool')}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#pragma\ warning(push)}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#pragma\ warning(disable\ :\ 4100)}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#pragma\ warning(disable\ :\ 4805)}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{comment}{//\ Joins\ a\ vector\ of\ strings\ as\ if\ they\ are\ fields\ of\ a\ tuple;\ returns}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ the\ joined\ string.}}
+\DoxyCodeLine{00069\ GTEST\_API\_\ std::string\ JoinAsKeyValueTuple(}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<const\ char*>\&\ names,\ \textcolor{keyword}{const}\ Strings\&\ values);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ Converts\ an\ identifier\ name\ to\ a\ space-\/separated\ list\ of\ lower-\/case}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ words.\ \ Each\ maximum\ substring\ of\ the\ form\ [A-\/Za-\/z][a-\/z]*|\(\backslash\)d+\ is}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ treated\ as\ one\ word.\ \ For\ example,\ both\ "{}FooBar123"{}\ and}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ "{}foo\_bar\_123"{}\ are\ converted\ to\ "{}foo\ bar\ 123"{}.}}
+\DoxyCodeLine{00076\ GTEST\_API\_\ std::string\ ConvertIdentifierNameToWords(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ id\_name);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ GetRawPointer(p)\ returns\ the\ raw\ pointer\ underlying\ p\ when\ p\ is\ a}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ smart\ pointer,\ or\ returns\ p\ itself\ when\ p\ is\ already\ a\ raw\ pointer.}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ The\ following\ default\ implementation\ is\ for\ the\ smart\ pointer\ case.}}
+\DoxyCodeLine{00081\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Po\textcolor{keywordtype}{int}er>}
+\DoxyCodeLine{00082\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keyword}{typename}\ Pointer::element\_type*\ GetRawPointer(\textcolor{keyword}{const}\ Pointer\&\ p)\ \{}
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordflow}{return}\ p.get();}
+\DoxyCodeLine{00084\ \}}
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ This\ overload\ version\ is\ for\ std::reference\_wrapper,\ which\ does\ not\ work\ with}}
+\DoxyCodeLine{00086\ \textcolor{comment}{//\ the\ overload\ above,\ as\ it\ does\ not\ have\ an\ \`{}element\_type`.}}
+\DoxyCodeLine{00087\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Element>}
+\DoxyCodeLine{00088\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ Element*\ GetRawPointer(\textcolor{keyword}{const}\ std::reference\_wrapper<Element>\&\ r)\ \{}
+\DoxyCodeLine{00089\ \ \ \textcolor{keywordflow}{return}\ \&r.get();}
+\DoxyCodeLine{00090\ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ This\ overloaded\ version\ is\ for\ the\ raw\ pointer\ case.}}
+\DoxyCodeLine{00093\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Element>}
+\DoxyCodeLine{00094\ \textcolor{keyword}{inline}\ Element*\ GetRawPointer(Element*\ p)\ \{}
+\DoxyCodeLine{00095\ \ \ \textcolor{keywordflow}{return}\ p;}
+\DoxyCodeLine{00096\ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ MSVC\ treats\ wchar\_t\ as\ a\ native\ type\ usually,\ but\ treats\ it\ as\ the}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ same\ as\ unsigned\ short\ when\ the\ compiler\ option\ /Zc:wchar\_t-\/\ is}}
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ specified.\ \ It\ defines\ \_NATIVE\_WCHAR\_T\_DEFINED\ symbol\ when\ wchar\_t}}
+\DoxyCodeLine{00101\ \textcolor{comment}{//\ is\ a\ native\ type.}}
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#if\ defined(\_MSC\_VER)\ \&\&\ !defined(\_NATIVE\_WCHAR\_T\_DEFINED)}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ wchar\_t\ is\ a\ typedef.}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#define\ GMOCK\_WCHAR\_T\_IS\_NATIVE\_\ 1}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ In\ what\ follows,\ we\ use\ the\ term\ "{}kind"{}\ to\ indicate\ whether\ a\ type}}
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ is\ bool,\ an\ integer\ type\ (excluding\ bool),\ a\ floating-\/point\ type,}}
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ or\ none\ of\ them.\ \ This\ categorization\ is\ useful\ for\ determining}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ when\ a\ matcher\ argument\ type\ can\ be\ safely\ converted\ to\ another}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//\ type\ in\ the\ implementation\ of\ SafeMatcherCast.}}
+\DoxyCodeLine{00113\ \textcolor{keyword}{enum}\ TypeKind\ \{\ kBool,\ kInteger,\ kFloatingPoint,\ kOther\ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{comment}{//\ KindOf<T>::value\ is\ the\ kind\ of\ type\ T.}}
+\DoxyCodeLine{00116\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00117\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_kind_of}{KindOf}}\ \{}
+\DoxyCodeLine{00118\ \ \ \textcolor{keyword}{enum}\ \{\ value\ =\ kOther\ \};\ \ \textcolor{comment}{//\ The\ default\ kind.}}
+\DoxyCodeLine{00119\ \};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{comment}{//\ This\ macro\ declares\ that\ the\ kind\ of\ 'type'\ is\ 'kind'.}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\#define\ GMOCK\_DECLARE\_KIND\_(type,\ kind)\ \(\backslash\)}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\ \ template\ <>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\ \ struct\ KindOf<type>\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\ \ \ \ enum\ \{\ value\ =\ kind\ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\ \ \}}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{bool},\ kBool);}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ All\ standard\ integer\ types.}}
+\DoxyCodeLine{00131\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{char},\ kInteger);}
+\DoxyCodeLine{00132\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char},\ kInteger);}
+\DoxyCodeLine{00133\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char},\ kInteger);}
+\DoxyCodeLine{00134\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{short},\ kInteger);\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00135\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short},\ kInteger);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00136\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{int},\ kInteger);}
+\DoxyCodeLine{00137\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int},\ kInteger);}
+\DoxyCodeLine{00138\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{long},\ kInteger);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00139\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long},\ kInteger);\ \ \ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00140\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long},\ kInteger);\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00141\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long},\ kInteger);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#if\ GMOCK\_WCHAR\_T\_IS\_NATIVE\_}}
+\DoxyCodeLine{00144\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{wchar\_t},\ kInteger);}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ All\ standard\ floating-\/point\ types.}}
+\DoxyCodeLine{00148\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{float},\ kFloatingPoint);}
+\DoxyCodeLine{00149\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{double},\ kFloatingPoint);}
+\DoxyCodeLine{00150\ GMOCK\_DECLARE\_KIND\_(\textcolor{keywordtype}{long}\ \textcolor{keywordtype}{double},\ kFloatingPoint);}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#undef\ GMOCK\_DECLARE\_KIND\_}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ Evaluates\ to\ the\ kind\ of\ 'type'.}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\#define\ GMOCK\_KIND\_OF\_(type)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ static\_cast<\ ::testing::internal::TypeKind>(\ \(\backslash\)}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\ \ \ \ \ \ ::testing::internal::KindOf<type>::value)}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{comment}{//\ LosslessArithmeticConvertibleImpl<kFromKind,\ From,\ kToKind,\ To>::value}}
+\DoxyCodeLine{00160\ \textcolor{comment}{//\ is\ true\ if\ and\ only\ if\ arithmetic\ type\ From\ can\ be\ losslessly\ converted\ to}}
+\DoxyCodeLine{00161\ \textcolor{comment}{//\ arithmetic\ type\ To.}}
+\DoxyCodeLine{00162\ \textcolor{comment}{//}}
+\DoxyCodeLine{00163\ \textcolor{comment}{//\ It's\ the\ user's\ responsibility\ to\ ensure\ that\ both\ From\ and\ To\ are}}
+\DoxyCodeLine{00164\ \textcolor{comment}{//\ raw\ (i.e.\ has\ no\ CV\ modifier,\ is\ not\ a\ pointer,\ and\ is\ not\ a}}
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ reference)\ built-\/in\ arithmetic\ types,\ kFromKind\ is\ the\ kind\ of}}
+\DoxyCodeLine{00166\ \textcolor{comment}{//\ From,\ and\ kToKind\ is\ the\ kind\ of\ To;\ the\ value\ is}}
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ implementation-\/defined\ when\ the\ above\ pre-\/condition\ is\ violated.}}
+\DoxyCodeLine{00168\ \textcolor{keyword}{template}\ <TypeKind\ kFromKind,\ \textcolor{keyword}{typename}\ From,\ TypeKind\ kToKind,\ \textcolor{keyword}{typename}\ To>}
+\DoxyCodeLine{00169\ \textcolor{keyword}{using\ }LosslessArithmeticConvertibleImpl\ =\ std::integral\_constant<}
+\DoxyCodeLine{00170\ \ \ \ \ bool,}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{comment}{//\ clang-\/format\ off}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \textcolor{comment}{//\ Converting\ from\ bool\ is\ always\ lossless}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ (kFromKind\ ==\ kBool)\ ?\ \textcolor{keyword}{true}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \textcolor{comment}{//\ Converting\ between\ any\ other\ type\ kinds\ will\ be\ lossy\ if\ the\ type}}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \textcolor{comment}{//\ kinds\ are\ not\ the\ same.}}
+\DoxyCodeLine{00176\ \ \ \ \ :\ (kFromKind\ !=\ kToKind)\ ?\ false}
+\DoxyCodeLine{00177\ \ \ \ \ :\ (kFromKind\ ==\ kInteger\ \&\&}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Converting\ between\ integers\ of\ different\ widths\ is\ allowed\ so\ long}}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \textcolor{comment}{//\ as\ the\ conversion\ does\ not\ go\ from\ signed\ to\ unsigned.}}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ (((sizeof(From)\ <\ sizeof(\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}))\ \&\&}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ !(std::is\_signed<From>::value\ \&\&\ !std::is\_signed<\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}>::value))\ ||}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \textcolor{comment}{//\ Converting\ between\ integers\ of\ the\ same\ width\ only\ requires\ the}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \textcolor{comment}{//\ two\ types\ to\ have\ the\ same\ signedness.}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ ((sizeof(From)\ ==\ sizeof(\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}))\ \&\&}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ (std::is\_signed<From>::value\ ==\ std::is\_signed<\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}>::value)))}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ )\ ?\ true}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \textcolor{comment}{//\ Floating\ point\ conversions\ are\ lossless\ if\ and\ only\ if\ \`{}To`\ is\ at\ least}}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \textcolor{comment}{//\ as\ wide\ as\ \`{}From`.}}
+\DoxyCodeLine{00189\ \ \ \ \ :\ (kFromKind\ ==\ kFloatingPoint\ \&\&\ (sizeof(From)\ <=\ sizeof(\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}})))\ ?\ true}
+\DoxyCodeLine{00190\ \ \ \ \ :\ false}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{comment}{//\ clang-\/format\ on}}
+\DoxyCodeLine{00192\ \ \ \ \ >;}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \textcolor{comment}{//\ LosslessArithmeticConvertible<From,\ To>::value\ is\ true\ if\ and\ only\ if}}
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ arithmetic\ type\ From\ can\ be\ losslessly\ converted\ to\ arithmetic\ type\ To.}}
+\DoxyCodeLine{00196\ \textcolor{comment}{//}}
+\DoxyCodeLine{00197\ \textcolor{comment}{//\ It's\ the\ user's\ responsibility\ to\ ensure\ that\ both\ From\ and\ To\ are}}
+\DoxyCodeLine{00198\ \textcolor{comment}{//\ raw\ (i.e.\ has\ no\ CV\ modifier,\ is\ not\ a\ pointer,\ and\ is\ not\ a}}
+\DoxyCodeLine{00199\ \textcolor{comment}{//\ reference)\ built-\/in\ arithmetic\ types;\ the\ value\ is}}
+\DoxyCodeLine{00200\ \textcolor{comment}{//\ implementation-\/defined\ when\ the\ above\ pre-\/condition\ is\ violated.}}
+\DoxyCodeLine{00201\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ From,\ \textcolor{keyword}{typename}\ To>}
+\DoxyCodeLine{00202\ \textcolor{keyword}{using\ }LosslessArithmeticConvertible\ =}
+\DoxyCodeLine{00203\ \ \ \ \ LosslessArithmeticConvertibleImpl<GMOCK\_KIND\_OF\_(From),\ From,}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_KIND\_OF\_(\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}),\ \mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}>;}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \textcolor{comment}{//\ This\ interface\ knows\ how\ to\ report\ a\ Google\ Mock\ failure\ (either}}
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ non-\/fatal\ or\ fatal).}}
+\DoxyCodeLine{00208\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{FailureReporterInterface}}\ \{}
+\DoxyCodeLine{00209\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00210\ \ \ \textcolor{comment}{//\ The\ type\ of\ a\ failure\ (either\ non-\/fatal\ or\ fatal).}}
+\DoxyCodeLine{00211\ \ \ \textcolor{keyword}{enum}\ FailureType\ \{\ kNonfatal,\ kFatal\ \};}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{\string~FailureReporterInterface}}()\ \{\}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \textcolor{comment}{//\ Reports\ a\ failure\ that\ occurred\ at\ the\ given\ source\ file\ location.}}
+\DoxyCodeLine{00216\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ ReportFailure(FailureType\ type,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ message)\ =\ 0;}
+\DoxyCodeLine{00218\ \};}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ Returns\ the\ failure\ reporter\ used\ by\ Google\ Mock.}}
+\DoxyCodeLine{00221\ GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_failure_reporter_interface}{FailureReporterInterface}}*\ GetFailureReporter();}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \textcolor{comment}{//\ Asserts\ that\ condition\ is\ true;\ aborts\ the\ process\ with\ the\ given}}
+\DoxyCodeLine{00224\ \textcolor{comment}{//\ message\ if\ condition\ is\ false.\ \ We\ cannot\ use\ LOG(FATAL)\ or\ CHECK()}}
+\DoxyCodeLine{00225\ \textcolor{comment}{//\ as\ Google\ Mock\ might\ be\ used\ to\ mock\ the\ log\ sink\ itself.\ \ We}}
+\DoxyCodeLine{00226\ \textcolor{comment}{//\ inline\ this\ function\ to\ prevent\ it\ from\ showing\ up\ in\ the\ stack}}
+\DoxyCodeLine{00227\ \textcolor{comment}{//\ trace.}}
+\DoxyCodeLine{00228\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Assert(\textcolor{keywordtype}{bool}\ condition,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ msg)\ \{}
+\DoxyCodeLine{00230\ \ \ \textcolor{keywordflow}{if}\ (!condition)\ \{}
+\DoxyCodeLine{00231\ \ \ \ \ GetFailureReporter()-\/>ReportFailure(FailureReporterInterface::kFatal,\ file,}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ line,\ msg);}
+\DoxyCodeLine{00233\ \ \ \}}
+\DoxyCodeLine{00234\ \}}
+\DoxyCodeLine{00235\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Assert(\textcolor{keywordtype}{bool}\ condition,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)\ \{}
+\DoxyCodeLine{00236\ \ \ Assert(condition,\ file,\ line,\ \textcolor{stringliteral}{"{}Assertion\ failed."{}});}
+\DoxyCodeLine{00237\ \}}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \textcolor{comment}{//\ Verifies\ that\ condition\ is\ true;\ generates\ a\ non-\/fatal\ failure\ if}}
+\DoxyCodeLine{00240\ \textcolor{comment}{//\ condition\ is\ false.}}
+\DoxyCodeLine{00241\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Expect(\textcolor{keywordtype}{bool}\ condition,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line,}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ msg)\ \{}
+\DoxyCodeLine{00243\ \ \ \textcolor{keywordflow}{if}\ (!condition)\ \{}
+\DoxyCodeLine{00244\ \ \ \ \ GetFailureReporter()-\/>ReportFailure(FailureReporterInterface::kNonfatal,}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ file,\ line,\ msg);}
+\DoxyCodeLine{00246\ \ \ \}}
+\DoxyCodeLine{00247\ \}}
+\DoxyCodeLine{00248\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Expect(\textcolor{keywordtype}{bool}\ condition,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line)\ \{}
+\DoxyCodeLine{00249\ \ \ Expect(condition,\ file,\ line,\ \textcolor{stringliteral}{"{}Expectation\ failed."{}});}
+\DoxyCodeLine{00250\ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \textcolor{comment}{//\ Severity\ level\ of\ a\ log.}}
+\DoxyCodeLine{00253\ \textcolor{keyword}{enum}\ LogSeverity\ \{\ kInfo\ =\ 0,\ kWarning\ =\ 1\ \};}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \textcolor{comment}{//\ Valid\ values\ for\ the\ -\/-\/gmock\_verbose\ flag.}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \textcolor{comment}{//\ All\ logs\ (informational\ and\ warnings)\ are\ printed.}}
+\DoxyCodeLine{00258\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kInfoVerbosity[]\ =\ \textcolor{stringliteral}{"{}info"{}};}
+\DoxyCodeLine{00259\ \textcolor{comment}{//\ Only\ warnings\ are\ printed.}}
+\DoxyCodeLine{00260\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kWarningVerbosity[]\ =\ \textcolor{stringliteral}{"{}warning"{}};}
+\DoxyCodeLine{00261\ \textcolor{comment}{//\ No\ logs\ are\ printed.}}
+\DoxyCodeLine{00262\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ kErrorVerbosity[]\ =\ \textcolor{stringliteral}{"{}error"{}};}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ a\ log\ with\ the\ given\ severity\ is\ visible}}
+\DoxyCodeLine{00265\ \textcolor{comment}{//\ according\ to\ the\ -\/-\/gmock\_verbose\ flag.}}
+\DoxyCodeLine{00266\ GTEST\_API\_\ \textcolor{keywordtype}{bool}\ LogIsVisible(LogSeverity\ severity);}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ Prints\ the\ given\ message\ to\ stdout\ if\ and\ only\ if\ 'severity'\ >=\ the\ level}}
+\DoxyCodeLine{00269\ \textcolor{comment}{//\ specified\ by\ the\ -\/-\/gmock\_verbose\ flag.\ \ If\ stack\_frames\_to\_skip\ >=}}
+\DoxyCodeLine{00270\ \textcolor{comment}{//\ 0,\ also\ prints\ the\ stack\ trace\ excluding\ the\ top}}
+\DoxyCodeLine{00271\ \textcolor{comment}{//\ stack\_frames\_to\_skip\ frames.\ \ In\ opt\ mode,\ any\ positive}}
+\DoxyCodeLine{00272\ \textcolor{comment}{//\ stack\_frames\_to\_skip\ is\ treated\ as\ 0,\ since\ we\ don't\ know\ which}}
+\DoxyCodeLine{00273\ \textcolor{comment}{//\ function\ calls\ will\ be\ inlined\ by\ the\ compiler\ and\ need\ to\ be}}
+\DoxyCodeLine{00274\ \textcolor{comment}{//\ conservative.}}
+\DoxyCodeLine{00275\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ Log(LogSeverity\ severity,\ \textcolor{keyword}{const}\ std::string\&\ message,}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stack\_frames\_to\_skip);}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \textcolor{comment}{//\ A\ marker\ class\ that\ is\ used\ to\ resolve\ parameterless\ expectations\ to\ the}}
+\DoxyCodeLine{00279\ \textcolor{comment}{//\ correct\ overload.\ This\ must\ not\ be\ instantiable,\ to\ prevent\ client\ code\ from}}
+\DoxyCodeLine{00280\ \textcolor{comment}{//\ accidentally\ resolving\ to\ the\ overload;\ for\ example:}}
+\DoxyCodeLine{00281\ \textcolor{comment}{//}}
+\DoxyCodeLine{00282\ \textcolor{comment}{//\ \ \ \ ON\_CALL(mock,\ Method(\{\},\ nullptr))...}}
+\DoxyCodeLine{00283\ \textcolor{comment}{//}}
+\DoxyCodeLine{00284\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_without_matchers}{WithoutMatchers}}\ \{}
+\DoxyCodeLine{00285\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00286\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_without_matchers}{WithoutMatchers}}()\ \{\}}
+\DoxyCodeLine{00287\ \ \ \textcolor{keyword}{friend}\ GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_without_matchers}{WithoutMatchers}}\ GetWithoutMatchers();}
+\DoxyCodeLine{00288\ \};}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \textcolor{comment}{//\ Internal\ use\ only:\ access\ the\ singleton\ instance\ of\ WithoutMatchers.}}
+\DoxyCodeLine{00291\ GTEST\_API\_\ \mbox{\hyperlink{classtesting_1_1internal_1_1_without_matchers}{WithoutMatchers}}\ GetWithoutMatchers();}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{comment}{//\ Invalid<T>()\ is\ usable\ as\ an\ expression\ of\ type\ T,\ but\ will\ terminate}}
+\DoxyCodeLine{00294\ \textcolor{comment}{//\ the\ program\ with\ an\ assertion\ failure\ if\ actually\ run.\ \ This\ is\ useful}}
+\DoxyCodeLine{00295\ \textcolor{comment}{//\ when\ a\ value\ of\ type\ T\ is\ needed\ for\ compilation,\ but\ the\ statement}}
+\DoxyCodeLine{00296\ \textcolor{comment}{//\ will\ not\ really\ be\ executed\ (or\ we\ don't\ care\ if\ the\ statement}}
+\DoxyCodeLine{00297\ \textcolor{comment}{//\ crashes).}}
+\DoxyCodeLine{00298\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00299\ \textcolor{keyword}{inline}\ T\ Invalid()\ \{}
+\DoxyCodeLine{00300\ \ \ Assert(\textcolor{keyword}{false},\ \textcolor{stringliteral}{"{}"{}},\ -\/1,\ \textcolor{stringliteral}{"{}Internal\ error:\ attempt\ to\ return\ invalid\ value"{}});}
+\DoxyCodeLine{00301\ \textcolor{preprocessor}{\#if\ defined(\_\_GNUC\_\_)\ ||\ defined(\_\_clang\_\_)}}
+\DoxyCodeLine{00302\ \ \ \_\_builtin\_unreachable();}
+\DoxyCodeLine{00303\ \textcolor{preprocessor}{\#elif\ defined(\_MSC\_VER)}}
+\DoxyCodeLine{00304\ \ \ \_\_assume(0);}
+\DoxyCodeLine{00305\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00306\ \ \ \textcolor{keywordflow}{return}\ Invalid<T>();}
+\DoxyCodeLine{00307\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00308\ \}}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00310\ \textcolor{comment}{//\ Given\ a\ raw\ type\ (i.e.\ having\ no\ top-\/level\ reference\ or\ const}}
+\DoxyCodeLine{00311\ \textcolor{comment}{//\ modifier)\ RawContainer\ that's\ either\ an\ STL-\/style\ container\ or\ a}}
+\DoxyCodeLine{00312\ \textcolor{comment}{//\ native\ array,\ class\ StlContainerView<RawContainer>\ has\ the}}
+\DoxyCodeLine{00313\ \textcolor{comment}{//\ following\ members:}}
+\DoxyCodeLine{00314\ \textcolor{comment}{//}}
+\DoxyCodeLine{00315\ \textcolor{comment}{//\ \ \ -\/\ type\ is\ a\ type\ that\ provides\ an\ STL-\/style\ container\ view\ to}}
+\DoxyCodeLine{00316\ \textcolor{comment}{//\ \ \ \ \ (i.e.\ implements\ the\ STL\ container\ concept\ for)\ RawContainer;}}
+\DoxyCodeLine{00317\ \textcolor{comment}{//\ \ \ -\/\ const\_reference\ is\ a\ type\ that\ provides\ a\ reference\ to\ a\ const}}
+\DoxyCodeLine{00318\ \textcolor{comment}{//\ \ \ \ \ RawContainer;}}
+\DoxyCodeLine{00319\ \textcolor{comment}{//\ \ \ -\/\ ConstReference(raw\_container)\ returns\ a\ const\ reference\ to\ an\ STL-\/style}}
+\DoxyCodeLine{00320\ \textcolor{comment}{//\ \ \ \ \ container\ view\ to\ raw\_container,\ which\ is\ a\ RawContainer.}}
+\DoxyCodeLine{00321\ \textcolor{comment}{//\ \ \ -\/\ Copy(raw\_container)\ returns\ an\ STL-\/style\ container\ view\ of\ a}}
+\DoxyCodeLine{00322\ \textcolor{comment}{//\ \ \ \ \ copy\ of\ raw\_container,\ which\ is\ a\ RawContainer.}}
+\DoxyCodeLine{00323\ \textcolor{comment}{//}}
+\DoxyCodeLine{00324\ \textcolor{comment}{//\ This\ generic\ version\ is\ used\ when\ RawContainer\ itself\ is\ already\ an}}
+\DoxyCodeLine{00325\ \textcolor{comment}{//\ STL-\/style\ container.}}
+\DoxyCodeLine{00326\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ RawContainer>}
+\DoxyCodeLine{00327\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_stl_container_view}{StlContainerView}}\ \{}
+\DoxyCodeLine{00328\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00329\ \ \ \textcolor{keyword}{typedef}\ RawContainer\ type;}
+\DoxyCodeLine{00330\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ type\&\ const\_reference;}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \textcolor{keyword}{static}\ const\_reference\ ConstReference(\textcolor{keyword}{const}\ RawContainer\&\ container)\ \{}
+\DoxyCodeLine{00333\ \ \ \ \ \textcolor{keyword}{static\_assert}(!std::is\_const<RawContainer>::value,}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}RawContainer\ type\ must\ not\ be\ const"{}});}
+\DoxyCodeLine{00335\ \ \ \ \ \textcolor{keywordflow}{return}\ container;}
+\DoxyCodeLine{00336\ \ \ \}}
+\DoxyCodeLine{00337\ \ \ \textcolor{keyword}{static}\ type\ Copy(\textcolor{keyword}{const}\ RawContainer\&\ container)\ \{\ \textcolor{keywordflow}{return}\ container;\ \}}
+\DoxyCodeLine{00338\ \};}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \textcolor{comment}{//\ This\ specialization\ is\ used\ when\ RawContainer\ is\ a\ native\ array\ type.}}
+\DoxyCodeLine{00341\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Element,\ \textcolor{keywordtype}{size\_t}\ N>}
+\DoxyCodeLine{00342\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_stl_container_view}{StlContainerView}}<Element[N]>\ \{}
+\DoxyCodeLine{00343\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00344\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ std::remove\_const<Element>::type\ RawElement;}
+\DoxyCodeLine{00345\ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{internal::NativeArray<RawElement>}}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}};}
+\DoxyCodeLine{00346\ \ \ \textcolor{comment}{//\ NativeArray<T>\ can\ represent\ a\ native\ array\ either\ by\ value\ or\ by}}
+\DoxyCodeLine{00347\ \ \ \textcolor{comment}{//\ reference\ (selected\ by\ a\ constructor\ argument),\ so\ 'const\ type'}}
+\DoxyCodeLine{00348\ \ \ \textcolor{comment}{//\ can\ be\ used\ to\ reference\ a\ const\ native\ array.\ \ We\ cannot}}
+\DoxyCodeLine{00349\ \ \ \textcolor{comment}{//\ 'typedef\ const\ type\&\ const\_reference'\ here,\ as\ that\ would\ mean}}
+\DoxyCodeLine{00350\ \ \ \textcolor{comment}{//\ ConstReference()\ has\ to\ return\ a\ reference\ to\ a\ local\ variable.}}
+\DoxyCodeLine{00351\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{const\_reference}};}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00353\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{const\_reference}}\ ConstReference(\textcolor{keyword}{const}\ Element\ (\&array)[N])\ \{}
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_same<Element,\ RawElement>::value,}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Element\ type\ must\ not\ be\ const"{}});}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}(array,\ N,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_reference}{RelationToSourceReference}}());}
+\DoxyCodeLine{00357\ \ \ \}}
+\DoxyCodeLine{00358\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}\ Copy(\textcolor{keyword}{const}\ Element\ (\&array)[N])\ \{}
+\DoxyCodeLine{00359\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}(array,\ N,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_copy}{RelationToSourceCopy}}());}
+\DoxyCodeLine{00360\ \ \ \}}
+\DoxyCodeLine{00361\ \};}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \textcolor{comment}{//\ This\ specialization\ is\ used\ when\ RawContainer\ is\ a\ native\ array}}
+\DoxyCodeLine{00364\ \textcolor{comment}{//\ represented\ as\ a\ (pointer,\ size)\ tuple.}}
+\DoxyCodeLine{00365\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ElementPo\textcolor{keywordtype}{int}er,\ \textcolor{keyword}{typename}\ Size>}
+\DoxyCodeLine{00366\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_stl_container_view}{StlContainerView}}<\ ::std::tuple<ElementPointer,\ Size>\ >\ \{}
+\DoxyCodeLine{00367\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00368\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ std::remove\_const<}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::pointer\_traits<ElementPointer>::element\_type>::type}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ RawElement;}
+\DoxyCodeLine{00371\ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{internal::NativeArray<RawElement>}}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}};}
+\DoxyCodeLine{00372\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{const\_reference}};}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{const\_reference}}\ ConstReference(}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ const\ ::std::tuple<ElementPointer,\ Size>\&\ array)\ \{}
+\DoxyCodeLine{00376\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}(std::get<0>(array),\ std::get<1>(array),}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_reference}{RelationToSourceReference}}());}
+\DoxyCodeLine{00378\ \ \ \}}
+\DoxyCodeLine{00379\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}\ Copy(const\ ::std::tuple<ElementPointer,\ Size>\&\ array)\ \{}
+\DoxyCodeLine{00380\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_native_array}{type}}(std::get<0>(array),\ std::get<1>(array),\ \mbox{\hyperlink{structtesting_1_1internal_1_1_relation_to_source_copy}{RelationToSourceCopy}}());}
+\DoxyCodeLine{00381\ \ \ \}}
+\DoxyCodeLine{00382\ \};}
+\DoxyCodeLine{00383\ }
+\DoxyCodeLine{00384\ \textcolor{comment}{//\ The\ following\ specialization\ prevents\ the\ user\ from\ instantiating}}
+\DoxyCodeLine{00385\ \textcolor{comment}{//\ StlContainer\ with\ a\ reference\ type.}}
+\DoxyCodeLine{00386\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00387\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_stl_container_view}{StlContainerView}}<T\&>;}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00389\ \textcolor{comment}{//\ A\ type\ transform\ to\ remove\ constness\ from\ the\ first\ part\ of\ a\ pair.}}
+\DoxyCodeLine{00390\ \textcolor{comment}{//\ Pairs\ like\ that\ are\ used\ as\ the\ value\_type\ of\ associative\ containers,}}
+\DoxyCodeLine{00391\ \textcolor{comment}{//\ and\ this\ transform\ produces\ a\ similar\ but\ assignable\ pair.}}
+\DoxyCodeLine{00392\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00393\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_remove_const_from_key}{RemoveConstFromKey}}\ \{}
+\DoxyCodeLine{00394\ \ \ \textcolor{keyword}{typedef}\ T\ type;}
+\DoxyCodeLine{00395\ \};}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \textcolor{comment}{//\ Partially\ specialized\ to\ remove\ constness\ from\ std::pair<const\ K,\ V>.}}
+\DoxyCodeLine{00398\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ K,\ \textcolor{keyword}{typename}\ V>}
+\DoxyCodeLine{00399\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_remove_const_from_key}{RemoveConstFromKey}}<std::pair<const\ K,\ V>\ >\ \{}
+\DoxyCodeLine{00400\ \ \ \textcolor{keyword}{typedef}\ std::pair<K,\ V>\ type;}
+\DoxyCodeLine{00401\ \};}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \textcolor{comment}{//\ Emit\ an\ assertion\ failure\ due\ to\ incorrect\ DoDefault()\ usage.\ Out-\/of-\/lined\ to}}
+\DoxyCodeLine{00404\ \textcolor{comment}{//\ reduce\ code\ size.}}
+\DoxyCodeLine{00405\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ IllegalDoDefault(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ file,\ \textcolor{keywordtype}{int}\ line);}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ Tuple,\ \textcolor{keywordtype}{size\_t}...\ Idx>}
+\DoxyCodeLine{00408\ \textcolor{keyword}{auto}\ ApplyImpl(F\&\&\ f,\ Tuple\&\&\ args,\ \mbox{\hyperlink{structtesting_1_1internal_1_1_index_sequence}{IndexSequence<Idx...>}})}
+\DoxyCodeLine{00409\ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}(std::forward<F>(f)(}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ std::get<Idx>(std::forward<Tuple>(args))...))\ \{}
+\DoxyCodeLine{00411\ \ \ \textcolor{keywordflow}{return}\ std::forward<F>(f)(std::get<Idx>(std::forward<Tuple>(args))...);}
+\DoxyCodeLine{00412\ \}}
+\DoxyCodeLine{00413\ }
+\DoxyCodeLine{00414\ \textcolor{comment}{//\ Apply\ the\ function\ to\ a\ tuple\ of\ arguments.}}
+\DoxyCodeLine{00415\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ Tuple>}
+\DoxyCodeLine{00416\ \textcolor{keyword}{auto}\ Apply(F\&\&\ f,\ Tuple\&\&\ args)\ -\/>\ \textcolor{keyword}{decltype}(ApplyImpl(}
+\DoxyCodeLine{00417\ \ \ \ \ std::forward<F>(f),\ std::forward<Tuple>(args),}
+\DoxyCodeLine{00418\ \ \ \ \ MakeIndexSequence<std::tuple\_size<}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::remove\_reference<Tuple>::type>::value>()))\ \{}
+\DoxyCodeLine{00420\ \ \ \textcolor{keywordflow}{return}\ ApplyImpl(std::forward<F>(f),\ std::forward<Tuple>(args),}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MakeIndexSequence<std::tuple\_size<}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::remove\_reference<Tuple>::type>::value>());}
+\DoxyCodeLine{00423\ \}}
+\DoxyCodeLine{00424\ }
+\DoxyCodeLine{00425\ \textcolor{comment}{//\ Template\ struct\ Function<F>,\ where\ F\ must\ be\ a\ function\ type,\ contains}}
+\DoxyCodeLine{00426\ \textcolor{comment}{//\ the\ following\ typedefs:}}
+\DoxyCodeLine{00427\ \textcolor{comment}{//}}
+\DoxyCodeLine{00428\ \textcolor{comment}{//\ \ \ Result:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ the\ function's\ return\ type.}}
+\DoxyCodeLine{00429\ \textcolor{comment}{//\ \ \ Arg<N>:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ the\ type\ of\ the\ N-\/th\ argument,\ where\ N\ starts\ with\ 0.}}
+\DoxyCodeLine{00430\ \textcolor{comment}{//\ \ \ ArgumentTuple:\ \ \ \ \ \ \ \ the\ tuple\ type\ consisting\ of\ all\ parameters\ of\ F.}}
+\DoxyCodeLine{00431\ \textcolor{comment}{//\ \ \ ArgumentMatcherTuple:\ the\ tuple\ type\ consisting\ of\ Matchers\ for\ all}}
+\DoxyCodeLine{00432\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ parameters\ of\ F.}}
+\DoxyCodeLine{00433\ \textcolor{comment}{//\ \ \ MakeResultVoid:\ \ \ \ \ \ \ the\ function\ type\ obtained\ by\ substituting\ void}}
+\DoxyCodeLine{00434\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ the\ return\ type\ of\ F.}}
+\DoxyCodeLine{00435\ \textcolor{comment}{//\ \ \ MakeResultIgnoredValue:}}
+\DoxyCodeLine{00436\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ the\ function\ type\ obtained\ by\ substituting\ Something}}
+\DoxyCodeLine{00437\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ the\ return\ type\ of\ F.}}
+\DoxyCodeLine{00438\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00439\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_function}{Function}};}
+\DoxyCodeLine{00440\ }
+\DoxyCodeLine{00441\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00442\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_function}{Function}}<R(Args...)>\ \{}
+\DoxyCodeLine{00443\ \ \ \textcolor{keyword}{using\ }Result\ =\ R;}
+\DoxyCodeLine{00444\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ ArgumentCount\ =\ \textcolor{keyword}{sizeof}...(Args);}
+\DoxyCodeLine{00445\ \ \ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ I>}
+\DoxyCodeLine{00446\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{Arg}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_elem_from_list}{ElemFromList}}<I,\ Args...>;}
+\DoxyCodeLine{00447\ \ \ \textcolor{keyword}{using\ }ArgumentTuple\ =\ std::tuple<Args...>;}
+\DoxyCodeLine{00448\ \ \ \textcolor{keyword}{using\ }ArgumentMatcherTuple\ =\ std::tuple<Matcher<Args>...>;}
+\DoxyCodeLine{00449\ \ \ \textcolor{keyword}{using\ }MakeResultVoid\ =\ void(Args...);}
+\DoxyCodeLine{00450\ \ \ \textcolor{keyword}{using\ }MakeResultIgnoredValue\ =\ \mbox{\hyperlink{classtesting_1_1internal_1_1_ignored_value}{IgnoredValue}}(Args...);}
+\DoxyCodeLine{00451\ \};}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00453\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00454\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_function}{Function}}<R(Args...)>::ArgumentCount;}
+\DoxyCodeLine{00455\ }
+\DoxyCodeLine{00456\ \textcolor{comment}{//\ Workaround\ for\ MSVC\ error\ C2039:\ 'type':\ is\ not\ a\ member\ of\ 'std'}}
+\DoxyCodeLine{00457\ \textcolor{comment}{//\ when\ std::tuple\_element\ is\ used.}}
+\DoxyCodeLine{00458\ \textcolor{comment}{//\ See:\ https://github.com/google/googletest/issues/3931}}
+\DoxyCodeLine{00459\ \textcolor{comment}{//\ Can\ be\ replaced\ with\ std::tuple\_element\_t\ in\ C++14.}}
+\DoxyCodeLine{00460\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ I,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00461\ \textcolor{keyword}{using\ }TupleElement\ =\ \textcolor{keyword}{typename}\ std::tuple\_element<I,\ T>::type;}
+\DoxyCodeLine{00462\ }
+\DoxyCodeLine{00463\ \textcolor{keywordtype}{bool}\ Base64Unescape(\textcolor{keyword}{const}\ std::string\&\ encoded,\ std::string*\ decoded);}
+\DoxyCodeLine{00464\ }
+\DoxyCodeLine{00465\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00466\ \textcolor{preprocessor}{\#pragma\ warning(pop)}}
+\DoxyCodeLine{00467\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00468\ }
+\DoxyCodeLine{00469\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00470\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00471\ }
+\DoxyCodeLine{00472\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_INTERNAL\_UTILS\_H\_}}
+
+\end{DoxyCode}

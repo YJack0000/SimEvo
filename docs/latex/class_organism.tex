@@ -1,0 +1,272 @@
+\doxysection{Organism Class Reference}
+\hypertarget{class_organism}{}\label{class_organism}\index{Organism@{Organism}}
+
+
+{\ttfamily \#include $<$Organism.\+hpp$>$}
+
+
+
+Inheritance diagram for Organism\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_organism__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Organism\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_organism__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Life\+Consumption\+Calculator}} = std\+::function$<$uint32\+\_\+t(const \mbox{\hyperlink{class_organism}{Organism}} \&)$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_organism_aeb16ee24b64839584b4862384d0b53fe}{Organism}} ()
+\item 
+\mbox{\hyperlink{class_organism_ad06b162ef207bfffe58b5f104a8aa6fa}{Organism}} (const \mbox{\hyperlink{class_genes}{Genes}} \&\mbox{\hyperlink{class_organism_a3f482f2a58e574d8f98313a4b1f977ce}{genes}})
+\item 
+\mbox{\hyperlink{class_organism_aae0aa7fe9baee311464c3c74835d4166}{Organism}} (const \mbox{\hyperlink{class_genes}{Genes}} \&\mbox{\hyperlink{class_organism_a3f482f2a58e574d8f98313a4b1f977ce}{genes}}, \mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Life\+Consumption\+Calculator}} \mbox{\hyperlink{class_organism_a9a8a787cd56713fc4526f5ac8d67867e}{life\+Consumption\+Calculator}})
+\item 
+float \mbox{\hyperlink{class_organism_a6c9860f1bbfb271bde14ba1510af4d87}{get\+Speed}} () const
+\item 
+float \mbox{\hyperlink{class_organism_a511ff4903d769501de8dd3ac8204ca2b}{get\+Size}} () const
+\item 
+float \mbox{\hyperlink{class_organism_a0a5e615a4866b7121f39a8379ff662cc}{get\+Awareness}} () const
+\item 
+float \mbox{\hyperlink{class_organism_a2cf1894f6fba7befe5553dc35a52267a}{get\+Life\+Consumption}} () const
+\item 
+float \mbox{\hyperlink{class_organism_a7e8ecd5ffbda3a72a24380737f2f47ea}{get\+Life\+Span}} () const
+\item 
+float \mbox{\hyperlink{class_organism_a521732bb57dd70a3f8a857a0f9606b82}{get\+Reaction\+Radius}} () const
+\item 
+void \mbox{\hyperlink{class_organism_a3e0e5fd32e18ff66e2f8046be4236b7b}{killed}} ()
+\item 
+bool \mbox{\hyperlink{class_organism_a648059cc7c12f20b88bf2de03fcd4d32}{is\+Alive}} () const
+\item 
+bool \mbox{\hyperlink{class_organism_ae2cbbd7799de30eea757f8c0fb817173}{can\+Reproduce}} () const
+\item 
+\mbox{\hyperlink{class_organism_aa5aa2e9fc3134358c929fa0c9d230c3b}{\texorpdfstring{$\sim$}{\string~}\+Organism}} ()
+\item 
+void \mbox{\hyperlink{class_organism_ac3a1c5fd26a21421857ed2581d4e1630}{react}} (std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \&reactable\+Objects)
+\item 
+void \mbox{\hyperlink{class_organism_a9a4b3dadbe9a512091377a17bf3078f1}{interact}} (std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \&interactable\+Objects)
+\item 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ \mbox{\hyperlink{class_organism_a3bdba1e815fce6e7703858acd4724e48}{reproduce}} ()
+\item 
+void \mbox{\hyperlink{class_organism_aa2bad8cf892e72b070213d8bf495914c}{post\+Iteration}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_environment_object}{Environment\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581}{Environment\+Object}} (float x, float y)
+\item 
+boost\+::uuids\+::uuid \mbox{\hyperlink{class_environment_object_a28d2899142edf5a7dff2bdf95de36679}{get\+Id}} () const
+\item 
+virtual \mbox{\hyperlink{class_environment_object_a0af91b33a81974497da617c5761ed5f9}{\texorpdfstring{$\sim$}{\string~}\+Environment\+Object}} ()=default
+\item 
+virtual std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a}{get\+Position}} () const
+\item 
+virtual void \mbox{\hyperlink{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942}{set\+Position}} (float x, float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{class_organism_ab1e049d06ea259c7816d9824fa15f0f8}{calculate\+Distance}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ object)
+\item 
+void \mbox{\hyperlink{class_organism_ab3b69b1ba8a48a220d31ab586a6f699a}{make\+Move}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_genes}{Genes}} \mbox{\hyperlink{class_organism_a3f482f2a58e574d8f98313a4b1f977ce}{genes}}
+\item 
+\mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Life\+Consumption\+Calculator}} \mbox{\hyperlink{class_organism_a9a8a787cd56713fc4526f5ac8d67867e}{life\+Consumption\+Calculator}}
+\item 
+float \mbox{\hyperlink{class_organism_a0cafd2de32d50d9e984ec463a3b45a95}{life\+Span}}
+\item 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_organism_a982fb80322c14e22198f3d97ebef59e5}{movement}}
+\item 
+int \mbox{\hyperlink{class_organism_aabca34523c01849d50c43816cfbca4c0}{reaction\+Counter}} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{class_organism_a02addf380062faea08a9fb4d33e231fe}\index{Organism@{Organism}!LifeConsumptionCalculator@{LifeConsumptionCalculator}}
+\index{LifeConsumptionCalculator@{LifeConsumptionCalculator}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{LifeConsumptionCalculator}{LifeConsumptionCalculator}}
+{\footnotesize\ttfamily \label{class_organism_a02addf380062faea08a9fb4d33e231fe} 
+using \mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Organism\+::\+Life\+Consumption\+Calculator}} = std\+::function$<$uint32\+\_\+t(const \mbox{\hyperlink{class_organism}{Organism}} \&)$>$}
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_organism_aeb16ee24b64839584b4862384d0b53fe}\index{Organism@{Organism}!Organism@{Organism}}
+\index{Organism@{Organism}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{Organism()}{Organism()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily \label{class_organism_aeb16ee24b64839584b4862384d0b53fe} 
+Organism\+::\+Organism (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_ad06b162ef207bfffe58b5f104a8aa6fa}\index{Organism@{Organism}!Organism@{Organism}}
+\index{Organism@{Organism}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{Organism()}{Organism()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily \label{class_organism_ad06b162ef207bfffe58b5f104a8aa6fa} 
+Organism\+::\+Organism (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_genes}{Genes}} \&}]{genes}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_aae0aa7fe9baee311464c3c74835d4166}\index{Organism@{Organism}!Organism@{Organism}}
+\index{Organism@{Organism}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{Organism()}{Organism()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \label{class_organism_aae0aa7fe9baee311464c3c74835d4166} 
+Organism\+::\+Organism (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_genes}{Genes}} \&}]{genes}{, }\item[{\mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Life\+Consumption\+Calculator}}}]{life\+Consumption\+Calculator}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_aa5aa2e9fc3134358c929fa0c9d230c3b}\index{Organism@{Organism}!````~Organism@{\texorpdfstring{$\sim$}{\string~}Organism}}
+\index{````~Organism@{\texorpdfstring{$\sim$}{\string~}Organism}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}Organism()}{\string~Organism()}}
+{\footnotesize\ttfamily \label{class_organism_aa5aa2e9fc3134358c929fa0c9d230c3b} 
+Organism\+::\texorpdfstring{$\sim$}{\string~}\+Organism (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_organism_ab1e049d06ea259c7816d9824fa15f0f8}\index{Organism@{Organism}!calculateDistance@{calculateDistance}}
+\index{calculateDistance@{calculateDistance}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{calculateDistance()}{calculateDistance()}}
+{\footnotesize\ttfamily \label{class_organism_ab1e049d06ea259c7816d9824fa15f0f8} 
+double Organism\+::calculate\+Distance (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$}]{object}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_ae2cbbd7799de30eea757f8c0fb817173}\index{Organism@{Organism}!canReproduce@{canReproduce}}
+\index{canReproduce@{canReproduce}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{canReproduce()}{canReproduce()}}
+{\footnotesize\ttfamily \label{class_organism_ae2cbbd7799de30eea757f8c0fb817173} 
+bool Organism\+::can\+Reproduce (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a0a5e615a4866b7121f39a8379ff662cc}\index{Organism@{Organism}!getAwareness@{getAwareness}}
+\index{getAwareness@{getAwareness}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getAwareness()}{getAwareness()}}
+{\footnotesize\ttfamily \label{class_organism_a0a5e615a4866b7121f39a8379ff662cc} 
+float Organism\+::get\+Awareness (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a2cf1894f6fba7befe5553dc35a52267a}\index{Organism@{Organism}!getLifeConsumption@{getLifeConsumption}}
+\index{getLifeConsumption@{getLifeConsumption}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getLifeConsumption()}{getLifeConsumption()}}
+{\footnotesize\ttfamily \label{class_organism_a2cf1894f6fba7befe5553dc35a52267a} 
+float Organism\+::get\+Life\+Consumption (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a7e8ecd5ffbda3a72a24380737f2f47ea}\index{Organism@{Organism}!getLifeSpan@{getLifeSpan}}
+\index{getLifeSpan@{getLifeSpan}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getLifeSpan()}{getLifeSpan()}}
+{\footnotesize\ttfamily \label{class_organism_a7e8ecd5ffbda3a72a24380737f2f47ea} 
+float Organism\+::get\+Life\+Span (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a521732bb57dd70a3f8a857a0f9606b82}\index{Organism@{Organism}!getReactionRadius@{getReactionRadius}}
+\index{getReactionRadius@{getReactionRadius}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getReactionRadius()}{getReactionRadius()}}
+{\footnotesize\ttfamily \label{class_organism_a521732bb57dd70a3f8a857a0f9606b82} 
+float Organism\+::get\+Reaction\+Radius (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a511ff4903d769501de8dd3ac8204ca2b}\index{Organism@{Organism}!getSize@{getSize}}
+\index{getSize@{getSize}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getSize()}{getSize()}}
+{\footnotesize\ttfamily \label{class_organism_a511ff4903d769501de8dd3ac8204ca2b} 
+float Organism\+::get\+Size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a6c9860f1bbfb271bde14ba1510af4d87}\index{Organism@{Organism}!getSpeed@{getSpeed}}
+\index{getSpeed@{getSpeed}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{getSpeed()}{getSpeed()}}
+{\footnotesize\ttfamily \label{class_organism_a6c9860f1bbfb271bde14ba1510af4d87} 
+float Organism\+::get\+Speed (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a9a4b3dadbe9a512091377a17bf3078f1}\index{Organism@{Organism}!interact@{interact}}
+\index{interact@{interact}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{interact()}{interact()}}
+{\footnotesize\ttfamily \label{class_organism_a9a4b3dadbe9a512091377a17bf3078f1} 
+void Organism\+::interact (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \&}]{interactable\+Objects}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_a648059cc7c12f20b88bf2de03fcd4d32}\index{Organism@{Organism}!isAlive@{isAlive}}
+\index{isAlive@{isAlive}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{isAlive()}{isAlive()}}
+{\footnotesize\ttfamily \label{class_organism_a648059cc7c12f20b88bf2de03fcd4d32} 
+bool Organism\+::is\+Alive (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_organism_a3e0e5fd32e18ff66e2f8046be4236b7b}\index{Organism@{Organism}!killed@{killed}}
+\index{killed@{killed}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{killed()}{killed()}}
+{\footnotesize\ttfamily \label{class_organism_a3e0e5fd32e18ff66e2f8046be4236b7b} 
+void Organism\+::killed (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_ab3b69b1ba8a48a220d31ab586a6f699a}\index{Organism@{Organism}!makeMove@{makeMove}}
+\index{makeMove@{makeMove}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{makeMove()}{makeMove()}}
+{\footnotesize\ttfamily \label{class_organism_ab3b69b1ba8a48a220d31ab586a6f699a} 
+void Organism\+::make\+Move (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_aa2bad8cf892e72b070213d8bf495914c}\index{Organism@{Organism}!postIteration@{postIteration}}
+\index{postIteration@{postIteration}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{postIteration()}{postIteration()}}
+{\footnotesize\ttfamily \label{class_organism_aa2bad8cf892e72b070213d8bf495914c} 
+void Organism\+::post\+Iteration (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_environment_object_aea6d70846263243ca3a33a626aea722d}{Environment\+Object}}.
+
+\Hypertarget{class_organism_ac3a1c5fd26a21421857ed2581d4e1630}\index{Organism@{Organism}!react@{react}}
+\index{react@{react}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{react()}{react()}}
+{\footnotesize\ttfamily \label{class_organism_ac3a1c5fd26a21421857ed2581d4e1630} 
+void Organism\+::react (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_environment_object}{Environment\+Object}} $>$ $>$ \&}]{reactable\+Objects}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_organism_a3bdba1e815fce6e7703858acd4724e48}\index{Organism@{Organism}!reproduce@{reproduce}}
+\index{reproduce@{reproduce}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{reproduce()}{reproduce()}}
+{\footnotesize\ttfamily \label{class_organism_a3bdba1e815fce6e7703858acd4724e48} 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{class_organism}{Organism}} $>$ Organism\+::reproduce (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_organism_a3f482f2a58e574d8f98313a4b1f977ce}\index{Organism@{Organism}!genes@{genes}}
+\index{genes@{genes}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{genes}{genes}}
+{\footnotesize\ttfamily \label{class_organism_a3f482f2a58e574d8f98313a4b1f977ce} 
+\mbox{\hyperlink{class_genes}{Genes}} Organism\+::genes\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_a9a8a787cd56713fc4526f5ac8d67867e}\index{Organism@{Organism}!lifeConsumptionCalculator@{lifeConsumptionCalculator}}
+\index{lifeConsumptionCalculator@{lifeConsumptionCalculator}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{lifeConsumptionCalculator}{lifeConsumptionCalculator}}
+{\footnotesize\ttfamily \label{class_organism_a9a8a787cd56713fc4526f5ac8d67867e} 
+\mbox{\hyperlink{class_organism_a02addf380062faea08a9fb4d33e231fe}{Life\+Consumption\+Calculator}} Organism\+::life\+Consumption\+Calculator\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_a0cafd2de32d50d9e984ec463a3b45a95}\index{Organism@{Organism}!lifeSpan@{lifeSpan}}
+\index{lifeSpan@{lifeSpan}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{lifeSpan}{lifeSpan}}
+{\footnotesize\ttfamily \label{class_organism_a0cafd2de32d50d9e984ec463a3b45a95} 
+float Organism\+::life\+Span\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_a982fb80322c14e22198f3d97ebef59e5}\index{Organism@{Organism}!movement@{movement}}
+\index{movement@{movement}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{movement}{movement}}
+{\footnotesize\ttfamily \label{class_organism_a982fb80322c14e22198f3d97ebef59e5} 
+std\+::pair$<$float, float$>$ Organism\+::movement\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_organism_aabca34523c01849d50c43816cfbca4c0}\index{Organism@{Organism}!reactionCounter@{reactionCounter}}
+\index{reactionCounter@{reactionCounter}!Organism@{Organism}}
+\doxysubsubsection{\texorpdfstring{reactionCounter}{reactionCounter}}
+{\footnotesize\ttfamily \label{class_organism_aabca34523c01849d50c43816cfbca4c0} 
+int Organism\+::reaction\+Counter = 0\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/core/\mbox{\hyperlink{_organism_8hpp}{Organism.\+hpp}}\end{DoxyCompactItemize}

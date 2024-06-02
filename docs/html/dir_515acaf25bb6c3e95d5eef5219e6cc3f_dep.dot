@@ -1,0 +1,12 @@
+digraph "/Users/yjack/GitHub/SimEvo/build/_deps/googletest-src/googlemock/include/gmock/internal/custom"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_5cc1b33f88496a834cd06d05f2b023dd {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", label="internal", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_5cc1b33f88496a834cd06d05f2b023dd.html",tooltip=""]
+  dir_515acaf25bb6c3e95d5eef5219e6cc3f [label="custom", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_515acaf25bb6c3e95d5eef5219e6cc3f.html",tooltip=""];
+  }
+}

@@ -1,0 +1,62 @@
+\doxysection{Environment.\+hpp}
+\hypertarget{_environment_8hpp_source}{}\label{_environment_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/core/Environment.hpp@{/Users/yjack/GitHub/SimEvo/include/core/Environment.hpp}}
+\mbox{\hyperlink{_environment_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Environment.hpp}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ ENVIRONMENT\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ ENVIRONMENT\_HPP}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <any>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid.hpp>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid\_hash.hpp>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_food_8hpp}{Food.hpp}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_organism_8hpp}{Organism.hpp}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_i_spatial_index_8hpp}{index/ISpatialIndex.hpp}}"{}}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_environment}{Environment}}\ \{}
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_environment_a426acd939a6f6e95ade8539e645a300e}{Environment}}(\textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}{width}},\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}{height}},\ std::string\ \mbox{\hyperlink{class_environment_a889eecb04b11de265373ad4664e101cb}{type}}\ =\ \textcolor{stringliteral}{"{}default"{}});}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_environment_a053f882f4ecec6e9ade99fba3317001c}{getWidth}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}{width}};\ \}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_environment_ad17660db40711861f8416d3ea641cd4f}{getHeight}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}{height}};\ \}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a0e420275f5e4e3e9e32538cf5cf19e8c}{add}}(\textcolor{keyword}{const}\ std::shared\_ptr<Organism>\&\ organism,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y);}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a73d2ff9838b137f27e5ca83e20ef185e}{add}}(\textcolor{keyword}{const}\ std::shared\_ptr<Food>\&\ food,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y);}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a516c1935213b47ee3b0f94d3a7e8ae00}{remove}}(\textcolor{keyword}{const}\ std::shared\_ptr<Organism>\&\ organism);}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a378d80f7f3ba805982bfdfb146e7d953}{remove}}(\textcolor{keyword}{const}\ std::shared\_ptr<Food>\&\ food);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a9bf96c5e6b817be1595b24992cde8e82}{reset}}();}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a6e245f732d1e4403966331f2be4e0306}{simulateIteration}}(\textcolor{keywordtype}{int},}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::function<\textcolor{keywordtype}{void}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_environment}{Environment}}\&)>\ on\_each\_iteration\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ std::vector<std::shared\_ptr<Organism>>\ \mbox{\hyperlink{class_environment_a61f624199a086a8ea566ac4340245de8}{getAllOrganisms}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00034\ \ \ \ \ std::vector<std::shared\_ptr<Food>>\ \mbox{\hyperlink{class_environment_aaa73b7da6afb6bd5a1aa8faae6cf3822}{getAllFoods}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00035\ \ \ \ \ std::vector<std::shared\_ptr<EnvironmentObject>>\ \mbox{\hyperlink{class_environment_a50a86cbd652f76b83c620eac6de18097}{getAllObjects}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00036\ \ \ \ \ std::vector<std::shared\_ptr<Organism>>\ \mbox{\hyperlink{class_environment_a8aa89044d6e6ce85602d31403d396bb2}{getDeadOrganisms}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \mbox{\hyperlink{class_environment_acb5b04884d3a908d9bbf72c558c49ef4}{getFoodConsumptionInIteration}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_environment_adb66ac1bc13fd84a3df8ec3f0efcceea}{width}},\ \mbox{\hyperlink{class_environment_a72e3e1ad7f136932fe2d0fae06b50f9a}{height}};}
+\DoxyCodeLine{00041\ \ \ \ \ std::string\ \mbox{\hyperlink{class_environment_a889eecb04b11de265373ad4664e101cb}{type}};}
+\DoxyCodeLine{00042\ \ \ \ \ std::unique\_ptr<ISpatialIndex<boost::uuids::uuid>>\ \mbox{\hyperlink{class_environment_a29482a429c457a864ca07e7cb6b6ac2e}{spatialIndex}};}
+\DoxyCodeLine{00043\ \ \ \ \ std::unordered\_map<boost::uuids::uuid,\ std::shared\_ptr<EnvironmentObject>>\ \mbox{\hyperlink{class_environment_a9c44fa62c4c7f5424b32ea6c274e8925}{objectsMapper}};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ std::vector<std::shared\_ptr<Organism>>\ \mbox{\hyperlink{class_environment_a19f9284d372a42eeaf8f69d6397d4d48}{deadOrganisms}};}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \mbox{\hyperlink{class_environment_a30ab1b088afb620f7da16f1be40eba7d}{foodConsumption}};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a07cc07f303da4cda59639fd0377269e6}{checkBounds}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_ab654c51d613ce7506b3ac2afc4a47b63}{updatePositionsInSpatialIndex}}();}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a616a99db1b6292e2f266d88035e216a6}{handleInteractions}}();}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a521141e9b076a2ba9f6e8d3c755f9cea}{postIteration}}();}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a62a2d51804bef307861b65e64b383485}{cleanUp}}();}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_environment_a2dd4ca29447bb2957a01c769ce20781f}{removeDeadOrganisms}}();}
+\DoxyCodeLine{00054\ \};}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

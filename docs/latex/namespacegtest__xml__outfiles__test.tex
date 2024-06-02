@@ -1,0 +1,76 @@
+\doxysection{gtest\+\_\+xml\+\_\+outfiles\+\_\+test Namespace Reference}
+\hypertarget{namespacegtest__xml__outfiles__test}{}\label{namespacegtest__xml__outfiles__test}\index{gtest\_xml\_outfiles\_test@{gtest\_xml\_outfiles\_test}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgtest__xml__outfiles__test_1_1_g_test_x_m_l_out_files_test}{GTest\+XMLOut\+Files\+Test}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacegtest__xml__outfiles__test_a8b74b252e705eb81350cbacc75569033}\label{namespacegtest__xml__outfiles__test_a8b74b252e705eb81350cbacc75569033} 
+str {\bfseries GTEST\+\_\+\+OUTPUT\+\_\+\+SUBDIR} = "{}xml\+\_\+outfiles"{}
+\item 
+\Hypertarget{namespacegtest__xml__outfiles__test_a771c3e2e78d7d635fdfd548e513a64c9}\label{namespacegtest__xml__outfiles__test_a771c3e2e78d7d635fdfd548e513a64c9} 
+str {\bfseries GTEST\+\_\+\+OUTPUT\+\_\+1\+\_\+\+TEST} = "{}gtest\+\_\+xml\+\_\+outfile1\+\_\+test\+\_\+"{}
+\item 
+\Hypertarget{namespacegtest__xml__outfiles__test_aed6df904ba2506a5a341951c7c4444f2}\label{namespacegtest__xml__outfiles__test_aed6df904ba2506a5a341951c7c4444f2} 
+str {\bfseries GTEST\+\_\+\+OUTPUT\+\_\+2\+\_\+\+TEST} = "{}gtest\+\_\+xml\+\_\+outfile2\+\_\+test\+\_\+"{}
+\item 
+str \mbox{\hyperlink{namespacegtest__xml__outfiles__test_ad22582603b47857bf4b75dd2593c090a}{EXPECTED\+\_\+\+XML\+\_\+1}}
+\item 
+str \mbox{\hyperlink{namespacegtest__xml__outfiles__test_a3e7e0619387d08beee83f9ed85d9fab0}{EXPECTED\+\_\+\+XML\+\_\+2}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Unit test for the gtest_xml_output module.\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacegtest__xml__outfiles__test_ad22582603b47857bf4b75dd2593c090a}\index{gtest\_xml\_outfiles\_test@{gtest\_xml\_outfiles\_test}!EXPECTED\_XML\_1@{EXPECTED\_XML\_1}}
+\index{EXPECTED\_XML\_1@{EXPECTED\_XML\_1}!gtest\_xml\_outfiles\_test@{gtest\_xml\_outfiles\_test}}
+\doxysubsubsection{\texorpdfstring{EXPECTED\_XML\_1}{EXPECTED\_XML\_1}}
+{\footnotesize\ttfamily \label{namespacegtest__xml__outfiles__test_ad22582603b47857bf4b75dd2593c090a} 
+str gtest\+\_\+xml\+\_\+outfiles\+\_\+test.\+EXPECTED\+\_\+\+XML\+\_\+1}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ \textcolor{stringliteral}{"{}"{}"{}<?xml\ version="{}1.0"{}\ encoding="{}UTF-\/8"{}?>}}
+\DoxyCodeLine{00002\ \textcolor{stringliteral}{<testsuites\ tests="{}1"{}\ failures="{}0"{}\ disabled="{}0"{}\ errors="{}0"{}\ time="{}*"{}\ timestamp="{}*"{}\ name="{}AllTests"{}>}}
+\DoxyCodeLine{00003\ \textcolor{stringliteral}{\ \ <testsuite\ name="{}PropertyOne"{}\ tests="{}1"{}\ failures="{}0"{}\ skipped="{}0"{}\ disabled="{}0"{}\ errors="{}0"{}\ time="{}*"{}\ timestamp="{}*"{}>}}
+\DoxyCodeLine{00004\ \textcolor{stringliteral}{\ \ \ \ <testcase\ name="{}TestSomeProperties"{}\ file="{}gtest\_xml\_outfile1\_test\_.cc"{}\ line="{}41"{}\ status="{}run"{}\ result="{}completed"{}\ time="{}*"{}\ timestamp="{}*"{}\ classname="{}PropertyOne"{}>}}
+\DoxyCodeLine{00005\ \textcolor{stringliteral}{\ \ \ \ \ \ <properties>}}
+\DoxyCodeLine{00006\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}SetUpProp"{}\ value="{}1"{}/>}}
+\DoxyCodeLine{00007\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}TestSomeProperty"{}\ value="{}1"{}/>}}
+\DoxyCodeLine{00008\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}TearDownProp"{}\ value="{}1"{}/>}}
+\DoxyCodeLine{00009\ \textcolor{stringliteral}{\ \ \ \ \ \ </properties>}}
+\DoxyCodeLine{00010\ \textcolor{stringliteral}{\ \ \ \ </testcase>}}
+\DoxyCodeLine{00011\ \textcolor{stringliteral}{\ \ </testsuite>}}
+\DoxyCodeLine{00012\ \textcolor{stringliteral}{</testsuites>}}
+\DoxyCodeLine{00013\ \textcolor{stringliteral}{"{}"{}"{}}}
+
+\end{DoxyCode}
+\Hypertarget{namespacegtest__xml__outfiles__test_a3e7e0619387d08beee83f9ed85d9fab0}\index{gtest\_xml\_outfiles\_test@{gtest\_xml\_outfiles\_test}!EXPECTED\_XML\_2@{EXPECTED\_XML\_2}}
+\index{EXPECTED\_XML\_2@{EXPECTED\_XML\_2}!gtest\_xml\_outfiles\_test@{gtest\_xml\_outfiles\_test}}
+\doxysubsubsection{\texorpdfstring{EXPECTED\_XML\_2}{EXPECTED\_XML\_2}}
+{\footnotesize\ttfamily \label{namespacegtest__xml__outfiles__test_a3e7e0619387d08beee83f9ed85d9fab0} 
+str gtest\+\_\+xml\+\_\+outfiles\+\_\+test.\+EXPECTED\+\_\+\+XML\+\_\+2}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ \textcolor{stringliteral}{"{}"{}"{}<?xml\ version="{}1.0"{}\ encoding="{}UTF-\/8"{}?>}}
+\DoxyCodeLine{00002\ \textcolor{stringliteral}{<testsuites\ tests="{}1"{}\ failures="{}0"{}\ disabled="{}0"{}\ errors="{}0"{}\ time="{}*"{}\ timestamp="{}*"{}\ name="{}AllTests"{}>}}
+\DoxyCodeLine{00003\ \textcolor{stringliteral}{\ \ <testsuite\ name="{}PropertyTwo"{}\ tests="{}1"{}\ failures="{}0"{}\ skipped="{}0"{}\ disabled="{}0"{}\ errors="{}0"{}\ time="{}*"{}\ timestamp="{}*"{}>}}
+\DoxyCodeLine{00004\ \textcolor{stringliteral}{\ \ \ \ <testcase\ name="{}TestSomeProperties"{}\ file="{}gtest\_xml\_outfile2\_test\_.cc"{}\ line="{}41"{}\ status="{}run"{}\ result="{}completed"{}\ time="{}*"{}\ timestamp="{}*"{}\ classname="{}PropertyTwo"{}>}}
+\DoxyCodeLine{00005\ \textcolor{stringliteral}{\ \ \ \ \ \ <properties>}}
+\DoxyCodeLine{00006\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}SetUpProp"{}\ value="{}2"{}/>}}
+\DoxyCodeLine{00007\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}TestSomeProperty"{}\ value="{}2"{}/>}}
+\DoxyCodeLine{00008\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ <property\ name="{}TearDownProp"{}\ value="{}2"{}/>}}
+\DoxyCodeLine{00009\ \textcolor{stringliteral}{\ \ \ \ \ \ </properties>}}
+\DoxyCodeLine{00010\ \textcolor{stringliteral}{\ \ \ \ </testcase>}}
+\DoxyCodeLine{00011\ \textcolor{stringliteral}{\ \ </testsuite>}}
+\DoxyCodeLine{00012\ \textcolor{stringliteral}{</testsuites>}}
+\DoxyCodeLine{00013\ \textcolor{stringliteral}{"{}"{}"{}}}
+
+\end{DoxyCode}

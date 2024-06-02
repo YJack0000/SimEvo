@@ -1,0 +1,161 @@
+\doxysection{gmock-\/cardinalities.cc}
+\hypertarget{gmock-cardinalities_8cc_source}{}\label{gmock-cardinalities_8cc_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/src/gmock-\/cardinalities.cc@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/src/gmock-\/cardinalities.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ implements\ cardinalities.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/cardinalities.h"{}}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <ostream>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/internal-\/utils.h"{}}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ Implements\ the\ Between(m,\ n)\ cardinality.}}
+\DoxyCodeLine{00050\ \textcolor{keyword}{class\ }BetweenCardinalityImpl\ :\ \textcolor{keyword}{public}\ CardinalityInterface\ \{}
+\DoxyCodeLine{00051\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ BetweenCardinalityImpl(\textcolor{keywordtype}{int}\ min,\ \textcolor{keywordtype}{int}\ max)}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ :\ min\_(min\ >=\ 0\ ?\ min\ :\ 0),\ max\_(max\ >=\ min\_\ ?\ max\ :\ min\_)\ \{}
+\DoxyCodeLine{00054\ \ \ \ \ std::stringstream\ ss;}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordflow}{if}\ (min\ <\ 0)\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ ss\ <<\ \textcolor{stringliteral}{"{}The\ invocation\ lower\ bound\ must\ be\ >=\ 0,\ "{}}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}but\ is\ actually\ "{}}\ <<\ min\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ internal::Expect(\textcolor{keyword}{false},\ \_\_FILE\_\_,\ \_\_LINE\_\_,\ ss.str());}
+\DoxyCodeLine{00059\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (max\ <\ 0)\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ ss\ <<\ \textcolor{stringliteral}{"{}The\ invocation\ upper\ bound\ must\ be\ >=\ 0,\ "{}}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}but\ is\ actually\ "{}}\ <<\ max\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ internal::Expect(\textcolor{keyword}{false},\ \_\_FILE\_\_,\ \_\_LINE\_\_,\ ss.str());}
+\DoxyCodeLine{00063\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (min\ >\ max)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ ss\ <<\ \textcolor{stringliteral}{"{}The\ invocation\ upper\ bound\ ("{}}\ <<\ max}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{})\ must\ be\ >=\ the\ invocation\ lower\ bound\ ("{}}\ <<\ min\ <<\ \textcolor{stringliteral}{"{})."{}};}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ internal::Expect(\textcolor{keyword}{false},\ \_\_FILE\_\_,\ \_\_LINE\_\_,\ ss.str());}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ \ \ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \textcolor{comment}{//\ Conservative\ estimate\ on\ the\ lower/upper\ bound\ of\ the\ number\ of}}
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ calls\ allowed.}}
+\DoxyCodeLine{00072\ \ \ \textcolor{keywordtype}{int}\ ConservativeLowerBound()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ min\_;\ \}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keywordtype}{int}\ ConservativeUpperBound()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ max\_;\ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{keywordtype}{bool}\ IsSatisfiedByCallCount(\textcolor{keywordtype}{int}\ call\_count)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{return}\ min\_\ <=\ call\_count\ \&\&\ call\_count\ <=\ max\_;}
+\DoxyCodeLine{00077\ \ \ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \textcolor{keywordtype}{bool}\ IsSaturatedByCallCount(\textcolor{keywordtype}{int}\ call\_count)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordflow}{return}\ call\_count\ >=\ max\_;}
+\DoxyCodeLine{00081\ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ min\_;}
+\DoxyCodeLine{00087\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ max\_;}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ BetweenCardinalityImpl(\textcolor{keyword}{const}\ BetweenCardinalityImpl\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00090\ \ \ BetweenCardinalityImpl\&\ operator=(\textcolor{keyword}{const}\ BetweenCardinalityImpl\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00091\ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{comment}{//\ Formats\ "{}n\ times"{}\ in\ a\ human-\/friendly\ way.}}
+\DoxyCodeLine{00094\ \textcolor{keyword}{inline}\ std::string\ FormatTimes(\textcolor{keywordtype}{int}\ n)\ \{}
+\DoxyCodeLine{00095\ \ \ \textcolor{keywordflow}{if}\ (n\ ==\ 1)\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}once"{}};}
+\DoxyCodeLine{00097\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (n\ ==\ 2)\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}twice"{}};}
+\DoxyCodeLine{00099\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00100\ \ \ \ \ std::stringstream\ ss;}
+\DoxyCodeLine{00101\ \ \ \ \ ss\ <<\ n\ <<\ \textcolor{stringliteral}{"{}\ times"{}};}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordflow}{return}\ ss.str();}
+\DoxyCodeLine{00103\ \ \ \}}
+\DoxyCodeLine{00104\ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{comment}{//\ Describes\ the\ Between(m,\ n)\ cardinality\ in\ human-\/friendly\ text.}}
+\DoxyCodeLine{00107\ \textcolor{keywordtype}{void}\ BetweenCardinalityImpl::DescribeTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00108\ \ \ \textcolor{keywordflow}{if}\ (min\_\ ==\ 0)\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keywordflow}{if}\ (max\_\ ==\ 0)\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}never\ called"{}};}
+\DoxyCodeLine{00111\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (max\_\ ==\ INT\_MAX)\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ any\ number\ of\ times"{}};}
+\DoxyCodeLine{00113\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ at\ most\ "{}}\ <<\ FormatTimes(max\_);}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (min\_\ ==\ max\_)\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ "{}}\ <<\ FormatTimes(min\_);}
+\DoxyCodeLine{00118\ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (max\_\ ==\ INT\_MAX)\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ at\ least\ "{}}\ <<\ FormatTimes(min\_);}
+\DoxyCodeLine{00120\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{comment}{//\ 0\ <\ min\_\ <\ max\_\ <\ INT\_MAX}}
+\DoxyCodeLine{00122\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ between\ "{}}\ <<\ min\_\ <<\ \textcolor{stringliteral}{"{}\ and\ "{}}\ <<\ max\_\ <<\ \textcolor{stringliteral}{"{}\ times"{}};}
+\DoxyCodeLine{00123\ \ \ \}}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \}\ \ \textcolor{comment}{//\ Unnamed\ namespace}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ Describes\ the\ given\ call\ count\ to\ an\ ostream.}}
+\DoxyCodeLine{00129\ \textcolor{keywordtype}{void}\ Cardinality::DescribeActualCallCountTo(\textcolor{keywordtype}{int}\ actual\_call\_count,}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ::std::ostream*\ os)\ \{}
+\DoxyCodeLine{00131\ \ \ \textcolor{keywordflow}{if}\ (actual\_call\_count\ >\ 0)\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ "{}}\ <<\ FormatTimes(actual\_call\_count);}
+\DoxyCodeLine{00133\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}never\ called"{}};}
+\DoxyCodeLine{00135\ \ \ \}}
+\DoxyCodeLine{00136\ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ Creates\ a\ cardinality\ that\ allows\ at\ least\ n\ calls.}}
+\DoxyCodeLine{00139\ GTEST\_API\_\ Cardinality\ AtLeast(\textcolor{keywordtype}{int}\ n)\ \{\ \textcolor{keywordflow}{return}\ Between(n,\ INT\_MAX);\ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ Creates\ a\ cardinality\ that\ allows\ at\ most\ n\ calls.}}
+\DoxyCodeLine{00142\ GTEST\_API\_\ Cardinality\ AtMost(\textcolor{keywordtype}{int}\ n)\ \{\ \textcolor{keywordflow}{return}\ Between(0,\ n);\ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{comment}{//\ Creates\ a\ cardinality\ that\ allows\ any\ number\ of\ calls.}}
+\DoxyCodeLine{00145\ GTEST\_API\_\ Cardinality\ AnyNumber()\ \{\ \textcolor{keywordflow}{return}\ AtLeast(0);\ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ Creates\ a\ cardinality\ that\ allows\ between\ min\ and\ max\ calls.}}
+\DoxyCodeLine{00148\ GTEST\_API\_\ Cardinality\ Between(\textcolor{keywordtype}{int}\ min,\ \textcolor{keywordtype}{int}\ max)\ \{}
+\DoxyCodeLine{00149\ \ \ \textcolor{keywordflow}{return}\ Cardinality(\textcolor{keyword}{new}\ BetweenCardinalityImpl(min,\ max));}
+\DoxyCodeLine{00150\ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ Creates\ a\ cardinality\ that\ allows\ exactly\ n\ calls.}}
+\DoxyCodeLine{00153\ GTEST\_API\_\ Cardinality\ Exactly(\textcolor{keywordtype}{int}\ n)\ \{\ \textcolor{keywordflow}{return}\ Between(n,\ n);\ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

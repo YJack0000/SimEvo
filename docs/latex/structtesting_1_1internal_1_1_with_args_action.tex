@@ -1,0 +1,44 @@
+\doxysection{testing\+::internal\+::With\+Args\+Action\texorpdfstring{$<$}{<} Inner\+Action, I \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structtesting_1_1internal_1_1_with_args_action}{}\label{structtesting_1_1internal_1_1_with_args_action}\index{testing::internal::WithArgsAction$<$ InnerAction, I $>$@{testing::internal::WithArgsAction$<$ InnerAction, I $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename R , typename... Args$>$ }\\using \mbox{\hyperlink{structtesting_1_1internal_1_1_with_args_action_acb9e9974b6d6d297df417fec0a08ca6f}{Inner\+Signature}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_with_args_action_ad0fbdb166e065c975d3b2eca56704427}\label{structtesting_1_1internal_1_1_with_args_action_ad0fbdb166e065c975d3b2eca56704427} 
+{\footnotesize template$<$typename R , typename... Args, typename std\+::enable\+\_\+if$<$ std\+::is\+\_\+convertible$<$ Inner\+Action, \mbox{\hyperlink{classtesting_1_1_once_action}{Once\+Action}}$<$ R(internal\+::\+Tuple\+Element$<$ I, std\+::tuple$<$ Args... $>$ $>$...)$>$ $>$\+::value, int $>$\+::type  = 0$>$ }\\{\bfseries operator Once\+Action$<$ R} (Args...)$>$() \&\&
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_with_args_action_aa351f425dae2a8e71fc983358c5060d6}\label{structtesting_1_1internal_1_1_with_args_action_aa351f425dae2a8e71fc983358c5060d6} 
+{\footnotesize template$<$typename R , typename... Args, typename std\+::enable\+\_\+if$<$ std\+::is\+\_\+convertible$<$ const Inner\+Action \&, \mbox{\hyperlink{classtesting_1_1_action}{Action}}$<$ R(internal\+::\+Tuple\+Element$<$ I, std\+::tuple$<$ Args... $>$ $>$...)$>$ $>$\+::value, int $>$\+::type  = 0$>$ }\\{\bfseries operator Action$<$ R} (Args...)$>$() const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_with_args_action_abe6da3bc9f57fa5926b5f53b8095a90d}\label{structtesting_1_1internal_1_1_with_args_action_abe6da3bc9f57fa5926b5f53b8095a90d} 
+Inner\+Action {\bfseries inner\+\_\+action}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{structtesting_1_1internal_1_1_with_args_action_acb9e9974b6d6d297df417fec0a08ca6f}\index{testing::internal::WithArgsAction$<$ InnerAction, I $>$@{testing::internal::WithArgsAction$<$ InnerAction, I $>$}!InnerSignature@{InnerSignature}}
+\index{InnerSignature@{InnerSignature}!testing::internal::WithArgsAction$<$ InnerAction, I $>$@{testing::internal::WithArgsAction$<$ InnerAction, I $>$}}
+\doxysubsubsection{\texorpdfstring{InnerSignature}{InnerSignature}}
+{\footnotesize\ttfamily \label{structtesting_1_1internal_1_1_with_args_action_acb9e9974b6d6d297df417fec0a08ca6f} 
+template$<$typename Inner\+Action , size\+\_\+t... I$>$ \\
+template$<$typename R , typename... Args$>$ \\
+using \mbox{\hyperlink{structtesting_1_1internal_1_1_with_args_action}{testing\+::internal\+::\+With\+Args\+Action}}$<$ Inner\+Action, I $>$\+::\+Inner\+Signature}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ R(\textcolor{keyword}{typename}\ std::tuple\_element<I,\ std::tuple<Args...>>::type...)}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googlemock/include/gmock/gmock-\/actions.\+h\end{DoxyCompactItemize}

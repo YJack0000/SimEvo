@@ -1,0 +1,109 @@
+\doxysection{Genes Class Reference}
+\hypertarget{class_genes}{}\label{class_genes}\index{Genes@{Genes}}
+
+
+{\ttfamily \#include $<$Genes.\+hpp$>$}
+
+
+
+Collaboration diagram for Genes\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{class_genes__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Mutation\+Function}} = std\+::function$<$void(char\mbox{[}4\mbox{]})$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_genes_aeb3e6e2a6f52d6b4c209518c935464e6}{Genes}} (const char \texorpdfstring{$\ast$}{*}dna\+Str)
+\item 
+\mbox{\hyperlink{class_genes_af93468307bf40aa072a44c5ccc507522}{Genes}} (const char \texorpdfstring{$\ast$}{*}dna\+Str, \mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Mutation\+Function}} custom\+Mutation\+Logic)
+\item 
+void \mbox{\hyperlink{class_genes_a20527d3dd281ea4d33168483e7d04f97}{mutate}} ()
+\item 
+char \mbox{\hyperlink{class_genes_a8af25b21bb9c93a07f863a509344d270}{get\+DNA}} (int index) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_genes_a374788b062ce4c35db224a212b42da12}{default\+Mutation\+Logic}} (char \mbox{\hyperlink{class_genes_acc078ee300e11f703f3f5cd964c82b1d}{dna}}\mbox{[}4\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+char \mbox{\hyperlink{class_genes_acc078ee300e11f703f3f5cd964c82b1d}{dna}} \mbox{[}4\mbox{]}
+\item 
+\mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Mutation\+Function}} \mbox{\hyperlink{class_genes_a7065b0aead30da4bcb3780024108f272}{mutation\+Logic}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}\index{Genes@{Genes}!MutationFunction@{MutationFunction}}
+\index{MutationFunction@{MutationFunction}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{MutationFunction}{MutationFunction}}
+{\footnotesize\ttfamily \label{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd} 
+using \mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Genes\+::\+Mutation\+Function}} = std\+::function$<$void(char\mbox{[}4\mbox{]})$>$}
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_genes_aeb3e6e2a6f52d6b4c209518c935464e6}\index{Genes@{Genes}!Genes@{Genes}}
+\index{Genes@{Genes}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{Genes()}{Genes()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_genes_aeb3e6e2a6f52d6b4c209518c935464e6} 
+Genes\+::\+Genes (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{dna\+Str}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_genes_af93468307bf40aa072a44c5ccc507522}\index{Genes@{Genes}!Genes@{Genes}}
+\index{Genes@{Genes}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{Genes()}{Genes()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_genes_af93468307bf40aa072a44c5ccc507522} 
+Genes\+::\+Genes (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{dna\+Str}{, }\item[{\mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Mutation\+Function}}}]{custom\+Mutation\+Logic}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_genes_a374788b062ce4c35db224a212b42da12}\index{Genes@{Genes}!defaultMutationLogic@{defaultMutationLogic}}
+\index{defaultMutationLogic@{defaultMutationLogic}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{defaultMutationLogic()}{defaultMutationLogic()}}
+{\footnotesize\ttfamily \label{class_genes_a374788b062ce4c35db224a212b42da12} 
+static void Genes\+::default\+Mutation\+Logic (\begin{DoxyParamCaption}\item[{char}]{dna}{\mbox{[}4\mbox{]}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+\Hypertarget{class_genes_a8af25b21bb9c93a07f863a509344d270}\index{Genes@{Genes}!getDNA@{getDNA}}
+\index{getDNA@{getDNA}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{getDNA()}{getDNA()}}
+{\footnotesize\ttfamily \label{class_genes_a8af25b21bb9c93a07f863a509344d270} 
+char Genes\+::get\+DNA (\begin{DoxyParamCaption}\item[{int}]{index}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_genes_a20527d3dd281ea4d33168483e7d04f97}\index{Genes@{Genes}!mutate@{mutate}}
+\index{mutate@{mutate}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{mutate()}{mutate()}}
+{\footnotesize\ttfamily \label{class_genes_a20527d3dd281ea4d33168483e7d04f97} 
+void Genes\+::mutate (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_genes_acc078ee300e11f703f3f5cd964c82b1d}\index{Genes@{Genes}!dna@{dna}}
+\index{dna@{dna}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{dna}{dna}}
+{\footnotesize\ttfamily \label{class_genes_acc078ee300e11f703f3f5cd964c82b1d} 
+char Genes\+::dna\mbox{[}4\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_genes_a7065b0aead30da4bcb3780024108f272}\index{Genes@{Genes}!mutationLogic@{mutationLogic}}
+\index{mutationLogic@{mutationLogic}!Genes@{Genes}}
+\doxysubsubsection{\texorpdfstring{mutationLogic}{mutationLogic}}
+{\footnotesize\ttfamily \label{class_genes_a7065b0aead30da4bcb3780024108f272} 
+\mbox{\hyperlink{class_genes_a6c4ee7d5b40801d8ccfe790a7ce118dd}{Mutation\+Function}} Genes\+::mutation\+Logic\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/core/\mbox{\hyperlink{_genes_8hpp}{Genes.\+hpp}}\end{DoxyCompactItemize}

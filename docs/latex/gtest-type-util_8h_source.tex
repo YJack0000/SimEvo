@@ -1,0 +1,192 @@
+\doxysection{gtest-\/type-\/util.h}
+\hypertarget{gtest-type-util_8h_source}{}\label{gtest-type-util_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/type-\/util.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/type-\/util.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Type\ utilities\ needed\ for\ implementing\ typed\ and\ type-\/parameterized}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ tests.}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_TYPE\_UTIL\_H\_}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_TYPE\_UTIL\_H\_}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ \#ifdef\ \_\_GNUC\_\_\ is\ too\ general\ here.\ \ It\ is\ possible\ to\ use\ gcc\ without\ using}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ libstdc++\ (which\ is\ where\ cxxabi.h\ comes\ from).}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_CXXABI\_H\_}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <cxxabi.h>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#elif\ defined(\_\_HP\_aCC)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <acxx\_demangle.h>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HASH\_CXXABI\_H\_}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00051\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ Canonicalizes\ a\ given\ name\ with\ respect\ to\ the\ Standard\ C++\ Library.}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ This\ handles\ removing\ the\ inline\ namespace\ within\ \`{}std`\ that\ is}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ used\ by\ various\ standard\ libraries\ (e.g.,\ \`{}std::\_\_1`).\ \ Names\ outside}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ of\ namespace\ std\ are\ returned\ unmodified.}}
+\DoxyCodeLine{00057\ \textcolor{keyword}{inline}\ std::string\ CanonicalizeForStdLibVersioning(std::string\ s)\ \{}
+\DoxyCodeLine{00058\ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ prefix[]\ =\ \textcolor{stringliteral}{"{}std::\_\_"{}};}
+\DoxyCodeLine{00059\ \ \ \textcolor{keywordflow}{if}\ (s.compare(0,\ strlen(prefix),\ prefix)\ ==\ 0)\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ std::string::size\_type\ end\ =\ s.find(\textcolor{stringliteral}{"{}::"{}},\ strlen(prefix));}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{if}\ (end\ !=\ s.npos)\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \textcolor{comment}{//\ Erase\ everything\ between\ the\ initial\ \`{}std`\ and\ the\ second\ \`{}::`.}}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ s.erase(strlen(\textcolor{stringliteral}{"{}std"{}}),\ end\ -\/\ strlen(\textcolor{stringliteral}{"{}std"{}}));}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ \ \ \}}
+\DoxyCodeLine{00066\ \ \ \textcolor{keywordflow}{return}\ s;}
+\DoxyCodeLine{00067\ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ GetTypeName(const\ std::type\_info\&)\ returns\ a\ human-\/readable\ name\ of\ type\ T.}}
+\DoxyCodeLine{00071\ \textcolor{keyword}{inline}\ std::string\ GetTypeName(\textcolor{keyword}{const}\ std::type\_info\&\ type)\ \{}
+\DoxyCodeLine{00072\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ name\ =\ type.name();}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_CXXABI\_H\_\ ||\ defined(\_\_HP\_aCC)}}
+\DoxyCodeLine{00074\ \ \ \textcolor{keywordtype}{int}\ status\ =\ 0;}
+\DoxyCodeLine{00075\ \ \ \textcolor{comment}{//\ gcc's\ implementation\ of\ typeid(T).name()\ mangles\ the\ type\ name,}}
+\DoxyCodeLine{00076\ \ \ \textcolor{comment}{//\ so\ we\ have\ to\ demangle\ it.}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_CXXABI\_H\_}}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{using\ }abi::\_\_cxa\_demangle;}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_CXXABI\_H\_}}
+\DoxyCodeLine{00080\ \ \ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ readable\_name\ =\ \_\_cxa\_demangle(name,\ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr},\ \&status);}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{const}\ std::string\ name\_str(status\ ==\ 0\ ?\ readable\_name\ :\ name);}
+\DoxyCodeLine{00082\ \ \ free(readable\_name);}
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordflow}{return}\ CanonicalizeForStdLibVersioning(name\_str);}
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00085\ \ \ \textcolor{keywordflow}{return}\ name;}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_CXXABI\_H\_\ ||\ \_\_HP\_aCC}}
+\DoxyCodeLine{00087\ \}}
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ GetTypeName<T>()\ returns\ a\ human-\/readable\ name\ of\ type\ T\ if\ and\ only\ if}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ RTTI\ is\ enabled,\ otherwise\ it\ returns\ a\ dummy\ type\ name.}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ NB:\ This\ function\ is\ also\ used\ in\ Google\ Mock,\ so\ don't\ move\ it\ inside\ of}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//\ the\ typed-\/test-\/only\ section\ below.}}
+\DoxyCodeLine{00094\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00095\ std::string\ GetTypeName()\ \{}
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{00097\ \ \ \textcolor{keywordflow}{return}\ GetTypeName(\textcolor{keyword}{typeid}(T));}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00099\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}<type>"{}};}
+\DoxyCodeLine{00100\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_RTTI}}
+\DoxyCodeLine{00101\ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ A\ unique\ type\ indicating\ an\ empty\ node}}
+\DoxyCodeLine{00104\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{None}}\ \{\};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#define\ GTEST\_TEMPLATE\_\ \(\backslash\)}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\ \ template\ <typename\ T>\ \(\backslash\)}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\ \ class}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ The\ template\ "{}selector"{}\ struct\ TemplateSel<Tmpl>\ is\ used\ to}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ represent\ Tmpl,\ which\ must\ be\ a\ class\ template\ with\ one\ type}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//\ parameter,\ as\ a\ type.\ \ TemplateSel<Tmpl>::Bind<T>::type\ is\ defined}}
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ as\ the\ type\ Tmpl<T>.\ \ This\ allows\ us\ to\ actually\ instantiate\ the}}
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ template\ "{}selected"{}\ by\ TemplateSel<Tmpl>.}}
+\DoxyCodeLine{00115\ \textcolor{comment}{//}}
+\DoxyCodeLine{00116\ \textcolor{comment}{//\ This\ trick\ is\ necessary\ for\ simulating\ typedef\ for\ class\ templates,}}
+\DoxyCodeLine{00117\ \textcolor{comment}{//\ which\ C++\ doesn't\ support\ directly.}}
+\DoxyCodeLine{00118\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Tmpl>}
+\DoxyCodeLine{00119\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel}{TemplateSel}}\ \{}
+\DoxyCodeLine{00120\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00121\ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel_1_1_bind}{Bind}}\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{typedef}\ Tmpl<T>\ type;}
+\DoxyCodeLine{00123\ \ \ \};}
+\DoxyCodeLine{00124\ \};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#define\ GTEST\_BIND\_(TmplSel,\ T)\ TmplSel::template\ Bind<T>::type}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Head\_,\ GTEST\_TEMPLATE\_...\ Tail\_>}
+\DoxyCodeLine{00129\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_templates}{Templates}}\ \{}
+\DoxyCodeLine{00130\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel}{Head}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel}{TemplateSel<Head\_>}};}
+\DoxyCodeLine{00131\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_templates}{Tail}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_templates}{Templates}}<Tail\_...>;}
+\DoxyCodeLine{00132\ \};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{keyword}{template}\ <GTEST\_TEMPLATE\_\ Head\_>}
+\DoxyCodeLine{00135\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_templates}{Templates}}<Head\_>\ \{}
+\DoxyCodeLine{00136\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel}{Head}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_template_sel}{TemplateSel<Head\_>}};}
+\DoxyCodeLine{00137\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{Tail}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_none}{None}};}
+\DoxyCodeLine{00138\ \};}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{comment}{//\ Tuple-\/like\ type\ lists}}
+\DoxyCodeLine{00141\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Head\_,\ \textcolor{keyword}{typename}...\ Tail\_>}
+\DoxyCodeLine{00142\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}\ \{}
+\DoxyCodeLine{00143\ \ \ \textcolor{keyword}{using\ }Head\ =\ Head\_;}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Tail}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}<Tail\_...>;}
+\DoxyCodeLine{00145\ \};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Head\_>}
+\DoxyCodeLine{00148\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}<Head\_>\ \{}
+\DoxyCodeLine{00149\ \ \ \textcolor{keyword}{using\ }Head\ =\ Head\_;}
+\DoxyCodeLine{00150\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_none}{Tail}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_none}{None}};}
+\DoxyCodeLine{00151\ \};}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \textcolor{comment}{//\ Helper\ metafunctions\ to\ tell\ apart\ a\ single\ type\ from\ types}}
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ generated\ by\ ::testing::Types}}
+\DoxyCodeLine{00155\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00156\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{ProxyTypeList}}\ \{}
+\DoxyCodeLine{00157\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_types}{type}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_types}{Types}}<Ts...>;}
+\DoxyCodeLine{00158\ \};}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>}
+\DoxyCodeLine{00161\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1is__proxy__type__list}{is\_proxy\_type\_list}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00164\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1is__proxy__type__list}{is\_proxy\_type\_list}}<\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{ProxyTypeList}}<Ts...>>\ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{comment}{//\ Generator\ which\ conditionally\ creates\ type\ lists.}}
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ It\ recognizes\ if\ a\ requested\ type\ list\ should\ be\ created}}
+\DoxyCodeLine{00168\ \textcolor{comment}{//\ and\ prevents\ creating\ a\ new\ type\ list\ nested\ within\ another\ one.}}
+\DoxyCodeLine{00169\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00170\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_generate_type_list}{GenerateTypeList}}\ \{}
+\DoxyCodeLine{00171\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00172\ \ \ \textcolor{keyword}{using\ }proxy\ =\ \textcolor{keyword}{typename}\ std::conditional<is\_proxy\_type\_list<T>::value,\ T,}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{ProxyTypeList<T>}}>::type;}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00176\ \ \ \textcolor{keyword}{using\ }type\ =\ \textcolor{keyword}{typename}\ proxy::type;}
+\DoxyCodeLine{00177\ \};}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Ts>}
+\DoxyCodeLine{00182\ \textcolor{keyword}{using\ }\mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{Types}}\ =\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{internal::ProxyTypeList}}<Ts...>;}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_TYPE\_UTIL\_H\_}}
+
+\end{DoxyCode}

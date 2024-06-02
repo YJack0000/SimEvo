@@ -1,0 +1,101 @@
+\doxysection{Food Class Reference}
+\hypertarget{class_food}{}\label{class_food}\index{Food@{Food}}
+
+
+{\ttfamily \#include $<$Food.\+hpp$>$}
+
+
+
+Inheritance diagram for Food\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=216pt]{class_food__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Food\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=216pt]{class_food__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_food_a75d4d7f76fd495cc8133302ca9fdc485}{Food}} ()
+\item 
+bool \mbox{\hyperlink{class_food_a523a7bb919e87201ad6fb18071cfa3a2}{can\+Be\+Eaten}} ()
+\item 
+void \mbox{\hyperlink{class_food_a304f6aeb0717d0e4e2a8b469c5b47e9f}{eaten}} ()
+\item 
+int \mbox{\hyperlink{class_food_a12950531ea0a24fe3daf4e7f6afa45e2}{get\+Energy}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_environment_object}{Environment\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581}{Environment\+Object}} (float x, float y)
+\item 
+boost\+::uuids\+::uuid \mbox{\hyperlink{class_environment_object_a28d2899142edf5a7dff2bdf95de36679}{get\+Id}} () const
+\item 
+virtual \mbox{\hyperlink{class_environment_object_a0af91b33a81974497da617c5761ed5f9}{\texorpdfstring{$\sim$}{\string~}\+Environment\+Object}} ()=default
+\item 
+virtual void \mbox{\hyperlink{class_environment_object_aea6d70846263243ca3a33a626aea722d}{post\+Iteration}} ()
+\item 
+virtual std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a}{get\+Position}} () const
+\item 
+virtual void \mbox{\hyperlink{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942}{set\+Position}} (float x, float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2ef}{Food\+State}} \mbox{\hyperlink{class_food_af1d6a93780a1933e98732070efc493c0}{state}} = \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efaa56278fcd527ad6b4619050916ca2ca8}{Food\+State\+::\+FRESH}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_food_a75d4d7f76fd495cc8133302ca9fdc485}\index{Food@{Food}!Food@{Food}}
+\index{Food@{Food}!Food@{Food}}
+\doxysubsubsection{\texorpdfstring{Food()}{Food()}}
+{\footnotesize\ttfamily \label{class_food_a75d4d7f76fd495cc8133302ca9fdc485} 
+Food\+::\+Food (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_food_a523a7bb919e87201ad6fb18071cfa3a2}\index{Food@{Food}!canBeEaten@{canBeEaten}}
+\index{canBeEaten@{canBeEaten}!Food@{Food}}
+\doxysubsubsection{\texorpdfstring{canBeEaten()}{canBeEaten()}}
+{\footnotesize\ttfamily \label{class_food_a523a7bb919e87201ad6fb18071cfa3a2} 
+bool Food\+::can\+Be\+Eaten (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_food_a304f6aeb0717d0e4e2a8b469c5b47e9f}\index{Food@{Food}!eaten@{eaten}}
+\index{eaten@{eaten}!Food@{Food}}
+\doxysubsubsection{\texorpdfstring{eaten()}{eaten()}}
+{\footnotesize\ttfamily \label{class_food_a304f6aeb0717d0e4e2a8b469c5b47e9f} 
+void Food\+::eaten (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_food_a12950531ea0a24fe3daf4e7f6afa45e2}\index{Food@{Food}!getEnergy@{getEnergy}}
+\index{getEnergy@{getEnergy}!Food@{Food}}
+\doxysubsubsection{\texorpdfstring{getEnergy()}{getEnergy()}}
+{\footnotesize\ttfamily \label{class_food_a12950531ea0a24fe3daf4e7f6afa45e2} 
+int Food\+::get\+Energy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_food_af1d6a93780a1933e98732070efc493c0}\index{Food@{Food}!state@{state}}
+\index{state@{state}!Food@{Food}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily \label{class_food_af1d6a93780a1933e98732070efc493c0} 
+\mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2ef}{Food\+State}} Food\+::state = \mbox{\hyperlink{_food_8hpp_a357ea135ed879309355aea4a85cbb2efaa56278fcd527ad6b4619050916ca2ca8}{Food\+State\+::\+FRESH}}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/core/\mbox{\hyperlink{_food_8hpp}{Food.\+hpp}}\end{DoxyCompactItemize}

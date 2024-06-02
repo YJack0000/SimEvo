@@ -1,0 +1,114 @@
+\doxysection{Environment\+Object Class Reference}
+\hypertarget{class_environment_object}{}\label{class_environment_object}\index{EnvironmentObject@{EnvironmentObject}}
+
+
+{\ttfamily \#include $<$Environment\+Object.\+hpp$>$}
+
+
+
+Inheritance diagram for Environment\+Object\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_environment_object__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Environment\+Object\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=216pt]{class_environment_object__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581}{Environment\+Object}} (float x, float y)
+\item 
+boost\+::uuids\+::uuid \mbox{\hyperlink{class_environment_object_a28d2899142edf5a7dff2bdf95de36679}{get\+Id}} () const
+\item 
+virtual \mbox{\hyperlink{class_environment_object_a0af91b33a81974497da617c5761ed5f9}{\texorpdfstring{$\sim$}{\string~}\+Environment\+Object}} ()=default
+\item 
+virtual void \mbox{\hyperlink{class_environment_object_aea6d70846263243ca3a33a626aea722d}{post\+Iteration}} ()
+\item 
+virtual std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a}{get\+Position}} () const
+\item 
+virtual void \mbox{\hyperlink{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942}{set\+Position}} (float x, float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+boost\+::uuids\+::uuid \mbox{\hyperlink{class_environment_object_a35b329b95c29586d24a0229bb00c9af2}{id}}
+\item 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{class_environment_object_aaca3b93523607c73296af9af57d9c26e}{position}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581}\index{EnvironmentObject@{EnvironmentObject}!EnvironmentObject@{EnvironmentObject}}
+\index{EnvironmentObject@{EnvironmentObject}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{EnvironmentObject()}{EnvironmentObject()}}
+{\footnotesize\ttfamily \label{class_environment_object_a6f674d1c1f5616ea9eebe61eac899581} 
+Environment\+Object\+::\+Environment\+Object (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_environment_object_a0af91b33a81974497da617c5761ed5f9}\index{EnvironmentObject@{EnvironmentObject}!````~EnvironmentObject@{\texorpdfstring{$\sim$}{\string~}EnvironmentObject}}
+\index{````~EnvironmentObject@{\texorpdfstring{$\sim$}{\string~}EnvironmentObject}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}EnvironmentObject()}{\string~EnvironmentObject()}}
+{\footnotesize\ttfamily \label{class_environment_object_a0af91b33a81974497da617c5761ed5f9} 
+virtual Environment\+Object\+::\texorpdfstring{$\sim$}{\string~}\+Environment\+Object (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}, {\ttfamily [default]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_environment_object_a28d2899142edf5a7dff2bdf95de36679}\index{EnvironmentObject@{EnvironmentObject}!getId@{getId}}
+\index{getId@{getId}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily \label{class_environment_object_a28d2899142edf5a7dff2bdf95de36679} 
+boost\+::uuids\+::uuid Environment\+Object\+::get\+Id (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a}\index{EnvironmentObject@{EnvironmentObject}!getPosition@{getPosition}}
+\index{getPosition@{getPosition}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{getPosition()}{getPosition()}}
+{\footnotesize\ttfamily \label{class_environment_object_a41de6771b2fea3b19bedfa7f333f997a} 
+virtual std\+::pair$<$ float, float $>$ Environment\+Object\+::get\+Position (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\Hypertarget{class_environment_object_aea6d70846263243ca3a33a626aea722d}\index{EnvironmentObject@{EnvironmentObject}!postIteration@{postIteration}}
+\index{postIteration@{postIteration}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{postIteration()}{postIteration()}}
+{\footnotesize\ttfamily \label{class_environment_object_aea6d70846263243ca3a33a626aea722d} 
+virtual void Environment\+Object\+::post\+Iteration (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{class_organism_aa2bad8cf892e72b070213d8bf495914c}{Organism}}.
+
+\Hypertarget{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942}\index{EnvironmentObject@{EnvironmentObject}!setPosition@{setPosition}}
+\index{setPosition@{setPosition}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{setPosition()}{setPosition()}}
+{\footnotesize\ttfamily \label{class_environment_object_a5d2fd64f957874e7626eb1e2b791b942} 
+virtual void Environment\+Object\+::set\+Position (\begin{DoxyParamCaption}\item[{float}]{x}{, }\item[{float}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_environment_object_a35b329b95c29586d24a0229bb00c9af2}\index{EnvironmentObject@{EnvironmentObject}!id@{id}}
+\index{id@{id}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{id}{id}}
+{\footnotesize\ttfamily \label{class_environment_object_a35b329b95c29586d24a0229bb00c9af2} 
+boost\+::uuids\+::uuid Environment\+Object\+::id\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_environment_object_aaca3b93523607c73296af9af57d9c26e}\index{EnvironmentObject@{EnvironmentObject}!position@{position}}
+\index{position@{position}!EnvironmentObject@{EnvironmentObject}}
+\doxysubsubsection{\texorpdfstring{position}{position}}
+{\footnotesize\ttfamily \label{class_environment_object_aaca3b93523607c73296af9af57d9c26e} 
+std\+::pair$<$float, float$>$ Environment\+Object\+::position\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/include/core/\mbox{\hyperlink{_environment_object_8hpp}{Environment\+Object.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,37 @@
+\chapter{Customization Points}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312}{}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312}\index{Customization Points@{Customization Points}}
+\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md384}%
+\Hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md384}%
+ The custom directory is an injection point for custom user configurations.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md385}{}\doxysection{\texorpdfstring{Header {\ttfamily gtest.\+h}}{Header {\ttfamily gtest.\+h}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md385}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md386}{}\doxysubsection{\texorpdfstring{The following macros can be defined\+:}{The following macros can be defined\+:}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md386}
+
+\begin{DoxyItemize}
+\item {\ttfamily GTEST\+\_\+\+OS\+\_\+\+STACK\+\_\+\+TRACE\+\_\+\+GETTER\+\_\+} -\/ The name of an implementation of {\ttfamily Os\+Stack\+Trace\+Getter\+Interface}.
+\item {\ttfamily GTEST\+\_\+\+CUSTOM\+\_\+\+TEMPDIR\+\_\+\+FUNCTION\+\_\+} -\/ An override for {\ttfamily testing\+::\+Temp\+Dir()}. See {\ttfamily testing\+::\+Temp\+Dir} for semantics and signature.
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md387}{}\doxysection{\texorpdfstring{Header {\ttfamily gtest-\/port.\+h}}{Header {\ttfamily gtest-\/port.\+h}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md387}
+The following macros can be defined\+:\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md388}{}\doxysubsection{\texorpdfstring{Logging\+:}{Logging\+:}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md388}
+
+\begin{DoxyItemize}
+\item {\ttfamily GTEST\+\_\+\+LOG\+\_\+(severity)}
+\item {\ttfamily GTEST\+\_\+\+CHECK\+\_\+(condition)}
+\item Functions {\ttfamily Log\+To\+Stderr()} and {\ttfamily Flush\+Info\+Log()} have to be provided too.
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md389}{}\doxysubsection{\texorpdfstring{Threading\+:}{Threading\+:}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md389}
+
+\begin{DoxyItemize}
+\item {\ttfamily GTEST\+\_\+\+HAS\+\_\+\+NOTIFICATION\+\_\+} -\/ Enabled if Notification is already provided.
+\item {\ttfamily GTEST\+\_\+\+HAS\+\_\+\+MUTEX\+\_\+\+AND\+\_\+\+THREAD\+\_\+\+LOCAL\+\_\+} -\/ Enabled if {\ttfamily Mutex} and {\ttfamily Thread\+Local} are already provided. Must also provide {\ttfamily GTEST\+\_\+\+DECLARE\+\_\+\+STATIC\+\_\+\+MUTEX\+\_\+(mutex)} and {\ttfamily GTEST\+\_\+\+DEFINE\+\_\+\+STATIC\+\_\+\+MUTEX\+\_\+(mutex)}
+\item {\ttfamily GTEST\+\_\+\+EXCLUSIVE\+\_\+\+LOCK\+\_\+\+REQUIRED\+\_\+(locks)}
+\item {\ttfamily GTEST\+\_\+\+LOCK\+\_\+\+EXCLUDED\+\_\+(locks)}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md390}{}\doxysubsection{\texorpdfstring{Underlying library support features}{Underlying library support features}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md390}
+
+\begin{DoxyItemize}
+\item {\ttfamily GTEST\+\_\+\+HAS\+\_\+\+CXXABI\+\_\+\+H\+\_\+}
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md391}{}\doxysubsection{\texorpdfstring{Exporting API symbols\+:}{Exporting API symbols\+:}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md391}
+
+\begin{DoxyItemize}
+\item {\ttfamily GTEST\+\_\+\+API\+\_\+} -\/ Specifier for exported symbols.
+\end{DoxyItemize}\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md392}{}\doxysection{\texorpdfstring{Header {\ttfamily gtest-\/printers.\+h}}{Header {\ttfamily gtest-\/printers.\+h}}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2googletest_2include_2gtesf5f0fb4abc141ff8ea13bd16cbc33312_autotoc_md392}
+
+\begin{DoxyItemize}
+\item See documentation at {\ttfamily \doxylink{gtest-printers_8h_source}{gtest/gtest-\/printers.\+h}} for details on how to define a custom printer. 
+\end{DoxyItemize}

@@ -1,0 +1,100 @@
+\doxysection{Common\+Test\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_common_test}{}\label{class_common_test}\index{CommonTest$<$ T $>$@{CommonTest$<$ T $>$}}
+
+
+Inheritance diagram for Common\+Test\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+% FIG 0
+
+
+Collaboration diagram for Common\+Test\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:
+% FIG 1
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_common_test_a34d4de46bf01a38d305277a9b83c67a1}\label{class_common_test_a34d4de46bf01a38d305277a9b83c67a1} 
+static void {\bfseries Set\+Up\+Test\+Suite} ()
+\item 
+\Hypertarget{class_common_test_a1ed5842244ccca6c3bee6eb9e3b8bc9b}\label{class_common_test_a1ed5842244ccca6c3bee6eb9e3b8bc9b} 
+static void {\bfseries Tear\+Down\+Test\+Suite} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{classtesting_1_1_test}{testing\+::\+Test}}}
+\begin{DoxyCompactItemize}
+\item 
+static void {\bfseries Set\+Up\+Test\+Suite} ()
+\item 
+static void {\bfseries Tear\+Down\+Test\+Suite} ()
+\item 
+static void {\bfseries Tear\+Down\+Test\+Case} ()
+\item 
+static void {\bfseries Set\+Up\+Test\+Case} ()
+\item 
+static bool {\bfseries Has\+Fatal\+Failure} ()
+\item 
+static bool {\bfseries Has\+Nonfatal\+Failure} ()
+\item 
+static bool {\bfseries Is\+Skipped} ()
+\item 
+static bool {\bfseries Has\+Failure} ()
+\item 
+static void {\bfseries Record\+Property} (const std\+::string \&key, const std\+::string \&value)
+\item 
+static void {\bfseries Record\+Property} (const std\+::string \&key, int value)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_common_test_a6dfdcede6964887b9f4254a0e0478e37}\label{class_common_test_a6dfdcede6964887b9f4254a0e0478e37} 
+typedef std\+::vector$<$ T $>$ {\bfseries Vector}
+\item 
+\Hypertarget{class_common_test_a62827e9d3064cddf4a8698747f1bd434}\label{class_common_test_a62827e9d3064cddf4a8698747f1bd434} 
+typedef std\+::set$<$ int $>$ {\bfseries Int\+Set}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_common_test_a4d98ceceb09fb614ff53e59e0695ea91}{Set\+Up}} () override
+\item 
+void \mbox{\hyperlink{class_common_test_a5e851b64ff1f73cb79b4dbd1d39fd075}{Tear\+Down}} () override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_common_test_ae59c4abcb833625a7baeb2048531ebec}\label{class_common_test_ae59c4abcb833625a7baeb2048531ebec} 
+T {\bfseries value\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_common_test_a52368ce1e65a865db9bdccbcc2cedaac}\label{class_common_test_a52368ce1e65a865db9bdccbcc2cedaac} 
+static T \texorpdfstring{$\ast$}{*} {\bfseries shared\+\_\+} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_common_test_a4d98ceceb09fb614ff53e59e0695ea91}\index{CommonTest$<$ T $>$@{CommonTest$<$ T $>$}!SetUp@{SetUp}}
+\index{SetUp@{SetUp}!CommonTest$<$ T $>$@{CommonTest$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetUp()}{SetUp()}}
+{\footnotesize\ttfamily \label{class_common_test_a4d98ceceb09fb614ff53e59e0695ea91} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_common_test}{Common\+Test}}$<$ T $>$\+::\+Set\+Up (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_test}{testing\+::\+Test}}.
+
+\Hypertarget{class_common_test_a5e851b64ff1f73cb79b4dbd1d39fd075}\index{CommonTest$<$ T $>$@{CommonTest$<$ T $>$}!TearDown@{TearDown}}
+\index{TearDown@{TearDown}!CommonTest$<$ T $>$@{CommonTest$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{TearDown()}{TearDown()}}
+{\footnotesize\ttfamily \label{class_common_test_a5e851b64ff1f73cb79b4dbd1d39fd075} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_common_test}{Common\+Test}}$<$ T $>$\+::\+Tear\+Down (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_test}{testing\+::\+Test}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/test/gtest-\/typed-\/test\+\_\+test.\+cc\end{DoxyCompactItemize}

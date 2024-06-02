@@ -1,0 +1,202 @@
+\doxysection{testing\+::internal\+::Brief\+Unit\+Test\+Result\+Printer Class Reference}
+\hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer}{}\label{classtesting_1_1internal_1_1_brief_unit_test_result_printer}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+
+
+Inheritance diagram for testing\+::internal\+::Brief\+Unit\+Test\+Result\+Printer\+:
+% FIG 0
+
+
+Collaboration diagram for testing\+::internal\+::Brief\+Unit\+Test\+Result\+Printer\+:
+% FIG 1
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a627950fb96d7d4cfd1f851d9bae1ecc7}{On\+Test\+Program\+Start}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a017614b56c6d30cded4e7a9e2cd674a6}{On\+Test\+Iteration\+Start}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&, int) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b8445b82d9aba7d1247b6f8d3d3abf3}{On\+Environments\+Set\+Up\+Start}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_af4c25c2190db6c39784329ad932f12ae}{On\+Environments\+Set\+Up\+End}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b36045c4179edcb54f82f1d51d38795}{On\+Test\+Case\+Start}} (const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aa83a33065f68e117bd7d840fe191be6a}{On\+Test\+Start}} (const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aba3a22e9088dfc0b689da4768c7dea00}{On\+Test\+Disabled}} (const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aca32da1e631ce44e64804078844f94b8}{On\+Test\+Part\+Result}} (const Test\+Part\+Result \&result) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a75d77451c674519eed649c52f73c61c0}{On\+Test\+End}} (const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&test\+\_\+info) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aaaa19bdfc9d9981e554cf40a4e4d6f42}{On\+Test\+Case\+End}} (const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a009cd64ff8c09e710f0ed30ac8a4dbd0}{On\+Environments\+Tear\+Down\+Start}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2c962765dfaa484ab9dc21699ce636c9}{On\+Environments\+Tear\+Down\+End}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a8533d95c71833e1f8d0d63f519ec2e6f}{On\+Test\+Iteration\+End}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&unit\+\_\+test, int iteration) override
+\item 
+void \mbox{\hyperlink{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a7429a7423562e4dd6cabce8ea6c661c8}{On\+Test\+Program\+End}} (const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries On\+Test\+Suite\+Start} (const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \&)
+\item 
+virtual void {\bfseries On\+Test\+Suite\+End} (const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Suite}} \&)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a813e9362f92046cbd7b0f30fcdd30ea8}\label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a813e9362f92046cbd7b0f30fcdd30ea8} 
+static void {\bfseries Print\+Test\+Name} (const char \texorpdfstring{$\ast$}{*}test\+\_\+suite, const char \texorpdfstring{$\ast$}{*}test)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_af4c25c2190db6c39784329ad932f12ae}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnEnvironmentsSetUpEnd@{OnEnvironmentsSetUpEnd}}
+\index{OnEnvironmentsSetUpEnd@{OnEnvironmentsSetUpEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnEnvironmentsSetUpEnd()}{OnEnvironmentsSetUpEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_af4c25c2190db6c39784329ad932f12ae} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Environments\+Set\+Up\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b8445b82d9aba7d1247b6f8d3d3abf3}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnEnvironmentsSetUpStart@{OnEnvironmentsSetUpStart}}
+\index{OnEnvironmentsSetUpStart@{OnEnvironmentsSetUpStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnEnvironmentsSetUpStart()}{OnEnvironmentsSetUpStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b8445b82d9aba7d1247b6f8d3d3abf3} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Environments\+Set\+Up\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2c962765dfaa484ab9dc21699ce636c9}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnEnvironmentsTearDownEnd@{OnEnvironmentsTearDownEnd}}
+\index{OnEnvironmentsTearDownEnd@{OnEnvironmentsTearDownEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnEnvironmentsTearDownEnd()}{OnEnvironmentsTearDownEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2c962765dfaa484ab9dc21699ce636c9} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Environments\+Tear\+Down\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a009cd64ff8c09e710f0ed30ac8a4dbd0}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnEnvironmentsTearDownStart@{OnEnvironmentsTearDownStart}}
+\index{OnEnvironmentsTearDownStart@{OnEnvironmentsTearDownStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnEnvironmentsTearDownStart()}{OnEnvironmentsTearDownStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a009cd64ff8c09e710f0ed30ac8a4dbd0} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Environments\+Tear\+Down\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aaaa19bdfc9d9981e554cf40a4e4d6f42}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestCaseEnd@{OnTestCaseEnd}}
+\index{OnTestCaseEnd@{OnTestCaseEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestCaseEnd()}{OnTestCaseEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aaaa19bdfc9d9981e554cf40a4e4d6f42} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Case\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b36045c4179edcb54f82f1d51d38795}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestCaseStart@{OnTestCaseStart}}
+\index{OnTestCaseStart@{OnTestCaseStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestCaseStart()}{OnTestCaseStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a2b36045c4179edcb54f82f1d51d38795} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Case\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_test_suite}{Test\+Case}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aba3a22e9088dfc0b689da4768c7dea00}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestDisabled@{OnTestDisabled}}
+\index{OnTestDisabled@{OnTestDisabled}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestDisabled()}{OnTestDisabled()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aba3a22e9088dfc0b689da4768c7dea00} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Disabled (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a75d77451c674519eed649c52f73c61c0}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestEnd@{OnTestEnd}}
+\index{OnTestEnd@{OnTestEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestEnd()}{OnTestEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a75d77451c674519eed649c52f73c61c0} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&}]{test\+\_\+info}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a8533d95c71833e1f8d0d63f519ec2e6f}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestIterationEnd@{OnTestIterationEnd}}
+\index{OnTestIterationEnd@{OnTestIterationEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestIterationEnd()}{OnTestIterationEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a8533d95c71833e1f8d0d63f519ec2e6f} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Iteration\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{unit\+\_\+test}{, }\item[{int}]{iteration}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a017614b56c6d30cded4e7a9e2cd674a6}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestIterationStart@{OnTestIterationStart}}
+\index{OnTestIterationStart@{OnTestIterationStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestIterationStart()}{OnTestIterationStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a017614b56c6d30cded4e7a9e2cd674a6} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Iteration\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{, }\item[{int}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aca32da1e631ce44e64804078844f94b8}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestPartResult@{OnTestPartResult}}
+\index{OnTestPartResult@{OnTestPartResult}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestPartResult()}{OnTestPartResult()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aca32da1e631ce44e64804078844f94b8} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Part\+Result (\begin{DoxyParamCaption}\item[{const Test\+Part\+Result \&}]{result}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a7429a7423562e4dd6cabce8ea6c661c8}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestProgramEnd@{OnTestProgramEnd}}
+\index{OnTestProgramEnd@{OnTestProgramEnd}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestProgramEnd()}{OnTestProgramEnd()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a7429a7423562e4dd6cabce8ea6c661c8} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Program\+End (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a627950fb96d7d4cfd1f851d9bae1ecc7}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestProgramStart@{OnTestProgramStart}}
+\index{OnTestProgramStart@{OnTestProgramStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestProgramStart()}{OnTestProgramStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_a627950fb96d7d4cfd1f851d9bae1ecc7} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Program\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_unit_test}{Unit\+Test}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+\Hypertarget{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aa83a33065f68e117bd7d840fe191be6a}\index{testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}!OnTestStart@{OnTestStart}}
+\index{OnTestStart@{OnTestStart}!testing::internal::BriefUnitTestResultPrinter@{testing::internal::BriefUnitTestResultPrinter}}
+\doxysubsubsection{\texorpdfstring{OnTestStart()}{OnTestStart()}}
+{\footnotesize\ttfamily \label{classtesting_1_1internal_1_1_brief_unit_test_result_printer_aa83a33065f68e117bd7d840fe191be6a} 
+void testing\+::internal\+::\+Brief\+Unit\+Test\+Result\+Printer\+::\+On\+Test\+Start (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classtesting_1_1_test_info}{Test\+Info}} \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtesting_1_1_test_event_listener}{testing\+::\+Test\+Event\+Listener}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googletest/src/gtest.\+cc\end{DoxyCompactItemize}

@@ -1,0 +1,177 @@
+\doxysection{sample3-\/inl.h}
+\hypertarget{sample3-inl_8h_source}{}\label{sample3-inl_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/samples/sample3-\/inl.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/samples/sample3-\/inl.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2005,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ A\ sample\ program\ demonstrating\ using\ Google\ C++\ testing\ framework.}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_SAMPLES\_SAMPLE3\_INL\_H\_}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_SAMPLES\_SAMPLE3\_INL\_H\_}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ Queue\ is\ a\ simple\ queue\ implemented\ as\ a\ singled-\/linked\ list.}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ The\ element\ type\ must\ support\ copy\ constructor.}}
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ E>\ \ \textcolor{comment}{//\ E\ is\ the\ element\ type}}
+\DoxyCodeLine{00041\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_queue}{Queue}};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ QueueNode\ is\ a\ node\ in\ a\ Queue,\ which\ consists\ of\ an\ element\ of}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ type\ E\ and\ a\ pointer\ to\ the\ next\ node.}}
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ E>\ \ \textcolor{comment}{//\ E\ is\ the\ element\ type}}
+\DoxyCodeLine{00046\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_queue_node}{QueueNode}}\ \{}
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_queue}{Queue}}<E>;}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00050\ \ \ \textcolor{comment}{//\ Gets\ the\ element\ in\ this\ node.}}
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{const}\ E\&\ element()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ element\_;\ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \textcolor{comment}{//\ Gets\ the\ next\ node\ in\ the\ queue.}}
+\DoxyCodeLine{00054\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode}}*\ next()\ \{\ \textcolor{keywordflow}{return}\ next\_;\ \}}
+\DoxyCodeLine{00055\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode}}*\ next()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ next\_;\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00058\ \ \ \textcolor{comment}{//\ Creates\ a\ node\ with\ a\ given\ element\ value.\ \ The\ next\ pointer\ is}}
+\DoxyCodeLine{00059\ \ \ \textcolor{comment}{//\ set\ to\ NULL.}}
+\DoxyCodeLine{00060\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_queue_node}{QueueNode}}(\textcolor{keyword}{const}\ E\&\ an\_element)}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ :\ element\_(an\_element),\ next\_(\textcolor{keyword}{nullptr})\ \{\}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \textcolor{comment}{//\ We\ disable\ the\ default\ assignment\ operator\ and\ copy\ c'tor.}}
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode}}\&);}
+\DoxyCodeLine{00065\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode}}\&);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ E\ element\_;}
+\DoxyCodeLine{00068\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode}}*\ next\_;}
+\DoxyCodeLine{00069\ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ E>\ \ \textcolor{comment}{//\ E\ is\ the\ element\ type.}}
+\DoxyCodeLine{00072\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_queue}{Queue}}\ \{}
+\DoxyCodeLine{00073\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \textcolor{comment}{//\ Creates\ an\ empty\ queue.}}
+\DoxyCodeLine{00075\ \ \ \mbox{\hyperlink{class_queue}{Queue}}()\ :\ head\_(\textcolor{keyword}{nullptr}),\ last\_(\textcolor{keyword}{nullptr}),\ size\_(0)\ \{\}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \textcolor{comment}{//\ D'tor.\ \ Clears\ the\ queue.}}
+\DoxyCodeLine{00078\ \ \ \mbox{\hyperlink{class_queue}{\string~Queue}}()\ \{\ Clear();\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \textcolor{comment}{//\ Clears\ the\ queue.}}
+\DoxyCodeLine{00081\ \ \ \textcolor{keywordtype}{void}\ Clear()\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{if}\ (size\_\ >\ 0)\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \textcolor{comment}{//\ 1.\ Deletes\ every\ node.}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ node\ =\ head\_;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ next\ =\ node-\/>next();}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ node\ =\ next;}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ next\ =\ node-\/>next();}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \textcolor{comment}{//\ 2.\ Resets\ the\ member\ variables.}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ head\_\ =\ last\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ size\_\ =\ 0;}
+\DoxyCodeLine{00096\ \ \ \ \ \}}
+\DoxyCodeLine{00097\ \ \ \}}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//\ Gets\ the\ number\ of\ elements.}}
+\DoxyCodeLine{00100\ \ \ \textcolor{keywordtype}{size\_t}\ Size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ size\_;\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ Gets\ the\ first\ element\ of\ the\ queue,\ or\ NULL\ if\ the\ queue\ is\ empty.}}
+\DoxyCodeLine{00103\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ Head()\ \{\ \textcolor{keywordflow}{return}\ head\_;\ \}}
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ Head()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ head\_;\ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \textcolor{comment}{//\ Gets\ the\ last\ element\ of\ the\ queue,\ or\ NULL\ if\ the\ queue\ is\ empty.}}
+\DoxyCodeLine{00107\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ Last()\ \{\ \textcolor{keywordflow}{return}\ last\_;\ \}}
+\DoxyCodeLine{00108\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ Last()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ last\_;\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \textcolor{comment}{//\ Adds\ an\ element\ to\ the\ end\ of\ the\ queue.\ \ A\ copy\ of\ the\ element\ is}}
+\DoxyCodeLine{00111\ \ \ \textcolor{comment}{//\ created\ using\ the\ copy\ constructor,\ and\ then\ stored\ in\ the\ queue.}}
+\DoxyCodeLine{00112\ \ \ \textcolor{comment}{//\ Changes\ made\ to\ the\ element\ in\ the\ queue\ doesn't\ affect\ the\ source}}
+\DoxyCodeLine{00113\ \ \ \textcolor{comment}{//\ object,\ and\ vice\ versa.}}
+\DoxyCodeLine{00114\ \ \ \textcolor{keywordtype}{void}\ Enqueue(\textcolor{keyword}{const}\ E\&\ element)\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ new\_node\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}(element);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordflow}{if}\ (size\_\ ==\ 0)\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ head\_\ =\ last\_\ =\ new\_node;}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ size\_\ =\ 1;}
+\DoxyCodeLine{00120\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ last\_-\/>next\_\ =\ new\_node;}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ last\_\ =\ new\_node;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ size\_++;}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ \ \ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ Removes\ the\ head\ of\ the\ queue\ and\ returns\ it.\ \ Returns\ NULL\ if}}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ the\ queue\ is\ empty.}}
+\DoxyCodeLine{00129\ \ \ E*\ Dequeue()\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordflow}{if}\ (size\_\ ==\ 0)\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00132\ \ \ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ \textcolor{keyword}{const}\ old\_head\ =\ head\_;}
+\DoxyCodeLine{00135\ \ \ \ \ head\_\ =\ head\_-\/>next\_;}
+\DoxyCodeLine{00136\ \ \ \ \ size\_-\/-\/;}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keywordflow}{if}\ (size\_\ ==\ 0)\ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ last\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00139\ \ \ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ E*\ element\ =\ \textcolor{keyword}{new}\ E(old\_head-\/>element());}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{delete}\ old\_head;}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordflow}{return}\ element;}
+\DoxyCodeLine{00145\ \ \ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \textcolor{comment}{//\ Applies\ a\ function/functor\ on\ each\ element\ of\ the\ queue,\ and}}
+\DoxyCodeLine{00148\ \ \ \textcolor{comment}{//\ returns\ the\ result\ in\ a\ new\ queue.\ \ The\ original\ queue\ is\ not}}
+\DoxyCodeLine{00149\ \ \ \textcolor{comment}{//\ affected.}}
+\DoxyCodeLine{00150\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00151\ \ \ \mbox{\hyperlink{class_queue}{Queue}}*\ Map(F\ function)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00152\ \ \ \ \ \mbox{\hyperlink{class_queue}{Queue}}*\ new\_queue\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_queue}{Queue}}();}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ node\ =\ head\_;\ node\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ node\ =\ node-\/>next\_)\ \{}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ new\_queue-\/>Enqueue(function(node-\/>element()));}
+\DoxyCodeLine{00156\ \ \ \ \ \}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keywordflow}{return}\ new\_queue;}
+\DoxyCodeLine{00159\ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00162\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ head\_;\ \ \textcolor{comment}{//\ The\ first\ node\ of\ the\ queue.}}
+\DoxyCodeLine{00163\ \ \ \mbox{\hyperlink{class_queue_node}{QueueNode<E>}}*\ last\_;\ \ \textcolor{comment}{//\ The\ last\ node\ of\ the\ queue.}}
+\DoxyCodeLine{00164\ \ \ \textcolor{keywordtype}{size\_t}\ size\_;\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ number\ of\ elements\ in\ the\ queue.}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \textcolor{comment}{//\ We\ disallow\ copying\ a\ queue.}}
+\DoxyCodeLine{00167\ \ \ \mbox{\hyperlink{class_queue}{Queue}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue}{Queue}}\&);}
+\DoxyCodeLine{00168\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue}{Queue}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_queue}{Queue}}\&);}
+\DoxyCodeLine{00169\ \};}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_SAMPLES\_SAMPLE3\_INL\_H\_}}
+
+\end{DoxyCode}

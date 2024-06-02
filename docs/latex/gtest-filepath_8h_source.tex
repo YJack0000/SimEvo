@@ -1,0 +1,226 @@
+\doxysection{gtest-\/filepath.h}
+\hypertarget{gtest-filepath_8h_source}{}\label{gtest-filepath_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/filepath.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googletest/include/gtest/internal/gtest-\/filepath.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Test\ filepath\ utilities}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ header\ file\ declares\ classes\ and\ functions\ used\ internally\ by}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ Google\ Test.\ \ They\ are\ subject\ to\ change\ without\ notice.}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ This\ file\ is\ \#included\ in\ gtest/internal/gtest-\/internal.h.}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ Do\ not\ include\ this\ header\ file\ separately!}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ IWYU\ pragma:\ private,\ include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gtest/.*}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ IWYU\ pragma:\ friend\ gmock/.*}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#ifndef\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_FILEPATH\_H\_}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_FILEPATH\_H\_}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/string.h"{}}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4251\ \(\backslash\)}
+\DoxyCodeLine{00048\ \textcolor{comment}{/*\ class\ A\ needs\ to\ have\ dll-\/interface\ to\ be\ used\ by\ clients\ of\ class\ B\ */})}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ namespace\ testing\ \{}
+\DoxyCodeLine{00051\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ FilePath\ -\/\ a\ class\ for\ file\ and\ directory\ pathname\ manipulation\ which}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ handles\ platform-\/specific\ conventions\ (like\ the\ pathname\ separator).}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ Used\ for\ helper\ functions\ for\ naming\ files\ in\ a\ directory\ for\ xml\ output.}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ Except\ for\ Set\ methods,\ all\ methods\ are\ const\ or\ static,\ which\ provides\ an}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ "{}immutable\ value\ object"{}\ -\/-\/\ useful\ for\ peace\ of\ mind.}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ A\ FilePath\ with\ a\ value\ ending\ in\ a\ path\ separator\ ("{}like/this/"{})\ represents}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ a\ directory,\ otherwise\ it\ is\ assumed\ to\ represent\ a\ file.\ In\ either\ case,}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ it\ may\ or\ may\ not\ represent\ an\ actual\ file\ or\ directory\ in\ the\ file\ system.}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ Names\ are\ NOT\ checked\ for\ syntax\ correctness\ -\/-\/\ no\ checking\ for\ illegal}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//\ characters,\ malformed\ paths,\ etc.}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{class\ }GTEST\_API\_\ FilePath\ \{}
+\DoxyCodeLine{00065\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00066\ \ \ FilePath()\ :\ pathname\_(\textcolor{stringliteral}{"{}"{}})\ \{\}}
+\DoxyCodeLine{00067\ \ \ FilePath(\textcolor{keyword}{const}\ FilePath\&\ rhs)\ :\ pathname\_(rhs.pathname\_)\ \{\}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \textcolor{keyword}{explicit}\ FilePath(\textcolor{keyword}{const}\ std::string\&\ pathname)\ :\ pathname\_(pathname)\ \{}
+\DoxyCodeLine{00070\ \ \ \ \ Normalize();}
+\DoxyCodeLine{00071\ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ FilePath\&\ operator=(\textcolor{keyword}{const}\ FilePath\&\ rhs)\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ Set(rhs);}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00076\ \ \ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \textcolor{keywordtype}{void}\ Set(\textcolor{keyword}{const}\ FilePath\&\ rhs)\ \{\ pathname\_\ =\ rhs.pathname\_;\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \textcolor{keyword}{const}\ std::string\&\ string()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ pathname\_;\ \}}
+\DoxyCodeLine{00081\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ c\_str()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ pathname\_.c\_str();\ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \textcolor{comment}{//\ Returns\ the\ current\ working\ directory,\ or\ "{}"{}\ if\ unsuccessful.}}
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{static}\ FilePath\ GetCurrentDir();}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \textcolor{comment}{//\ Given\ directory\ =\ "{}dir"{},\ base\_name\ =\ "{}test"{},\ number\ =\ 0,}}
+\DoxyCodeLine{00087\ \ \ \textcolor{comment}{//\ extension\ =\ "{}xml"{},\ returns\ "{}dir/test.xml"{}.\ If\ number\ is\ greater}}
+\DoxyCodeLine{00088\ \ \ \textcolor{comment}{//\ than\ zero\ (e.g.,\ 12),\ returns\ "{}dir/test\_12.xml"{}.}}
+\DoxyCodeLine{00089\ \ \ \textcolor{comment}{//\ On\ Windows\ platform,\ uses\ \(\backslash\)\ as\ the\ separator\ rather\ than\ /.}}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{static}\ FilePath\ MakeFileName(\textcolor{keyword}{const}\ FilePath\&\ directory,}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ FilePath\&\ base\_name,\ \textcolor{keywordtype}{int}\ number,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ extension);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//\ Given\ directory\ =\ "{}dir"{},\ relative\_path\ =\ "{}test.xml"{},}}
+\DoxyCodeLine{00095\ \ \ \textcolor{comment}{//\ returns\ "{}dir/test.xml"{}.}}
+\DoxyCodeLine{00096\ \ \ \textcolor{comment}{//\ On\ Windows,\ uses\ \(\backslash\)\ as\ the\ separator\ rather\ than\ /.}}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{static}\ FilePath\ ConcatPaths(\textcolor{keyword}{const}\ FilePath\&\ directory,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ FilePath\&\ relative\_path);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \textcolor{comment}{//\ Returns\ a\ pathname\ for\ a\ file\ that\ does\ not\ currently\ exist.\ The\ pathname}}
+\DoxyCodeLine{00101\ \ \ \textcolor{comment}{//\ will\ be\ directory/base\_name.extension\ or}}
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ directory/base\_name\_<number>.extension\ if\ directory/base\_name.extension}}
+\DoxyCodeLine{00103\ \ \ \textcolor{comment}{//\ already\ exists.\ The\ number\ will\ be\ incremented\ until\ a\ pathname\ is\ found}}
+\DoxyCodeLine{00104\ \ \ \textcolor{comment}{//\ that\ does\ not\ already\ exist.}}
+\DoxyCodeLine{00105\ \ \ \textcolor{comment}{//\ Examples:\ 'dir/foo\_test.xml'\ or\ 'dir/foo\_test\_1.xml'.}}
+\DoxyCodeLine{00106\ \ \ \textcolor{comment}{//\ There\ could\ be\ a\ race\ condition\ if\ two\ or\ more\ processes\ are\ calling\ this}}
+\DoxyCodeLine{00107\ \ \ \textcolor{comment}{//\ function\ at\ the\ same\ time\ -\/-\/\ they\ could\ both\ pick\ the\ same\ filename.}}
+\DoxyCodeLine{00108\ \ \ \textcolor{keyword}{static}\ FilePath\ GenerateUniqueFileName(\textcolor{keyword}{const}\ FilePath\&\ directory,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ FilePath\&\ base\_name,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ extension);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ path\ is\ "{}"{}.}}
+\DoxyCodeLine{00113\ \ \ \textcolor{keywordtype}{bool}\ IsEmpty()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ pathname\_.empty();\ \}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \textcolor{comment}{//\ If\ input\ name\ has\ a\ trailing\ separator\ character,\ removes\ it\ and\ returns}}
+\DoxyCodeLine{00116\ \ \ \textcolor{comment}{//\ the\ name,\ otherwise\ return\ the\ name\ string\ unmodified.}}
+\DoxyCodeLine{00117\ \ \ \textcolor{comment}{//\ On\ Windows\ platform,\ uses\ \(\backslash\)\ as\ the\ separator,\ other\ platforms\ use\ /.}}
+\DoxyCodeLine{00118\ \ \ FilePath\ RemoveTrailingPathSeparator()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \textcolor{comment}{//\ Returns\ a\ copy\ of\ the\ FilePath\ with\ the\ directory\ part\ removed.}}
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ Example:\ FilePath("{}path/to/file"{}).RemoveDirectoryName()\ returns}}
+\DoxyCodeLine{00122\ \ \ \textcolor{comment}{//\ FilePath("{}file"{}).\ If\ there\ is\ no\ directory\ part\ ("{}just\_a\_file"{}),\ it\ returns}}
+\DoxyCodeLine{00123\ \ \ \textcolor{comment}{//\ the\ FilePath\ unmodified.\ If\ there\ is\ no\ file\ part\ ("{}just\_a\_dir/"{})\ it}}
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ returns\ an\ empty\ FilePath\ ("{}"{}).}}
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//\ On\ Windows\ platform,\ '\(\backslash\)'\ is\ the\ path\ separator,\ otherwise\ it\ is\ '/'.}}
+\DoxyCodeLine{00126\ \ \ FilePath\ RemoveDirectoryName()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ RemoveFileName\ returns\ the\ directory\ path\ with\ the\ filename\ removed.}}
+\DoxyCodeLine{00129\ \ \ \textcolor{comment}{//\ Example:\ FilePath("{}path/to/file"{}).RemoveFileName()\ returns\ "{}path/to/"{}.}}
+\DoxyCodeLine{00130\ \ \ \textcolor{comment}{//\ If\ the\ FilePath\ is\ "{}a\_file"{}\ or\ "{}/a\_file"{},\ RemoveFileName\ returns}}
+\DoxyCodeLine{00131\ \ \ \textcolor{comment}{//\ FilePath("{}./"{})\ or,\ on\ Windows,\ FilePath("{}.\(\backslash\)\(\backslash\)"{}).\ If\ the\ filepath\ does}}
+\DoxyCodeLine{00132\ \ \ \textcolor{comment}{//\ not\ have\ a\ file,\ like\ "{}just/a/dir/"{},\ it\ returns\ the\ FilePath\ unmodified.}}
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ On\ Windows\ platform,\ '\(\backslash\)'\ is\ the\ path\ separator,\ otherwise\ it\ is\ '/'.}}
+\DoxyCodeLine{00134\ \ \ FilePath\ RemoveFileName()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ Returns\ a\ copy\ of\ the\ FilePath\ with\ the\ case-\/insensitive\ extension\ removed.}}
+\DoxyCodeLine{00137\ \ \ \textcolor{comment}{//\ Example:\ FilePath("{}dir/file.exe"{}).RemoveExtension("{}EXE"{})\ returns}}
+\DoxyCodeLine{00138\ \ \ \textcolor{comment}{//\ FilePath("{}dir/file"{}).\ If\ a\ case-\/insensitive\ extension\ is\ not}}
+\DoxyCodeLine{00139\ \ \ \textcolor{comment}{//\ found,\ returns\ a\ copy\ of\ the\ original\ FilePath.}}
+\DoxyCodeLine{00140\ \ \ FilePath\ RemoveExtension(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ extension)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \textcolor{comment}{//\ Creates\ directories\ so\ that\ path\ exists.\ Returns\ true\ if\ successful\ or\ if}}
+\DoxyCodeLine{00143\ \ \ \textcolor{comment}{//\ the\ directories\ already\ exist;\ returns\ false\ if\ unable\ to\ create}}
+\DoxyCodeLine{00144\ \ \ \textcolor{comment}{//\ directories\ for\ any\ reason.\ Will\ also\ return\ false\ if\ the\ FilePath\ does}}
+\DoxyCodeLine{00145\ \ \ \textcolor{comment}{//\ not\ represent\ a\ directory\ (that\ is,\ it\ doesn't\ end\ with\ a\ path\ separator).}}
+\DoxyCodeLine{00146\ \ \ \textcolor{keywordtype}{bool}\ CreateDirectoriesRecursively()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \textcolor{comment}{//\ Create\ the\ directory\ so\ that\ path\ exists.\ Returns\ true\ if\ successful\ or}}
+\DoxyCodeLine{00149\ \ \ \textcolor{comment}{//\ if\ the\ directory\ already\ exists;\ returns\ false\ if\ unable\ to\ create\ the}}
+\DoxyCodeLine{00150\ \ \ \textcolor{comment}{//\ directory\ for\ any\ reason,\ including\ if\ the\ parent\ directory\ does\ not}}
+\DoxyCodeLine{00151\ \ \ \textcolor{comment}{//\ exist.\ Not\ named\ "{}CreateDirectory"{}\ because\ that's\ a\ macro\ on\ Windows.}}
+\DoxyCodeLine{00152\ \ \ \textcolor{keywordtype}{bool}\ CreateFolder()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ FilePath\ describes\ something\ in\ the\ file-\/system,}}
+\DoxyCodeLine{00155\ \ \ \textcolor{comment}{//\ either\ a\ file,\ directory,\ or\ whatever,\ and\ that\ something\ exists.}}
+\DoxyCodeLine{00156\ \ \ \textcolor{keywordtype}{bool}\ FileOrDirectoryExists()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ pathname\ describes\ a\ directory\ in\ the\ file-\/system}}
+\DoxyCodeLine{00159\ \ \ \textcolor{comment}{//\ that\ exists.}}
+\DoxyCodeLine{00160\ \ \ \textcolor{keywordtype}{bool}\ DirectoryExists()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ FilePath\ ends\ with\ a\ path\ separator,\ which\ indicates\ that}}
+\DoxyCodeLine{00163\ \ \ \textcolor{comment}{//\ it\ is\ intended\ to\ represent\ a\ directory.\ Returns\ false\ otherwise.}}
+\DoxyCodeLine{00164\ \ \ \textcolor{comment}{//\ This\ does\ NOT\ check\ that\ a\ directory\ (or\ file)\ actually\ exists.}}
+\DoxyCodeLine{00165\ \ \ \textcolor{keywordtype}{bool}\ IsDirectory()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ pathname\ describes\ a\ root\ directory.\ (Windows\ has\ one}}
+\DoxyCodeLine{00168\ \ \ \textcolor{comment}{//\ root\ directory\ per\ disk\ drive.)}}
+\DoxyCodeLine{00169\ \ \ \textcolor{keywordtype}{bool}\ IsRootDirectory()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ pathname\ describes\ an\ absolute\ path.}}
+\DoxyCodeLine{00172\ \ \ \textcolor{keywordtype}{bool}\ IsAbsolutePath()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00175\ \ \ \textcolor{comment}{//\ Replaces\ multiple\ consecutive\ separators\ with\ a\ single\ separator.}}
+\DoxyCodeLine{00176\ \ \ \textcolor{comment}{//\ For\ example,\ "{}bar///foo"{}\ becomes\ "{}bar/foo"{}.\ Does\ not\ eliminate\ other}}
+\DoxyCodeLine{00177\ \ \ \textcolor{comment}{//\ redundancies\ that\ might\ be\ in\ a\ pathname\ involving\ "{}."{}\ or\ "{}.."{}.}}
+\DoxyCodeLine{00178\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00179\ \ \ \textcolor{comment}{//\ A\ pathname\ with\ multiple\ consecutive\ separators\ may\ occur\ either\ through}}
+\DoxyCodeLine{00180\ \ \ \textcolor{comment}{//\ user\ error\ or\ as\ a\ result\ of\ some\ scripts\ or\ APIs\ that\ generate\ a\ pathname}}
+\DoxyCodeLine{00181\ \ \ \textcolor{comment}{//\ with\ a\ trailing\ separator.\ On\ other\ platforms\ the\ same\ API\ or\ script}}
+\DoxyCodeLine{00182\ \ \ \textcolor{comment}{//\ may\ NOT\ generate\ a\ pathname\ with\ a\ trailing\ "{}/"{}.\ Then\ elsewhere\ that}}
+\DoxyCodeLine{00183\ \ \ \textcolor{comment}{//\ pathname\ may\ have\ another\ "{}/"{}\ and\ pathname\ components\ added\ to\ it,}}
+\DoxyCodeLine{00184\ \ \ \textcolor{comment}{//\ without\ checking\ for\ the\ separator\ already\ being\ there.}}
+\DoxyCodeLine{00185\ \ \ \textcolor{comment}{//\ The\ script\ language\ and\ operating\ system\ may\ allow\ paths\ like\ "{}foo//bar"{}}}
+\DoxyCodeLine{00186\ \ \ \textcolor{comment}{//\ but\ some\ of\ the\ functions\ in\ FilePath\ will\ not\ handle\ that\ correctly.\ In}}
+\DoxyCodeLine{00187\ \ \ \textcolor{comment}{//\ particular,\ RemoveTrailingPathSeparator()\ only\ removes\ one\ separator,\ and}}
+\DoxyCodeLine{00188\ \ \ \textcolor{comment}{//\ it\ is\ called\ in\ CreateDirectoriesRecursively()\ assuming\ that\ it\ will\ change}}
+\DoxyCodeLine{00189\ \ \ \textcolor{comment}{//\ a\ pathname\ from\ directory\ syntax\ (trailing\ separator)\ to\ filename\ syntax.}}
+\DoxyCodeLine{00190\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00191\ \ \ \textcolor{comment}{//\ On\ Windows\ this\ method\ also\ replaces\ the\ alternate\ path\ separator\ '/'\ with}}
+\DoxyCodeLine{00192\ \ \ \textcolor{comment}{//\ the\ primary\ path\ separator\ '\(\backslash\)\(\backslash\)',\ so\ that\ for\ example\ "{}bar\(\backslash\)\(\backslash\)/\(\backslash\)\(\backslash\)foo"{}\ becomes}}
+\DoxyCodeLine{00193\ \ \ \textcolor{comment}{//\ "{}bar\(\backslash\)\(\backslash\)foo"{}.}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \textcolor{keywordtype}{void}\ Normalize();}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \textcolor{comment}{//\ Returns\ a\ pointer\ to\ the\ last\ occurrence\ of\ a\ valid\ path\ separator\ in}}
+\DoxyCodeLine{00198\ \ \ \textcolor{comment}{//\ the\ FilePath.\ On\ Windows,\ for\ example,\ both\ '/'\ and\ '\(\backslash\)'\ are\ valid\ path}}
+\DoxyCodeLine{00199\ \ \ \textcolor{comment}{//\ separators.\ Returns\ NULL\ if\ no\ path\ separator\ was\ found.}}
+\DoxyCodeLine{00200\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ FindLastPathSeparator()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \textcolor{comment}{//\ Returns\ the\ length\ of\ the\ path\ root,\ including\ the\ directory\ separator\ at}}
+\DoxyCodeLine{00203\ \ \ \textcolor{comment}{//\ the\ end\ of\ the\ prefix.\ Returns\ zero\ by\ definition\ if\ the\ path\ is\ relative.}}
+\DoxyCodeLine{00204\ \ \ \textcolor{comment}{//\ Examples:}}
+\DoxyCodeLine{00205\ \ \ \textcolor{comment}{//\ -\/\ [Windows]\ "{}..\(\backslash\)Sibling"{}\ =>\ 0}}
+\DoxyCodeLine{00206\ \ \ \textcolor{comment}{//\ -\/\ [Windows]\ "{}\(\backslash\)Windows"{}\ =>\ 1}}
+\DoxyCodeLine{00207\ \ \ \textcolor{comment}{//\ -\/\ [Windows]\ "{}C:/Windows\(\backslash\)Notepad.exe"{}\ =>\ 3}}
+\DoxyCodeLine{00208\ \ \ \textcolor{comment}{//\ -\/\ [Windows]\ "{}\(\backslash\)\(\backslash\)Host\(\backslash\)Share\(\backslash\)C\$/Windows"{}\ =>\ 13}}
+\DoxyCodeLine{00209\ \ \ \textcolor{comment}{//\ -\/\ [UNIX]\ "{}/bin"{}\ =>\ 1}}
+\DoxyCodeLine{00210\ \ \ \textcolor{keywordtype}{size\_t}\ CalculateRootLength()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \ \ std::string\ pathname\_;}
+\DoxyCodeLine{00213\ \};\ \ \textcolor{comment}{//\ class\ FilePath}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00216\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()\ \ \textcolor{comment}{//\ \ 4251}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLETEST\_INCLUDE\_GTEST\_INTERNAL\_GTEST\_FILEPATH\_H\_}}
+
+\end{DoxyCode}

@@ -1,0 +1,123 @@
+\chapter{Quickstart\+: Building with Bazel}
+\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel}{}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel}\index{Quickstart: Building with Bazel@{Quickstart: Building with Bazel}}
+\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md233}%
+\Hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md233}%
+ This tutorial aims to get you up and running with Google\+Test using the Bazel build system. If you\textquotesingle{}re using Google\+Test for the first time or need a refresher, we recommend this tutorial as a starting point.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md234}{}\doxysection{\texorpdfstring{Prerequisites}{Prerequisites}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md234}
+To complete this tutorial, you\textquotesingle{}ll need\+:
+
+
+\begin{DoxyItemize}
+\item A compatible operating system (e.\+g. Linux, mac\+OS, Windows).
+\item A compatible C++ compiler that supports at least C++14.
+\item \href{https://bazel.build/}{\texttt{ Bazel}}, the preferred build system used by the Google\+Test team.
+\end{DoxyItemize}
+
+See \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2platforms}{Supported Platforms}{0} for more information about platforms compatible with Google\+Test.
+
+If you don\textquotesingle{}t already have Bazel installed, see the \href{https://bazel.build/install}{\texttt{ Bazel installation guide}}.
+
+\{\+: .callout .note\} Note\+: The terminal commands in this tutorial show a Unix shell prompt, but the commands work on the Windows command line as well.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md235}{}\doxysection{\texorpdfstring{Set up a Bazel workspace}{Set up a Bazel workspace}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md235}
+A \href{https://docs.bazel.build/versions/main/build-ref.html\#workspace}{\texttt{ Bazel workspace}} is a directory on your filesystem that you use to manage source files for the software you want to build. Each workspace directory has a text file named {\ttfamily WORKSPACE} which may be empty, or may contain references to external dependencies required to build the outputs.
+
+First, create a directory for your workspace\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$\ mkdir\ my\_workspace\ \&\&\ cd\ my\_workspace}
+
+\end{DoxyCode}
+
+
+Next, you’ll create the {\ttfamily WORKSPACE} file to specify dependencies. A common and recommended way to depend on Google\+Test is to use a \href{https://docs.bazel.build/versions/main/external.html}{\texttt{ Bazel external dependency}} via the \href{https://docs.bazel.build/versions/main/repo/http.html\#http_archive}{\texttt{ {\ttfamily http\+\_\+archive} rule}}. To do this, in the root directory of your workspace ({\ttfamily my\+\_\+workspace/}), create a file named {\ttfamily WORKSPACE} with the following contents\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{load("{}@bazel\_tools//tools/build\_defs/repo:http.bzl"{},\ "{}http\_archive"{})}
+\DoxyCodeLine{}
+\DoxyCodeLine{http\_archive(}
+\DoxyCodeLine{\ \ name\ =\ "{}com\_google\_googletest"{},}
+\DoxyCodeLine{\ \ urls\ =\ ["{}https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"{}],}
+\DoxyCodeLine{\ \ strip\_prefix\ =\ "{}googletest-\/609281088cfefc76f9d0ce82e1ff6c30cc3591e5"{},}
+\DoxyCodeLine{)}
+
+\end{DoxyCode}
+
+
+The above configuration declares a dependency on Google\+Test which is downloaded as a ZIP archive from Git\+Hub. In the above example, {\ttfamily 609281088cfefc76f9d0ce82e1ff6c30cc3591e5} is the Git commit hash of the Google\+Test version to use; we recommend updating the hash often to point to the latest version.
+
+Now you\textquotesingle{}re ready to build C++ code that uses Google\+Test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md236}{}\doxysection{\texorpdfstring{Create and run a binary}{Create and run a binary}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md236}
+With your Bazel workspace set up, you can now use Google\+Test code within your own project.
+
+As an example, create a file named {\ttfamily hello\+\_\+test.\+cc} in your {\ttfamily my\+\_\+workspace} directory with the following contents\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <gtest/gtest.h>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Demonstrate\ some\ basic\ assertions.}}
+\DoxyCodeLine{TEST(HelloTest,\ BasicAssertions)\ \{}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ Expect\ two\ strings\ not\ to\ be\ equal.}}
+\DoxyCodeLine{\ \ EXPECT\_STRNE(\textcolor{stringliteral}{"{}hello"{}},\ \textcolor{stringliteral}{"{}world"{}});}
+\DoxyCodeLine{\ \ \textcolor{comment}{//\ Expect\ equality.}}
+\DoxyCodeLine{\ \ EXPECT\_EQ(7\ *\ 6,\ 42);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Google\+Test provides \href{primer.md\#assertions}{\texttt{ assertions}} that you use to test the behavior of your code. The above sample includes the main Google\+Test header file and demonstrates some basic assertions.
+
+To build the code, create a file named {\ttfamily BUILD} in the same directory with the following contents\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cc\_test(}
+\DoxyCodeLine{\ \ name\ =\ "{}hello\_test"{},}
+\DoxyCodeLine{\ \ size\ =\ "{}small"{},}
+\DoxyCodeLine{\ \ srcs\ =\ ["{}hello\_test.cc"{}],}
+\DoxyCodeLine{\ \ deps\ =\ ["{}@com\_google\_googletest//:gtest\_main"{}],}
+\DoxyCodeLine{)}
+
+\end{DoxyCode}
+
+
+This {\ttfamily cc\+\_\+test} rule declares the C++ test binary you want to build, and links to Google\+Test ({\ttfamily //\+:gtest\+\_\+main}) using the prefix you specified in the {\ttfamily WORKSPACE} file ({\ttfamily @com\+\_\+google\+\_\+googletest}). For more information about Bazel {\ttfamily BUILD} files, see the \href{https://docs.bazel.build/versions/main/tutorial/cpp.html}{\texttt{ Bazel C++ Tutorial}}.
+
+Now you can build and run your test\+:
+
+
+\begin{DoxyPre}
+{\bfseries{my\_workspace\$ bazel test -\/-\/test\_output=all //:hello\_test}}
+INFO: Analyzed target //:hello\_test (26 packages loaded, 362 targets configured).
+INFO: Found 1 test target...
+INFO: From Testing //:hello\_test:
+==================== Test output for //:hello\_test:
+Running main() from gmock\_main.cc
+[==========] Running 1 test from 1 test suite.
+[-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/] Global test environment set-\/up.
+[-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/] 1 test from HelloTest
+[ RUN      ] HelloTest.BasicAssertions
+[       OK ] HelloTest.BasicAssertions (0 ms)
+[-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/] 1 test from HelloTest (0 ms total)
+
+[-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/] Global test environment tear-\/down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+================================================================================
+Target //:hello\_test up-\/to-\/date:
+  bazel-\/bin/hello\_test
+INFO: Elapsed time: 4.190s, Critical Path: 3.05s
+INFO: 27 processes: 8 internal, 19 linux-\/sandbox.
+INFO: Build completed successfully, 27 total actions
+//:hello\_test                                                     PASSED in 0.1s
+
+INFO: Build completed successfully, 27 total actions
+\end{DoxyPre}
+
+
+Congratulations! You\textquotesingle{}ve successfully built and run a test binary using Google\+Test.\hypertarget{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md237}{}\doxysection{\texorpdfstring{Next steps}{Next steps}}\label{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2quickstart-bazel_autotoc_md237}
+
+\begin{DoxyItemize}
+\item \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2primer}{Check out the Primer}{0} to start learning how to write simple tests.
+\item \doxysectlink{md__2_users_2yjack_2_git_hub_2_sim_evo_2build_2__deps_2googletest-src_2docs_2samples}{See the code samples}{0} for more examples showing how to use a variety of Google\+Test features. 
+\end{DoxyItemize}

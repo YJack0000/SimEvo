@@ -1,0 +1,39 @@
+\doxysection{testing\+::internal\+::This\+Ref\+Adjuster\texorpdfstring{$<$}{<} Pattern \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structtesting_1_1internal_1_1_this_ref_adjuster}{}\label{structtesting_1_1internal_1_1_this_ref_adjuster}\index{testing::internal::ThisRefAdjuster$<$ Pattern $>$@{testing::internal::ThisRefAdjuster$<$ Pattern $>$}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\using \mbox{\hyperlink{structtesting_1_1internal_1_1_this_ref_adjuster_a7b09ab21e7c8ca5458fbe5b684d173b9}{AdjustT}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structtesting_1_1internal_1_1_this_ref_adjuster_adfffcd5147f6da9b06b5eb90168b7133}\label{structtesting_1_1internal_1_1_this_ref_adjuster_adfffcd5147f6da9b06b5eb90168b7133} 
+{\footnotesize template$<$typename Mock\+Type $>$ }\\static AdjustT$<$ Mock\+Type $>$ {\bfseries Adjust} (const Mock\+Type \&mock)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{structtesting_1_1internal_1_1_this_ref_adjuster_a7b09ab21e7c8ca5458fbe5b684d173b9}\index{testing::internal::ThisRefAdjuster$<$ Pattern $>$@{testing::internal::ThisRefAdjuster$<$ Pattern $>$}!AdjustT@{AdjustT}}
+\index{AdjustT@{AdjustT}!testing::internal::ThisRefAdjuster$<$ Pattern $>$@{testing::internal::ThisRefAdjuster$<$ Pattern $>$}}
+\doxysubsubsection{\texorpdfstring{AdjustT}{AdjustT}}
+{\footnotesize\ttfamily \label{structtesting_1_1internal_1_1_this_ref_adjuster_a7b09ab21e7c8ca5458fbe5b684d173b9} 
+template$<$typename Pattern $>$ \\
+template$<$typename T $>$ \\
+using \mbox{\hyperlink{structtesting_1_1internal_1_1_this_ref_adjuster}{testing\+::internal\+::\+This\+Ref\+Adjuster}}$<$ Pattern $>$\+::\+AdjustT}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \textcolor{keyword}{typename}\ std::conditional<}
+\DoxyCodeLine{\ \ \ \ \ \ std::is\_const<typename\ std::remove\_reference<Pattern>::type>::value,}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<std::is\_lvalue\_reference<Pattern>::value,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&,\ \textcolor{keyword}{const}\ T\&\&>::type,}
+\DoxyCodeLine{\ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<std::is\_lvalue\_reference<Pattern>::value,\ T\&,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\&\&>::type>::type}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/yjack/\+Git\+Hub/\+Sim\+Evo/build/\+\_\+deps/googletest-\/src/googlemock/include/gmock/gmock-\/function-\/mocker.\+h\end{DoxyCompactItemize}

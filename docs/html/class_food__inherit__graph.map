@@ -1,0 +1,5 @@
+<map id="Food" name="Food">
+<area shape="rect" id="Node000001" title=" " alt="" coords="24,327,168,452"/>
+<area shape="rect" id="Node000002" href="$class_environment_object.html" title=" " alt="" coords="5,5,187,279"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,294,99,327,93,327,93,294"/>
+</map>

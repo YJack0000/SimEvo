@@ -1,0 +1,81 @@
+\doxysection{gmock\+\_\+test\+\_\+utils Namespace Reference}
+\hypertarget{namespacegmock__test__utils}{}\label{namespacegmock__test__utils}\index{gmock\_test\_utils@{gmock\_test\_utils}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegmock__test__utils_ae6b4256fed63c744d722ecdf0f217529}{Get\+Source\+Dir}} ()
+\item 
+\mbox{\hyperlink{namespacegmock__test__utils_a3965eb0947849f247899f6edff7051f7}{Get\+Test\+Executable\+Path}} (executable\+\_\+name)
+\item 
+\mbox{\hyperlink{namespacegmock__test__utils_ac27ecc41752ab1bb57ffabb2817dbef6}{Get\+Exit\+Status}} (exit\+\_\+code)
+\item 
+\mbox{\hyperlink{namespacegmock__test__utils_ab436e920b5feb62a33936b0d839702e7}{Main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacegmock__test__utils_a31a0e33565ec805d314cb0a4eb8317e6}\label{namespacegmock__test__utils_a31a0e33565ec805d314cb0a4eb8317e6} 
+{\bfseries Subprocess} = \mbox{\hyperlink{classgtest__test__utils_1_1_subprocess}{gtest\+\_\+test\+\_\+utils.\+Subprocess}}
+\item 
+\Hypertarget{namespacegmock__test__utils_a959c5af591e4d49b6d35745205b64509}\label{namespacegmock__test__utils_a959c5af591e4d49b6d35745205b64509} 
+{\bfseries Test\+Case} = gtest\+\_\+test\+\_\+utils.\+Test\+Case
+\item 
+\Hypertarget{namespacegmock__test__utils_a6f0938b5e8839ebc847b52a38f4d35e3}\label{namespacegmock__test__utils_a6f0938b5e8839ebc847b52a38f4d35e3} 
+{\bfseries environ} = gtest\+\_\+test\+\_\+utils.\+environ
+\item 
+\Hypertarget{namespacegmock__test__utils_ab0c69f8ce649fdd5a17f99deedf3eb29}\label{namespacegmock__test__utils_ab0c69f8ce649fdd5a17f99deedf3eb29} 
+{\bfseries Set\+Env\+Var} = gtest\+\_\+test\+\_\+utils.\+Set\+Env\+Var
+\item 
+\Hypertarget{namespacegmock__test__utils_a9392c288e6da3024d65ec0bddc0d86c3}\label{namespacegmock__test__utils_a9392c288e6da3024d65ec0bddc0d86c3} 
+{\bfseries PREMATURE\+\_\+\+EXIT\+\_\+\+FILE\+\_\+\+ENV\+\_\+\+VAR} = gtest\+\_\+test\+\_\+utils.\+PREMATURE\+\_\+\+EXIT\+\_\+\+FILE\+\_\+\+ENV\+\_\+\+VAR
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Unit test utilities for Google C++ Mocking Framework.\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacegmock__test__utils_ac27ecc41752ab1bb57ffabb2817dbef6}\index{gmock\_test\_utils@{gmock\_test\_utils}!GetExitStatus@{GetExitStatus}}
+\index{GetExitStatus@{GetExitStatus}!gmock\_test\_utils@{gmock\_test\_utils}}
+\doxysubsubsection{\texorpdfstring{GetExitStatus()}{GetExitStatus()}}
+{\footnotesize\ttfamily \label{namespacegmock__test__utils_ac27ecc41752ab1bb57ffabb2817dbef6} 
+gmock\+\_\+test\+\_\+utils.\+Get\+Exit\+Status (\begin{DoxyParamCaption}\item[{}]{exit\+\_\+code}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the argument to exit(), or -1 if exit() wasn't called.
+
+Args:
+  exit_code: the result value of os.system(command).
+\end{DoxyVerb}
+ \Hypertarget{namespacegmock__test__utils_ae6b4256fed63c744d722ecdf0f217529}\index{gmock\_test\_utils@{gmock\_test\_utils}!GetSourceDir@{GetSourceDir}}
+\index{GetSourceDir@{GetSourceDir}!gmock\_test\_utils@{gmock\_test\_utils}}
+\doxysubsubsection{\texorpdfstring{GetSourceDir()}{GetSourceDir()}}
+{\footnotesize\ttfamily \label{namespacegmock__test__utils_ae6b4256fed63c744d722ecdf0f217529} 
+gmock\+\_\+test\+\_\+utils.\+Get\+Source\+Dir (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the absolute path of the directory where the .py files are.\end{DoxyVerb}
+ \Hypertarget{namespacegmock__test__utils_a3965eb0947849f247899f6edff7051f7}\index{gmock\_test\_utils@{gmock\_test\_utils}!GetTestExecutablePath@{GetTestExecutablePath}}
+\index{GetTestExecutablePath@{GetTestExecutablePath}!gmock\_test\_utils@{gmock\_test\_utils}}
+\doxysubsubsection{\texorpdfstring{GetTestExecutablePath()}{GetTestExecutablePath()}}
+{\footnotesize\ttfamily \label{namespacegmock__test__utils_a3965eb0947849f247899f6edff7051f7} 
+gmock\+\_\+test\+\_\+utils.\+Get\+Test\+Executable\+Path (\begin{DoxyParamCaption}\item[{}]{executable\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the absolute path of the test binary given its name.
+
+The function will print a message and abort the program if the resulting file
+doesn't exist.
+
+Args:
+  executable_name: name of the test binary that the test script runs.
+
+Returns:
+  The absolute path of the test binary.
+\end{DoxyVerb}
+ \Hypertarget{namespacegmock__test__utils_ab436e920b5feb62a33936b0d839702e7}\index{gmock\_test\_utils@{gmock\_test\_utils}!Main@{Main}}
+\index{Main@{Main}!gmock\_test\_utils@{gmock\_test\_utils}}
+\doxysubsubsection{\texorpdfstring{Main()}{Main()}}
+{\footnotesize\ttfamily \label{namespacegmock__test__utils_ab436e920b5feb62a33936b0d839702e7} 
+gmock\+\_\+test\+\_\+utils.\+Main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Runs the unit test.\end{DoxyVerb}
+ 

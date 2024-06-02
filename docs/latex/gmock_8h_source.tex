@@ -1,0 +1,102 @@
+\doxysection{gmock.\+h}
+\hypertarget{gmock_8h_source}{}\label{gmock_8h_source}\index{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock.h@{/Users/yjack/GitHub/SimEvo/build/\_deps/googletest-\/src/googlemock/include/gmock/gmock.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ is\ the\ main\ header\ file\ a\ user\ should\ include.}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_H\_}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_H\_}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{//\ This\ file\ implements\ the\ following\ syntax:}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ \ \ ON\_CALL(mock\_object,\ Method(...))}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ \ \ \ \ .With(...)\ ?}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ \ \ \ \ .WillByDefault(...);}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ where\ With()\ is\ optional\ and\ WillByDefault()\ must\ appear\ exactly}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ once.}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock\_object,\ Method(...))}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ \ \ \ \ .With(...)\ ?}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ \ \ \ \ .Times(...)\ ?}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ \ \ \ \ .InSequence(...)\ *}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ \ \ \ \ .WillOnce(...)\ *}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ \ \ \ \ .WillRepeatedly(...)\ ?}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ \ \ \ \ .RetiresOnSaturation()\ ?\ ;}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ where\ all\ clauses\ are\ optional\ and\ WillOnce()\ can\ be\ repeated.}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/actions.h"{}}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/cardinalities.h"{}}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/function-\/mocker.h"{}}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/matchers.h"{}}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/more-\/actions.h"{}}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/more-\/matchers.h"{}}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/nice-\/strict.h"{}}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/internal-\/utils.h"{}}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ Declares\ Google\ Mock\ flags\ that\ we\ want\ a\ user\ to\ use\ programmatically.}}
+\DoxyCodeLine{00067\ GMOCK\_DECLARE\_bool\_(catch\_leaked\_mocks);}
+\DoxyCodeLine{00068\ GMOCK\_DECLARE\_string\_(verbose);}
+\DoxyCodeLine{00069\ GMOCK\_DECLARE\_int32\_(default\_mock\_behavior);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ Initializes\ Google\ Mock.\ \ This\ must\ be\ called\ before\ running\ the}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ tests.\ \ In\ particular,\ it\ parses\ the\ command\ line\ for\ the\ flags}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ that\ Google\ Mock\ recognizes.\ \ Whenever\ a\ Google\ Mock\ flag\ is\ seen,}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ it\ is\ removed\ from\ argv,\ and\ *argc\ is\ decremented.}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ No\ value\ is\ returned.\ \ Instead,\ the\ Google\ Mock\ flag\ variables\ are}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ updated.}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ Since\ Google\ Test\ is\ needed\ for\ Google\ Mock\ to\ work,\ this\ function}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ also\ initializes\ Google\ Test\ and\ parses\ its\ flags,\ if\ that\ hasn't}}
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ been\ done.}}
+\DoxyCodeLine{00084\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock(\textcolor{keywordtype}{int}*\ argc,\ \textcolor{keywordtype}{char}**\ argv);}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{comment}{//\ This\ overloaded\ version\ can\ be\ used\ in\ Windows\ programs\ compiled\ in}}
+\DoxyCodeLine{00087\ \textcolor{comment}{//\ UNICODE\ mode.}}
+\DoxyCodeLine{00088\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock(\textcolor{keywordtype}{int}*\ argc,\ \textcolor{keywordtype}{wchar\_t}**\ argv);}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ This\ overloaded\ version\ can\ be\ used\ on\ Arduino/embedded\ platforms\ where}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ there\ is\ no\ argc/argv.}}
+\DoxyCodeLine{00092\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock();}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_H\_}}
+
+\end{DoxyCode}

@@ -1,0 +1,21 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node0 [id="Node000000",label="testing::Environment",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classtesting_1_1_environment.html",tooltip=" "];
+  Node0 -> Node1 [id="edge181_Node000000_Node000001",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node1 [id="Node000001",label="BarEnvironment",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_bar_environment.html",tooltip=" "];
+  Node0 -> Node2 [id="edge182_Node000000_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="FooEnvironment",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_foo_environment.html",tooltip=" "];
+  Node0 -> Node3 [id="edge183_Node000000_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="SetupEnvironment",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_setup_environment.html",tooltip=" "];
+  Node0 -> Node4 [id="edge184_Node000000_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="TestGenerationEnvironment\l\< kExpectedCalls \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_test_generation_environment.html",tooltip=" "];
+  Node0 -> Node5 [id="edge185_Node000000_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="testing::internal::\lEnvironmentInvocationCatcher",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classtesting_1_1internal_1_1_environment_invocation_catcher.html",tooltip=" "];
+  Node0 -> Node6 [id="edge186_Node000000_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="testing::internal::\lFinalSuccessChecker",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classtesting_1_1internal_1_1_final_success_checker.html",tooltip=" "];
+}

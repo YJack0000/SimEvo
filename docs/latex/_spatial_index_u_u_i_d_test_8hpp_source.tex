@@ -1,0 +1,33 @@
+\doxysection{Spatial\+Index\+UUIDTest.\+hpp}
+\hypertarget{_spatial_index_u_u_i_d_test_8hpp_source}{}\label{_spatial_index_u_u_i_d_test_8hpp_source}\index{/Users/yjack/GitHub/SimEvo/include/test/SpatialIndexUUIDTest.hpp@{/Users/yjack/GitHub/SimEvo/include/test/SpatialIndexUUIDTest.hpp}}
+\mbox{\hyperlink{_spatial_index_u_u_i_d_test_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ SPATIALINDEXTEST\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ SPATIALINDEXTEST\_HPP}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <gtest/gtest.h>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid.hpp>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <boost/uuid/uuid\_generators.hpp>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{_default_spatial_index_8hpp}{index/DefaultSpatialIndex.hpp}}>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{_i_spatial_index_8hpp}{index/ISpatialIndex.hpp}}>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <\mbox{\hyperlink{_optimized_spatial_index_8hpp}{index/OptimizedSpatialIndex.hpp}}>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{using\ namespace\ }boost;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_spatial_index_u_u_i_d_test}{SpatialIndexUUIDTest}}\ :\ \textcolor{keyword}{public}\ ::testing::Test\ \{}
+\DoxyCodeLine{00018\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00019\ \ \ \ \ std::unique\_ptr<ISpatialIndex<uuids::uuid>>\ \mbox{\hyperlink{class_spatial_index_u_u_i_d_test_ad042aafa2418daf1797c98faa5cb1ab7}{index}};}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_spatial_index_u_u_i_d_test_a8dd5e2d0dcb143695263da080ba467c4}{SetUp}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00021\ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{using\ }\mbox{\hyperlink{_spatial_index_u_u_i_d_test_8hpp_acd71179f61947d9e9bd95997e2a0e776}{IndexTypes}}\ =}
+\DoxyCodeLine{00024\ \ \ \ \ ::testing::Types<DefaultSpatialIndex<uuids::uuid>,\ \mbox{\hyperlink{class_optimized_spatial_index}{OptimizedSpatialIndex<uuids::uuid>}}>;}
+\DoxyCodeLine{00025\ \mbox{\hyperlink{_spatial_index_u_u_i_d_test_8hpp_a4094b6a8767529d4b6e9c4698da5b688}{TYPED\_TEST\_SUITE\_P}}(\mbox{\hyperlink{class_spatial_index_u_u_i_d_test}{SpatialIndexUUIDTest}});}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

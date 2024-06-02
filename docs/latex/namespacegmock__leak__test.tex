@@ -1,0 +1,33 @@
+\doxysection{gmock\+\_\+leak\+\_\+test Namespace Reference}
+\hypertarget{namespacegmock__leak__test}{}\label{namespacegmock__leak__test}\index{gmock\_leak\_test@{gmock\_leak\_test}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgmock__leak__test_1_1_g_mock_leak_test}{GMock\+Leak\+Test}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacegmock__leak__test_ace925116117368cd02a7b45571f5133d}\label{namespacegmock__leak__test_ace925116117368cd02a7b45571f5133d} 
+{\bfseries PROGRAM\+\_\+\+PATH} = \mbox{\hyperlink{namespacegmock__test__utils_a3965eb0947849f247899f6edff7051f7}{gmock\+\_\+test\+\_\+utils.\+Get\+Test\+Executable\+Path}}(\textquotesingle{}gmock\+\_\+leak\+\_\+test\+\_\+\textquotesingle{})
+\item 
+\Hypertarget{namespacegmock__leak__test_aa03214d2fad1ee0fd3f3101da688ebfc}\label{namespacegmock__leak__test_aa03214d2fad1ee0fd3f3101da688ebfc} 
+list {\bfseries TEST\+\_\+\+WITH\+\_\+\+EXPECT\+\_\+\+CALL} = \mbox{[}PROGRAM\+\_\+\+PATH, \textquotesingle{}-\/-\/gtest\+\_\+filter=\texorpdfstring{$\ast$}{*}Expect\+Call\texorpdfstring{$\ast$}{*}\textquotesingle{}\mbox{]}
+\item 
+\Hypertarget{namespacegmock__leak__test_a5b7e5890b4022a37ef82bdf4eb22ef44}\label{namespacegmock__leak__test_a5b7e5890b4022a37ef82bdf4eb22ef44} 
+list {\bfseries TEST\+\_\+\+WITH\+\_\+\+ON\+\_\+\+CALL} = \mbox{[}PROGRAM\+\_\+\+PATH, \textquotesingle{}-\/-\/gtest\+\_\+filter=\texorpdfstring{$\ast$}{*}On\+Call\texorpdfstring{$\ast$}{*}\textquotesingle{}\mbox{]}
+\item 
+\Hypertarget{namespacegmock__leak__test_a9a529935171ee6ab369902d9a77ffbf5}\label{namespacegmock__leak__test_a9a529935171ee6ab369902d9a77ffbf5} 
+list {\bfseries TEST\+\_\+\+MULTIPLE\+\_\+\+LEAKS} = \mbox{[}PROGRAM\+\_\+\+PATH, \textquotesingle{}-\/-\/gtest\+\_\+filter=\texorpdfstring{$\ast$}{*}Multiple\+Leaked\texorpdfstring{$\ast$}{*}\textquotesingle{}\mbox{]}
+\item 
+\Hypertarget{namespacegmock__leak__test_a9437a2d2e3bde77354e5c6443ef129f8}\label{namespacegmock__leak__test_a9437a2d2e3bde77354e5c6443ef129f8} 
+{\bfseries environ} = gmock\+\_\+test\+\_\+utils.\+environ
+\item 
+\Hypertarget{namespacegmock__leak__test_a1ab1da2afb1748500a059d59660330cb}\label{namespacegmock__leak__test_a1ab1da2afb1748500a059d59660330cb} 
+{\bfseries Set\+Env\+Var} = gmock\+\_\+test\+\_\+utils.\+Set\+Env\+Var
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Tests that leaked mock objects can be caught be Google Mock.\end{DoxyVerb}
+ 
