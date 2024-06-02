@@ -9,8 +9,9 @@ from utils.visualize import visualize_objects
 
 
 def distribute_food_like_oasis(env, food_count):
-    distribute_food_randomly(env, int(food_count / 2), (800, 800), (1200, 1200))
-    distribute_food_randomly(env, int(food_count / 2), (600, 600), (1500, 1500))
+    distribute_food_randomly(env, int(food_count / 3), (800, 800), (1200, 1200))
+    distribute_food_randomly(env, int(food_count / 3), (400, 400), (1700, 1700))
+    distribute_food_randomly(env, int(food_count / 3), (0, 0), (2000, 2000))
 
 
 env = Environment(2000, 2000)
