@@ -1,10 +1,11 @@
 SimEvo: A Simple Python Library for Simulations of Natural Selection
 ===
 
+[![CI](https://github.com/YJack0000/SimEvo/actions/workflows/ci.yml/badge.svg)](https://img.shields.io/github/license/YJack0000/SimEvo)
+![GitHub repo size](https://img.shields.io/github/repo-size/YJack0000/SimEvo)
 [![PyPI - Implementation](https://img.shields.io/pypi/v/simevopy)](https://pypi.org/project/simevopy/)
 [![CodeFactor](https://www.codefactor.io/repository/github/yjack0000/simevo/badge)](https://www.codefactor.io/repository/github/yjack0000/simevo)
 ![GitHub](https://img.shields.io/github/license/YJack0000/SimEvo)
-![GitHub repo size](https://img.shields.io/github/repo-size/YJack0000/SimEvo)
 
 [2024 Spring NSD - Final Project - SimEvo: A Simple Python Library for Simulations of Natural Selection](https://docs.google.com/presentation/d/1wtIAIIpjK2PZ31WvOYsF79wrXSUaM7NFj_LneUBSIJM/edit#slide=id.g2e20d1646bc_0_75)
 
