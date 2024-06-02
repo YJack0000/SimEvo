@@ -6,3 +6,6 @@ dist
 _skbuild
 MANIFEST.in
 simevopy.*
+
+# Exclude the docs folder
+dox-docs
