@@ -9,3 +9,5 @@ simevopy.*
 
 # Exclude the docs folder
 dox-docs
+
+.pytest_cache
