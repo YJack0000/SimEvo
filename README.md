@@ -11,7 +11,7 @@ SimEvo: A Simple Python Library for Simulations of Natural Selection
 
 ## Overview
 
-![Demo](https://github.com/YJack0000/SimEvo/assets/49984479/e8e025f0-d4b1-4145-9f03-af306aacda60)
+![Demo](https://github.com/YJack0000/SimEvo/assets/49984479/91d01cc1-6bad-45c1-8785-5fed11814140)
 
 > **Project Overview:** Simulating Natural Selection in Ecosystems using C++ and Python
 
