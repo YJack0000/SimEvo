@@ -11,6 +11,8 @@ SimEvo: A Simple Python Library for Simulations of Natural Selection
 
 ## Overview
 
+![Demo](https://github.com/YJack0000/SimEvo/assets/49984479/e8e025f0-d4b1-4145-9f03-af306aacda60)
+
 > **Project Overview:** Simulating Natural Selection in Ecosystems using C++ and Python
 
 SimEvo leverages the computational efficiency of C++ for the core simulation engine and offers an intuitive Python interface for ease of use and accessibility. It models ecosystems composed of organisms with genetically determined traits, interacting within an environment that includes resources like food. The simulation observes the principles of natural selection, with organism survival and reproduction influenced by their traits and environmental factors.
