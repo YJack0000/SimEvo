@@ -1,0 +1,68 @@
+@startuml
+skinparam classAttributeIconSize 0
+interface ISpatialIndex<T> {
+    + {abstract} void insert(const T& object, float x, float y)
+    + {abstract} std::vector<T> query(float x, float y, float range)
+    + {abstract} void update(const T& object, float newX, float newY)
+    + {abstract} void remove(const T& object)
+    + {abstract} void clear()
+}
+
+class SpatialObject<T> {
+    - T object
+    - std::pair<float, float> position
+
+    + SpatialObject(const T& object, float x, float y)
+    + T getObject() const
+    + std::pair<float, float> getPosition() const
+    + void setPosition(float x, float y)
+}
+
+class DefaultSpatialIndex<T> extends ISpatialIndex<T> {
+    - std::vector<SpatialObject<T>> spatialObjects
+    - typename std::vector<SpatialObject<T>>::iterator findObject(const T& object)
+
+    + DefaultSpatialIndex()
+    + void insert(const T& object, float x, float y)
+    + std::vector<T> query(float x, float y, float range)
+    + void update(const T& object, float newX, float newY)
+    + void remove(const T& object)
+    + void clear()
+}
+
+class OptimizedSpatialIndex<T> extends ISpatialIndex<T> {
+    - float size
+    - bool isSubdivided
+    - std::unique_ptr<OptimizedSpatialIndex<T>> children[4]
+    - std::pair<float, float> offset
+    - {static} const int MAX_OBJECTS
+    - {static} const int MIN_SIZE
+
+    + OptimizedSpatialIndex(float size)
+    + void insert(const T& object, float x, float y)
+    + std::vector<T> query(float x, float y, float range)
+    + void update(const T& object, float newX, float newY)
+    + void remove(const T& object)
+    + void clear()
+    + ~OptimizedSpatialIndex() override = default
+    + std::vector<std::shared_ptr<SpatialObject<T>>> spatialObjects
+
+    - void _query(float x, float y, float range, std::vector<T>& result)
+    - bool inBounds(const std::pair<float, float>& pos) const
+    - void setOffset(float offsetX, float offsetY)
+    - void subdivide()
+    - bool canMerge() const
+    - void merge()
+    - bool isEmpty() const
+    - bool intersectsRange(float min_x, float max_x, float min_y, float max_y) const
+    - int getChildIndex(float x, float y) const
+    - float getDistance(float x1, float y1, float x2, float y2) const
+}
+
+DefaultSpatialIndex --> "0..*" SpatialObject
+
+OptimizedSpatialIndex --> "0..4" OptimizedSpatialIndex: children
+OptimizedSpatialIndex --> "0..*" SpatialObject
+
+
+@enduml

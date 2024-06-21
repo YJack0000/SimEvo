@@ -1,0 +1,142 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package core {
+
+   
+
+    abstract EnvironmentObject {
+        -boost::uuids::uuid id
+        -std::pair<float, float> position
+
+        +EnvironmentObject(float x, float y)
+        +boost::uuids::uuid getId() const
+        +{abstract} ~EnvironmentObject() = default
+        +{abstract} void postIteration()
+        +{abstract} std::pair<float, float> getPosition() const
+        +{abstract} void setPosition(float x, float y)
+    }
+
+
+    enum FoodState {
+        FRESH
+        EATEN
+    }
+
+    class Food implements EnvironmentObject {
+        - FoodState state
+
+        + Food()
+        + bool canBeEaten()
+        + void eaten()
+        + int getEnergy() const
+    }
+
+    Food --> FoodState: is at state
+
+
+
+    class Environment {
+        -int width
+        -int height
+        -std::string type
+        -std::unique_ptr<ISpatialIndex<boost::uuids::uuid>> spatialIndex
+        -std::unordered_map<boost::uuids::uuid, std::shared_ptr<EnvironmentObject>> objectsMapper
+        -std::vector<std::shared_ptr<Organism>> deadOrganisms
+        -unsigned long foodConsumption
+
+        +Environment(int width, int height, std::string type = "default")
+        +int getWidth() const
+        +int getHeight() const
+        +void add(const std::shared_ptr<Organism>& organism, float x, float y)
+        +void add(const std::shared_ptr<Food>& food, float x, float y)
+        +void remove(const std::shared_ptr<Organism>& organism)
+        +void remove(const std::shared_ptr<Food>& food)
+        +void reset()
+        +void simulateIteration(int, std::function<void(const Environment&)> on_each_iteration = nullptr)
+    
+        +std::vector<std::shared_ptr<Organism>> getAllOrganisms() const
+        +std::vector<std::shared_ptr<Food>> getAllFoods() const
+        +std::vector<std::shared_ptr<EnvironmentObject>> getAllObjects() const
+        +std::vector<std::shared_ptr<Organism>> getDeadOrganisms() const
+        +unsigned long getFoodConsumptionInIteration() const
+
+        -void checkBounds(float x, float y) const
+        -void updatePositionsInSpatialIndex()
+        -void handleInteractions()
+        -void postIteration()
+        -void cleanUp()
+        -void removeDeadOrganisms()
+    }
+
+    class Genes {
+        - char dna[4]
+        - MutationFunction mutationLogic
+
+        + Genes(const char *dnaStr)
+        + Genes(const char *dnaStr, MutationFunction customMutationLogic)
+        + void mutate()
+        + char getDNA(int index) const
+        + static void defaultMutationLogic(char dna[4])
+    }
+
+    class MutationFunction <std::function<void(char[4])>> {
+    }
+
+    Genes +-- "{public}" MutationFunction: inner using alias
+
+
+
+    class Organism implements EnvironmentObject {
+        - Genes genes
+        - LifeConsumptionCalculator lifeConsumptionCalculator
+        - float lifeSpan
+        - std::pair<float, float> movement
+        - int reactionCounter = 0
+
+        + Organism()
+        + Organism(const Genes &genes)
+        + Organism(const Genes &genes, LifeConsumptionCalculator lifeConsumptionCalculator)
+        + float getSpeed() const
+        + float getSize() const
+        + float getAwareness() const
+        + float getLifeConsumption() const
+        + float getLifeSpan() const
+        + float getReactionRadius() const
+        + void killed()
+        + bool isAlive() const
+        + bool canReproduce() const
+        + void react(std::vector<std::shared_ptr<EnvironmentObject>> &reactableObjects)
+        + void interact(std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects)
+        + std::shared_ptr<Organism> reproduce()
+        + void postIteration() override
+        - double calculateDistance(std::shared_ptr<EnvironmentObject> object)
+        - void makeMove()
+
+    }
+
+    class LifeConsumptionCalculator <std::function<uint32_t(const Organism &)>>{
+    }
+
+    Organism +-- "{public}" LifeConsumptionCalculator: inner using alias
+
+
+
+
+
+    Environment [uuid] o-down-> "0..*" EnvironmentObject: contain
+    Organism o-- Genes
+    Environment o-- "{dead}" Organism
+    Environment --> "0..*" Food : add,remove,get
+    Environment --> "0..*" Organism: add,remove,get
+
+    Organism --> EnvironmentObject: interact and react with
+    Organism --> Organism: reproduce
+
+}
+
+
+
+
+
+@enduml
