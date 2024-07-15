@@ -48,17 +48,14 @@ package core {
         +Environment(int width, int height, std::string type = "default")
         +int getWidth() const
         +int getHeight() const
-        +void add(const std::shared_ptr<Organism>& organism, float x, float y)
-        +void add(const std::shared_ptr<Food>& food, float x, float y)
-        +void remove(const std::shared_ptr<Organism>& organism)
-        +void remove(const std::shared_ptr<Food>& food)
+        +add(const std::shared_ptr<EnvironmentObject>& obj, float x, float y): void
+        +remove(const std::shared_ptr<EnvironmentObject>& obj): void
         +void reset()
         +void simulateIteration(int, std::function<void(const Environment&)> on_each_iteration = nullptr)
     
-        +std::vector<std::shared_ptr<Organism>> getAllOrganisms() const
-        +std::vector<std::shared_ptr<Food>> getAllFoods() const
+
         +std::vector<std::shared_ptr<EnvironmentObject>> getAllObjects() const
-        +std::vector<std::shared_ptr<Organism>> getDeadOrganisms() const
+        +getObjects(bool (*filter)(EnvironmentObject*)): vector<std::shared_ptr<EnvironmentObject>>
         +unsigned long getFoodConsumptionInIteration() const
 
         -void checkBounds(float x, float y) const
@@ -122,18 +119,57 @@ package core {
 
 
 
+    note left of Environment::getObjects
+        vector<EnvironmentObject*> result
+        for(auto& obj : objectsMapper){
+            if (filter(obj)){
+                result.push_back(obj);
+            }
+        }
+
+        return result;
+    end note
+
+   
+
 
 
     Environment [uuid] o-down-> "0..*" EnvironmentObject: contain
     Organism o-- Genes
     Environment o-- "{dead}" Organism
-    Environment --> "0..*" Food : add,remove,get
-    Environment --> "0..*" Organism: add,remove,get
+
 
     Organism --> EnvironmentObject: interact and react with
     Organism --> Organism: reproduce
 
+
+    note right of Environment::add
+        checkBounds(x, y);
+        auto id = obj->getId();
+        obj->setPosition(x, y);
+        spatialIndex->insert(id, x, y);
+        objectsMapper.insert({id, obj});
+    end note 
+
+    note right of Environment::remove
+        if (objectsMapper.find(obj->getId()) == objectsMapper.end()) {
+            throw std::runtime_error("Object not found");
+        }
+
+        spatialIndex->remove(obj->getId());
+        objectsMapper.erase(obj->getId());
+    end note
+
+
+
+    note as getObjectExample
+    the filter can cast EnvironmentObejct to custom object
+    to use the desire attribute
+    end note
+
+
 }
+
 
 
 
