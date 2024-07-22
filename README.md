@@ -25,7 +25,7 @@ SimEvo leverages the computational efficiency of C++ for the core simulation eng
 ## How to use
 
 ### Install directly from PyPI
-!!!This feature is only support Linux and MacOS currently. 
+!!!This feature is only support **Linux** and **MacOS** currently. 
 ```
 pip install simevopy
 ```
@@ -39,11 +39,16 @@ cmake -S .. -B . -DBUILD_TESTS=true
 make
 ctest -V
 ```
+
 #### Build for python package
 ```
 python setup.py install
 ```
-
+or 
+```
+python setup.py sdist
+pip install .
+```
 
 ### Components:
 
