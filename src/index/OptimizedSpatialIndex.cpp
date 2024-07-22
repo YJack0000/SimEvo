@@ -77,7 +77,7 @@ std::vector<T> OptimizedSpatialIndex<T>::query(float x, float y, float range) {
 
 template <typename T>
 void OptimizedSpatialIndex<T>::_query(float x, float y, float range, std::vector<T>& result) {
-    if(!inBounds({x, y})) {
+    if (!inBounds({x, y})) {
         return;
     }
 
@@ -263,7 +263,8 @@ void OptimizedSpatialIndex<T>::merge() {
             spatialObjects.insert(spatialObjects.end(),
                                   std::make_move_iterator(child->spatialObjects.begin()),
                                   std::make_move_iterator(child->spatialObjects.end()));
-            // printf("Before clear: %ld\n", child->spatialObjects.size());
+            /*printf("Before clear: %ld\n", child->spatialObjects.size());*/
+            // child->clear();
             child.reset();
         }
     }

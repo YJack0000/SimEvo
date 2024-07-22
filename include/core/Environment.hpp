@@ -13,7 +13,7 @@
 
 class Environment {
 public:
-    Environment(int width, int height, std::string type = "default");
+    Environment(int width, int height, std::string type = "default", int numThreads = 1);
     int getWidth() const { return width; }
     int getHeight() const { return height; }
 
@@ -42,6 +42,8 @@ private:
 
     std::vector<std::shared_ptr<Organism>> deadOrganisms;
     unsigned long foodConsumption;
+
+    int numThreads = 1;
 
     void checkBounds(float x, float y) const;
     void updatePositionsInSpatialIndex();

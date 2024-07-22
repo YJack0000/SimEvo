@@ -7,7 +7,7 @@ from utils.common import (
 )
 from utils.visualize import visualize_objects
 
-env = Environment(1000, 1000)
+env = Environment(1000, 1000, type="optimized")
 setup_base_organism(env, 50)
 
 for i in range(100):

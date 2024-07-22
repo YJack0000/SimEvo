@@ -1,11 +1,12 @@
 #include <boost/uuid/uuid_io.hpp>
+#include <utils/profiler.hpp>
 #include <core/Environment.hpp>
 #include <core/Food.hpp>
 #include <index/DefaultSpatialIndex.hpp>
 #include <index/OptimizedSpatialIndex.hpp>
 #include <memory>
 #include <vector>
-#include <chrono>
+#include <thread>
 
 /**
  * @brief Constructor for Environment class.
@@ -18,8 +19,8 @@
  * @param type The type of spatial index to use ("default" or "optimized").
  * @throws std::invalid_argument If an unrecognized type is provided.
  */
-Environment::Environment(int width, int height, std::string type)
-    : width(width), height(height), type(type) {
+Environment::Environment(int width, int height, std::string type, int numThreads)
+    : width(width), height(height), type(type), numThreads(numThreads) {
     if (type == "default") {
         spatialIndex = std::make_unique<DefaultSpatialIndex<boost::uuids::uuid>>();
     } else if (type == "optimized") {
@@ -133,50 +134,38 @@ void Environment::reset() {
  * @param iterations Number of iterations to simulate.
  * @param on_each_iteration Callback function to be called after each iteration.
  */
-void Environment::simulateIteration(int iterations,
-                                    std::function<void(const Environment&)> on_each_iteration) {
-    std::chrono::duration<double, std::milli> total_interactions_duration(0);
-    std::chrono::duration<double, std::milli> total_post_iteration_duration(0);
+void Environment::simulateIteration(int iterations, std::function<void(const Environment&)> on_each_iteration) {
+    Profiler& profiler = Profiler::getInstance();
+    
+    profiler.reset(); // Reset the profiler at the start of each simulation
 
+    profiler.start("simulateIteration");
     for (int i = 0; i < iterations; i++) {
         if (getAllOrganisms().size() == 0 && getAllFoods().size() == 0) {
             break;
         }
 
-        auto interactions_start = std::chrono::high_resolution_clock::now();
+        profiler.start("handleInteractions");
         handleInteractions();
-        auto interactions_end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> interactions_duration =
-            interactions_end - interactions_start;
-        total_interactions_duration += interactions_duration;
+        profiler.stop("handleInteractions");
 
-        auto post_iteration_start = std::chrono::high_resolution_clock::now();
+        profiler.start("postIteration");
         postIteration();
-        auto post_iteration_end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> post_iteration_duration =
-            post_iteration_end - post_iteration_start;
-        total_post_iteration_duration += post_iteration_duration;
+        profiler.stop("postIteration");
 
         if (on_each_iteration) {
             on_each_iteration(*this);
         }
     }
+    profiler.stop("simulateIteration");
 
-    // clean up dead organisms and consumed food
     cleanUp();
 
-    if (iterations > 0) {
-        double average_interactions_duration = total_interactions_duration.count() / iterations;
-        double average_post_iteration_duration = total_post_iteration_duration.count() / iterations;
-
-        printf("By %s spatial index\n", type.c_str());
-        printf("Average handleInteractions duration: %f ms\n", average_interactions_duration);
-        printf("Average postIteration duration: %f ms\n", average_post_iteration_duration);
-        printf("Total time: %f ms, average time per iteration: %f ms\n",
-               total_interactions_duration.count() + total_post_iteration_duration.count(),
-               (total_interactions_duration.count() + total_post_iteration_duration.count()) /
-                   iterations);
-    }
+    profiler.report("handleInteractions"); 
+    profiler.report("postIteration");
+    profiler.report("simulateIteration");
+    printf("Index type: %s\n", type.c_str());
+    printf("Number of threads: %d\n", numThreads);
     printf("Total food consumption: %lu\n", foodConsumption);
     printf("Total dead organisms: %lu\n", deadOrganisms.size());
     printf("Total organisms: %lu\n", getAllOrganisms().size());
@@ -221,7 +210,6 @@ void Environment::postIteration() {
         object.second->postIteration();
     }
 
-    // printf("Updating positions in spatial index\n");
     updatePositionsInSpatialIndex();
 }
 
@@ -240,6 +228,7 @@ void Environment::updatePositionsInSpatialIndex() {
             y = std::max(0.0f, std::min(static_cast<float>(height), y));
 
             organism->setPosition(x, y);
+
             spatialIndex->update(object.first, x, y);
         }
     }
@@ -251,45 +240,51 @@ void Environment::updatePositionsInSpatialIndex() {
  *
  */
 void Environment::handleInteractions() {
-    for (auto& object : objectsMapper) {
-        if (auto food = std::dynamic_pointer_cast<Food>(object.second)) {  // skip food
-            continue;
+    std::vector<std::thread> threads;
+
+    // each thread will handle interactions for a subset of organisms
+    auto worker = [&](int thread_id) {
+        auto organisms = getAllOrganisms();
+        size_t chunkSize = organisms.size() / numThreads;
+        size_t start = thread_id * chunkSize;
+        size_t end = (thread_id == numThreads - 1) ? organisms.size() : (thread_id + 1) * chunkSize;
+
+        for (size_t i = start; i < end; ++i) {
+            auto organism = organisms[i];
+            if (organism->isAlive()) {
+                std::pair<float, float> position = organism->getPosition();
+                std::vector<boost::uuids::uuid> interactables = spatialIndex->query(position.first, position.second, organism->getSize());
+                std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
+
+                for (auto& interactable : interactables) {
+                    if (interactable != organism->getId()) {
+                        interactableObjects.push_back(objectsMapper[interactable]);
+                    }
+                }
+
+                organism->interact(interactableObjects);
+
+                std::vector<boost::uuids::uuid> reactables = spatialIndex->query(position.first, position.second, organism->getReactionRadius());
+                std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
+
+                for (auto& reactable : reactables) {
+                    if (reactable != organism->getId()) {
+                        reactableObjects.push_back(objectsMapper[reactable]);
+                    }
+                }
+
+                organism->react(reactableObjects);
+            }
         }
+    };
 
-        if (auto organism = std::dynamic_pointer_cast<Organism>(object.second)) {
-            if (!organism->isAlive()) {
-                continue;
-            }
+    for (int i = 0; i < numThreads; ++i) {
+        threads.emplace_back(worker, i);
+    }
 
-            std::pair<float, float> position = organism->getPosition();
-
-            // printf("------------Handling interactions----------------\n");
-            // get all objects that are within the interaction radius, which is
-            std::vector<boost::uuids::uuid> interactables =
-                spatialIndex->query(position.first, position.second, organism->getSize());
-            std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
-            for (auto& interactable : interactables) {
-                if (interactable == object.first) {  // skip itself
-                    continue;
-                }
-                interactableObjects.push_back(objectsMapper[interactable]);
-            }
-            // printf("Interactables: %ld\n", interactableObjects.size());
-            organism->interact(interactableObjects);
-
-            // printf("------------Handling reactions----------------\n");
-            // get objects that are within the react radius, which is defned by genes
-            std::vector<boost::uuids::uuid> reactables =
-                spatialIndex->query(position.first, position.second, organism->getReactionRadius());
-            std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
-            for (auto& reactable : reactables) {
-                if (reactable == object.first) {  // skip itself
-                    continue;
-                }
-                reactableObjects.push_back(objectsMapper[reactable]);
-            }
-            // printf("Reactables: %ld\n", reactableObjects.size());
-            organism->react(reactableObjects);
+    for (auto& thread : threads) {
+        if (thread.joinable()) {
+            thread.join();
         }
     }
 }

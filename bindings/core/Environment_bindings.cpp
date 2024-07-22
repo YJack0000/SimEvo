@@ -10,8 +10,8 @@ namespace py = pybind11;
 
 void init_Environment(py::module& m) {
     py::class_<Environment, std::shared_ptr<Environment>>(m, "Environment")
-        .def(py::init<int, int, std::string>(), py::arg("width"), py::arg("height"),
-             py::arg("type") = "default",
+        .def(py::init<int, int, std::string, int>(), py::arg("width"), py::arg("height"),
+            py::arg("type") = "default", py::arg("threads") = 1,
              "Constructor for Environment class taking width, height, and an optional type.")
         .def("get_width", &Environment::getWidth, "Get the width of the environment.")
         .def("get_height", &Environment::getHeight, "Get the height of the environment.")
