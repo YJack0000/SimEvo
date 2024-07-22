@@ -48,6 +48,7 @@ private:
     void checkBounds(float x, float y) const;
     void updatePositionsInSpatialIndex();
     void handleInteractions();
+    void handleReactions();
     void postIteration();
     void cleanUp();
     void removeDeadOrganisms();

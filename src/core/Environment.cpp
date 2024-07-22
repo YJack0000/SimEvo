@@ -1,12 +1,12 @@
 #include <boost/uuid/uuid_io.hpp>
-#include <utils/profiler.hpp>
 #include <core/Environment.hpp>
 #include <core/Food.hpp>
 #include <index/DefaultSpatialIndex.hpp>
 #include <index/OptimizedSpatialIndex.hpp>
 #include <memory>
-#include <vector>
 #include <thread>
+#include <utils/profiler.hpp>
+#include <vector>
 
 /**
  * @brief Constructor for Environment class.
@@ -134,10 +134,10 @@ void Environment::reset() {
  * @param iterations Number of iterations to simulate.
  * @param on_each_iteration Callback function to be called after each iteration.
  */
-void Environment::simulateIteration(int iterations, std::function<void(const Environment&)> on_each_iteration) {
+void Environment::simulateIteration(int iterations,
+                                    std::function<void(const Environment&)> on_each_iteration) {
     Profiler& profiler = Profiler::getInstance();
-    
-    profiler.reset(); // Reset the profiler at the start of each simulation
+    profiler.reset();
 
     profiler.start("simulateIteration");
     for (int i = 0; i < iterations; i++) {
@@ -148,6 +148,10 @@ void Environment::simulateIteration(int iterations, std::function<void(const Env
         profiler.start("handleInteractions");
         handleInteractions();
         profiler.stop("handleInteractions");
+
+        profiler.start("handleReactions");
+        handleReactions();
+        profiler.stop("handleReactions");
 
         profiler.start("postIteration");
         postIteration();
@@ -161,7 +165,8 @@ void Environment::simulateIteration(int iterations, std::function<void(const Env
 
     cleanUp();
 
-    profiler.report("handleInteractions"); 
+    profiler.report("handleInteractions");
+    profiler.report("handleReactions");
     profiler.report("postIteration");
     profiler.report("simulateIteration");
     printf("Index type: %s\n", type.c_str());
@@ -235,8 +240,7 @@ void Environment::updatePositionsInSpatialIndex() {
 }
 
 /**
- * @brief Manages interactions between all living organisms within the
- * environment.
+ * @brief Manages interactions between all EnvironmentObjects with others by size
  *
  */
 void Environment::handleInteractions() {
@@ -253,7 +257,8 @@ void Environment::handleInteractions() {
             auto organism = organisms[i];
             if (organism->isAlive()) {
                 std::pair<float, float> position = organism->getPosition();
-                std::vector<boost::uuids::uuid> interactables = spatialIndex->query(position.first, position.second, organism->getSize());
+                std::vector<boost::uuids::uuid> interactables =
+                    spatialIndex->query(position.first, position.second, organism->getSize());
                 std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
 
                 for (auto& interactable : interactables) {
@@ -263,10 +268,40 @@ void Environment::handleInteractions() {
                 }
 
                 organism->interact(interactableObjects);
+            }
+        }
+    };
 
-                std::vector<boost::uuids::uuid> reactables = spatialIndex->query(position.first, position.second, organism->getReactionRadius());
+    for (int i = 0; i < numThreads; ++i) {
+        threads.emplace_back(worker, i);
+    }
+
+    for (auto& thread : threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+}
+
+/**
+ * @brief Manages reactions between all living organisms with others by radius
+ *
+ */
+void Environment::handleReactions() {
+    std::vector<std::thread> threads;
+    auto worker = [&](int thread_id) {
+        auto organisms = getAllOrganisms();
+        size_t chunkSize = organisms.size() / numThreads;
+        size_t start = thread_id * chunkSize;
+        size_t end = (thread_id == numThreads - 1) ? organisms.size() : (thread_id + 1) * chunkSize;
+
+        for (size_t i = start; i < end; ++i) {
+            auto organism = organisms[i];
+            if (organism->isAlive()) {
+                std::pair<float, float> position = organism->getPosition();
+                std::vector<boost::uuids::uuid> reactables = spatialIndex->query(
+                    position.first, position.second, organism->getReactionRadius());
                 std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
-
                 for (auto& reactable : reactables) {
                     if (reactable != organism->getId()) {
                         reactableObjects.push_back(objectsMapper[reactable]);
