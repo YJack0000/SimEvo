@@ -69,10 +69,7 @@ jobs:
       id: bump_version
       run: |
         ./bump_version.sh
-
-    - name: Build Python package
-      run: python3 setup.py sdist bdist_wheel
-      
+              
     - name: Commit and tag version
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -81,7 +78,11 @@ jobs:
         git add setup.py
         git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
         git tag "v${{ steps.bump_version.outputs.new_version }}"
-        git push origin main --tags
+        git push origin main --tags || true
+
+    - name: Build Python package
+      run: python3 setup.py sdist bdist_wheel
+
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
