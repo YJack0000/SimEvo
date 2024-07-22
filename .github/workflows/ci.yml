@@ -115,10 +115,16 @@ jobs:
           exit 1
         fi
 
-    - name: Download build artifacts
+    - name: Download build artifacts (MacOS)
       uses: actions/download-artifact@v4
       with:
-        name: dist-linux-${{ needs.build.outputs.new_version }}, dist-macos-${{ needs.build.outputs.new_version }}
+        name: dist-macos-${{ needs.build.outputs.new_version }}
+        path: dist
+
+    - name: Download build artifacts (Linux)
+      uses: actions/download-artifact@v4
+      with:
+        name: dist-linux-${{ needs.build.outputs.new_version }}
         path: dist
 
     - name: Create GitHub release
