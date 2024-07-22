@@ -83,7 +83,7 @@ jobs:
         git push origin main --tags || true
 
     - name: Build Python package
-      run: python3 setup.py sdist bdist_wheel
+      run: python3 setup.py sdist
 
     - name: Upload build artifacts (Linux)
       if: runner.os == 'Linux'
