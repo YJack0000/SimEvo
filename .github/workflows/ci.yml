@@ -85,10 +85,18 @@ jobs:
     - name: Build Python package
       run: python3 setup.py sdist bdist_wheel
 
-    - name: Upload build artifacts
+    - name: Upload build artifacts (Linux)
+      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: dist-${{ matrix.os }}-${{ env.new_version }}
+        name: dist-linux-${{ steps.bump_version.outputs.new_version }}
+        path: dist
+
+    - name: Upload build artifacts (macOS)
+      if: runner.os == 'macOS'
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-macos-${{ steps.bump_version.outputs.new_version }}
         path: dist
 
   release:
@@ -100,10 +108,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Check version bump
+      run: |
+        if [ -z "${{ needs.build.outputs.new_version }}" ]; then
+          echo "No new version found. Exiting."
+          exit 1
+
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: dist-ubuntu-${{ needs.build.outputs.new_version }}, dist-macos-${{ needs.build.outputs.new_version }}
+        name: dist-linux-${{ needs.build.outputs.new_version }}, dist-macos-${{ needs.build.outputs.new_version }}
         path: dist
 
     - name: Create GitHub release
