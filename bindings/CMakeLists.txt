@@ -26,4 +26,12 @@ pybind11_add_module(
 target_include_directories(simevopy PUBLIC ../include)
 target_link_libraries(simevopy PUBLIC core index)
 
-install(TARGETS simevopy LIBRARY DESTINATION .)
+# set python site-packages
+execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}" -c "import site; print(site.getsitepackages()[0])"
+    OUTPUT_VARIABLE SITE_PACKAGES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# install the python module
+install(TARGETS simevopy LIBRARY DESTINATION ${SITE_PACKAGES})
