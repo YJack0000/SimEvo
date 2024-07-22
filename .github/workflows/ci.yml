@@ -27,7 +27,7 @@ jobs:
         sudo apt-get install -y cmake make g++ build-essential libboost-all-dev
 
     - name: Configure CMake
-      run: cmake -S . -B build -DBUILD_BINDINGS=OFF
+      run: cmake -S . -B build -DBUILD_BINDINGS=OFF -DBUILD_TESTS=ON
 
     - name: Build
       run: cmake --build build
@@ -54,21 +54,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Bump version
-      id: bump_version
-      run: |
-        ./bump_version.sh
-
-    - name: Commit and tag version
-      run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-        git add setup.py
-        git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
-        git tag "v${{ steps.bump_version.outputs.new_version }}"
-        git push origin main --tags
-
     - name: Install dependencies
       run: |
         if [ $RUNNER_OS == 'Linux' ]; then
@@ -80,14 +65,23 @@ jobs:
         fi
         pip3 install setuptools wheel twine scikit-build pybind11
 
-    - name: Configure CMake
-      run: cmake -S . -B build -DBUILD_BINDINGS=OFF
-
-    - name: Build
-      run: cmake --build build
+    - name: Bump version
+      id: bump_version
+      run: |
+        ./bump_version.sh
 
     - name: Build Python package
       run: python3 setup.py sdist bdist_wheel
+      
+    - name: Commit and tag version
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git add setup.py
+        git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
+        git tag "v${{ steps.bump_version.outputs.new_version }}"
+        git push origin main --tags
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
