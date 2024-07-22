@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="simevopy",
-    version='0.2.13',
+    version='0.2.14',
     description="SimEvo Python bindings",
     long_description=long_description,
     long_description_content_type="text/markdown",
