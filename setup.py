@@ -42,7 +42,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    cmake_source_dir=".",
     ext_modules=[CMakeExtension('simevopy')],
     cmdclass=dict(build_ext=CMakeBuild, install=InstallWithCMake),
     url='https://github.com/YJack0000/SimEvo',
