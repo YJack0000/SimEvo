@@ -40,6 +40,8 @@ jobs:
   build:
     needs: test
     runs-on: ${{ matrix.os }}
+    outputs:
+      new_version: ${{ steps.bump_version.outputs.new_version }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
