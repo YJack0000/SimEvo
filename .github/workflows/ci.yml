@@ -78,6 +78,7 @@ jobs:
         if [ $RUNNER_OS == 'macOS' ]; then
           brew install cmake boost
         fi
+        pip3 install setuptools wheel twine scikit-build pybind11
 
     - name: Configure CMake
       run: cmake -S . -B build -DBUILD_BINDINGS=OFF
