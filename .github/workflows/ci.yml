@@ -40,7 +40,7 @@ jobs:
 
     - name: Run tests (Python)
       run: |
-        python3 setup.py install
+        pip3 install .
         pytest
 
     - name: Bump version
