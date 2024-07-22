@@ -46,7 +46,6 @@ python setup.py install
 ```
 or 
 ```
-python setup.py sdist
 pip install .
 ```
 
