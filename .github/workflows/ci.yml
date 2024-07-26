@@ -33,6 +33,7 @@ jobs:
       run: cmake -S . -B build -DBUILD_BINDINGS=OFF -DBUILD_TESTS=ON
 
     - name: Build
+      if: github.event_name == 'push'
       run: cmake --build build
 
     - name: Run tests (C++)
@@ -46,11 +47,13 @@ jobs:
         pytest
 
     - name: Bump version
+      if: github.event_name == 'push'
       id: bump_version
       run: |
         ./bump_version.sh
               
     - name: Commit and tag version
+      if: github.event_name == 'push'
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
@@ -61,9 +64,11 @@ jobs:
         git push origin main --tags || true
 
     - name: Build Python package
+      if: github.event_name == 'push'
       run: python3 setup.py sdist
 
     - name: Upload build artifacts
+      if: github.event_name == 'push'
       uses: actions/upload-artifact@v4
       with:
         name: dist-${{ steps.bump_version.outputs.new_version }}
