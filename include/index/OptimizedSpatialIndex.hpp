@@ -16,7 +16,7 @@ public:
     void clear() override;
     ~OptimizedSpatialIndex() override = default;
 
-    std::vector<std::shared_ptr<SpatialObject<T>>> spatialObjects;  // objects in this node
+    std::vector<SpatialObject<T>> spatialObjects;  // objects in this node
 private:
     float size;
     bool isSubdivided;
@@ -34,9 +34,10 @@ private:
     bool canMerge() const;
     void merge();
     bool isEmpty() const;
-    bool intersectsRange(float min_x, float max_x, float min_y, float max_y) const;
+    bool intersectsRange(float cx, float cy, float range) const;
     int getChildIndex(float x, float y) const;
     float getDistance(float x1, float y1, float x2, float y2) const;
+    OptimizedSpatialIndex<T>* _findLeaf(float x, float y);
 };
 
 #endif

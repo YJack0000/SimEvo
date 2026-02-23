@@ -52,21 +52,19 @@ TYPED_TEST_P(SpatialIndexUUIDTest, QueryFromFarAwayReturnsNoResultsForManyObject
     ASSERT_TRUE(results.empty());
 }
 
-// [TODO] The Optimized Spatial Index is not working in this test case. because it won't retrieve
-// all the object in spatial index TYPED_TEST_P(SpatialIndexUUIDTest,
-// QueryFarAwayButWithinRangeReturnsResultsForManyObjects) {
-//     std::vector<uuids::uuid> objects;
-//     for (int i = 0; i < 100; i++) {
-//         auto object = uuids::random_generator()();
-//         this->index->insert(object, i, i);
-//         objects.push_back(object);
-//     }
-//     auto results = this->index->query(50, 50, 200);
-//     ASSERT_EQ(100, results.size());
-//     for (int i = 0; i < 100; i++) {
-//         EXPECT_EQ(results[i], objects[i]);
-//     }
-// }
+TYPED_TEST_P(SpatialIndexUUIDTest, QueryFarAwayButWithinRangeReturnsResultsForManyObjects) {
+    std::vector<uuids::uuid> objects;
+    for (int i = 0; i < 100; i++) {
+        auto object = uuids::random_generator()();
+        this->index->insert(object, i, i);
+        objects.push_back(object);
+    }
+    auto results = this->index->query(50, 50, 200);
+    ASSERT_EQ(100, results.size());
+    for (int i = 0; i < 100; i++) {
+        EXPECT_EQ(results[i], objects[i]);
+    }
+}
 
 TYPED_TEST_P(SpatialIndexUUIDTest, UpdateObjectCorrectly) {
     auto object = uuids::random_generator()();
@@ -88,7 +86,7 @@ TYPED_TEST_P(SpatialIndexUUIDTest, RemoveObjectCorrectly) {
 REGISTER_TYPED_TEST_SUITE_P(SpatialIndexUUIDTest, InsertsObjectCorrectly,
                             QueryReturnsCorrectResults, QueryReturnsCorrectResultsForManyObjects,
                             QueryFromFarAwayReturnsNoResultsForManyObjects,
-                            // QueryFarAwayButWithinRangeReturnsResultsForManyObjects,
+                            QueryFarAwayButWithinRangeReturnsResultsForManyObjects,
                             UpdateObjectCorrectly, RemoveObjectCorrectly);
 
 INSTANTIATE_TYPED_TEST_SUITE_P(DefaultIndexTests, SpatialIndexUUIDTest, IndexTypes);
