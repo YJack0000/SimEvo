@@ -4,24 +4,29 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+#include "Vec2.hpp"
+
 class EnvironmentObject {
 public:
     EnvironmentObject(float x, float y)
-        : id(boost::uuids::random_generator()()), position(std::make_pair(x, y)) {}
+        : id(boost::uuids::random_generator()()), position(x, y) {}
 
     boost::uuids::uuid getId() const { return id; }
 
     virtual ~EnvironmentObject() = default;
-    virtual void postIteration() {};
+    virtual void postIteration() {}
 
-    // [TODO] change this - very bad implementation in order to make organism
-    // move
-    virtual std::pair<float, float> getPosition() const { return position; }
-    virtual void setPosition(float x, float y) { position = std::make_pair(x, y); }
+    std::pair<float, float> getPosition() const { return position; }
+    void setPosition(float x, float y) { position = Vec2(x, y); }
+
+    Vec2 getPos() const { return position; }
+    void setPos(Vec2 pos) { position = pos; }
 
 private:
     boost::uuids::uuid id;
-    std::pair<float, float> position;
+
+protected:
+    Vec2 position;
 };
 
 #endif

@@ -1,6 +1,5 @@
 #include <core/Food.hpp>
 #include <core/Organism.hpp>
-#include <cstdio>
 #include <random>
 
 Organism::Organism() : EnvironmentObject(0, 0), genes("\x14\x14\x14\x14"), lifeSpan(500) {}
@@ -111,13 +110,11 @@ void Organism::react(const std::vector<std::shared_ptr<EnvironmentObject>>& reac
         auto otherPos = otherOrganism->getPosition();
         if (getSize() * 1.5 < otherOrganism->getSize()) {
             // Flee: move away from a much larger predator
-            movement = std::make_pair(myPos.first - otherPos.first,
-                                      myPos.second - otherPos.second);
+            movement = Vec2(myPos.first - otherPos.first, myPos.second - otherPos.second);
             reactionCounter++;
         } else if (getSize() > 1.5 * otherOrganism->getSize()) {
             // Chase: move toward a much smaller prey
-            movement = std::make_pair(otherPos.first - myPos.first,
-                                      otherPos.second - myPos.second);
+            movement = Vec2(otherPos.first - myPos.first, otherPos.second - myPos.second);
             reactionCounter++;
         }
     } else if (auto food = std::dynamic_pointer_cast<Food>(nearestObject)) {
@@ -128,8 +125,7 @@ void Organism::react(const std::vector<std::shared_ptr<EnvironmentObject>>& reac
         reactionCounter++;
         // Move toward the food source
         auto foodPos = food->getPosition();
-        movement = std::make_pair(foodPos.first - myPos.first,
-                                  foodPos.second - myPos.second);
+        movement = Vec2(foodPos.first - myPos.first, foodPos.second - myPos.second);
     } else {
         throw std::runtime_error("Unknown object type detected");
     }
@@ -210,25 +206,19 @@ void Organism::makeMove() {
     if (reactionCounter == 0) {
         // 80% chance to keep current movement direction (4 out of 5 outcomes)
         bool keepMovement = dis(gen) > 0;
-        if (movement.first == 0 && movement.second == 0) {
+        if (movement.isZero()) {
             keepMovement = false;
         }
 
         if (!keepMovement) {
-            movement = std::make_pair(move(gen) * speed, move(gen) * speed);
+            movement = Vec2(move(gen) * speed, move(gen) * speed);
         }
     }
 
     // Normalize movement vector to organism's speed
-    auto movementLength =
-        std::sqrt(movement.first * movement.first + movement.second * movement.second);
-    if (movementLength > speed) {
-        double scalingFactor = speed / movementLength;
-        movement.first *= scalingFactor;
-        movement.second *= scalingFactor;
-    }
+    movement = movement.normalized(speed);
 
-    setPosition(getPosition().first + movement.first, getPosition().second + movement.second);
+    setPosition(getPosition().first + movement.x, getPosition().second + movement.y);
 
     reactionCounter = 0;
 }

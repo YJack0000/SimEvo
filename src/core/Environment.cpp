@@ -21,6 +21,7 @@ Environment::Environment(int width, int height, std::string type, int numThreads
     if (type == "default") {
         spatialIndex = std::make_unique<DefaultSpatialIndex<boost::uuids::uuid>>();
     } else if (type == "optimized") {
+        // Use the longest side as the quadtree grid dimension
         unsigned long size = static_cast<unsigned long>(std::max(width, height));
         spatialIndex = std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(size);
     } else {
@@ -163,7 +164,8 @@ void Environment::simulateIteration(int iterations,
  * @brief Remove dead organisms and consumed food from the environment.
  *
  * Dead organisms are archived in deadOrganisms for post-simulation analysis.
- * Consumed food increments the foodConsumption counter.
+ * Consumed food increments the foodConsumption counter. Uses deferred removal
+ * to avoid invalidating the iterator during traversal.
  */
 void Environment::cleanUp() {
     std::vector<boost::uuids::uuid> toRemove;
@@ -224,19 +226,25 @@ void Environment::updatePositionsInSpatialIndex() {
     }
 }
 
-// Interactions mutate shared state (food eaten, organism killed, lifeSpan changes),
-// so this phase runs single-threaded to avoid data races.
+/**
+ * @brief Run the interaction phase: organisms eat food and fight.
+ *
+ * Interactions mutate shared state (food eaten, organism killed, lifeSpan changes),
+ * so this phase runs single-threaded to avoid data races.
+ */
 void Environment::handleInteractions() {
     auto organisms = getAllOrganisms();
 
     for (auto& organism : organisms) {
         if (organism->isAlive()) {
             auto position = organism->getPosition();
+            // Query spatial index for objects within this organism's body size radius
             auto interactables =
                 spatialIndex->query(position.first, position.second, organism->getSize());
             std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
 
             for (auto& interactable : interactables) {
+                // Exclude self from interaction targets
                 if (interactable != organism->getId()) {
                     auto it = objectsMapper.find(interactable);
                     if (it != objectsMapper.end()) {
@@ -250,8 +258,12 @@ void Environment::handleInteractions() {
     }
 }
 
-// Reactions only write to each organism's own movement/reactionCounter fields,
-// so this phase is safe to parallelize across organisms.
+/**
+ * @brief Run the reaction phase: organisms decide movement direction.
+ *
+ * Reactions only write to each organism's own movement/reactionCounter fields,
+ * so this phase is safe to parallelize across organisms.
+ */
 void Environment::handleReactions() {
     auto organisms = getAllOrganisms();
     if (organisms.empty()) return;

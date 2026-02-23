@@ -1,4 +1,3 @@
-// Environment.hpp
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
@@ -108,7 +107,7 @@ private:
     std::unordered_map<boost::uuids::uuid, std::shared_ptr<EnvironmentObject>> objectsMapper;
 
     std::vector<std::shared_ptr<Organism>> deadOrganisms;  ///< Accumulated dead organisms
-    unsigned long foodConsumption;                         ///< Running food consumption counter
+    unsigned long foodConsumption = 0;                      ///< Running food consumption counter
 
     int numThreads = 1;  ///< Thread count for the parallelizable reaction phase
 
