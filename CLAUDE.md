@@ -1,103 +1,82 @@
-# CLAUDE.md — SimEvo Project Guide
+# CLAUDE.md — Development Guidelines for SimEvo
 
-## Project Overview
-
-SimEvo is a C++ simulation evolution engine with Python bindings (pybind11). The C++ engine handles the environment, spatial indexing, and simulation loop. Python users define organisms, behaviors, and interactions without modifying the C++ core.
-
-**Package name:** `simevopy` (published to PyPI)
-
-## Build & Run
+## Quick Reference
 
 ```bash
-# Build C++ library + Python bindings
-cmake -S . -B build -DBUILD_BINDINGS=ON
-cmake --build build
-
-# Build with C++ tests
-cmake -S . -B build -DBUILD_TESTS=ON -DBUILD_BINDINGS=OFF
-cmake --build build
-cd build && ctest -V
-
-# Install Python package (builds via CMake internally)
+# Build and install Python package
 pip install .
 
-# Run Python tests
+# Run all Python tests
 pytest
 
-# Run a single Python test
-pytest tests/python/test_chasing.py -v
+# Build and run C++ tests
+cmake -S . -B build -DBUILD_TESTS=ON -DBUILD_BINDINGS=OFF && cmake --build build && cd build && ctest -V
 ```
 
-**Dependencies:** CMake 3.24+, C++20 compiler, Boost (uuid), pybind11, Google Test (fetched automatically for C++ tests)
+**Dependencies:** CMake 3.24+, C++20 compiler, Boost (uuid), pybind11
 
-## Project Structure
+## Development Rules
+
+### Always Test Before Opening a PR
+- Run **both** C++ tests (`ctest`) and Python tests (`pytest`) before opening any PR
+- If you add or change functionality, add corresponding tests
+- If a test fails, fix it — don't skip or delete it
+
+### New Features Must Have Example Code
+- Every new user-facing feature (new API, new binding, new capability) must include an example script in `examples/`
+- Examples should be self-contained and runnable: `python examples/your_example.py`
+- This is non-negotiable — features without examples are incomplete
+
+### Maintain Doxygen Documentation
+- All public C++ APIs must have Doxygen comments: `@brief`, `@param`, `@return`, `@throws`
+- When refactoring, **preserve existing Doxygen comments** — update them if the API changed, but never silently remove them
+- These comments will be used for automated documentation generation
+- Inline comments should explain **why**, not **what** — skip obvious ones
+
+### Clean Architecture and C++ Best Practices
+- Follow modern C++20 idioms and best practices
+- Maintain separation of concerns: C++ engine handles simulation logic, Python defines behaviors
+- Don't introduce unnecessary complexity — prefer simple, direct solutions
+- Use `std::shared_ptr` for environment objects, `std::unique_ptr` for owned resources
+- Avoid raw `new`/`delete`
+- Clang-format: Google style, 4-space indent, 100 column limit (see `.clang-format`)
+
+### Push Back When Needed
+- If a requested change would violate clean architecture, degrade code quality, or introduce technical debt — **say so**
+- Propose better alternatives rather than blindly following instructions
+- The goal is to keep the project moving in a good direction, not just to complete tasks
+- Flag potential issues in PR descriptions if you're unsure
+
+## Project Architecture
 
 ```
-include/
-  core/           # Core simulation headers
-    Environment.hpp, EnvironmentObject.hpp, Food.hpp, Genes.hpp, Organism.hpp
-  index/          # Spatial index interface + implementations
-    ISpatialIndex.hpp, DefaultSpatialIndex.hpp, OptimizedSpatialIndex.hpp
-  utils/          # Utilities (profiler.hpp)
-src/
-  core/           # Core simulation implementation
-  index/          # Spatial index implementations
-bindings/
-  python_bindings.cpp          # Module entry point (PYBIND11_MODULE)
-  core/                        # Per-class pybind11 binding files
-    Environment_bindings.cpp, Organism_bindings.cpp, Food_bindings.cpp, etc.
-tests/
-  cpp/            # Google Test C++ tests
-  python/         # pytest Python tests
-examples/         # Python example scripts
+include/core/     → C++ headers (Environment, Organism, Food, Genes, EnvironmentObject)
+include/index/    → Spatial index interface (ISpatialIndex) + implementations
+src/core/         → C++ implementation
+bindings/core/    → pybind11 binding files (one per class)
+tests/cpp/        → Google Test C++ tests
+tests/python/     → pytest Python tests
+examples/         → Python example scripts
 ```
 
-## Architecture
+- **EnvironmentObject** — base class with UUID + position
+- **Organism** — has genes, lifespan, injectable behavior strategies (ReactionStrategy, InteractionStrategy)
+- **Food** — consumable energy source
+- **Environment** — owns spatial index, runs simulation loop: interactions → reactions → postIteration → cleanup
+- **ISpatialIndex** — `"default"` (brute-force) or `"optimized"` (quadtree)
 
-- **EnvironmentObject** — base class for everything placed in the environment (has UUID, position)
-- **Organism** — extends EnvironmentObject; has genes, lifespan, behavior strategies
-- **Food** — extends EnvironmentObject; can be eaten for energy
-- **Environment** — owns a spatial index, runs the simulation loop (reactions → interactions → cleanup)
-- **ISpatialIndex** — interface for spatial queries; `DefaultSpatialIndex` (brute-force) and `OptimizedSpatialIndex` (quadtree)
+## Conventions
 
-Simulation loop per iteration: `updatePositionsInSpatialIndex()` → `handleReactions()` → `handleInteractions()` → `postIteration()` → `cleanUp()`
+- **Naming:** PascalCase classes, camelCase C++ methods/vars, snake_case Python bindings
+- **Branching:** `fix/`, `feat/`, `refactor/`, `ci/`, `docs/` prefixes
+- **Commits:** conventional commits (`feat:`, `fix:`, `refactor:`, `ci:`, `docs:`)
+- **Bindings:** each class gets `*_bindings.cpp` in `bindings/core/`, forward-declared in `python_bindings.cpp`
+- **Bindings:** use `py::arg(...)` for all params, add docstrings to all bound methods
+- **Exception registration:** only in `python_bindings.cpp`, not duplicated in binding files
+- CI auto-bumps version and publishes to PyPI on merge to main
 
-## Coding Conventions
+## Key Technical Gotchas
 
-- **C++20** standard required
-- **Clang-format**: Google style, 4-space indent, 100 column limit (see `.clang-format`)
-- **Doxygen comments**: Use `@brief`, `@param`, `@return` for all public API methods. Keep these even when refactoring — they will be used for documentation generation.
-- **Header guards**: `#ifndef CLASSNAME_HPP` / `#define` / `#endif`
-- **Smart pointers**: Use `std::shared_ptr` for objects stored in the environment
-- **Naming**: PascalCase for classes, camelCase for methods/variables in C++; snake_case for Python bindings
-
-## Python Bindings (pybind11)
-
-- Each C++ class has a corresponding `*_bindings.cpp` file in `bindings/core/`
-- Forward-declared in `bindings/python_bindings.cpp` and called via `init_ClassName(m)`
-- Python method names use snake_case (e.g., `get_position`, `add_organism`)
-- Use `py::arg(...)` for all parameters in bindings
-- Add docstrings to all bound methods
-- Exception registrations go in `python_bindings.cpp` (not duplicated in binding files)
-
-## Branching & PR Conventions
-
-- **Main branch:** `main`
-- **Branch naming:** `fix/description`, `feat/description`, `refactor/description`, `ci/description`
-- **PR titles:** concise, imperative mood
-- **Commit messages:** conventional commits style (`feat:`, `fix:`, `refactor:`, `ci:`, `chore:`)
-- CI runs on all PRs: C++ tests (ctest) + Python tests (pytest)
-- Version bumping and PyPI publishing happen automatically on merge to main
-
-## Testing
-
-- **C++ tests:** Google Test, located in `tests/cpp/`. Built when `-DBUILD_TESTS=ON`.
-- **Python tests:** pytest, located in `tests/python/`. Run after `pip install .`.
-- Always run both C++ and Python tests before opening a PR.
-
-## Key Gotchas
-
-- **Thread safety:** The interaction phase mutates shared state (organism lifespan, food state) and must run single-threaded. The reaction phase can be parallelized.
-- **GIL deadlock:** When Python callbacks (behavior strategies) are used, worker threads cannot acquire the GIL if the main thread holds it. Keep simulation single-threaded when Python callbacks are involved.
-- **pybind11 copyability:** Adding `std::atomic` or `std::mutex` to bound classes makes them non-copyable, which breaks pybind11's default return value policy. Avoid this.
-- **Spatial index:** Environment constructor accepts `type` param: `"default"` (brute-force) or `"optimized"` (quadtree).
+- **Thread safety:** Interaction phase mutates shared state → single-threaded. Reaction phase only writes to each organism's own fields → parallelizable.
+- **GIL deadlock:** Python callbacks from worker threads can't acquire GIL if main thread holds it. Keep simulation single-threaded when Python strategies are set.
+- **pybind11 copyability:** `std::atomic` or `std::mutex` on bound classes makes them non-copyable, breaking pybind11. Avoid this.
