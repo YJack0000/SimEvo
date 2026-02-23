@@ -38,6 +38,9 @@ public:
     /** @brief Get the vertical extent of the environment. */
     int getHeight() const { return height; }
 
+  
+    void setVerbose(bool verbose) { this->verbose = verbose; }
+  
     /**
      * @brief Add an organism to the environment at the specified coordinates.
      * @param organism Shared pointer to the organism.
@@ -111,6 +114,7 @@ private:
     unsigned long foodConsumption;                         ///< Running food consumption counter
 
     int numThreads = 1;  ///< Thread count for the parallelizable reaction phase
+    bool verbose = false;
 
     /**
      * @brief Validate that coordinates fall within environment bounds.

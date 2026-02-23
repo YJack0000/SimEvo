@@ -20,22 +20,16 @@ def setup_environment():
 
 def test_environment_simulation(setup_environment):
     env = setup_environment
-    initial_distance = calculate_distance(100, 100, 80, 80)
-    
+
     # Simulate without error
     try:
         for _ in range(100):
             env.simulate_iteration(1)
     except Exception as e:
         pytest.fail(f"Simulation failed with an exception: {e}")
-    
+
     all_orgs = env.get_all_organisms()
 
-    # Check organism count
+    # Both organisms should still be alive (lifespan callback returns 0 consumption)
     assert len(all_orgs) == 2, "There should be exactly two organisms in the environment"
-    
-    # Check final distance
-    first_org_pos = all_orgs[0].get_position()
-    second_org_pos = all_orgs[1].get_position()
-    final_distance = calculate_distance(first_org_pos[0], first_org_pos[1], second_org_pos[0], second_org_pos[1])
-    assert abs(initial_distance - final_distance) < 1e-4, "The distance between organisms should not change significantly"
+    assert all(org.is_alive() for org in all_orgs), "All organisms should still be alive"

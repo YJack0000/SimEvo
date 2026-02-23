@@ -147,16 +147,18 @@ void Environment::simulateIteration(int iterations,
 
     cleanUp();
 
-    profiler.report("handleInteractions");
-    profiler.report("handleReactions");
-    profiler.report("postIteration");
-    profiler.report("simulateIteration");
-    printf("Index type: %s\n", type.c_str());
-    printf("Number of threads: %d\n", numThreads);
-    printf("Total food consumption: %lu\n", foodConsumption);
-    printf("Total dead organisms: %lu\n", deadOrganisms.size());
-    printf("Total organisms: %lu\n", getAllOrganisms().size());
-    printf("_______________________________________________________\n");
+    if (verbose) {
+        profiler.report("handleInteractions");
+        profiler.report("handleReactions");
+        profiler.report("postIteration");
+        profiler.report("simulateIteration");
+        printf("Index type: %s\n", type.c_str());
+        printf("Number of threads: %d\n", numThreads);
+        printf("Total food consumption: %lu\n", foodConsumption);
+        printf("Total dead organisms: %lu\n", deadOrganisms.size());
+        printf("Total organisms: %lu\n", getAllOrganisms().size());
+        printf("_______________________________________________________\n");
+    }
 }
 
 /**

@@ -37,7 +37,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="simevopy",
-    version='0.2.26',
+    version='0.2.27',
     description="SimEvo Python bindings",
     long_description=long_description,
     long_description_content_type="text/markdown",
