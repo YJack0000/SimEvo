@@ -9,22 +9,18 @@
 #include <vector>
 
 /**
- * @brief Constructor for Environment class.
- *
- * Initializes the Environment with given dimensions and a specific type of
- * spatial index.
- *
- * @param width The width of the environment.
- * @param height The height of the environment.
- * @param type The type of spatial index to use ("default" or "optimized").
- * @throws std::invalid_argument If an unrecognized type is provided.
+ * @brief Construct an environment with the given dimensions and spatial index type.
+ * @param width  Environment width in simulation units.
+ * @param height Environment height in simulation units.
+ * @param type   Spatial index type: "default" or "optimized".
+ * @param numThreads Number of threads for the parallel reaction phase.
+ * @throws std::invalid_argument If the spatial index type is unknown.
  */
 Environment::Environment(int width, int height, std::string type, int numThreads)
     : width(width), height(height), type(type), numThreads(numThreads) {
     if (type == "default") {
         spatialIndex = std::make_unique<DefaultSpatialIndex<boost::uuids::uuid>>();
     } else if (type == "optimized") {
-        // setting the size of the spatial index to the longest side of the environment
         unsigned long size = static_cast<unsigned long>(std::max(width, height));
         spatialIndex = std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(size);
     } else {
@@ -33,30 +29,23 @@ Environment::Environment(int width, int height, std::string type, int numThreads
 }
 
 /**
- * @brief Checks if the given coordinates are within the environment boundaries.
- *
- * Throws an exception if the coordinates are out of the allowed range.
- *
- * @param x The x-coordinate to check.
- * @param y The y-coordinate to check.
- * @throws std::out_of_range If coordinates are out of the environment
- * boundaries.
+ * @brief Validate that coordinates are within environment boundaries.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @throws std::out_of_range If coordinates exceed [0, width] x [0, height].
  */
 void Environment::checkBounds(float x, float y) const {
     if (x < 0.0f || x > static_cast<float>(width) || y < 0.0f || y > static_cast<float>(height)) {
-        // printf("Coordinates are out of the allowed range: (%f, %f)\n", x, y);
         throw std::out_of_range("Coordinates are out of the allowed range.");
     }
 }
 
 /**
- * @brief Adds an organism to the environment at specified coordinates.
- *
- * Inserts the organism into the spatial index and the objects map.
- *
- * @param organism A shared pointer to the organism to add.
- * @param x The x-coordinate where the organism will be placed.
- * @param y The y-coordinate where the organism will be placed.
+ * @brief Add an organism to the environment at the specified position.
+ * @param organism Shared pointer to the organism.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @throws std::out_of_range If coordinates are out of bounds.
  */
 void Environment::add(const std::shared_ptr<Organism>& organism, float x, float y) {
     checkBounds(x, y);
@@ -67,13 +56,11 @@ void Environment::add(const std::shared_ptr<Organism>& organism, float x, float 
 }
 
 /**
- * brief Adds a food item to the environment at specified coordinates.
- *
- * Inserts the food item into the spatial index and the objects map.
- *
- * @param food A shared pointer to the food item to add.
- * @param x The x-coordinate where the food item will be placed.
- * @param y The y-coordinate where the food item will be placed.
+ * @brief Add a food item to the environment at the specified position.
+ * @param food Shared pointer to the food.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @throws std::out_of_range If coordinates are out of bounds.
  */
 void Environment::add(const std::shared_ptr<Food>& food, float x, float y) {
     checkBounds(x, y);
@@ -84,39 +71,33 @@ void Environment::add(const std::shared_ptr<Food>& food, float x, float y) {
 }
 
 /**
- * @brief Removes an organism from the environment.
- *
- * Removes the organism from the spatial index and the objects map.
- *
- * @param organism A shared pointer to the organism to remove.
+ * @brief Remove an organism from the environment.
+ * @param organism Shared pointer to the organism to remove.
+ * @throws std::runtime_error If the organism is not found.
  */
 void Environment::remove(const std::shared_ptr<Organism>& organism) {
     if (objectsMapper.find(organism->getId()) == objectsMapper.end()) {
         throw std::runtime_error("Organism not found in Environment.");
     }
-
     spatialIndex->remove(organism->getId());
     objectsMapper.erase(organism->getId());
 }
 
 /**
- * brief Removes a food item from the environment.
- *
- * Removes the food item from the spatial index and the objects map.
- *
- * @param food A shared pointer to the food item to remove.
+ * @brief Remove a food item from the environment.
+ * @param food Shared pointer to the food to remove.
+ * @throws std::runtime_error If the food is not found.
  */
 void Environment::remove(const std::shared_ptr<Food>& food) {
     if (objectsMapper.find(food->getId()) == objectsMapper.end()) {
         throw std::runtime_error("Food not found in Environment.");
     }
-
     spatialIndex->remove(food->getId());
     objectsMapper.erase(food->getId());
 }
 
 /**
- * @brief Resets the environment by clearing the spatial index and object map.
+ * @brief Reset the environment, removing all objects and clearing statistics.
  */
 void Environment::reset() {
     spatialIndex->clear();
@@ -126,13 +107,14 @@ void Environment::reset() {
 }
 
 /**
- * @brief Simulates a number of iterations of the environment.
- *
- * Each iteration includes handling interactions, a post-iteration update, and
- * calling a callback function.
- *
+ * @brief Run the simulation for the specified number of iterations.
  * @param iterations Number of iterations to simulate.
- * @param on_each_iteration Callback function to be called after each iteration.
+ * @param on_each_iteration Optional callback invoked after each iteration.
+ *
+ * Each iteration runs three phases in order:
+ * 1. handleInteractions (single-threaded) -- organisms eat food / prey on others.
+ * 2. handleReactions (multi-threaded) -- organisms decide movement direction.
+ * 3. postIteration -- deduct life, move organisms, sync spatial index.
  */
 void Environment::simulateIteration(int iterations,
                                     std::function<void(const Environment&)> on_each_iteration) {
@@ -141,7 +123,7 @@ void Environment::simulateIteration(int iterations,
 
     profiler.start("simulateIteration");
     for (int i = 0; i < iterations; i++) {
-        if (getAllOrganisms().size() == 0 && getAllFoods().size() == 0) {
+        if (getAllOrganisms().empty() && getAllFoods().empty()) {
             break;
         }
 
@@ -179,6 +161,12 @@ void Environment::simulateIteration(int iterations,
     }
 }
 
+/**
+ * @brief Remove dead organisms and consumed food from the environment.
+ *
+ * Dead organisms are archived in deadOrganisms for post-simulation analysis.
+ * Consumed food increments the foodConsumption counter.
+ */
 void Environment::cleanUp() {
     std::vector<boost::uuids::uuid> toRemove;
     for (const auto& object : objectsMapper) {
@@ -199,30 +187,28 @@ void Environment::cleanUp() {
     }
 }
 
+/** @brief Get the list of organisms that died during the simulation. */
 std::vector<std::shared_ptr<Organism>> Environment::getDeadOrganisms() const {
     return deadOrganisms;
 }
 
+/** @brief Get the total number of food items consumed across all iterations. */
 unsigned long Environment::getFoodConsumptionInIteration() const { return foodConsumption; }
 
 /**
- * @brief Updates and cleans up the environment after each iteration.
- *
- * Removes dead organisms and consumed food, and updates the positions of all
- * active organisms.
+ * @brief Run per-object post-iteration logic, then sync positions with the spatial index.
  */
 void Environment::postIteration() {
-    // do the post iteration for all objects
     for (auto& object : objectsMapper) {
         object.second->postIteration();
     }
-
     updatePositionsInSpatialIndex();
 }
 
 /**
- * @brief Updates the positions of all organisms in the spatial index, ensuring
- * they remain within bounds.
+ * @brief Synchronize organism positions with the spatial index after movement.
+ *
+ * Clamps organism positions within environment bounds before updating the index.
  */
 void Environment::updatePositionsInSpatialIndex() {
     for (auto& object : objectsMapper) {
@@ -230,83 +216,62 @@ void Environment::updatePositionsInSpatialIndex() {
         if (organism && organism->isAlive()) {
             auto [x, y] = organism->getPosition();
 
-            // make organism stay within bounds
+            // Clamp organism position within environment bounds
             x = std::max(0.0f, std::min(static_cast<float>(width), x));
             y = std::max(0.0f, std::min(static_cast<float>(height), y));
 
             organism->setPosition(x, y);
-
             spatialIndex->update(object.first, x, y);
         }
     }
 }
 
-/**
- * @brief Manages interactions between all EnvironmentObjects with others by size
- *
- */
+// Interactions mutate shared state (food eaten, organism killed, lifeSpan changes),
+// so this phase runs single-threaded to avoid data races.
 void Environment::handleInteractions() {
-    std::vector<std::thread> threads;
+    auto organisms = getAllOrganisms();
 
-    // each thread will handle interactions for a subset of organisms
-    auto worker = [&](int thread_id) {
-        auto organisms = getAllOrganisms();
-        size_t chunkSize = organisms.size() / numThreads;
-        size_t start = thread_id * chunkSize;
-        size_t end = (thread_id == numThreads - 1) ? organisms.size() : (thread_id + 1) * chunkSize;
+    for (auto& organism : organisms) {
+        if (organism->isAlive()) {
+            auto position = organism->getPosition();
+            auto interactables =
+                spatialIndex->query(position.first, position.second, organism->getSize());
+            std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
 
-        for (size_t i = start; i < end; ++i) {
-            auto organism = organisms[i];
-            if (organism->isAlive()) {
-                std::pair<float, float> position = organism->getPosition();
-                std::vector<boost::uuids::uuid> interactables =
-                    spatialIndex->query(position.first, position.second, organism->getSize());
-                std::vector<std::shared_ptr<EnvironmentObject>> interactableObjects;
-
-                for (auto& interactable : interactables) {
-                    if (interactable != organism->getId()) {
-                        interactableObjects.push_back(objectsMapper[interactable]);
+            for (auto& interactable : interactables) {
+                if (interactable != organism->getId()) {
+                    auto it = objectsMapper.find(interactable);
+                    if (it != objectsMapper.end()) {
+                        interactableObjects.push_back(it->second);
                     }
                 }
-
-                organism->interact(interactableObjects);
             }
-        }
-    };
 
-    for (int i = 0; i < numThreads; ++i) {
-        threads.emplace_back(worker, i);
-    }
-
-    for (auto& thread : threads) {
-        if (thread.joinable()) {
-            thread.join();
+            organism->interact(interactableObjects);
         }
     }
 }
 
-/**
- * @brief Manages reactions between all living organisms with others by radius
- *
- */
+// Reactions only write to each organism's own movement/reactionCounter fields,
+// so this phase is safe to parallelize across organisms.
 void Environment::handleReactions() {
-    std::vector<std::thread> threads;
-    auto worker = [&](int thread_id) {
-        auto organisms = getAllOrganisms();
-        size_t chunkSize = organisms.size() / numThreads;
-        size_t start = thread_id * chunkSize;
-        size_t end = (thread_id == numThreads - 1) ? organisms.size() : (thread_id + 1) * chunkSize;
+    auto organisms = getAllOrganisms();
+    if (organisms.empty()) return;
 
+    auto worker = [&](size_t start, size_t end) {
         for (size_t i = start; i < end; ++i) {
-            auto organism = organisms[i];
+            auto& organism = organisms[i];
             if (organism->isAlive()) {
-                std::pair<float, float> position = organism->getPosition();
-                std::vector<boost::uuids::uuid> reactables = spatialIndex->query(
+                auto position = organism->getPosition();
+                auto reactables = spatialIndex->query(
                     position.first, position.second, organism->getReactionRadius());
                 std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
                 for (auto& reactable : reactables) {
                     if (reactable != organism->getId()) {
-                        reactableObjects.push_back(objectsMapper[reactable]);
+                        auto it = objectsMapper.find(reactable);
+                        if (it != objectsMapper.end()) {
+                            reactableObjects.push_back(it->second);
+                        }
                     }
                 }
 
@@ -315,21 +280,26 @@ void Environment::handleReactions() {
         }
     };
 
-    for (int i = 0; i < numThreads; ++i) {
-        threads.emplace_back(worker, i);
-    }
+    if (numThreads <= 1) {
+        worker(0, organisms.size());
+    } else {
+        // Partition organisms evenly across threads; last thread handles remainder
+        std::vector<std::thread> threads;
+        size_t chunkSize = organisms.size() / numThreads;
 
-    for (auto& thread : threads) {
-        if (thread.joinable()) {
+        for (int i = 0; i < numThreads; ++i) {
+            size_t start = i * chunkSize;
+            size_t end = (i == numThreads - 1) ? organisms.size() : (i + 1) * chunkSize;
+            threads.emplace_back(worker, start, end);
+        }
+
+        for (auto& thread : threads) {
             thread.join();
         }
     }
 }
 
-/** @brief Retrieves all objects currently in the environment.
- *
- * @return std::vector<std::shared_ptr<EnvironmentObject>> A list of all objects.
- */
+/** @brief Get all objects (organisms and food) in the environment. */
 std::vector<std::shared_ptr<EnvironmentObject>> Environment::getAllObjects() const {
     std::vector<std::shared_ptr<EnvironmentObject>> objects;
     for (const auto& object : objectsMapper) {
@@ -338,11 +308,7 @@ std::vector<std::shared_ptr<EnvironmentObject>> Environment::getAllObjects() con
     return objects;
 }
 
-/**
- * @brief Retrieves all organisms currently in the environment.
- *
- * @return std::vector<std::shared_ptr<Organism>> A list of all organisms.
- */
+/** @brief Get all living and dead organisms currently in the environment. */
 std::vector<std::shared_ptr<Organism>> Environment::getAllOrganisms() const {
     std::vector<std::shared_ptr<Organism>> organisms;
     for (const auto& object : objectsMapper) {
@@ -353,11 +319,7 @@ std::vector<std::shared_ptr<Organism>> Environment::getAllOrganisms() const {
     return organisms;
 }
 
-/**
- * @brief Retrieves all food items currently in the environment.
- *
- * @return std::vector<std::shared_ptr<Food>> A list of all food items.
- */
+/** @brief Get all food items currently in the environment. */
 std::vector<std::shared_ptr<Food>> Environment::getAllFoods() const {
     std::vector<std::shared_ptr<Food>> foods;
     for (const auto& object : objectsMapper) {
