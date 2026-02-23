@@ -39,7 +39,9 @@ void init_Environment(py::module& m) {
         .def("simulate_iteration", &Environment::simulateIteration, py::arg("iterations"),
              py::arg("on_each_iteration") = nullptr)
         .def("get_dead_organisms", &Environment::getDeadOrganisms)
-        .def("get_food_consumption_in_iteration", &Environment::getFoodConsumptionInIteration);
+        .def("get_food_consumption_in_iteration", &Environment::getFoodConsumptionInIteration)
+        .def("set_verbose", &Environment::setVerbose, py::arg("verbose"),
+             "Enable or disable profiler output after simulate_iteration. Default is off.");
 
     py::register_exception<std::out_of_range>(m, "OutOfRangeException", PyExc_RuntimeError);
     py::register_exception<std::runtime_error>(m, "RuntimeException", PyExc_RuntimeError);

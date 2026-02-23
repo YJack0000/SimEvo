@@ -17,6 +17,8 @@ public:
     int getWidth() const { return width; }
     int getHeight() const { return height; }
 
+    void setVerbose(bool verbose) { this->verbose = verbose; }
+
     void add(const std::shared_ptr<Organism>& organism, float x, float y);
     void add(const std::shared_ptr<Food>& food, float x, float y);
 
@@ -44,6 +46,7 @@ private:
     unsigned long foodConsumption;
 
     int numThreads = 1;
+    bool verbose = false;
 
     void checkBounds(float x, float y) const;
     void updatePositionsInSpatialIndex();
