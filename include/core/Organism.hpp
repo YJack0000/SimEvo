@@ -29,14 +29,12 @@ public:
     void killed();
     bool isAlive() const;
     bool canReproduce() const;
-    // [TODO] from GPT don't know if it is a good idea to make this virtual for python to override
-    // virtual bool isFull() const;
 
     ~Organism() {};
 
     // actions
-    void react(std::vector<std::shared_ptr<EnvironmentObject>> &reactableObjects);
-    void interact(std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects);
+    void react(const std::vector<std::shared_ptr<EnvironmentObject>> &reactableObjects);
+    void interact(const std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects);
     std::shared_ptr<Organism> reproduce();
 
     void postIteration() override;
@@ -46,7 +44,7 @@ private:
     LifeConsumptionCalculator lifeConsumptionCalculator;
     float lifeSpan;
 
-    double calculateDistance(std::shared_ptr<EnvironmentObject> object);
+    double calculateDistance(const std::shared_ptr<EnvironmentObject> &object) const;
 
     std::pair<float, float> movement;
     int reactionCounter = 0;

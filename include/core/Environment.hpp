@@ -51,7 +51,6 @@ private:
     void handleReactions();
     void postIteration();
     void cleanUp();
-    void removeDeadOrganisms();
 };
 
 #endif
