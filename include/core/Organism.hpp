@@ -133,8 +133,8 @@ private:
      */
     double calculateDistance(const std::shared_ptr<EnvironmentObject> &object) const;
 
-    std::pair<float, float> movement;  ///< Current movement direction vector
-    int reactionCounter = 0;           ///< Guards against multiple reactions per tick
+    Vec2 movement;              ///< Current movement direction vector
+    int reactionCounter = 0;    ///< Guards against multiple reactions per tick
 
     /**
      * @brief Apply the current movement vector to update position.

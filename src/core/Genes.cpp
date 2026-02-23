@@ -3,9 +3,7 @@
 #include <functional>
 #include <random>
 
-Genes::Genes(const char *dnaStr) : Genes(dnaStr, nullptr) {
-    std::memcpy(dna, dnaStr, 4);
-}
+Genes::Genes(const char *dnaStr) : Genes(dnaStr, nullptr) {}
 
 Genes::Genes(const char *dnaStr, MutationFunction customMutationLogic = nullptr)
     : mutationLogic(customMutationLogic ? customMutationLogic : defaultMutationLogic) {
@@ -26,8 +24,7 @@ void Genes::defaultMutationLogic(char dna[4]) {
     std::uniform_int_distribution<int> distribution(-3, 3);
 
     for (int i = 0; i < 4; ++i) {
-        int mutation = distribution(rng);
-        dna[i] += mutation;
+        dna[i] += distribution(rng);
     }
 }
 
