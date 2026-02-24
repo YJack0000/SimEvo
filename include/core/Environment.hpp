@@ -65,6 +65,15 @@ public:
     void add(const std::shared_ptr<Food>& food, float x, float y);
 
     /**
+     * @brief Add a generic EnvironmentObject (e.g. a Python subclass) at the specified coordinates.
+     * @param object Shared pointer to the environment object.
+     * @param x Horizontal position.
+     * @param y Vertical position.
+     * @throws std::out_of_range If (x, y) is outside the environment bounds.
+     */
+    void add(const std::shared_ptr<EnvironmentObject>& object, float x, float y);
+
+    /**
      * @brief Remove an organism from the environment and spatial index.
      * @param organism Shared pointer to the organism to remove.
      * @throws std::runtime_error If the organism is not found.
@@ -77,6 +86,13 @@ public:
      * @throws std::runtime_error If the food is not found.
      */
     void remove(const std::shared_ptr<Food>& food);
+
+    /**
+     * @brief Remove a generic EnvironmentObject from the environment and spatial index.
+     * @param object Shared pointer to the object to remove.
+     * @throws std::runtime_error If the object is not found.
+     */
+    void remove(const std::shared_ptr<EnvironmentObject>& object);
 
     /** @brief Clear all objects, dead organisms, and counters from the environment. */
     void reset();

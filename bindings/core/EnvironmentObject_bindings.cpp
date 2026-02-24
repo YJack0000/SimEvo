@@ -4,8 +4,18 @@
 
 namespace py = pybind11;
 
+// Trampoline class to allow Python subclassing of EnvironmentObject
+class PyEnvironmentObject : public EnvironmentObject {
+public:
+    using EnvironmentObject::EnvironmentObject;
+
+    void postIteration() override {
+        PYBIND11_OVERRIDE(void, EnvironmentObject, postIteration);
+    }
+};
+
 void init_EnvironmentObject(py::module &m) {
-    py::class_<EnvironmentObject, std::shared_ptr<EnvironmentObject>>(m, "EnvironmentObject")
+    py::class_<EnvironmentObject, PyEnvironmentObject, std::shared_ptr<EnvironmentObject>>(m, "EnvironmentObject")
         .def(py::init<float, float>())
         .def("get_position", &EnvironmentObject::getPosition)
         .def("get_id", &EnvironmentObject::getId)
