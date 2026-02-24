@@ -246,9 +246,12 @@ void Environment::updatePositionsInSpatialIndex() {
         if (organism && organism->isAlive()) {
             auto [x, y] = organism->getPosition();
 
-            // Clamp organism position within environment bounds
-            x = std::max(0.0f, std::min(static_cast<float>(width), x));
-            y = std::max(0.0f, std::min(static_cast<float>(height), y));
+            // Clamp organism position within environment bounds.
+            // Use width - epsilon to stay strictly inside the spatial index
+            // bounds, which uses half-open interval [0, size).
+            constexpr float kEpsilon = 0.001f;
+            x = std::max(0.0f, std::min(static_cast<float>(width) - kEpsilon, x));
+            y = std::max(0.0f, std::min(static_cast<float>(height) - kEpsilon, y));
 
             organism->setPosition(x, y);
             spatialIndex->update(object.first, x, y);
