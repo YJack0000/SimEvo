@@ -98,6 +98,34 @@ void Environment::remove(const std::shared_ptr<Food>& food) {
 }
 
 /**
+ * @brief Add a generic EnvironmentObject to the environment at the specified position.
+ * @param object Shared pointer to the environment object.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @throws std::out_of_range If coordinates are out of bounds.
+ */
+void Environment::add(const std::shared_ptr<EnvironmentObject>& object, float x, float y) {
+    checkBounds(x, y);
+    auto id = object->getId();
+    object->setPosition(x, y);
+    spatialIndex->insert(id, x, y);
+    objectsMapper.insert({id, object});
+}
+
+/**
+ * @brief Remove a generic EnvironmentObject from the environment.
+ * @param object Shared pointer to the object to remove.
+ * @throws std::runtime_error If the object is not found.
+ */
+void Environment::remove(const std::shared_ptr<EnvironmentObject>& object) {
+    if (objectsMapper.find(object->getId()) == objectsMapper.end()) {
+        throw std::runtime_error("Object not found in Environment.");
+    }
+    spatialIndex->remove(object->getId());
+    objectsMapper.erase(object->getId());
+}
+
+/**
  * @brief Reset the environment, removing all objects and clearing statistics.
  */
 void Environment::reset() {

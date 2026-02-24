@@ -24,6 +24,11 @@ void init_Environment(py::module& m) {
              static_cast<void (Environment::*)(const std::shared_ptr<Food>&, float, float)>(
                  &Environment::add),
              py::arg("food"), py::arg("x"), py::arg("y"), "Add food at specified coordinates.")
+        .def("add_object",
+             static_cast<void (Environment::*)(const std::shared_ptr<EnvironmentObject>&, float, float)>(
+                 &Environment::add),
+             py::arg("object"), py::arg("x"), py::arg("y"),
+             "Add a custom EnvironmentObject at specified coordinates.")
         .def("remove_organism",
              static_cast<void (Environment::*)(const std::shared_ptr<Organism>&)>(
                  &Environment::remove),
@@ -31,6 +36,10 @@ void init_Environment(py::module& m) {
         .def("remove_food",
              static_cast<void (Environment::*)(const std::shared_ptr<Food>&)>(&Environment::remove),
              py::arg("food"), "Remove food from the environment.")
+        .def("remove_object",
+             static_cast<void (Environment::*)(const std::shared_ptr<EnvironmentObject>&)>(
+                 &Environment::remove),
+             py::arg("object"), "Remove a custom EnvironmentObject from the environment.")
         .def("reset", &Environment::reset, "Reset the environment.")
         .def("get_all_objects", &Environment::getAllObjects, "Get all objects in the environment.")
         .def("get_all_organisms", &Environment::getAllOrganisms,
