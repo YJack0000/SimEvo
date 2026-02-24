@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 #include <core/Organism.hpp>
 
@@ -17,9 +18,16 @@ void init_Organism(py::module &m) {
         .def("killed", &Organism::killed)
         .def("is_alive", &Organism::isAlive)
         .def("can_reproduce", &Organism::canReproduce)
-        // .def("is_full", &Organism::isFull)
+        .def("add_life_span", &Organism::addLifeSpan, py::arg("amount"))
         .def("reproduce", &Organism::reproduce)
         .def("get_reaction_radius", &Organism::getReactionRadius)
         .def("interact", &Organism::interact)
-        .def("post_iteration", &Organism::postIteration);
+        .def("react", &Organism::react)
+        .def("post_iteration", &Organism::postIteration)
+        .def("set_reaction_strategy", &Organism::setReactionStrategy, py::arg("strategy"),
+             "Set a custom reaction strategy. The callable receives (organism, nearby_objects) "
+             "and should return a (dx, dy) tuple for movement direction, or (0, 0) for no reaction.")
+        .def("set_interaction_strategy", &Organism::setInteractionStrategy, py::arg("strategy"),
+             "Set a custom interaction strategy. The callable receives (organism, nearby_objects) "
+             "and should perform interactions (e.g., eat food, kill organisms).");
 }
