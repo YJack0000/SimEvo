@@ -15,9 +15,15 @@
  *
  * Environment owns all simulation objects, delegates spatial lookups to an
  * ISpatialIndex implementation, and drives the interact-react-move lifecycle
- * each iteration. The interaction phase runs single-threaded because it mutates
- * shared state (food eaten flags, organism lifespans). The reaction phase can
- * be parallelized since each organism only writes to its own movement fields.
+ * each iteration. Both phases currently run single-threaded so that Python
+ * strategy callbacks can safely acquire the GIL.
+ *
+ * TODO: Re-enable multi-threaded handleReactions(). The reaction phase only
+ * writes to each organism's own movement fields and is inherently parallelizable.
+ * When Python callbacks are involved, either release the GIL before spawning
+ * worker threads (using py::gil_scoped_release) or detect at runtime whether
+ * any organism has a custom strategy and only fall back to single-threaded in
+ * that case.
  */
 class Environment {
 public:
@@ -26,7 +32,7 @@ public:
      * @param width  The horizontal extent of the simulation area.
      * @param height The vertical extent of the simulation area.
      * @param type   Spatial index implementation: "default" or "optimized".
-     * @param numThreads Number of threads for the parallelizable reaction phase.
+     * @param numThreads Reserved for future multi-threaded reaction phase.
      * @throws std::invalid_argument If type is not "default" or "optimized".
      */
     Environment(int width, int height, std::string type = "default", int numThreads = 1);
@@ -80,9 +86,9 @@ public:
      * @param iterations Number of iterations to simulate.
      * @param on_each_iteration Optional callback invoked after each iteration.
      *
-     * Each iteration proceeds in order: interactions (single-threaded),
-     * reactions (optionally multi-threaded), then post-iteration (life
-     * consumption + movement). Stops early if no organisms or food remain.
+     * Each iteration proceeds in order: interactions, reactions, then
+     * post-iteration (life consumption + movement). Stops early if no
+     * organisms or food remain.
      */
     void simulateIteration(int iterations,
                            std::function<void(const Environment&)> on_each_iteration = nullptr);
@@ -112,7 +118,8 @@ private:
     std::vector<std::shared_ptr<Organism>> deadOrganisms;  ///< Accumulated dead organisms
     unsigned long foodConsumption = 0;                      ///< Running food consumption counter
 
-    int numThreads = 1;  ///< Thread count for the parallelizable reaction phase
+    // TODO: use numThreads to re-enable multi-threaded handleReactions()
+    int numThreads = 1;  ///< Reserved for future multi-threaded reaction phase
     bool verbose = false;
 
     /**
@@ -137,9 +144,9 @@ private:
     /**
      * @brief Run the reaction phase: organisms decide movement direction.
      *
-     * Safe to parallelize because each organism only writes to its own
-     * movement vector and reactionCounter. Uses numThreads worker threads
-     * when numThreads > 1.
+     * Currently runs single-threaded for GIL safety with Python callbacks.
+     * TODO: Re-enable multi-threading -- each organism only writes to its own
+     * movement/reactionCounter fields, so this phase is inherently parallelizable.
      */
     void handleReactions();
 

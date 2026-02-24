@@ -48,6 +48,20 @@ bool Organism::isAlive() const { return lifeSpan > 0; }
 
 bool Organism::canReproduce() const { return lifeSpan > 1000; }
 
+void Organism::addLifeSpan(float amount) { lifeSpan += amount; }
+
+void Organism::setReactionStrategy(ReactionStrategy strategy) {
+    reactionStrategy = std::move(strategy);
+}
+
+void Organism::setInteractionStrategy(InteractionStrategy strategy) {
+    interactionStrategy = std::move(strategy);
+}
+
+bool Organism::hasCustomStrategy() const {
+    return static_cast<bool>(reactionStrategy) || static_cast<bool>(interactionStrategy);
+}
+
 double Organism::calculateDistance(const std::shared_ptr<EnvironmentObject>& object) const {
     auto pos = getPosition();
     auto otherPos = object->getPosition();
@@ -56,39 +70,32 @@ double Organism::calculateDistance(const std::shared_ptr<EnvironmentObject>& obj
     return std::sqrt(dx * dx + dy * dy);
 }
 
-/**
- * @brief Decide movement direction based on the nearest relevant object.
- * @param reactableObjects Nearby objects within the organism's reaction radius.
- *
- * Behavior:
- * - Flee from organisms that are 1.5x larger (move away).
- * - Chase organisms that are 1.5x smaller (move toward to prey).
- * - Move toward the nearest edible food.
- * - Only one reaction per iteration (tracked by reactionCounter).
- *
- * Thread-safe: only writes to this organism's own movement/reactionCounter.
- */
-void Organism::react(const std::vector<std::shared_ptr<EnvironmentObject>>& reactableObjects) {
-    if (reactableObjects.empty()) {
-        return;
-    }
+// --- Default built-in strategies ---
 
-    // Find the nearest valid (alive/edible) object
+/**
+ * @brief Built-in reaction: find nearest valid object and decide movement.
+ *
+ * Movement rules:
+ *  - Flee from organisms whose size exceeds 1.5x this organism's size.
+ *  - Chase organisms whose size is less than 2/3 of this organism's size.
+ *  - Move toward edible food.
+ *  - Return {0,0} when no actionable object is found.
+ */
+std::pair<float, float> Organism::defaultReaction(
+    Organism& self,
+    const std::vector<std::shared_ptr<EnvironmentObject>>& reactableObjects) {
+
     std::shared_ptr<EnvironmentObject> nearestObject = nullptr;
     double minDistance = std::numeric_limits<double>::max();
 
     for (const auto& obj : reactableObjects) {
         if (auto food = std::dynamic_pointer_cast<Food>(obj)) {
-            if (!food->canBeEaten()) {
-                continue;
-            }
+            if (!food->canBeEaten()) continue;
         } else if (auto organism = std::dynamic_pointer_cast<Organism>(obj)) {
-            if (!organism->isAlive()) {
-                continue;
-            }
+            if (!organism->isAlive()) continue;
         }
 
-        double distance = calculateDistance(obj);
+        double distance = self.calculateDistance(obj);
         if (distance < minDistance) {
             minDistance = distance;
             nearestObject = obj;
@@ -96,79 +103,95 @@ void Organism::react(const std::vector<std::shared_ptr<EnvironmentObject>>& reac
     }
 
     if (!nearestObject) {
-        return;
+        return {0.0f, 0.0f};
     }
 
-    auto myPos = getPosition();
+    auto myPos = self.getPosition();
 
     if (auto otherOrganism = std::dynamic_pointer_cast<Organism>(nearestObject)) {
-        // Only react to one organism per iteration
-        if (reactionCounter != 0) {
-            return;
-        }
-
         auto otherPos = otherOrganism->getPosition();
-        if (getSize() * 1.5 < otherOrganism->getSize()) {
-            // Flee: move away from a much larger predator
-            movement = Vec2(myPos.first - otherPos.first, myPos.second - otherPos.second);
-            reactionCounter++;
-        } else if (getSize() > 1.5 * otherOrganism->getSize()) {
-            // Chase: move toward a much smaller prey
-            movement = Vec2(otherPos.first - myPos.first, otherPos.second - myPos.second);
-            reactionCounter++;
+        if (self.getSize() * 1.5 < otherOrganism->getSize()) {
+            return {myPos.first - otherPos.first, myPos.second - otherPos.second};
+        } else if (self.getSize() > 1.5 * otherOrganism->getSize()) {
+            return {otherPos.first - myPos.first, otherPos.second - myPos.second};
         }
     } else if (auto food = std::dynamic_pointer_cast<Food>(nearestObject)) {
-        if (!food->canBeEaten()) {
-            return;
+        if (food->canBeEaten()) {
+            auto foodPos = food->getPosition();
+            return {foodPos.first - myPos.first, foodPos.second - myPos.second};
         }
-
-        reactionCounter++;
-        // Move toward the food source
-        auto foodPos = food->getPosition();
-        movement = Vec2(foodPos.first - myPos.first, foodPos.second - myPos.second);
-    } else {
-        throw std::runtime_error("Unknown object type detected");
     }
+
+    return {0.0f, 0.0f};
 }
 
 /**
- * @brief Consume food and prey on smaller organisms within interaction range.
- * @param interactableObjects Objects overlapping with this organism's body.
+ * @brief Built-in interaction: eat food and prey on smaller organisms.
  *
- * Eating food adds energy to lifespan. Killing a smaller organism (size > 1.5x)
- * absorbs its remaining lifespan. This method mutates shared state and must
- * run single-threaded.
+ * For each nearby object:
+ *  - Edible food is consumed, adding its energy to life-span.
+ *  - Organisms smaller than 2/3 of self's size are killed and their remaining
+ *    life-span is absorbed.
  */
-void Organism::interact(const std::vector<std::shared_ptr<EnvironmentObject>>& interactableObjects) {
+void Organism::defaultInteraction(
+    Organism& self,
+    const std::vector<std::shared_ptr<EnvironmentObject>>& interactableObjects) {
+
     for (const auto& object : interactableObjects) {
         if (auto food = std::dynamic_pointer_cast<Food>(object)) {
             if (!food->canBeEaten()) continue;
+            self.addLifeSpan(food->getEnergy());
             food->eaten();
-            lifeSpan += food->getEnergy();
         }
 
         if (auto organism = std::dynamic_pointer_cast<Organism>(object)) {
-            // Predation: must be at least 1.5x larger to kill and absorb
-            if (getSize() > 1.5 * organism->getSize() && organism->isAlive()) {
-                lifeSpan += organism->getLifeSpan();
+            if (self.getSize() > 1.5 * organism->getSize() && organism->isAlive()) {
+                self.addLifeSpan(organism->getLifeSpan());
                 organism->killed();
             }
         }
     }
 }
 
+// --- Public action methods ---
+
+void Organism::react(const std::vector<std::shared_ptr<EnvironmentObject>>& reactableObjects) {
+    if (reactableObjects.empty()) return;
+    if (reactionCounter != 0) return;
+
+    std::pair<float, float> result;
+    if (reactionStrategy) {
+        result = reactionStrategy(*this, reactableObjects);
+    } else {
+        result = defaultReaction(*this, reactableObjects);
+    }
+
+    if (result.first != 0.0f || result.second != 0.0f) {
+        movement = Vec2(result.first, result.second);
+        reactionCounter++;
+    }
+}
+
+void Organism::interact(const std::vector<std::shared_ptr<EnvironmentObject>>& interactableObjects) {
+    if (interactionStrategy) {
+        interactionStrategy(*this, interactableObjects);
+    } else {
+        defaultInteraction(*this, interactableObjects);
+    }
+}
+
 /**
- * @brief Create an offspring with mutated genes near the parent.
- * @return Shared pointer to the newly created child organism.
+ * @brief Create a mutated offspring and halve this organism's life-span.
  *
- * The child inherits the parent's genes with small mutations and the same
- * life consumption calculator. The parent's lifespan is halved as a cost.
+ * The child inherits the parent's genes (with mutation), life-consumption
+ * calculator, and any custom reaction/interaction strategies.
  */
 std::shared_ptr<Organism> Organism::reproduce() {
     Genes newGenes = genes;
     newGenes.mutate();
     auto newOrganism = std::make_shared<Organism>(newGenes, lifeConsumptionCalculator);
-    // Offset child slightly from parent to avoid immediate overlap
+    if (reactionStrategy) newOrganism->setReactionStrategy(reactionStrategy);
+    if (interactionStrategy) newOrganism->setInteractionStrategy(interactionStrategy);
     newOrganism->setPosition(getPosition().first + 2, getPosition().second + 2);
     lifeSpan /= 2;
     return newOrganism;
@@ -191,8 +214,7 @@ void Organism::postIteration() {
  * @brief Execute movement for this iteration.
  *
  * If no reaction occurred, the organism has an 80% chance to keep its
- * current movement direction (dis(gen) > 0 yields 4/5 probability).
- * Movement is then normalized to the organism's speed.
+ * current movement direction. Movement is then normalized to the organism's speed.
  * Uses thread_local RNG for thread safety during parallel execution.
  */
 void Organism::makeMove() {
@@ -204,7 +226,6 @@ void Organism::makeMove() {
     auto speed = getSpeed();
 
     if (reactionCounter == 0) {
-        // 80% chance to keep current movement direction (4 out of 5 outcomes)
         bool keepMovement = dis(gen) > 0;
         if (movement.isZero()) {
             keepMovement = false;

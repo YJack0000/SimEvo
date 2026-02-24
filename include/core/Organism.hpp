@@ -12,11 +12,13 @@
 /**
  * @brief A living entity in the simulation that can move, eat, fight, and reproduce.
  *
- * Organisms have gene-derived attributes (speed, size, awareness) that determine
- * their behavior and survival. Each iteration, organisms react to nearby objects
- * (deciding movement direction) and interact with overlapping objects (eating food,
- * killing smaller organisms). Reproduction creates a mutated offspring and halves
- * the parent's lifespan.
+ * Organism behaviour is driven by two pluggable strategy callbacks:
+ *  - **ReactionStrategy** -- decides movement direction based on nearby objects.
+ *  - **InteractionStrategy** -- performs close-range actions (eating, fighting).
+ *
+ * When no custom strategy is set, built-in defaults are used. Custom strategies
+ * are inherited by offspring produced via reproduce(), enabling Python-side
+ * behaviour injection that persists across generations.
  */
 class Organism : public EnvironmentObject {
 public:
@@ -27,6 +29,26 @@ public:
      * C++ callers to define custom energy expenditure rules.
      */
     using LifeConsumptionCalculator = std::function<uint32_t(const Organism &)>;
+
+    /**
+     * @brief Strategy that decides how an organism reacts to nearby objects.
+     *
+     * Given a reference to the organism and a list of nearby objects (within
+     * the reaction radius), the strategy returns a (dx, dy) movement direction.
+     * Returning {0, 0} signals "no reaction" and the organism keeps wandering.
+     */
+    using ReactionStrategy = std::function<std::pair<float, float>(
+        Organism &, const std::vector<std::shared_ptr<EnvironmentObject>> &)>;
+
+    /**
+     * @brief Strategy that defines close-range interactions with nearby objects.
+     *
+     * Given a reference to the organism and objects within its size radius,
+     * the strategy mutates state directly (e.g. consuming food, killing smaller
+     * organisms). The default eats food and preys on organisms less than 2/3 its size.
+     */
+    using InteractionStrategy = std::function<void(
+        Organism &, const std::vector<std::shared_ptr<EnvironmentObject>> &)>;
 
     /** @brief Construct a default organism with preset genes and 500 lifespan. */
     Organism();
@@ -84,16 +106,58 @@ public:
      */
     bool canReproduce() const;
 
+    /**
+     * @brief Add (or subtract) life-span points.
+     *
+     * Exposed publicly so that custom InteractionStrategy callbacks (including
+     * those written in Python) can reward or penalise organisms.
+     *
+     * @param amount Points to add; negative values reduce life-span.
+     */
+    void addLifeSpan(float amount);
+
     ~Organism() {};
+
+    // ── Behaviour injection ─────────────────────────────────────────────
+
+    /**
+     * @brief Replace the reaction strategy with a custom implementation.
+     *
+     * The strategy is propagated to offspring during reproduce(). Pass nullptr
+     * or an empty std::function to revert to the built-in default.
+     *
+     * @param strategy Callable matching the ReactionStrategy signature.
+     */
+    void setReactionStrategy(ReactionStrategy strategy);
+
+    /**
+     * @brief Replace the interaction strategy with a custom implementation.
+     *
+     * The strategy is propagated to offspring during reproduce(). Pass nullptr
+     * or an empty std::function to revert to the built-in default.
+     *
+     * @param strategy Callable matching the InteractionStrategy signature.
+     */
+    void setInteractionStrategy(InteractionStrategy strategy);
+
+    /**
+     * @brief Check whether this organism has any custom (non-default) strategy set.
+     * @return true if either reactionStrategy or interactionStrategy is set.
+     *
+     * Used by Environment to decide whether multi-threaded execution is safe.
+     * Custom strategies may involve Python callbacks that require the GIL.
+     */
+    bool hasCustomStrategy() const;
+
+    // ── Actions ─────────────────────────────────────────────────────────
 
     /**
      * @brief Decide movement direction based on nearby objects within reaction radius.
      * @param reactableObjects Objects detected within the organism's reaction radius.
      *
-     * Finds the nearest valid object and sets movement direction accordingly:
-     * flee from larger organisms, chase smaller organisms, move toward food.
-     * Only triggers once per iteration (guarded by reactionCounter).
-     * Safe to call in parallel -- only writes to this organism's own fields.
+     * Delegates to the custom ReactionStrategy if one has been set, otherwise
+     * falls back to defaultReaction(). Only triggers once per iteration
+     * (guarded by reactionCounter).
      */
     void react(const std::vector<std::shared_ptr<EnvironmentObject>> &reactableObjects);
 
@@ -101,15 +165,16 @@ public:
      * @brief Interact with objects within the organism's body size range.
      * @param interactableObjects Objects overlapping the organism's size radius.
      *
-     * Eats available food (gaining its energy) and kills smaller organisms
-     * (absorbing their remaining lifespan). Must run single-threaded because
-     * it mutates shared state (food eaten flags, other organisms' lifespans).
+     * Delegates to the custom InteractionStrategy if set, otherwise uses
+     * defaultInteraction(). Must run single-threaded because it mutates
+     * shared state (food eaten flags, other organisms' lifespans).
      */
     void interact(const std::vector<std::shared_ptr<EnvironmentObject>> &interactableObjects);
 
     /**
      * @brief Create a mutated offspring organism.
-     * @return A new organism with mutated genes, inheriting the life consumption calculator.
+     * @return A new organism with mutated genes, inheriting the life consumption
+     *         calculator and any custom behavior strategies.
      *
      * The parent's lifespan is halved. The child is placed at a small offset
      * from the parent's position.
@@ -124,6 +189,8 @@ public:
 private:
     Genes genes;                                           ///< Genetic data driving attributes
     LifeConsumptionCalculator lifeConsumptionCalculator;   ///< Optional custom life drain formula
+    ReactionStrategy reactionStrategy;                     ///< Optional custom reaction behaviour
+    InteractionStrategy interactionStrategy;               ///< Optional custom interaction behaviour
     float lifeSpan;                                        ///< Remaining life points
 
     /**
@@ -144,6 +211,12 @@ private:
      * not exceed the organism's speed.
      */
     void makeMove();
+
+    // Default built-in strategies
+    static std::pair<float, float> defaultReaction(
+        Organism &self, const std::vector<std::shared_ptr<EnvironmentObject>> &objects);
+    static void defaultInteraction(
+        Organism &self, const std::vector<std::shared_ptr<EnvironmentObject>> &objects);
 };
 
 #endif

@@ -13,7 +13,7 @@
  * @param width  Environment width in simulation units.
  * @param height Environment height in simulation units.
  * @param type   Spatial index type: "default" or "optimized".
- * @param numThreads Number of threads for the parallel reaction phase.
+ * @param numThreads Reserved for future multi-threaded reaction phase.
  * @throws std::invalid_argument If the spatial index type is unknown.
  */
 Environment::Environment(int width, int height, std::string type, int numThreads)
@@ -25,7 +25,7 @@ Environment::Environment(int width, int height, std::string type, int numThreads
         unsigned long size = static_cast<unsigned long>(std::max(width, height));
         spatialIndex = std::make_unique<OptimizedSpatialIndex<boost::uuids::uuid>>(size);
     } else {
-        throw std::invalid_argument("Invalid type");
+        throw std::invalid_argument("Invalid spatial index type: " + type);
     }
 }
 
@@ -114,7 +114,7 @@ void Environment::reset() {
  *
  * Each iteration runs three phases in order:
  * 1. handleInteractions (single-threaded) -- organisms eat food / prey on others.
- * 2. handleReactions (multi-threaded) -- organisms decide movement direction.
+ * 2. handleReactions (single-threaded) -- organisms decide movement direction.
  * 3. postIteration -- deduct life, move organisms, sync spatial index.
  */
 void Environment::simulateIteration(int iterations,
@@ -263,50 +263,32 @@ void Environment::handleInteractions() {
 /**
  * @brief Run the reaction phase: organisms decide movement direction.
  *
- * Reactions only write to each organism's own movement/reactionCounter fields,
- * so this phase is safe to parallelize across organisms.
+ * Currently runs single-threaded for GIL safety with Python strategy callbacks.
+ * TODO: Re-enable multi-threading for this phase. Each organism only writes to
+ * its own movement/reactionCounter fields, so it is inherently parallelizable.
+ * Options: (1) detect at runtime if any organism has a custom strategy and only
+ * fall back to single-threaded in that case, or (2) use py::gil_scoped_release
+ * before spawning worker threads.
  */
 void Environment::handleReactions() {
     auto organisms = getAllOrganisms();
-    if (organisms.empty()) return;
 
-    auto worker = [&](size_t start, size_t end) {
-        for (size_t i = start; i < end; ++i) {
-            auto& organism = organisms[i];
-            if (organism->isAlive()) {
-                auto position = organism->getPosition();
-                auto reactables = spatialIndex->query(
-                    position.first, position.second, organism->getReactionRadius());
-                std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
-                for (auto& reactable : reactables) {
-                    if (reactable != organism->getId()) {
-                        auto it = objectsMapper.find(reactable);
-                        if (it != objectsMapper.end()) {
-                            reactableObjects.push_back(it->second);
-                        }
+    for (auto& organism : organisms) {
+        if (organism->isAlive()) {
+            auto position = organism->getPosition();
+            auto reactables = spatialIndex->query(
+                position.first, position.second, organism->getReactionRadius());
+            std::vector<std::shared_ptr<EnvironmentObject>> reactableObjects;
+            for (auto& reactable : reactables) {
+                if (reactable != organism->getId()) {
+                    auto it = objectsMapper.find(reactable);
+                    if (it != objectsMapper.end()) {
+                        reactableObjects.push_back(it->second);
                     }
                 }
-
-                organism->react(reactableObjects);
             }
-        }
-    };
 
-    if (numThreads <= 1) {
-        worker(0, organisms.size());
-    } else {
-        // Partition organisms evenly across threads; last thread handles remainder
-        std::vector<std::thread> threads;
-        size_t chunkSize = organisms.size() / numThreads;
-
-        for (int i = 0; i < numThreads; ++i) {
-            size_t start = i * chunkSize;
-            size_t end = (i == numThreads - 1) ? organisms.size() : (i + 1) * chunkSize;
-            threads.emplace_back(worker, start, end);
-        }
-
-        for (auto& thread : threads) {
-            thread.join();
+            organism->react(reactableObjects);
         }
     }
 }
